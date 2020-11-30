@@ -1,0 +1,23 @@
+[
+  {
+    "pattern": "^.*/www.championat.com/.*",
+    "is_base": true,
+    "title_element": null,
+    "description_element": null,
+    "image_url_element": "head.link.icon.image/png.48x48"
+  },
+  {
+    "pattern": "((http|https)://www.championat.com/[a-z]{2,16}/)article-.*",
+    "is_base": false,
+    "title_element": "head.meta.property.og:image",
+    "description_element": null,
+    "image_url_element": "head.meta.property.og:image"
+  },
+  {
+    "pattern": "^.*/yandex.ru/.*",
+    "is_base": true,
+    "title_element": null,
+    "description_element": null,
+    "image_url_element": "head.link.shortcut icon.."
+  }
+]

@@ -1,0 +1,4 @@
+include ':urlparser'
+include ':base'
+include ':app'
+rootProject.name = "Linkit"

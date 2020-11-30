@@ -1,0 +1,21 @@
+<resources>
+    <string name="app_name">Linkit</string>
+    <string name="create_folder">Create Folder</string>
+    <string name="todo">TODO</string>
+    <string name="new_folder">New Folder</string>
+    <string name="name">Name</string>
+    <string name="create">Create</string>
+    <string name="web_links">Web links</string>
+    <string name="store_links">Store links</string>
+    <string name="url">Url</string>
+    <string name="add">Add</string>
+    <string name="url_from_clipboard">Url from Clipboard</string>
+    <string name="add_file">Add file</string>
+    <string name="messageEmptyPage">No urls or data</string>
+    <string name="assign_to_folder">Assign to Folders</string>
+    <string name="notSelected">Not selected</string>
+    <string name="select_folder">Select folder</string>
+    <string name="title">Title</string>
+    <string name="description">Description</string>
+    <string name="choose_folders">Choose folders</string>
+</resources>

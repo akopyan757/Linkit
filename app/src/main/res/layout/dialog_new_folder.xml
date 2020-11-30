@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <variable
+            name="viewModel"
+            type="com.akopyan757.linkit.viewmodel.FolderCreateViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minWidth="300dp">
+
+        <TextView
+            android:id="@+id/tvCreateLinkTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/marginPrimary"
+            android:layout_marginTop="@dimen/marginPrimary"
+            android:text="@string/new_folder"
+            android:textAppearance="@style/Theme.Linkit.Text.Title"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tilCreateLinkName"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/marginSecondary"
+            android:layout_marginTop="@dimen/marginPrimary"
+            android:layout_marginEnd="@dimen/marginSecondary"
+            android:textColorHint="@color/hintColor"
+            app:hintTextColor="@color/hintColor"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvCreateLinkTitle"
+            app:error="@{viewModel.errorName}">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/tietCreateLinkName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/name"
+                android:text="@={viewModel.folderName}" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <Button
+            android:id="@+id/btnCreateLinkAccept"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/marginGiant"
+            android:layout_marginBottom="@dimen/marginPrimary"
+            android:text="@string/create"
+            android:textColor="@color/white"
+            android:onClick="@{() -> viewModel.onCreateFolderButtonClicked()}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/tilCreateLinkName"
+            app:layout_constraintTop_toBottomOf="@+id/tilCreateLinkName" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>

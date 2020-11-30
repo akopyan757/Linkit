@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_main"
+    app:startDestination="@id/mainFragment">
+
+    <fragment
+        android:id="@+id/mainFragment"
+        android:name="com.akopyan757.linkit.view.fragment.MainFragment"
+        android:label="MainFragment"
+        tools:layout="@layout/fragment_main" >
+        <action
+            android:id="@+id/action_mainF_to_createFolderDF"
+            app:destination="@id/createFolderDialogFragment" />
+        <action
+            android:id="@+id/action_mainF_to_clipboardUrlDF"
+            app:destination="@id/clipboardUrlDialogFragment">
+            <argument
+                android:name="url"
+                app:argType="string" />
+        </action>
+    </fragment>
+
+    <dialog
+        android:id="@+id/createFolderDialogFragment"
+        android:name="com.akopyan757.linkit.view.dialog.CreateFolderDialogFragment"
+        android:label="CreateFolderDialogFragment"
+        tools:layout="@layout/dialog_new_folder">
+        <action
+            android:id="@+id/action_createFolderDF_to_clipboardUrlDF"
+            app:popUpTo="@id/clipboardUrlDialogFragment" />
+    </dialog>
+    <dialog
+        android:id="@+id/clipboardUrlDialogFragment"
+        android:name="com.akopyan757.linkit.view.dialog.ClipboardUrlDialogFragment"
+        android:label="ClipboardUrlDialogFragment"
+        tools:layout="@layout/dialog_new_url">
+        <action
+            android:id="@+id/action_clipboardUrlDF_to_selectFolderDF"
+            app:destination="@id/selectFolderDialogFragment" />
+    </dialog>
+    <dialog
+        android:id="@+id/selectFolderDialogFragment"
+        android:name="com.akopyan757.linkit.view.dialog.SelectFolderDialogFragment"
+        android:label="SelectFolderDialogFragment"
+        tools:layout="@layout/dialog_select_folder">
+        <action
+            android:id="@+id/action_selectFolderDF_to_createFolderDF"
+            app:destination="@id/createFolderDialogFragment" />
+    </dialog>
+
+</navigation>

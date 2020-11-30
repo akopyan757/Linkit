@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="tabLayout_folder_height">40dp</dimen>
+
+    <dimen name="marginGiant">40dp</dimen>
+    <dimen name="marginPrimary">16dp</dimen>
+    <dimen name="marginSecondary">8dp</dimen>
+    <dimen name="marginTertiary">4dp</dimen>
+    <dimen name="marginQuartiary">2dp</dimen>
+
+    <dimen name="textSizeTitle">18sp</dimen>
+    <dimen name="textSizePrimary">16sp</dimen>
+    <dimen name="textSizeSecondary">14sp</dimen>
+    <dimen name="textSizeTertiary">12sp</dimen>
+    <dimen name="textSizeQuartiary">10sp</dimen>
+
+    <dimen name="elevationSecondary">4dp</dimen>
+    <dimen name="cornerRadius">16dp</dimen>
+    <dimen name="linkPictureWidth">60dp</dimen>
+    <dimen name="linkPictureHeight">60dp</dimen>
+    <dimen name="linkPictureBigWidth">150dp</dimen>
+    <dimen name="linkPictureBigHeight">80dp</dimen>
+    <dimen name="linkIconMinWidth">32dp</dimen>
+    <dimen name="linkIconMinHeight">32dp</dimen>
+    <dimen name="createUrlFolderTitleMarginStart">12dp</dimen>
+</resources>

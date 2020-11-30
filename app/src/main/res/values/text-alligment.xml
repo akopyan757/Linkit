@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.Linkit.Text" parent="TextAppearance.AppCompat">
+        <item name="android:textSize">@dimen/textSizePrimary</item>
+        <item name="android:textColorLink">@color/linkColor</item>
+        <item name="android:gravity">center_vertical|start</item>
+    </style>
+
+    <style name="Theme.Linkit.Text.Title">
+        <item name="android:textSize">@dimen/textSizeTitle</item>
+        <item name="android:textAllCaps">true</item>
+    </style>
+
+    <style name="Theme.Linkit.Text.Body1">
+        <item name="android:textSize">@dimen/textSizeSecondary</item>
+    </style>
+
+    <style name="Theme.Linkit.Text.Body2">
+        <item name="android:textSize">@dimen/textSizeTertiary</item>
+    </style>\
+
+    <style name="Theme.Linkit.Text.Body3">
+        <item name="android:textSize">@dimen/textSizeQuartiary</item>
+    </style>
+
+</resources>

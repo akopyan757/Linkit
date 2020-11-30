@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <variable
+            name="viewModel"
+            type="com.akopyan757.linkit.viewmodel.LinkCreateUrlViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minWidth="300dp">
+
+        <TextView
+            android:id="@+id/tvClipboardUrlTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/marginPrimary"
+            android:layout_marginTop="@dimen/marginPrimary"
+            android:text="@string/url_from_clipboard"
+            android:textAppearance="@style/Theme.Linkit.Text.Title"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tilClipboardTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/marginSecondary"
+            android:layout_marginTop="@dimen/marginSecondary"
+            android:layout_marginEnd="@dimen/marginSecondary"
+            android:textColorHint="@color/hintColor"
+            app:hintTextColor="@color/hintColor"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvClipboardUrlTitle">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/tietClipboardTitle"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:hint="@string/title"
+                android:inputType="text"
+                style="@style/Theme.Linkit.SingleTextView"
+                android:text="@={viewModel.title}"/>
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tilClipboardDescription"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/marginSecondary"
+            android:layout_marginTop="@dimen/marginSecondary"
+            android:layout_marginEnd="@dimen/marginSecondary"
+            android:textColorHint="@color/hintColor"
+            app:hintTextColor="@color/hintColor"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tilClipboardTitle">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/tietClipboardDescription"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:hint="@string/description"
+                android:minLines="3"
+                android:maxLines="3"
+                android:inputType="textMultiLine"
+                android:text="@={viewModel.description}"/>
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tilClipboardUrl"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/marginSecondary"
+            android:layout_marginTop="@dimen/marginSecondary"
+            android:layout_marginEnd="@dimen/marginSecondary"
+            android:textColorHint="@color/hintColor"
+            app:hintTextColor="@color/hintColor"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tilClipboardDescription">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/tietClipboardUrl"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/url"
+                android:text="@{viewModel.urlValue}"
+                style="@style/Theme.Linkit.EditTextReadOnly"/>
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/flSpinnerAssignFolder"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/marginSecondary"
+            android:background="@drawable/background_spinner"
+            app:layout_constraintEnd_toEndOf="@+id/tilClipboardUrl"
+            app:layout_constraintStart_toStartOf="@+id/tilClipboardUrl"
+            app:layout_constraintTop_toBottomOf="@+id/tilClipboardUrl">
+
+            <TextView
+                android:id="@+id/tvCreateLinkAssignToFolder"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/createUrlFolderTitleMarginStart"
+                android:layout_marginTop="@dimen/marginSecondary"
+                android:text="@string/assign_to_folder"
+                android:textAppearance="@style/Theme.Linkit.Text.Body2"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvCreateListFolders"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/marginTertiary"
+                android:layout_marginTop="@dimen/marginTertiary"
+                android:paddingBottom="@dimen/marginTertiary"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvCreateLinkAssignToFolder"
+                tools:itemCount="1"
+                tools:listitem="@layout/item_add_url_folder" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <Button
+            android:id="@+id/btnClipboardUrlAccept"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/marginPrimary"
+            android:layout_marginBottom="@dimen/marginPrimary"
+            android:text="@string/add"
+            android:textColor="@color/white"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/tilClipboardUrl"
+            app:layout_constraintTop_toBottomOf="@+id/flSpinnerAssignFolder" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>

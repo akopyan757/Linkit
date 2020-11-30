@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_margin="@dimen/marginTertiary"
+    app:cardBackgroundColor="#C8C8C8"
+    app:cardCornerRadius="@dimen/cornerRadius"
+    app:cardElevation="@dimen/elevationSecondary">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:drawablePadding="@dimen/marginQuartiary"
+        android:gravity="center_vertical"
+        android:paddingHorizontal="@dimen/marginSecondary"
+        android:paddingVertical="@dimen/marginQuartiary"
+        android:text="@string/choose_folders"
+        android:textAppearance="@style/Theme.Linkit.Text.Body2"
+        app:drawableStartCompat="@drawable/ic_outline_playlist_add_24" />
+
+</androidx.cardview.widget.CardView>
