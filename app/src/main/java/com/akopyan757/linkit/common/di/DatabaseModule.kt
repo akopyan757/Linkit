@@ -20,7 +20,6 @@ object DatabaseModule {
         }
 
         single { get<AppDatabase>().urlLinkDao() }
-        single { get<AppDatabase>().storeLinkDao() }
         single { get<AppDatabase>().folderDao() }
         single { get<AppDatabase>().patternDao() }
     }
