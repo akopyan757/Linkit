@@ -1,20 +1,15 @@
 package com.akopyan757.linkit.model.repository
 
-import android.annotation.SuppressLint
-import android.content.ContentResolver
-import android.net.Uri
-import android.provider.OpenableColumns
+import android.util.Log
 import android.webkit.URLUtil
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.map
 import com.akopyan757.base.model.ApiResponse
 import com.akopyan757.base.model.BaseRepository
 import com.akopyan757.linkit.model.database.FolderDao
-import com.akopyan757.linkit.model.database.StoreLinkDao
 import com.akopyan757.linkit.model.database.UrlLinkDao
 import com.akopyan757.linkit.model.entity.FolderData
 import com.akopyan757.linkit.model.entity.PatternData
-import com.akopyan757.linkit.model.entity.StoreLinkData
 import com.akopyan757.linkit.model.entity.UrlLinkData
 import com.akopyan757.linkit.model.exception.FolderExistsException
 import com.akopyan757.linkit.model.exception.UrlIsNotValidException
@@ -26,7 +21,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.koin.core.KoinComponent
 import org.koin.core.inject
-import java.lang.reflect.Type
 
 class LinkRepository: BaseRepository(), KoinComponent {
 
@@ -34,9 +28,7 @@ class LinkRepository: BaseRepository(), KoinComponent {
         const val TAG = "LINK_REPOSITORY"
     }
 
-    private val contentResolver: ContentResolver by inject()
     private val urlLinkDao: UrlLinkDao by inject()
-    private val storeLinkDao: StoreLinkDao by inject()
     private val folderDao: FolderDao by inject()
 
     private val urlParser: UrlParser<PatternData, UrlLinkData> by inject()
@@ -51,7 +43,6 @@ class LinkRepository: BaseRepository(), KoinComponent {
 
     private fun initFolderAccount() {
         CoroutineScope(ioDispatcher).launch {
-            //folderDao.removeAll()
             if (folderDao.getById(FolderData.GENERAL_FOLDER_ID) == null) {
                 folderDao.insertOrUpdate(FolderData.generalFolder())
             }
@@ -75,12 +66,6 @@ class LinkRepository: BaseRepository(), KoinComponent {
                 }
             }
 
-            URLUtil.isContentUrl(link) -> {
-                parseUri(link)?.also { linkData ->
-                    storeLinkDao.insertOrUpdate(linkData)
-                }
-            }
-
             else -> null
         }
     }
@@ -101,29 +86,10 @@ class LinkRepository: BaseRepository(), KoinComponent {
         folderDao.getByName(name)
     }
 
-
-    fun findFolderByRule(
-        baseUrl: String
-    ) = call(ioDispatcher) {
-        folderDao.getByRuleUrl(baseUrl)
-    }
-
     fun getAllUrlLinksByFolder(folderId: Int): LiveData<ApiResponse<List<UrlLinkData>>> = callLive(
         ioDispatcher
     ) {
         urlLinkDao.getLiveAll().map { list ->
-            val data = list.filter {
-                folderId in it.folderIds || folderId == FolderData.GENERAL_FOLDER_ID
-            }
-
-            ApiResponse.Success(data)
-        }
-    }
-
-    fun getAllStoreLinksByFolder(folderId: Int): LiveData<ApiResponse<List<StoreLinkData>>> = callLive(
-        ioDispatcher
-    ) {
-        storeLinkDao.getLiveAll().map { list ->
             val data = list.filter {
                 folderId in it.folderIds || folderId == FolderData.GENERAL_FOLDER_ID
             }
@@ -139,31 +105,9 @@ class LinkRepository: BaseRepository(), KoinComponent {
     }
 
     private suspend fun parseHttpUrl(url: String, folderIds: List<Int> = emptyList()): UrlLinkData {
+        Log.i(TAG, "parseHttpUrl = $url")
         return urlParser.parseUrl(url).apply {
             this.folderIds = folderIds
         }
-    }
-
-    @SuppressLint("Recycle")
-    private fun parseUri(link: String): StoreLinkData? {
-
-        val uri = Uri.parse(link)
-
-        val cursor = contentResolver
-                .query(uri, null, null, null, null)
-                ?: return null
-
-        val nameIndex = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME)
-        val sizeIndex = cursor.getColumnIndex(OpenableColumns.SIZE)
-
-        cursor.moveToFirst()
-
-        val name = cursor.getString(nameIndex)
-        val size = cursor.getLong(sizeIndex)
-        val path = uri.path
-
-        cursor.close()
-
-        return StoreLinkData(uri = uri.toString(), name = name, size = size, path = path)
     }
 }

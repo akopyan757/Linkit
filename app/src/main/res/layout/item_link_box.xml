@@ -10,9 +10,9 @@
             type="com.akopyan757.linkit.viewmodel.observable.LinkObservable" />
     </data>
 
-    <com.google.android.material.card.MaterialCardView
-        android:layout_width="140dp"
-        android:layout_height="150dp"
+    <com.akopyan757.linkit.common.custom.SquareCardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_margin="@dimen/marginTertiary"
         android:minWidth="100dp"
         app:cardCornerRadius="@dimen/cornerRadius"
@@ -45,10 +45,10 @@
                 android:maxHeight="@dimen/linkPictureBigHeight"
                 android:minWidth="@dimen/linkIconMinWidth"
                 android:minHeight="@dimen/linkIconMinHeight"
-                app:url="@{observable.photoUrl}"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                app:url="@{observable.photoUrl}" />
 
             <TextView
                 android:id="@+id/tvLinkTitle"
@@ -69,27 +69,27 @@
 
             <ImageView
                 android:id="@+id/ivLinkShare"
+                style="@style/Theme.Linkit.ClickableImageView"
                 android:layout_width="32dp"
                 android:layout_height="32dp"
                 android:contentDescription="@string/todo"
                 android:padding="@dimen/marginSecondary"
                 android:src="@drawable/ic_baseline_share_24"
-                app:tint="@color/tintColor"
                 app:layout_constraintEnd_toStartOf="@+id/ivLinkCopy"
                 app:layout_constraintTop_toTopOf="@+id/ivLinkCopy"
-                style="@style/Theme.Linkit.ClickableImageView" />
+                app:tint="@color/tintColor" />
 
             <ImageView
                 android:id="@+id/ivLinkCopy"
+                style="@style/Theme.Linkit.ClickableImageView"
                 android:layout_width="32dp"
                 android:layout_height="32dp"
                 android:contentDescription="@string/todo"
                 android:padding="@dimen/marginSecondary"
                 android:src="@drawable/ic_baseline_content_copy_24"
-                app:tint="@color/tintColor"
-                style="@style/Theme.Linkit.ClickableImageView"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                app:tint="@color/tintColor" />
 
             <TextView
                 android:id="@+id/tvLinkUrl"
@@ -116,6 +116,6 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-    </com.google.android.material.card.MaterialCardView>
+    </com.akopyan757.linkit.common.custom.SquareCardView>
 
 </layout>

@@ -44,18 +44,20 @@
 
             <ImageView
                 android:id="@+id/ivLinkPhoto"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
                 android:contentDescription="@string/todo"
+                android:scaleType="centerCrop"
                 android:maxWidth="@dimen/linkPictureWidth"
                 android:maxHeight="@dimen/linkPictureHeight"
                 android:minWidth="@dimen/linkIconMinWidth"
                 android:minHeight="@dimen/linkIconMinHeight"
-                app:url="@{observable.photoUrl}"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/guidelineLink"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                app:url="@{observable.photoUrl}"
+                tools:src="@drawable/image_analysis" />
 
             <TextView
                 android:id="@+id/tvLinkTitle"

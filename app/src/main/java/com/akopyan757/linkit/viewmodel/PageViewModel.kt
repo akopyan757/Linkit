@@ -1,15 +1,12 @@
 package com.akopyan757.linkit.viewmodel
 
-import android.net.Uri
 import android.util.Log
 import androidx.databinding.Bindable
-import com.akopyan757.linkit.BR
-import com.akopyan757.base.viewmodel.list.ListLiveData
-import com.akopyan757.linkit.common.utils.FormatUtils
-import com.akopyan757.linkit.model.repository.LinkRepository
 import com.akopyan757.base.viewmodel.BaseViewModel
+import com.akopyan757.base.viewmodel.list.ListLiveData
+import com.akopyan757.linkit.BR
+import com.akopyan757.linkit.model.repository.LinkRepository
 import com.akopyan757.linkit.viewmodel.observable.LinkObservable
-import com.akopyan757.linkit.viewmodel.observable.StoreObservable
 import org.koin.core.KoinComponent
 import org.koin.core.inject
 
@@ -26,7 +23,6 @@ class PageViewModel(private val folderId: Int): BaseViewModel(), KoinComponent {
      * List LiveData's
      */
     private val urlListData = ListLiveData<LinkObservable>()
-    private val storeListData = ListLiveData<StoreObservable>()
 
     /**
      * Repository
@@ -41,37 +37,21 @@ class PageViewModel(private val folderId: Int): BaseViewModel(), KoinComponent {
     }, onSuccess = { data ->
         Log.i(TAG, "GEL URL LINK LIST (FOLDER = $folderId): SIZE = ${data.size}")
 
-        val observables = data.map {
-            LinkObservable(it.url, it.title, it.description, it.photoUrl)
+        val observables = data.map { data ->
+            val photoUrl = data.photoUrl.takeUnless { it.isNullOrEmpty() } ?: data.logoUrl
+            LinkObservable(data.url, data.title, data.description, photoUrl)
         }
 
         urlListData.change(observables)
 
-        isEmptyPage = observables.isEmpty() && storeListData.getList().isEmpty()
+        isEmptyPage = observables.isEmpty()
         Log.i(TAG, "GEL URL LINK LIST (FOLDER = $folderId): ${observables.isEmpty()} + ${urlListData.getList().isEmpty()} = $isEmptyPage")
     })
-
-    private val getStoreAllResponse = requestLiveData(method = {
-        linkRepository.getAllStoreLinksByFolder(folderId)
-    }, onSuccess = { data ->
-        Log.i(TAG, "GEL STORE LINK LIST (FOLDER = $folderId): SIZE = ${data.size}")
-
-        val observables = data.map {
-            StoreObservable(Uri.parse(it.uri), it.name, FormatUtils.getSize(it.size), it.path)
-        }
-
-        storeListData.change(observables)
-
-        isEmptyPage = observables.isEmpty() && urlListData.getList().isEmpty()
-        Log.i(TAG, "GEL STORE LINK LIST (FOLDER = $folderId): ${observables.isEmpty()} + ${urlListData.getList().isEmpty()} = $isEmptyPage")
-    })
-
 
     /**
      * PPublic method
      */
     fun getUrlLiveList() = urlListData
-    fun getStoreLiveList() = storeListData
 
-    override fun getLiveResponses() = groupLiveResponses(getUrlAllResponse, getStoreAllResponse)
+    override fun getLiveResponses() = groupLiveResponses(getUrlAllResponse)
 }

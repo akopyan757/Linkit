@@ -19,27 +19,9 @@ object DatabaseModule {
                 .build()
         }
 
-        single { get<AppDatabase>().urlLinkDao().apply { removeAll() } }
+        single { get<AppDatabase>().urlLinkDao() }
         single { get<AppDatabase>().storeLinkDao() }
         single { get<AppDatabase>().folderDao() }
-        single {
-            get<AppDatabase>().patternDao().apply {
-                removeAll()
-                insertOrUpdate(PatternData(base = true, pattern = "^.*/www.championat.com/.*",
-                    titleElement = null, descriptionElement = null,
-                    imageUrlElement = ElementType.LinkIconHref(type = "image/png", sizes = "48x48").getFormat()
-                ))
-                insertOrUpdate(PatternData(base = true, pattern = "^.*/yandex.ru/.*",
-                    titleElement = null, descriptionElement = null,
-                    imageUrlElement = ElementType.LinkIconHref(rel = "shortcut icon").getFormat()
-                ))
-                insertOrUpdate(PatternData(base = false,
-                    pattern = "((http|https)://www.championat.com/[a-z]{2,16}/)article-.*",
-                    titleElement = ElementType.MetaProperty("og:title").getFormat(),
-                    descriptionElement = null,
-                    imageUrlElement = ElementType.MetaProperty("og:image").getFormat()
-                ))
-            }
-        }
+        single { get<AppDatabase>().patternDao() }
     }
 }
