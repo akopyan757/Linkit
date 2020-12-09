@@ -14,9 +14,10 @@ import com.akopyan757.linkit.viewmodel.observable.FolderObservable
 import com.akopyan757.linkit.viewmodel.request.LinkRequest
 import org.koin.core.KoinComponent
 import org.koin.core.inject
-import java.net.URL
 
-class LinkCreateUrlViewModel: BaseViewModel(), KoinComponent {
+class LinkCreateUrlViewModel(
+    @get:Bindable val url: String
+): BaseViewModel(), KoinComponent {
 
     companion object {
         private const val TAG = "LINK_CREATE_URL_VM"
@@ -39,9 +40,6 @@ class LinkCreateUrlViewModel: BaseViewModel(), KoinComponent {
     var description: String by DelegatedBindable("", BR.description)
 
     @get:Bindable
-    var urlValue: String by DelegatedBindable("", BR.urlValue)
-
-    @get:Bindable
     var selectedFolderName by DelegatedBindable("", BR.selectedFolderName)
 
     /**
@@ -55,9 +53,7 @@ class LinkCreateUrlViewModel: BaseViewModel(), KoinComponent {
     private val linkRepository: LinkRepository by inject()
 
     /** Request */
-    private val findFolderByRuleRequest = MutableLiveData<String>()
     private val addLinkRequest = MutableLiveData<LinkRequest>()
-    private val getUrlInfoRequest = MutableLiveData<String>()
 
     /** Responses */
     private val getListFolders = requestLiveData(
@@ -73,20 +69,18 @@ class LinkCreateUrlViewModel: BaseViewModel(), KoinComponent {
             }
     )
 
-    private val getInfoFromUrl = getUrlInfoRequest.switchMap { url ->
-        requestLiveData(
-            method = { linkRepository.getDefaultInfoFromUrl(url) },
-            onLoading = {
-                Log.i(TAG, "GET INFO URL: LOADING")
-            }, onSuccess = { urlLinkData ->
-                Log.i(TAG, "GET INFO URL: SUCCESS: $urlLinkData")
-                title = urlLinkData.title
-                description = urlLinkData.description
-            }, onError = { exception ->
-                Log.e(TAG, "GET INFO URL: ERROR", exception)
-            }
-        )
-    }
+    private val getInfoFromUrl = requestLiveData(
+        method = { linkRepository.getDefaultInfoFromUrl(url) },
+        onLoading = {
+            Log.i(TAG, "GET INFO URL: LOADING")
+        }, onSuccess = { urlLinkData ->
+            Log.i(TAG, "GET INFO URL: SUCCESS: $urlLinkData")
+            title = urlLinkData.title
+            description = urlLinkData.description
+        }, onError = { exception ->
+            Log.e(TAG, "GET INFO URL: ERROR", exception)
+        }
+    )
 
     private val addLinkResponse = addLinkRequest.switchMap {
         requestLiveData(
@@ -111,14 +105,7 @@ class LinkCreateUrlViewModel: BaseViewModel(), KoinComponent {
 
     fun onAcceptUrl() {
         val folderId = foldersList.value?.find { it.name == selectedFolderName }?.id  ?: FolderData.GENERAL_FOLDER_ID
-        addLinkRequest.value = LinkRequest(title, description, urlValue, folderId)
-    }
-
-    fun setupUrl(url: String) {
-        Log.i(TAG, "Setup Url = $url")
-        urlValue = url
-        findFolderByRuleRequest.value = URL(url).host
-        getUrlInfoRequest.value = url
+        addLinkRequest.value = LinkRequest(title, description, url, folderId)
     }
 
     override fun getLiveResponses() = groupLiveResponses(

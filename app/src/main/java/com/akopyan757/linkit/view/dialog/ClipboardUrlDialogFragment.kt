@@ -16,7 +16,8 @@ import com.akopyan757.linkit.common.Config
 import com.akopyan757.linkit.common.clipboard.ClipboardUtils
 import com.akopyan757.linkit.databinding.DialogNewUrlBinding
 import com.akopyan757.linkit.viewmodel.LinkCreateUrlViewModel
-import org.koin.android.viewmodel.ext.android.sharedViewModel
+import org.koin.android.viewmodel.ext.android.viewModel
+import org.koin.core.parameter.parametersOf
 
 
 class ClipboardUrlDialogFragment : DialogFragment() {
@@ -27,7 +28,9 @@ class ClipboardUrlDialogFragment : DialogFragment() {
 
     private lateinit var binding: DialogNewUrlBinding
 
-    private val mViewModel: LinkCreateUrlViewModel by sharedViewModel()
+    private val mViewModel: LinkCreateUrlViewModel by viewModel(
+        parameters = { parametersOf(arguments?.getString(Config.CLIP_URL_LABEL)) }
+    )
 
     override fun onCreateView(
             inflater: LayoutInflater,
@@ -54,10 +57,6 @@ class ClipboardUrlDialogFragment : DialogFragment() {
             viewModel
     ) {
         initResources(getString(R.string.notSelected))
-
-        arguments?.getString(Config.CLIP_URL_LABEL)?.also { url ->
-            setupUrl(url)
-        }
 
         getFolderList().observe(owner, { names ->
             binding.contentClipboard.spCreateLinkAssignToFolder.adapter = ArrayAdapter(

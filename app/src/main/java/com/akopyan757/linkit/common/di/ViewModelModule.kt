@@ -8,7 +8,7 @@ object ViewModelModule {
 
     val module = module {
         viewModel { LinkViewModel() }
-        viewModel { LinkCreateUrlViewModel() }
+        viewModel { (url: String) -> LinkCreateUrlViewModel(url) }
         viewModel { FolderSelectViewModel() }
         viewModel { FolderCreateViewModel() }
         viewModel { (folderId: Int) -> PageViewModel(folderId) }

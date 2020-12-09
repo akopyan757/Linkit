@@ -29,7 +29,9 @@
         </com.google.android.material.appbar.AppBarLayout>
 
         <include
-            layout="@layout/dialog_new_url"
+            layout="@layout/content_create_new_url"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
             app:viewModel="@{viewModel}" />
 
