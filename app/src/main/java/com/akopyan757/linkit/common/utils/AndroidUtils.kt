@@ -17,5 +17,5 @@ object AndroidUtils {
         putExtra(Intent.EXTRA_SUBJECT, linkUrl);
         putExtra(Intent.EXTRA_TITLE, linkTitle)
         if (linkPhotoUrl != null) data = Uri.parse(linkPhotoUrl)
-    }, null)
+    }, linkTitle)
 }
