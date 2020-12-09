@@ -62,6 +62,7 @@ dependencies {
     implementation "androidx.room:room-runtime:2.2.5"
     implementation 'androidx.room:room-ktx:2.2.5'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     kapt "androidx.room:room-compiler:2.2.5"
 
     // Navigation

@@ -42,11 +42,6 @@ class ClipboardUrlDialogFragment : DialogFragment() {
 
         setupViewModel(mViewModel, viewLifecycleOwner)
 
-        binding.btnClipboardUrlAccept.setOnClickListener {
-            val folderName = binding.spCreateLinkAssignToFolder.selectedItem as String
-            mViewModel.onAcceptUrl(folderName)
-        }
-
         return binding.root
     }
 
@@ -65,7 +60,7 @@ class ClipboardUrlDialogFragment : DialogFragment() {
         }
 
         getFolderList().observe(owner, { names ->
-            binding.spCreateLinkAssignToFolder.adapter = ArrayAdapter(
+            binding.contentClipboard.spCreateLinkAssignToFolder.adapter = ArrayAdapter(
                 requireContext(), R.layout.item_folder_spinner, R.id.tvFolderSpinner, names
             )
         })

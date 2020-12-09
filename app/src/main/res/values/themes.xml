@@ -38,4 +38,13 @@
         <item name="android:textIsSelectable">false</item>
     </style>
 
+    <style name="Theme.Linkit.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="Theme.Linkit.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="Theme.Linkit.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
 </resources>

@@ -41,6 +41,9 @@ class LinkCreateUrlViewModel: BaseViewModel(), KoinComponent {
     @get:Bindable
     var urlValue: String by DelegatedBindable("", BR.urlValue)
 
+    @get:Bindable
+    var selectedFolderName by DelegatedBindable("", BR.selectedFolderName)
+
     /**
      * ListView
      */
@@ -106,8 +109,8 @@ class LinkCreateUrlViewModel: BaseViewModel(), KoinComponent {
         resourceNotSelected = notSelected
     }
 
-    fun onAcceptUrl(folderName: String) {
-        val folderId = foldersList.value?.find { it.name == folderName }?.id  ?: FolderData.GENERAL_FOLDER_ID
+    fun onAcceptUrl() {
+        val folderId = foldersList.value?.find { it.name == selectedFolderName }?.id  ?: FolderData.GENERAL_FOLDER_ID
         addLinkRequest.value = LinkRequest(title, description, urlValue, folderId)
     }
 

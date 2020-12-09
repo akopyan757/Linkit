@@ -3,20 +3,23 @@ package com.akopyan757.linkit.view.adapter
 import android.net.Uri
 import android.util.Log
 import android.view.View
+import android.widget.AdapterView
+import android.widget.AdapterView.OnItemSelectedListener
+import android.widget.ArrayAdapter
 import android.widget.ImageView
+import android.widget.Spinner
+import androidx.appcompat.widget.AppCompatSpinner
 import androidx.databinding.BindingAdapter
+import androidx.databinding.InverseBindingAdapter
+import androidx.databinding.InverseBindingListener
 import com.akopyan757.linkit.common.image.getBitmapFromURL
 import com.google.android.material.textfield.TextInputLayout
-import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso
-import com.squareup.picasso.RequestCreator
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.io.IOException
-import kotlin.coroutines.resume
-import kotlin.coroutines.resumeWithException
-import kotlin.coroutines.suspendCoroutine
+
 
 object DatabindingAdapter {
 
@@ -55,5 +58,34 @@ object DatabindingAdapter {
     @BindingAdapter("app:error")
     fun TextInputLayout.setErrorMessage(message: String?) {
         error = message
+    }
+
+    @JvmStatic
+    @BindingAdapter(value = ["selectedValue", "selectedValueAttrChanged"], requireAll = false)
+    fun bindSpinnerData(
+        pAppCompatSpinner: Spinner,
+        newSelectedValue: String,
+        newTextAttrChanged: InverseBindingListener
+    ) {
+        pAppCompatSpinner.onItemSelectedListener = object : OnItemSelectedListener {
+            override fun onItemSelected(
+                parent: AdapterView<*>?,
+                view: View,
+                position: Int,
+                id: Long
+            ) {
+                newTextAttrChanged.onChange()
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {}
+        }
+        val pos = (pAppCompatSpinner.adapter as? ArrayAdapter<String>)?.getPosition(newSelectedValue)
+        if (pos != null) pAppCompatSpinner.setSelection(pos, true)
+    }
+
+    @JvmStatic
+    @InverseBindingAdapter(attribute = "selectedValue", event = "selectedValueAttrChanged")
+    fun captureSelectedValue(spinner: Spinner): String {
+        return spinner.selectedItem as String
     }
 }
