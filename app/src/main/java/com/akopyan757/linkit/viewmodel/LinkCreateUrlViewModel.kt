@@ -2,13 +2,14 @@ package com.akopyan757.linkit.viewmodel
 
 import android.util.Log
 import androidx.databinding.Bindable
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.map
 import androidx.lifecycle.switchMap
-import com.akopyan757.linkit.BR
-import com.akopyan757.base.viewmodel.list.ListLiveData
-import com.akopyan757.linkit.model.entity.UrlLinkData
-import com.akopyan757.linkit.model.repository.LinkRepository
 import com.akopyan757.base.viewmodel.BaseViewModel
+import com.akopyan757.linkit.BR
+import com.akopyan757.linkit.model.entity.FolderData
+import com.akopyan757.linkit.model.repository.LinkRepository
 import com.akopyan757.linkit.viewmodel.observable.FolderObservable
 import com.akopyan757.linkit.viewmodel.request.LinkRequest
 import org.koin.core.KoinComponent
@@ -43,7 +44,7 @@ class LinkCreateUrlViewModel: BaseViewModel(), KoinComponent {
     /**
      * ListView
      */
-    private val foldersList = ListLiveData<FolderObservable>()
+    private var foldersList: MutableLiveData<List<FolderObservable>> = MutableLiveData()
 
     /**
      * Repository
@@ -56,6 +57,18 @@ class LinkCreateUrlViewModel: BaseViewModel(), KoinComponent {
     private val getUrlInfoRequest = MutableLiveData<String>()
 
     /** Responses */
+    private val getListFolders = requestLiveData(
+            method = { linkRepository.getAllFolders() },
+            onLoading = {
+                Log.i(TAG, "GET FOLDER LIST: LOADING")
+            }, onSuccess = { folders ->
+                val names = folders.toTypedArray()
+                Log.i(TAG, "GET FOLDER LIST: SUCCESS: ${names.joinToString(", ")}")
+                foldersList.value = names.map { FolderObservable(it.id, it.name, it.order) }
+            }, onError = { exception ->
+                Log.i(TAG, "GET FOLDER LIST: ERROR", exception)
+            }
+    )
 
     private val getInfoFromUrl = getUrlInfoRequest.switchMap { url ->
         requestLiveData(
@@ -78,11 +91,9 @@ class LinkCreateUrlViewModel: BaseViewModel(), KoinComponent {
             onLoading = {
                 Log.i(TAG, "ADD LINK: LOADING")
             },
-            onSuccess = { data ->
-                if (data is UrlLinkData) {
-                    Log.i(TAG, "ADD LINK: SUCCESS")
-                    this emitAction ACTION_DISMISS
-                }
+            onSuccess = {
+                Log.i(TAG, "ADD LINK: SUCCESS")
+                this emitAction ACTION_DISMISS
             },
             onError = { exception ->
                 Log.e(TAG, "ADD LINK: ERROR", exception)
@@ -95,10 +106,9 @@ class LinkCreateUrlViewModel: BaseViewModel(), KoinComponent {
         resourceNotSelected = notSelected
     }
 
-    fun onAcceptUrl(url: String? = null) {
-        val selectedUrl = url ?: urlValue
-        val folderIds = foldersList.getList().map { it.id }
-        addLinkRequest.value = LinkRequest(title, description, selectedUrl, folderIds)
+    fun onAcceptUrl(folderName: String) {
+        val folderId = foldersList.value?.find { it.name == folderName }?.id  ?: FolderData.GENERAL_FOLDER_ID
+        addLinkRequest.value = LinkRequest(title, description, urlValue, folderId)
     }
 
     fun setupUrl(url: String) {
@@ -108,13 +118,11 @@ class LinkCreateUrlViewModel: BaseViewModel(), KoinComponent {
         getUrlInfoRequest.value = url
     }
 
-    fun setFolderList(folders: List<FolderObservable>) {
-        foldersList.change(folders)
-    }
-
     override fun getLiveResponses() = groupLiveResponses(
-        getInfoFromUrl, addLinkResponse
+        getInfoFromUrl, addLinkResponse, getListFolders
     )
 
-    fun getFolderLiveList() = foldersList
+    fun getFolderList(): LiveData<Array<String>> = foldersList.map {
+        list -> list.map { it.name }.toTypedArray()
+    }
 }

@@ -4,5 +4,5 @@ data class LinkRequest(
     val title: String,
     val description: String,
     val link: String,
-    val folderId: List<Int>
+    val folderId: Int
 )

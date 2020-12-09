@@ -6,20 +6,16 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.SavedStateHandle
 import androidx.navigation.fragment.findNavController
 import com.akopyan757.linkit.R
 import com.akopyan757.linkit.common.Config
-import com.akopyan757.base.viewmodel.list.observeList
 import com.akopyan757.linkit.common.clipboard.ClipboardUtils
 import com.akopyan757.linkit.databinding.DialogNewUrlBinding
-import com.akopyan757.linkit.view.adapter.LinkFoldersAdapter
 import com.akopyan757.linkit.viewmodel.LinkCreateUrlViewModel
-import com.akopyan757.linkit.viewmodel.observable.FolderObservable
-import com.google.android.flexbox.FlexboxLayoutManager
 import org.koin.android.viewmodel.ext.android.sharedViewModel
 
 
@@ -33,23 +29,13 @@ class ClipboardUrlDialogFragment : DialogFragment() {
 
     private val mViewModel: LinkCreateUrlViewModel by sharedViewModel()
 
-    private val mAdapter: LinkFoldersAdapter by lazy {
-        LinkFoldersAdapter(onAddFolders = {
-            findNavController().navigate(R.id.action_clipboardUrlDF_to_selectFolderDF)
-        })
-    }
-
-    private val currentSavedStateHandle: SavedStateHandle? by lazy {
-        findNavController().currentBackStackEntry?.savedStateHandle
-    }
-
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
+            inflater: LayoutInflater,
+            container: ViewGroup?,
+            savedInstanceState: Bundle?
     ): View {
         binding = DataBindingUtil.inflate<DialogNewUrlBinding>(
-            inflater, R.layout.dialog_new_url, container, false
+                inflater, R.layout.dialog_new_url, container, false
         ).apply {
             viewModel = mViewModel
         }
@@ -57,20 +43,9 @@ class ClipboardUrlDialogFragment : DialogFragment() {
         setupViewModel(mViewModel, viewLifecycleOwner)
 
         binding.btnClipboardUrlAccept.setOnClickListener {
-            mViewModel.onAcceptUrl()
+            val folderName = binding.spCreateLinkAssignToFolder.selectedItem as String
+            mViewModel.onAcceptUrl(folderName)
         }
-
-        binding.rvCreateListFolders.apply {
-            adapter = mAdapter
-            layoutManager = FlexboxLayoutManager(requireContext())
-        }
-
-
-        currentSavedStateHandle
-            ?.getLiveData<List<FolderObservable>>(Config.TAG_SELECT_FOLDER)
-            ?.observe(viewLifecycleOwner, { observables ->
-                mViewModel.setFolderList(observables)
-            })
 
         return binding.root
     }
@@ -81,7 +56,7 @@ class ClipboardUrlDialogFragment : DialogFragment() {
     }
 
     private fun setupViewModel(viewModel: LinkCreateUrlViewModel, owner: LifecycleOwner) = with(
-        viewModel
+            viewModel
     ) {
         initResources(getString(R.string.notSelected))
 
@@ -89,7 +64,11 @@ class ClipboardUrlDialogFragment : DialogFragment() {
             setupUrl(url)
         }
 
-        getFolderLiveList().observeList(owner, mAdapter)
+        getFolderList().observe(owner, { names ->
+            binding.spCreateLinkAssignToFolder.adapter = ArrayAdapter(
+                requireContext(), R.layout.item_folder_spinner, R.id.tvFolderSpinner, names
+            )
+        })
 
         getLiveResponses().observe(owner, {
             Log.i(TAG, "OBSERVER")

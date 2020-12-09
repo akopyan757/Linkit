@@ -53,13 +53,14 @@ class LinkRepository: BaseRepository(), KoinComponent {
 
     fun addNewLink(
         link: String,
-        folderIds: List<Int>,
+        folderId: Int?,
         title: String?,
         description: String?
     ) = call(ioDispatcher) {
         when {
             URLUtil.isHttpUrl(link) || URLUtil.isHttpsUrl(link) -> {
-                parseHttpUrl(link, folderIds).also { linkData ->
+                val folder = folderId ?: FolderData.GENERAL_FOLDER_ID
+                parseHttpUrl(link, folder).also { linkData ->
                     title?.also { linkData.title = it }
                     description?.also { linkData.description = it }
                     urlLinkDao.insertOrUpdate(linkData)
@@ -91,7 +92,7 @@ class LinkRepository: BaseRepository(), KoinComponent {
     ) {
         urlLinkDao.getLiveAll().map { list ->
             val data = list.filter {
-                folderId in it.folderIds || folderId == FolderData.GENERAL_FOLDER_ID
+                folderId == it.folderId
             }
 
             ApiResponse.Success(data)
@@ -104,10 +105,10 @@ class LinkRepository: BaseRepository(), KoinComponent {
         }
     }
 
-    private suspend fun parseHttpUrl(url: String, folderIds: List<Int> = emptyList()): UrlLinkData {
+    private suspend fun parseHttpUrl(url: String, folderId: Int? = null): UrlLinkData {
         Log.i(TAG, "parseHttpUrl = $url")
         return urlParser.parseUrl(url).apply {
-            this.folderIds = folderIds
+            this.folderId = folderId ?: return@apply
         }
     }
 }

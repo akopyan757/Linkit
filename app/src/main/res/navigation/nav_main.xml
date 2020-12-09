@@ -37,16 +37,7 @@
         android:label="ClipboardUrlDialogFragment"
         tools:layout="@layout/dialog_new_url">
         <action
-            android:id="@+id/action_clipboardUrlDF_to_selectFolderDF"
-            app:destination="@id/selectFolderDialogFragment" />
-    </dialog>
-    <dialog
-        android:id="@+id/selectFolderDialogFragment"
-        android:name="com.akopyan757.linkit.view.dialog.SelectFolderDialogFragment"
-        android:label="SelectFolderDialogFragment"
-        tools:layout="@layout/dialog_select_folder">
-        <action
-            android:id="@+id/action_selectFolderDF_to_createFolderDF"
+            android:id="@+id/action_clipboardUrlDialogFragment_to_createFolderDialogFragment"
             app:destination="@id/createFolderDialogFragment" />
     </dialog>
 

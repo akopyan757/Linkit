@@ -118,19 +118,18 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rvCreateListFolders"
+            <Spinner
+                android:id="@+id/spCreateLinkAssignToFolder"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/marginTertiary"
+                android:layout_marginStart="4dp"
                 android:layout_marginTop="@dimen/marginTertiary"
-                android:paddingBottom="@dimen/marginTertiary"
+                android:layout_marginBottom="@dimen/marginTertiary"
+                android:spinnerMode="dialog"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvCreateLinkAssignToFolder"
-                tools:itemCount="1"
-                tools:listitem="@layout/item_add_url_folder" />
+                app:layout_constraintTop_toBottomOf="@+id/tvCreateLinkAssignToFolder" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

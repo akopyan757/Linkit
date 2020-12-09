@@ -15,11 +15,11 @@ data class UrlLinkData(
     @ColumnInfo(name = "description") var description: String = "",
     @ColumnInfo(name = "photo_url") var photoUrl: String? = null,
     @ColumnInfo(name = "logo_url") var logoUrl: String? = null,
-    @ColumnInfo(name = "folder_ids") var folderIds: List<Int> = emptyList(),
+    @ColumnInfo(name = "folder_id") var folderId: Int = 0,
     @ColumnInfo(name = "_order") val _order: Int = 0,
 ): UrlData(), ILink {
     override fun linkId() = id
-    override fun linkGroupIds() = folderIds
+    override fun linkGroupId() = folderId
     override fun linkOrder(): Int = _order
 
     override var dataUrl: String
