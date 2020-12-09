@@ -24,4 +24,5 @@
     <dimen name="linkIconMinHeight">32dp</dimen>
     <dimen name="createUrlFolderTitleMarginStart">12dp</dimen>
     <dimen name="dialogMinWidth">300dp</dimen>
+    <dimen name="linkMinWidth">100dp</dimen>
 </resources>

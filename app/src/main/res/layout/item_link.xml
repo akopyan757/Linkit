@@ -7,6 +7,9 @@
         <variable
             name="observable"
             type="com.akopyan757.linkit.viewmodel.observable.LinkObservable" />
+        <variable
+            name="listener"
+            type="com.akopyan757.linkit.viewmodel.listener.LinkClickListener" />
     </data>
 
     <com.google.android.material.card.MaterialCardView
@@ -17,6 +20,7 @@
         android:layout_marginTop="@dimen/marginQuartiary"
         android:layout_marginEnd="@dimen/marginSecondary"
         android:layout_marginBottom="@dimen/marginQuartiary"
+        android:onClick="@{(view) -> listener.onItemListener(observable)}"
         app:cardCornerRadius="@dimen/cornerRadius"
         app:cardElevation="@dimen/elevationSecondary">
 
@@ -83,26 +87,11 @@
                 android:contentDescription="@string/todo"
                 android:focusable="true"
                 android:padding="@dimen/marginSecondary"
+                android:onClick="@{(view) -> listener.onShareListener(observable)}"
                 android:src="@drawable/ic_baseline_share_24"
-                app:tint="@color/tintColor"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/ivLinkCopy"
-                app:layout_constraintTop_toTopOf="@+id/ivLinkCopy" />
-
-            <ImageView
-                android:id="@+id/ivLinkCopy"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="@dimen/marginSecondary"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:contentDescription="@string/todo"
-                android:padding="@dimen/marginSecondary"
-                android:src="@drawable/ic_baseline_content_copy_24"
-                app:tint="@color/tintColor"
-                style="@style/Theme.Linkit.ClickableImageView"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvLinkDescription" />
+                app:tint="@color/tintColor" />
 
             <TextView
                 android:id="@+id/tvLinkUrl"

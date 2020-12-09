@@ -8,13 +8,17 @@
         <variable
             name="observable"
             type="com.akopyan757.linkit.viewmodel.observable.LinkObservable" />
+        <variable
+            name="listener"
+            type="com.akopyan757.linkit.viewmodel.listener.LinkClickListener" />
     </data>
 
     <com.akopyan757.linkit.common.custom.SquareCardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/marginTertiary"
-        android:minWidth="100dp"
+        android:minWidth="@dimen/linkMinWidth"
+        android:onClick="@{(view) -> listener.onItemListener(observable)}"
         app:cardCornerRadius="@dimen/cornerRadius"
         app:cardElevation="@dimen/elevationSecondary">
 
@@ -38,14 +42,15 @@
 
             <ImageView
                 android:id="@+id/ivLinkPhoto"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:contentDescription="@string/todo"
                 android:maxWidth="@dimen/linkPictureBigWidth"
                 android:maxHeight="@dimen/linkPictureBigHeight"
                 android:minWidth="@dimen/linkIconMinWidth"
                 android:minHeight="@dimen/linkIconMinHeight"
-                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/ivLinkShare"
+                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:url="@{observable.photoUrl}" />
@@ -69,26 +74,15 @@
 
             <ImageView
                 android:id="@+id/ivLinkShare"
-                style="@style/Theme.Linkit.ClickableImageView"
-                android:layout_width="32dp"
-                android:layout_height="32dp"
+                android:layout_width="@dimen/linkIconMinWidth"
+                android:layout_height="@dimen/linkIconMinHeight"
                 android:contentDescription="@string/todo"
                 android:padding="@dimen/marginSecondary"
                 android:src="@drawable/ic_baseline_share_24"
-                app:layout_constraintEnd_toStartOf="@+id/ivLinkCopy"
-                app:layout_constraintTop_toTopOf="@+id/ivLinkCopy"
-                app:tint="@color/tintColor" />
-
-            <ImageView
-                android:id="@+id/ivLinkCopy"
-                style="@style/Theme.Linkit.ClickableImageView"
-                android:layout_width="32dp"
-                android:layout_height="32dp"
-                android:contentDescription="@string/todo"
-                android:padding="@dimen/marginSecondary"
-                android:src="@drawable/ic_baseline_content_copy_24"
+                android:onClick="@{(view) -> listener.onShareListener(observable)}"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
+                style="@style/Theme.Linkit.ClickableImageView"
                 app:tint="@color/tintColor" />
 
             <TextView

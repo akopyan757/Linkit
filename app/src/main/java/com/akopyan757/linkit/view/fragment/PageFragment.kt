@@ -1,6 +1,7 @@
 package com.akopyan757.linkit.view.fragment
 
 import android.os.Bundle
+import android.util.Log
 import androidx.databinding.ViewDataBinding
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -8,14 +9,17 @@ import com.akopyan757.base.view.BaseFragment
 import com.akopyan757.base.viewmodel.list.LinearLayoutManagerWrapper
 import com.akopyan757.linkit.BR
 import com.akopyan757.linkit.R
+import com.akopyan757.linkit.common.utils.AndroidUtils
 import com.akopyan757.linkit.databinding.FragmentPageBinding
 import com.akopyan757.linkit.view.adapter.LinkUrlAdapter
 import com.akopyan757.linkit.viewmodel.PageViewModel
+import com.akopyan757.linkit.viewmodel.listener.LinkClickListener
 import com.akopyan757.linkit.viewmodel.observable.FolderObservable
+import com.akopyan757.linkit.viewmodel.observable.LinkObservable
 import org.koin.android.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
-class PageFragment: BaseFragment<ViewDataBinding, PageViewModel>() {
+class PageFragment: BaseFragment<ViewDataBinding, PageViewModel>(), LinkClickListener {
 
     override val mViewModel: PageViewModel by viewModel { parametersOf(mObservable.id) }
 
@@ -32,9 +36,10 @@ class PageFragment: BaseFragment<ViewDataBinding, PageViewModel>() {
     override fun getLayoutId() = R.layout.fragment_page
 
     private val mUrlAdapter: LinkUrlAdapter by lazy {
+
         when (mObservable.type) {
-            1 -> LinkUrlAdapter(LinkUrlAdapter.Type.ITEM)
-            else -> LinkUrlAdapter(LinkUrlAdapter.Type.BOX)
+            1 -> LinkUrlAdapter(LinkUrlAdapter.Type.ITEM, this)
+            else -> LinkUrlAdapter(LinkUrlAdapter.Type.BOX, this)
         }
     }
 
@@ -61,7 +66,17 @@ class PageFragment: BaseFragment<ViewDataBinding, PageViewModel>() {
         getUrlLiveList().observeList(mUrlAdapter)
     }
 
+    override fun onShareListener(link: LinkObservable) {
+        Log.i(TAG, "onShareListener = $link")
+        startActivity(AndroidUtils.createShareIntent(link.url, link.title, link.photoUrl))
+    }
+
+    override fun onItemListener(observable: LinkObservable) {
+        Log.i(TAG, "onItemListener = $observable")
+    }
+
     companion object {
+        private const val TAG = "PAGE_FRAGMENT"
         private const val TAG_FOLDER = "FOLDER"
 
         fun newInstance(observable: FolderObservable) = PageFragment().also { fragment ->

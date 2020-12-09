@@ -5,6 +5,7 @@ object Config {
     const val DATABASE_NAME = "database"
     const val CLIP_URL_LABEL = "url"
 
+    const val URL_TYPE = "text/plain"
 
     const val TAG_SELECT_FOLDER = "TAG_SELECT_FOLDER"
 }

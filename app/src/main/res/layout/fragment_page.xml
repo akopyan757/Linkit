@@ -22,19 +22,6 @@
             tools:itemCount="3"
             tools:listitem="@layout/item_link" />
 
-        <androidx.core.widget.NestedScrollView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:visibility="@{!viewModel.emptyPage}">
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-        </androidx.core.widget.NestedScrollView>
-
         <TextView
             android:id="@+id/fragmentEmptyPage"
             android:layout_width="wrap_content"
