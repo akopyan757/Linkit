@@ -10,6 +10,11 @@ import java.io.File
 
 object AndroidUtils {
 
+    fun createIntent(linkUrl: String) = Intent(Intent.ACTION_VIEW).apply {
+        type = Config.URL_TYPE
+        data = Uri.parse(linkUrl)
+    }
+
     fun createShareIntent(
             linkUrl: String,
             linkTitle: String

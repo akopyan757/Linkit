@@ -1,7 +1,6 @@
 package com.akopyan757.linkit.view.fragment
 
 import android.os.Bundle
-import android.util.Log
 import androidx.databinding.ViewDataBinding
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -71,7 +70,7 @@ class PageFragment: BaseFragment<ViewDataBinding, PageViewModel>(), LinkClickLis
     }
 
     override fun onItemListener(link: LinkObservable) {
-        Log.i(TAG, "onItemListener = $link")
+        startActivity(AndroidUtils.createIntent(link.url))
     }
 
     companion object {

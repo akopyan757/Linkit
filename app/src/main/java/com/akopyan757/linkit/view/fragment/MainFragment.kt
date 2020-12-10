@@ -1,21 +1,16 @@
 package com.akopyan757.linkit.view.fragment
 
-import android.app.Activity
-import android.content.ClipboardManager
-import android.content.Context.CLIPBOARD_SERVICE
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.ViewTreeObserver
-import android.webkit.URLUtil
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.fragment.findNavController
 import com.akopyan757.base.view.BaseFragment
-import com.akopyan757.linkit.R
 import com.akopyan757.linkit.BR
+import com.akopyan757.linkit.R
 import com.akopyan757.linkit.common.Config
 import com.akopyan757.linkit.common.clipboard.ClipboardUtils
 import com.akopyan757.linkit.databinding.FragmentMainBinding
@@ -29,8 +24,6 @@ class MainFragment : BaseFragment<FragmentMainBinding, LinkViewModel>(), ViewTre
 
     companion object {
         private const val TAG = "MAIN_FRAGMENT"
-
-        private const val PICK_FILE_REQUEST_CODE = 1111
     }
 
     override val mViewModel: LinkViewModel by sharedViewModel()
@@ -67,8 +60,11 @@ class MainFragment : BaseFragment<FragmentMainBinding, LinkViewModel>(), ViewTre
 
     override fun onWindowFocusChanged(hasFocus: Boolean) {
         if (hasFocus) {
-            Log.i(TAG, "HasFocus: $hasFocus")
-            receiveUrlFromClipboard()
+            ClipboardUtils.getUrl(requireContext())?.also { url ->
+                val bundle = Bundle().apply { putString(Config.CLIP_URL_LABEL, url) }
+                findNavController().navigate(R.id.clipboardUrlDialogFragment, bundle)
+            }
+
             view?.viewTreeObserver?.removeOnWindowFocusChangeListener(this)
         }
     }
@@ -92,30 +88,7 @@ class MainFragment : BaseFragment<FragmentMainBinding, LinkViewModel>(), ViewTre
                 true
             }
 
-            R.id.itemAddFile -> {
-                val intent = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
-                    type = "*/*"
-                }
-                startActivityForResult(intent, PICK_FILE_REQUEST_CODE)
-                true
-            }
-
             else -> false
-        }
-    }
-
-    private fun receiveUrlFromClipboard() {
-        ClipboardUtils.getUrl(requireContext())?.also { url ->
-            val bundle = Bundle().apply { putString(Config.CLIP_URL_LABEL, url) }
-            findNavController().navigate(R.id.clipboardUrlDialogFragment, bundle)
-        }
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (resultCode == Activity.RESULT_OK && requestCode == PICK_FILE_REQUEST_CODE) {
-            data?.data?.also { uri ->
-                //mViewModel.onAcceptUrl(uri.toString())
-            }
         }
     }
 }
