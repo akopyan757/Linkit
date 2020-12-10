@@ -37,10 +37,11 @@ class PageViewModel(private val folderId: Int): BaseViewModel(), KoinComponent {
     }, onSuccess = { data ->
         Log.i(TAG, "GEL URL LINK LIST (FOLDER = $folderId): SIZE = ${data.size}")
 
-        val observables = data.map { data ->
-            Log.i(TAG, "GEL URL LINK: $data")
-            val photoUrl = data.photoUrl?.takeUnless { it.isEmpty() } ?: data.logoUrl
-            LinkObservable(data.url, data.title, data.description, photoUrl)
+        val observables = data.map { item ->
+            Log.i(TAG, "GEL URL LINK: $item")
+            val photoUrl = item.photoUrl?.takeUnless { it.isEmpty() } ?: item.logoUrl
+            val bitmap = item.contentBitmap ?: item.logoBitmap
+            LinkObservable(item.url, item.title, item.description, photoUrl, bitmap)
         }
 
         urlListData.change(observables)

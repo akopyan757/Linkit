@@ -46,12 +46,16 @@ class LinkUrlAdapter(
             when (binding) {
                 is ItemLinkBinding -> {
                     binding.observable = observable
+                    if (observable.bitmap != null)
+                        binding.ivLinkPhoto.setImageBitmap(observable.bitmap)
                     binding.listener = listener
                     binding.executePendingBindings()
                 }
 
                 is ItemLinkBoxBinding -> {
                     binding.observable = observable
+                    if (observable.bitmap != null)
+                        binding.ivLinkPhoto.setImageBitmap(observable.bitmap)
                     binding.listener = listener
                     binding.executePendingBindings()
                 }

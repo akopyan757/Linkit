@@ -52,8 +52,7 @@
                 app:layout_constraintEnd_toStartOf="@+id/ivLinkShare"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:url="@{observable.photoUrl}" />
+                app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
                 android:id="@+id/tvLinkTitle"

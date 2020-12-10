@@ -2,6 +2,7 @@ package com.akopyan757.linkit.common.di
 
 import androidx.room.Room
 import com.akopyan757.linkit.common.Config
+import com.akopyan757.linkit.model.cache.ImageCache
 import com.akopyan757.linkit.model.database.AppDatabase
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module

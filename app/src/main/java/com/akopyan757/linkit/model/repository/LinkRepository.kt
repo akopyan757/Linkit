@@ -16,6 +16,7 @@ import com.akopyan757.linkit.model.entity.UrlLinkData
 import com.akopyan757.linkit.model.exception.FolderExistsException
 import com.akopyan757.linkit.model.exception.UrlIsNotValidException
 import com.akopyan757.linkit.common.utils.JsonPatternsParser
+import com.akopyan757.linkit.model.cache.ImageCache
 import com.akopyan757.linkit.model.entity.PatternHostData
 import com.akopyan757.urlparser.UrlParser
 import com.google.gson.reflect.TypeToken
@@ -38,6 +39,7 @@ class LinkRepository: BaseRepository(), KoinComponent {
     private val urlLinkDao: UrlLinkDao by inject()
     private val folderDao: FolderDao by inject()
     private val patternDao: PatternDao by inject()
+    private val imageCache: ImageCache by inject()
 
     private val urlParser: UrlParser<ParsePatternData, PatternHostData, UrlLinkData> by inject()
 
@@ -84,6 +86,7 @@ class LinkRepository: BaseRepository(), KoinComponent {
                     if (title != null) linkData.title = title
                     if (description != null) linkData.description = description
 
+                    imageCache.saveImages(linkData)
                     urlLinkDao.insertOrUpdate(linkData)
                 }
             }
@@ -108,13 +111,19 @@ class LinkRepository: BaseRepository(), KoinComponent {
         folderDao.getByName(name)
     }
 
-    fun getAllUrlLinksByFolder(folderId: Int): LiveData<ApiResponse<List<UrlLinkData>>> = callLive(
-        ioDispatcher
-    ) {
+    fun getAllUrlLinksByFolder(folderId: Int): LiveData<ApiResponse<List<UrlLinkData>>> = callLive(ioDispatcher) {
         urlLinkDao.getLiveAll().map { list ->
             val data = list.filter {
                 folderId == it.folderId
+            }.map { data ->
+                data.logoBitmap = imageCache.loadLogo(data)
+                data.contentBitmap = imageCache.loadContentImage(data)
+                data
             }
+
+            Log.i(TAG, data.joinToString("\n"))
+            Log.i(TAG, data.joinToString("\n") { it.logoBitmap.toString() })
+            Log.i(TAG, data.joinToString("\n") { it.contentBitmap.toString() })
 
             ApiResponse.Success(data)
         }

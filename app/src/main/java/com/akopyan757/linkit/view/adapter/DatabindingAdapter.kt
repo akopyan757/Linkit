@@ -8,7 +8,6 @@ import android.widget.AdapterView.OnItemSelectedListener
 import android.widget.ArrayAdapter
 import android.widget.ImageView
 import android.widget.Spinner
-import androidx.appcompat.widget.AppCompatSpinner
 import androidx.databinding.BindingAdapter
 import androidx.databinding.InverseBindingAdapter
 import androidx.databinding.InverseBindingListener

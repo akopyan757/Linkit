@@ -60,7 +60,6 @@
                 app:layout_constraintEnd_toStartOf="@+id/guidelineLink"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:url="@{observable.photoUrl}"
                 tools:src="@drawable/image_analysis" />
 
             <TextView

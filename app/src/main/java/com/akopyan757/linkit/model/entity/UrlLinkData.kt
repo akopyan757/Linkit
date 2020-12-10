@@ -1,7 +1,9 @@
 package com.akopyan757.linkit.model.entity
 
+import android.graphics.Bitmap
 import androidx.room.ColumnInfo
 import androidx.room.Entity
+import androidx.room.Ignore
 import androidx.room.PrimaryKey
 import com.akopyan757.urlparser.IUrlDataFactory
 import com.akopyan757.urlparser.UrlData
@@ -20,6 +22,10 @@ data class UrlLinkData(
     @ColumnInfo(name = "pattern_specified") var specPatternId: Int = 0,
     @ColumnInfo(name = "_order") val _order: Int = 0,
 ): UrlData(), ILink {
+
+    @Ignore var logoBitmap: Bitmap? = null
+    @Ignore var contentBitmap: Bitmap? = null
+
     override fun linkId() = id
     override fun linkGroupId() = folderId
     override fun linkOrder(): Int = _order
