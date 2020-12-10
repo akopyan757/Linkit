@@ -1,66 +1,64 @@
 package com.akopyan757.urlparser
 
-import java.lang.reflect.Type
+import com.akopyan757.urlparser.data.IPatternHostData
+import com.akopyan757.urlparser.data.IPatternSpecifiedData
 
-class UrlParser<T: IPatternData, V: UrlData>(
-    private val patternCache: IPatternCache<T>,
+class UrlParser<T, P, V>(
+    private val patternCache: IPatternCache<T, P>,
     private val factory: IUrlDataFactory<V>,
     private val documentSearch: IDocumentSearch = DocumentSearchImpl(),
-) {
+) where T : IPatternHostData,
+        T : IPatternSpecifiedData,
+        P : IPatternHostData,
+        V: UrlData
+{
 
     private val mUrlPattern = UrlPattern()
 
-    fun loadPatternsFromJson(type: Type) {
-        val patterns = JsonPatternsParser.parse<T>("pattern.json", type)
-        patternCache.removeAll()
-        patterns.forEach { item ->
-            println("INSERT PATTERN: $item")
-            patternCache.insertOrUpdate(item)
-        }
-    }
-
-    suspend fun parseUrl(url: String): V {
+    suspend fun parseUrl(url: String): V? {
         documentSearch.request(url)
 
-        val baseUrl = mUrlPattern.getBaseUrl(url)
-        val baseUrlFormat = "%$baseUrl%"
+        val baseUrl = mUrlPattern.getBaseUrl(url) ?: return null
+
         println("BaseUrl = $baseUrl")
 
-        val basePattern = baseUrl?.let { patternCache.getBasePattern(baseUrlFormat) }
-        val specifiedPatterns = baseUrl?.let { patternCache.getSpecificPatterns(baseUrlFormat) }
+        val patterns = patternCache.getPatterns(baseUrl)
 
-        println("1. $basePattern")
-        println("2. ${specifiedPatterns?.joinToString(", ")}")
+        return if (patterns.isNotEmpty()) {
+            val pattern = patterns.find { mUrlPattern.isMatchPattern(it.host(), url) }
 
-        val basePatternData = basePattern?.takeIf { pattern ->
-            mUrlPattern.isMatchPattern(pattern.pattern(), url)
-        }
+            val titleElement = pattern?.specTitleElement().toElementType()
+                ?: pattern?.hostTitleElement().toElementType(ElementType.Title)
 
-        val specifiedPatternData = specifiedPatterns?.find { pattern ->
-            mUrlPattern.isMatchPattern(pattern.pattern(), url)
-        }
+            val descriptionElement = pattern?.specDescriptionElement().toElementType()
+                ?: pattern?.hostDescriptionElement().toElementType(ElementType.MetaDescription)
 
-        println("BasePattern = $basePatternData")
-        println("SpecifiedPatterns = $specifiedPatternData")
+            val imageElement = pattern?.specImageUrlElement().toElementType()
+            val logoElement = pattern?.hostImageUrlElement().toElementType()
 
-        val titleElement = specifiedPatternData?.titleElement()?.let { ElementType.parse(it) }
-            ?: basePattern?.titleElement()?.let { ElementType.parse(it) }
-            ?: ElementType.Title
+            factory.createData().apply {
+                this.dataUrl = url
+                this.dataTitle = titleElement.getData(documentSearch)
+                this.dataDescription = descriptionElement.getData(documentSearch)
+                this.dataImageContentUrl = imageElement?.getData(documentSearch)
+                this.dataLogoContentUrl = logoElement?.getData(documentSearch)
+                println(this)
+            }
+        } else {
+            val hostPatterns = patternCache.getHostPatterns(baseUrl)
+            val pattern = hostPatterns.find { mUrlPattern.isMatchPattern(it.host(), url) }
 
-        val descriptionElement = specifiedPatternData?.descriptionElement()?.let { ElementType.parse(it) }
-            ?: basePattern?.descriptionElement()?.let { ElementType.parse(it) }
-            ?: ElementType.MetaDescription
+            val titleElement = pattern?.hostTitleElement().toElementType(ElementType.Title)
+            val descriptionElement = pattern?.hostDescriptionElement().toElementType(ElementType.MetaDescription)
+            val logoElement = pattern?.hostImageUrlElement().toElementType()
 
-        val imageElement = specifiedPatternData?.imageUrlElement()?.let { ElementType.parse(it) }
-        val logoElement = basePatternData?.imageUrlElement()?.let { ElementType.parse(it) }
-
-        return factory.createData().apply {
-            this.dataUrl = url
-            this.dataTitle = titleElement.getData(documentSearch)
-            this.dataDescription = descriptionElement.getData(documentSearch)
-            this.dataImageContentUrl = imageElement?.getData(documentSearch)
-            this.dataLogoContentUrl = logoElement?.getData(documentSearch)
-            println(this)
+            factory.createData().apply {
+                this.dataUrl = url
+                this.dataTitle = titleElement.getData(documentSearch)
+                this.dataDescription = descriptionElement.getData(documentSearch)
+                this.dataLogoContentUrl = logoElement?.getData(documentSearch)
+                println(this)
+            }
         }
     }
 }

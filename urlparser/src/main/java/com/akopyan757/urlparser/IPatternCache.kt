@@ -1,9 +1,13 @@
 package com.akopyan757.urlparser
 
-interface IPatternCache<T : IPatternData> {
-    fun getBasePattern(baseUrl: String): T?
-    fun getSpecificPatterns(baseUrl: String): List<T>
-    fun insertOrUpdate(data: T)
-    fun removeByFolder(baseUrl: String)
-    fun removeAll()
+import com.akopyan757.urlparser.data.IPatternHostData
+import com.akopyan757.urlparser.data.IPatternSpecifiedData
+
+interface IPatternCache<T, V>
+        where V : IPatternHostData,
+              T : IPatternHostData,
+              T : IPatternSpecifiedData
+{
+    fun getPatterns(host: String): List<T>
+    fun getHostPatterns(host: String): List<V>
 }

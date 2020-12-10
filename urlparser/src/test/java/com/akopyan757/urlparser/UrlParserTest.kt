@@ -7,8 +7,8 @@ import org.junit.Test
 
 class UrlParserTest {
 
-    class ExamplePatternCache: IPatternCache<PatternData> {
-        override fun getBasePattern(baseUrl: String) = PatternData(
+    class ExamplePatternCache: IPatternCache<SamplePatternHostData> {
+        override fun getBasePattern(baseUrl: String) = SamplePatternHostData(
             "^.*/www.championat.com/.*",
             true,
             null,
@@ -16,8 +16,8 @@ class UrlParserTest {
             "head.link.icon.image/png.48x48"
         )
 
-        override fun getSpecificPatterns(baseUrl: String) = emptyList<PatternData>()
-        override fun insertOrUpdate(data: PatternData) {}
+        override fun getSpecificPatterns(baseUrl: String) = emptyList<SamplePatternHostData>()
+        override fun insertOrUpdate(data: SamplePatternHostData) {}
         override fun removeByFolder(baseUrl: String) {}
         override fun removeAll() {}
     }
@@ -31,8 +31,8 @@ class UrlParserTest {
         private const val TEST_URL_2 = "https://yandex.ru/"
     }
 
-    private lateinit var patternCache: IPatternCache<PatternData>
-    private lateinit var urlParser: UrlParser<PatternData, TestUrlData>
+    private lateinit var patternCache: IPatternCache<SamplePatternHostData>
+    private lateinit var urlParser: UrlParser<SamplePatternHostData, TestUrlData>
     private lateinit var urlDataFactory: TestUrlDataFactory
 
     @Before

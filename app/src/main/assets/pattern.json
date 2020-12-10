@@ -1,0 +1,25 @@
+[
+  {
+    "host": "wikipedia.org",
+    "title_element": null,
+    "description_element": null,
+    "image_url_element": "head.link.apple-touch-icon..",
+
+    "patterns": [
+    ]
+  },
+  {
+    "host": "medium.com",
+    "title_element": "head.title",
+    "description_element": "head.meta.description",
+    "image_url_element": "head.link.apple-touch-icon..120x120",
+    "patterns": [
+      {
+        "pattern": "^https?:///medium.com/[@a-z0-9]{1,}/[-a-z0-9]{1,}$",
+        "title_element": "head.meta.property.og:title",
+        "description_element": "head.meta.property.og:description",
+        "image_url_element": "head.meta.property.og:image"
+      }
+    ]
+  }
+]
