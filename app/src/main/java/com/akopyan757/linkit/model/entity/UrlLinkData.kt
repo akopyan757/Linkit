@@ -23,8 +23,8 @@ data class UrlLinkData(
     @ColumnInfo(name = "_order") val _order: Int = 0,
 ): UrlData(), ILink {
 
-    @Ignore var logoBitmap: Bitmap? = null
-    @Ignore var contentBitmap: Bitmap? = null
+    @Ignore var logoFileName: String? = null
+    @Ignore var contentFileName: String? = null
 
     override fun linkId() = id
     override fun linkGroupId() = folderId

@@ -116,14 +116,11 @@ class LinkRepository: BaseRepository(), KoinComponent {
             val data = list.filter {
                 folderId == it.folderId
             }.map { data ->
-                data.logoBitmap = imageCache.loadLogo(data)
-                data.contentBitmap = imageCache.loadContentImage(data)
-                data
+                data.apply {
+                    logoFileName = imageCache.getLogoName(data)
+                    contentFileName = imageCache.getContentName(data)
+                }
             }
-
-            Log.i(TAG, data.joinToString("\n"))
-            Log.i(TAG, data.joinToString("\n") { it.logoBitmap.toString() })
-            Log.i(TAG, data.joinToString("\n") { it.contentBitmap.toString() })
 
             ApiResponse.Success(data)
         }

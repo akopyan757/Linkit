@@ -7,5 +7,8 @@ object Config {
 
     const val URL_TYPE = "text/plain"
 
+    const val PROVIDER_NAME = ".file_provider"
+    const val CACHE_IMAGES_FOLDER = "images"
+
     const val TAG_SELECT_FOLDER = "TAG_SELECT_FOLDER"
 }

@@ -3,6 +3,7 @@ package com.akopyan757.linkit.model.cache
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.util.Log
+import com.akopyan757.linkit.common.Config
 import com.akopyan757.linkit.model.entity.UrlLinkData
 import org.koin.core.KoinComponent
 import org.koin.core.inject
@@ -14,7 +15,7 @@ import java.net.URL
 class ImageCache: KoinComponent {
 
     private val cacheDir: File by inject()
-    private val imageDir: File by lazy { File(cacheDir, IMAGES_FOLDER) }
+    private val imageDir: File by lazy { File(cacheDir, Config.CACHE_IMAGES_FOLDER) }
 
     fun saveImages(data: UrlLinkData) {
         val logoUrl = data.logoUrl
@@ -43,30 +44,14 @@ class ImageCache: KoinComponent {
         }
     }
 
-    fun loadLogo(data: UrlLinkData): Bitmap? {
-        val name = LOGO_PREFIX.format(data.hostPatternId)
-
-        if (!imageDir.exists()) return null
-        val path = File(imageDir, name)
-
-        val options = BitmapFactory.Options().apply {
-            inPreferredConfig = Bitmap.Config.ARGB_8888
-        }
-        return BitmapFactory.decodeFile(path.path, options).also {
-            Log.i(TAG, "LOGO LOADED: BITMAP = $it")
-        }
+    fun getLogoName(data: UrlLinkData): String? {
+        return LOGO_PREFIX.format(data.hostPatternId)
+            .takeIf { name -> File(imageDir, name).exists() }
     }
 
-    fun loadContentImage(data: UrlLinkData): Bitmap? {
-        if (!imageDir.exists()) return null
-        val name = CONTENT_PREFIX.format(data.hostPatternId, data.specPatternId, data.url.hashCode())
-        val path = File(imageDir, name)
-        val options = BitmapFactory.Options().apply {
-            inPreferredConfig = Bitmap.Config.ARGB_8888
-        }
-        return BitmapFactory.decodeFile(path.path, options).also {
-            Log.i(TAG, "CONTENT IMAGE LOADED: BITMAP = $it")
-        }
+    fun getContentName(data: UrlLinkData): String? {
+        return CONTENT_PREFIX.format(data.hostPatternId, data.specPatternId, data.url.hashCode())
+            .takeIf { name -> File(imageDir, name).exists() }
     }
 
     fun clear() {
@@ -114,7 +99,5 @@ class ImageCache: KoinComponent {
 
         private const val CONTENT_PREFIX = "content_%d_%d_%d.png"
         private const val LOGO_PREFIX = "logo_%d.png"
-
-        private const val IMAGES_FOLDER = "images"
     }
 }

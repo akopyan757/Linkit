@@ -2,11 +2,13 @@ package com.akopyan757.linkit.view.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.recyclerview.widget.RecyclerView
 import com.akopyan757.base.viewmodel.list.UpdatableListAdapter
 import com.akopyan757.linkit.R
+import com.akopyan757.linkit.common.utils.AndroidUtils
 import com.akopyan757.linkit.databinding.ItemLinkBinding
 import com.akopyan757.linkit.databinding.ItemLinkBoxBinding
 import com.akopyan757.linkit.viewmodel.listener.LinkClickListener
@@ -43,19 +45,19 @@ class LinkUrlAdapter(
     ): RecyclerView.ViewHolder(binding.root) {
 
         fun bind(observable: LinkObservable) {
+            val context = binding.root.context
+            val uri = AndroidUtils.getUriFromCache(context, observable.photoFileName)
             when (binding) {
                 is ItemLinkBinding -> {
                     binding.observable = observable
-                    if (observable.bitmap != null)
-                        binding.ivLinkPhoto.setImageBitmap(observable.bitmap)
+                    binding.ivLinkPhoto.setImageURI(uri)
                     binding.listener = listener
                     binding.executePendingBindings()
                 }
 
                 is ItemLinkBoxBinding -> {
                     binding.observable = observable
-                    if (observable.bitmap != null)
-                        binding.ivLinkPhoto.setImageBitmap(observable.bitmap)
+                    binding.ivLinkPhoto.setImageURI(uri)
                     binding.listener = listener
                     binding.executePendingBindings()
                 }
