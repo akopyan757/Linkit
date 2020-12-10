@@ -5,7 +5,7 @@ import androidx.room.Ignore
 import com.akopyan757.urlparser.data.IPatternHostData
 import com.akopyan757.urlparser.data.IPatternSpecifiedData
 
-class ParsePatternData(
+data class ParsePatternData(
     @Embedded val hostData: PatternHostData,
     @Embedded val specifiedData: PatternSpecifiedData
 ): IPatternHostData, IPatternSpecifiedData {
@@ -19,5 +19,5 @@ class ParsePatternData(
     override fun specPattern(): String = specifiedData.pattern
     override fun specTitleElement(): String? = specifiedData.titleElement
     override fun specDescriptionElement(): String? = specifiedData.descriptionElement
-    override fun specImageUrlElement(): String? = specifiedData.descriptionElement
+    override fun specImageUrlElement(): String? = specifiedData.imageUrlElement
 }

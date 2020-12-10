@@ -80,8 +80,10 @@ class LinkRepository: BaseRepository(), KoinComponent {
                 val folder = folderId ?: FolderData.GENERAL_FOLDER_ID
 
                 parseHttpUrl(link, folder)?.also { linkData ->
-                    title?.also { linkData.title = it }
-                    description?.also { linkData.description = it }
+
+                    if (title != null) linkData.title = title
+                    if (description != null) linkData.description = description
+
                     urlLinkDao.insertOrUpdate(linkData)
                 }
             }

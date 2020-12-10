@@ -6,4 +6,6 @@ class TestUrlData : UrlData() {
     override var dataDescription: String = ""
     override var dataImageContentUrl: String? = null
     override var dataLogoContentUrl: String? = null
+    override var patternHostId: Int = 0
+    override var patternSpecifiedId: Int = 0
 }

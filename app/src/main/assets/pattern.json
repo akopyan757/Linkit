@@ -4,8 +4,13 @@
     "title_element": null,
     "description_element": null,
     "image_url_element": "head.link.apple-touch-icon..",
-
     "patterns": [
+      {
+        "pattern": "^https?://[a-z]{2}.(m.)?wikipedia.org/wiki/.*$",
+        "title_element": null,
+        "description_element": null,
+        "image_url_element": "head.meta.property.og:image"
+      }
     ]
   },
   {

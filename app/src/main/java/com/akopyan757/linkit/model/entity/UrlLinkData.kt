@@ -16,6 +16,8 @@ data class UrlLinkData(
     @ColumnInfo(name = "photo_url") var photoUrl: String? = null,
     @ColumnInfo(name = "logo_url") var logoUrl: String? = null,
     @ColumnInfo(name = "folder_id") var folderId: Int = 0,
+    @ColumnInfo(name = "pattern_host") var hostPatternId: Int = 0,
+    @ColumnInfo(name = "pattern_specified") var specPatternId: Int = 0,
     @ColumnInfo(name = "_order") val _order: Int = 0,
 ): UrlData(), ILink {
     override fun linkId() = id
@@ -41,6 +43,14 @@ data class UrlLinkData(
     override var dataLogoContentUrl: String?
         get() = logoUrl
         set(value) { logoUrl = value }
+
+    override var patternHostId: Int
+        get() = hostPatternId
+        set(value) { hostPatternId = value }
+
+    override var patternSpecifiedId: Int
+        get() = specPatternId
+        set(value) { specPatternId = value }
 
     class Factory: IUrlDataFactory<UrlLinkData> {
         override fun createData() = UrlLinkData()
