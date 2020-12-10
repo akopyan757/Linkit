@@ -12,17 +12,13 @@ object AndroidUtils {
 
     fun createShareIntent(
             linkUrl: String,
-            linkTitle: String,
-            imageUri: Uri?
-    ): Intent = Intent.createChooser(Intent().apply {
-        action = Intent.ACTION_SEND
+            linkTitle: String
+    ): Intent = Intent.createChooser(Intent(Intent.ACTION_SEND).apply {
         type = Config.URL_TYPE
         putExtra(Intent.EXTRA_TEXT, linkUrl)
-        putExtra(Intent.EXTRA_SUBJECT, linkUrl)
         putExtra(Intent.EXTRA_TITLE, linkTitle)
-        if (imageUri != null)
-            putExtra(Intent.EXTRA_STREAM, imageUri)
-    }, linkTitle)
+        putExtra(Intent.EXTRA_SUBJECT, linkTitle)
+    }, null)
 
     fun getUriFromCache(context: Context, name: String?): Uri? {
         if (name == null) return null

@@ -67,9 +67,7 @@ class PageFragment: BaseFragment<ViewDataBinding, PageViewModel>(), LinkClickLis
     }
 
     override fun onShareListener(link: LinkObservable) {
-        Log.i(TAG, "onShareListener = $link")
-        val imageUri = AndroidUtils.getUriFromCache(requireContext(), link.photoFileName)
-        startActivity(AndroidUtils.createShareIntent(link.url, link.title, imageUri))
+        startActivity(AndroidUtils.createShareIntent(link.url, link.title))
     }
 
     override fun onItemListener(link: LinkObservable) {
