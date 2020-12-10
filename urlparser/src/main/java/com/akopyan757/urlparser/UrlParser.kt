@@ -17,48 +17,51 @@ class UrlParser<T, P, V>(
 
     suspend fun parseUrl(url: String): V? {
         documentSearch.request(url)
-
         val baseUrl = mUrlPattern.getBaseUrl(url) ?: return null
 
         println("BaseUrl = $baseUrl")
 
-        val patterns = patternCache.getPatterns(baseUrl)
+        val patternList = patternCache.getPatterns(baseUrl)
+        val pattern = patternList.find { mUrlPattern.isMatchPattern(it.host(), url) }
 
-        return if (patterns.isNotEmpty()) {
-            val pattern = patterns.find { mUrlPattern.isMatchPattern(it.host(), url) }
+        val patternData = factory.createData()
+        patternData.dataUrl = url
 
-            val titleElement = pattern?.specTitleElement().toElementType()
-                ?: pattern?.hostTitleElement().toElementType(ElementType.Title)
+        if (pattern != null) {
 
-            val descriptionElement = pattern?.specDescriptionElement().toElementType()
-                ?: pattern?.hostDescriptionElement().toElementType(ElementType.MetaDescription)
+            val titleElement = pattern.specTitleElement().toElementType()
+                ?: pattern.hostTitleElement().toElementType(ElementType.Title)
 
-            val imageElement = pattern?.specImageUrlElement().toElementType()
-            val logoElement = pattern?.hostImageUrlElement().toElementType()
+            val descriptionElement = pattern.specDescriptionElement().toElementType()
+                ?: pattern.hostDescriptionElement().toElementType(ElementType.MetaDescription)
 
-            factory.createData().apply {
-                this.dataUrl = url
-                this.dataTitle = titleElement.getData(documentSearch)
-                this.dataDescription = descriptionElement.getData(documentSearch)
-                this.dataImageContentUrl = imageElement?.getData(documentSearch)
-                this.dataLogoContentUrl = logoElement?.getData(documentSearch)
-                println(this)
-            }
+            val imageElement = pattern.specImageUrlElement().toElementType()
+            val logoElement = pattern.hostImageUrlElement().toElementType()
+
+            patternData.dataTitle = titleElement.getData(documentSearch)
+            patternData.dataDescription = descriptionElement.getData(documentSearch)
+            patternData.dataImageContentUrl = imageElement?.getData(documentSearch)
+            patternData.dataLogoContentUrl = logoElement?.getData(documentSearch)
+            patternData.patternHostId = pattern.specHostId()
+            patternData.patternSpecifiedId = pattern.specId()
         } else {
             val hostPatterns = patternCache.getHostPatterns(baseUrl)
-            val pattern = hostPatterns.find { mUrlPattern.isMatchPattern(it.host(), url) }
+            val patternHost = hostPatterns.find { mUrlPattern.isMatchPattern(it.host(), url) }
 
-            val titleElement = pattern?.hostTitleElement().toElementType(ElementType.Title)
-            val descriptionElement = pattern?.hostDescriptionElement().toElementType(ElementType.MetaDescription)
-            val logoElement = pattern?.hostImageUrlElement().toElementType()
+            if (patternHost != null) {
+                val titleElement = pattern?.hostTitleElement().toElementType(ElementType.Title)
+                val descriptionElement = pattern?.hostDescriptionElement().toElementType(ElementType.MetaDescription)
+                val logoElement = pattern?.hostImageUrlElement().toElementType()
 
-            factory.createData().apply {
-                this.dataUrl = url
-                this.dataTitle = titleElement.getData(documentSearch)
-                this.dataDescription = descriptionElement.getData(documentSearch)
-                this.dataLogoContentUrl = logoElement?.getData(documentSearch)
-                println(this)
+                patternData.dataTitle = titleElement.getData(documentSearch)
+                patternData.dataDescription = descriptionElement.getData(documentSearch)
+                patternData.dataLogoContentUrl = logoElement?.getData(documentSearch)
+                patternData.patternHostId = patternHost.id()
             }
         }
+
+        println(patternData)
+
+        return patternData
     }
 }

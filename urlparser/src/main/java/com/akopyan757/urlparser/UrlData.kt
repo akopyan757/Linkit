@@ -6,4 +6,6 @@ abstract class UrlData {
     abstract var dataDescription: String
     abstract var dataImageContentUrl: String?
     abstract var dataLogoContentUrl: String?
+    abstract var patternHostId: Int
+    abstract var patternSpecifiedId: Int
 }
