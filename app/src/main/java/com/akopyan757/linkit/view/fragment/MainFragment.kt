@@ -1,7 +1,6 @@
 package com.akopyan757.linkit.view.fragment
 
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
@@ -44,6 +43,14 @@ class MainFragment : BaseFragment<FragmentMainBinding, LinkViewModel>(), ViewTre
 
         setHasOptionsMenu(true)
 
+        binding.toolbarEdit.apply {
+            setTitle(R.string.edit)
+            setNavigationIcon(R.drawable.ic_baseline_close_24)
+            setNavigationOnClickListener {
+                mViewModel.disableEditMode()
+            }
+        }
+
         viewPager.apply {
             adapter = mAdapter
         }
@@ -85,6 +92,11 @@ class MainFragment : BaseFragment<FragmentMainBinding, LinkViewModel>(), ViewTre
 
             R.id.itemCreateFolder -> {
                 findNavController().navigate(R.id.action_mainF_to_createFolderDF)
+                true
+            }
+
+            R.id.itemEditFolder -> {
+                mViewModel.enableEditMode()
                 true
             }
 

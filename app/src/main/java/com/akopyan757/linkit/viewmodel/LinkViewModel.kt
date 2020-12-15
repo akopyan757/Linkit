@@ -1,6 +1,8 @@
 package com.akopyan757.linkit.viewmodel
 
+import androidx.databinding.Bindable
 import com.akopyan757.base.viewmodel.list.ListLiveData
+import com.akopyan757.linkit.BR
 import com.akopyan757.linkit.model.repository.LinkRepository
 import com.akopyan757.base.viewmodel.BaseViewModel
 import com.akopyan757.linkit.viewmodel.observable.FolderObservable
@@ -12,6 +14,9 @@ class LinkViewModel : BaseViewModel(), KoinComponent {
     companion object {
         private const val TAG = "LINK_VIEW_MODEL"
     }
+
+    @get:Bindable
+    var editMode: Boolean by DelegatedBindable(false, BR.editMode)
 
     /**
      * List LiveData's
@@ -38,6 +43,13 @@ class LinkViewModel : BaseViewModel(), KoinComponent {
     /**
      * Public methods
      */
+    fun enableEditMode() {
+        editMode = true
+    }
+
+    fun disableEditMode() {
+        editMode = false
+    }
 
     fun getFolderLiveList() = foldersLiveData
 

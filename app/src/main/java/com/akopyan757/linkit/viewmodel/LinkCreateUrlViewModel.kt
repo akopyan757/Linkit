@@ -52,7 +52,7 @@ class LinkCreateUrlViewModel(
      */
     private val linkRepository: LinkRepository by inject()
 
-    /** Request */
+    /** Requests */
     private val addLinkRequest = MutableLiveData<LinkRequest>()
 
     /** Responses */

@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <variable
+            name="listener"
+            type="com.akopyan757.linkit.viewmodel.listener.FolderClickListener" />
+
+        <variable
+            name="observable"
+            type="com.akopyan757.linkit.viewmodel.observable.FolderObservable" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/ivFolderDrag"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/marginSecondary"
+            android:layout_marginTop="@dimen/marginSecondary"
+            android:layout_marginBottom="@dimen/marginSecondary"
+            android:contentDescription="@string/todo"
+            android:src="@drawable/ic_baseline_drag_handle_24"
+            android:tintMode="src_atop"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:tint="@color/teal_700" />
+
+        <TextView
+            android:id="@+id/tvFolderName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/marginSecondary"
+            android:text="@{observable.name}"
+            android:textAppearance="@style/Theme.Linkit.Text"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/ivFolderDrag"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="Folder" />
+
+        <ImageView
+            android:id="@+id/ivFolderDelete"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/marginSecondary"
+            android:contentDescription="@string/todo"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_baseline_delete_24"
+            app:tint="@color/black" />
+
+        <ImageView
+            android:id="@+id/ivFolderEdit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/marginSecondary"
+            android:tint="@color/black"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/ivFolderDelete"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_baseline_edit_24" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

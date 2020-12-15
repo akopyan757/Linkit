@@ -8,9 +8,8 @@ import androidx.room.PrimaryKey
 class FolderData(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id") val id: Int = 0,
-    @ColumnInfo(name = "name") val name: String,
+    @ColumnInfo(name = "name") var name: String,
     @ColumnInfo(name = "order") val order: Int = 0,
-    @ColumnInfo(name = "rule_base_urls") val ruleBaseUrls: List<String> = emptyList()
 ) {
     companion object {
         const val GENERAL_FOLDER_ID = 1

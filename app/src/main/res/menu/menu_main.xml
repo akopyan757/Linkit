@@ -7,4 +7,10 @@
         android:title="@string/create_folder"
         android:icon="@drawable/ic_baseline_create_new_folder_24"
         app:showAsAction="ifRoom"/>
+
+    <item
+        android:id="@+id/itemEditFolder"
+        android:title="@string/edit_folder"
+        android:icon="@drawable/ic_baseline_edit_24"
+        app:showAsAction="ifRoom"/>
 </menu>

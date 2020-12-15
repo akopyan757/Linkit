@@ -18,11 +18,11 @@ interface FolderDao {
     @Query("SELECT * FROM folder_data WHERE name LIKE :name LIMIT 1")
     fun getByName(name: String): FolderData?
 
-    @Query("SELECT * FROM folder_data WHERE rule_base_urls LIKE :baseUrl LIMIT 1")
-    fun getByRuleUrl(baseUrl: String): FolderData?
-
     @Query("SELECT * FROM folder_data")
     fun getLiveAll(): LiveData<List<FolderData>>
+
+    @Query("DELETE FROM folder_data WHERE id = :folderId")
+    fun removeById(folderId: Int)
 
     @Query("DELETE FROM folder_data")
     fun removeAll()

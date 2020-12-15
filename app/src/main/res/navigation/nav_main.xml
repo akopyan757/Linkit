@@ -20,6 +20,9 @@
                 android:name="url"
                 app:argType="string" />
         </action>
+        <action
+            android:id="@+id/action_mainFragment_to_folderFragment"
+            app:destination="@id/folderFragment" />
     </fragment>
 
     <dialog
@@ -40,5 +43,10 @@
             android:id="@+id/action_clipboardUrlDialogFragment_to_createFolderDialogFragment"
             app:destination="@id/createFolderDialogFragment" />
     </dialog>
+    <fragment
+        android:id="@+id/folderFragment"
+        android:name="com.akopyan757.linkit.view.fragment.FolderFragment"
+        android:label="FolderFragment"
+        tools:layout="@layout/fragment_folder" />
 
 </navigation>

@@ -132,6 +132,16 @@ class LinkRepository: BaseRepository(), KoinComponent {
         }
     }
 
+    fun deleteFolder(folderId: Int): LiveData<ApiResponse<Unit>> = call(ioDispatcher) {
+        folderDao.removeById(folderId)
+    }
+
+    fun renameFolder(folderId: Int, newFolderName: String) = call(ioDispatcher) {
+        val folder = folderDao.getById(folderId) ?: throw Exception("Folder not found")
+        folder.name = newFolderName
+        folderDao.insertOrUpdate(folder)
+    }
+
     private suspend fun parseHttpUrl(
         url: String,
         folderId: Int? = null
