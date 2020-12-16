@@ -11,6 +11,7 @@ import com.akopyan757.linkit.R
 import com.akopyan757.linkit.view.fragment.PageFragment
 import com.akopyan757.linkit.viewmodel.observable.FolderObservable
 import kotlinx.android.synthetic.main.tab_folder.view.*
+import java.util.*
 
 class PageFragmentAdapter(
         private val activity: FragmentActivity
@@ -29,11 +30,12 @@ class PageFragmentAdapter(
 
     override fun createFragment(position: Int) = PageFragment.newInstance(items[position])
 
-    @SuppressLint("InflateParams")
+    @SuppressLint("InflateParams", "SetTextI18n")
     fun getTabView(position: Int): View {
         val inflater = LayoutInflater.from(activity)
         val view = inflater.inflate(R.layout.tab_folder, null, false)
-        view.tabFolder.text = items[position].name
+        val name = items[position].name
+        view.tabFolder.text = name.substring(0, 1).toUpperCase(Locale.ROOT) + name.substring(1)
         return view
     }
 }
