@@ -1,6 +1,8 @@
 package com.akopyan757.linkit.view.adapter
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
@@ -11,13 +13,13 @@ import com.akopyan757.linkit.common.utils.AndroidUtils
 import com.akopyan757.linkit.databinding.ItemLinkBinding
 import com.akopyan757.linkit.databinding.ItemLinkBoxBinding
 import com.akopyan757.linkit.view.callback.ItemTouchHelperAdapter
-import com.akopyan757.linkit.viewmodel.listener.LinkClickListener
+import com.akopyan757.linkit.viewmodel.listener.LinkAdapterListener
 import com.akopyan757.linkit.viewmodel.observable.LinkObservable
 import java.util.*
 
 class LinkUrlAdapter(
     private val type: Type,
-    private val listener: LinkClickListener
+    private val listener: LinkAdapterListener
 ): UpdatableListAdapter<LinkObservable>(), ItemTouchHelperAdapter {
 
     private var editMode: Boolean = false
@@ -45,9 +47,10 @@ class LinkUrlAdapter(
 
     class LinkViewHolder(
         private val binding: ViewDataBinding,
-        private val listener: LinkClickListener
+        private val listener: LinkAdapterListener
     ): RecyclerView.ViewHolder(binding.root) {
 
+        @SuppressLint("ClickableViewAccessibility")
         fun bind(observable: LinkObservable, editMode: Boolean) {
             val context = binding.root.context
             val uri = AndroidUtils.getUriFromCache(context, observable.photoFileName)
@@ -57,6 +60,12 @@ class LinkUrlAdapter(
                     binding.editMode = editMode
                     binding.ivLinkPhoto.setImageURI(uri)
                     binding.listener = listener
+                    binding.ivLinkDrag.setOnTouchListener { _, motionEvent ->
+                        if (motionEvent.action == MotionEvent.ACTION_DOWN) {
+                            listener.onStartDrag(this)
+                        }
+                        false
+                    }
                     binding.executePendingBindings()
                 }
 

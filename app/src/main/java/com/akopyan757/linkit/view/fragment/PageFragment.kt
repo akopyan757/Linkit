@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.databinding.ViewDataBinding
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.recyclerview.widget.RecyclerView
 import com.akopyan757.base.view.BaseFragment
 import com.akopyan757.base.viewmodel.list.LinearLayoutManagerWrapper
 import com.akopyan757.linkit.BR
@@ -14,17 +15,22 @@ import com.akopyan757.linkit.databinding.FragmentPageBinding
 import com.akopyan757.linkit.view.adapter.LinkUrlAdapter
 import com.akopyan757.linkit.view.callback.ItemTouchHelperCallback
 import com.akopyan757.linkit.viewmodel.PageViewModel
-import com.akopyan757.linkit.viewmodel.listener.LinkClickListener
+import com.akopyan757.linkit.viewmodel.listener.LinkAdapterListener
 import com.akopyan757.linkit.viewmodel.observable.FolderObservable
 import com.akopyan757.linkit.viewmodel.observable.LinkObservable
 import org.koin.android.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
-class PageFragment: BaseFragment<ViewDataBinding, PageViewModel>(), LinkClickListener {
+class PageFragment: BaseFragment<ViewDataBinding, PageViewModel>(), LinkAdapterListener {
 
     override val mViewModel: PageViewModel by viewModel { parametersOf(mObservable.id) }
 
     private lateinit var mObservable: FolderObservable
+
+    private val mTouchHelper: ItemTouchHelper by lazy {
+        val callback = ItemTouchHelperCallback(mUrlAdapter)
+        ItemTouchHelper(callback)
+    }
 
     override fun getVariableId() = BR.viewModel
 
@@ -59,9 +65,7 @@ class PageFragment: BaseFragment<ViewDataBinding, PageViewModel>(), LinkClickLis
             layoutManager = urlLayoutManager
         }
 
-        val callback = ItemTouchHelperCallback(mUrlAdapter)
-        val touchHelper = ItemTouchHelper(callback)
-        touchHelper.attachToRecyclerView(urlRecyclerView)
+        mTouchHelper.attachToRecyclerView(urlRecyclerView)
     }
 
     override fun onSetupViewModel(viewModel: PageViewModel) = with(viewModel) {
@@ -78,6 +82,10 @@ class PageFragment: BaseFragment<ViewDataBinding, PageViewModel>(), LinkClickLis
 
     override fun onItemListener(link: LinkObservable) {
         startActivity(AndroidUtils.createIntent(link.url))
+    }
+
+    override fun onStartDrag(viewHolder: RecyclerView.ViewHolder) {
+        mTouchHelper.startDrag(viewHolder)
     }
 
     companion object {

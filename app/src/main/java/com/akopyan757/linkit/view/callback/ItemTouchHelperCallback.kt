@@ -7,14 +7,6 @@ class ItemTouchHelperCallback(
     private val adapter: ItemTouchHelperAdapter
 ): ItemTouchHelper.Callback() {
 
-    override fun isLongPressDragEnabled(): Boolean {
-        return true
-    }
-
-    override fun isItemViewSwipeEnabled(): Boolean {
-        return false
-    }
-
     override fun getMovementFlags(
         recyclerView: RecyclerView,
         viewHolder: RecyclerView.ViewHolder

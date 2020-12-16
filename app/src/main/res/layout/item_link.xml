@@ -12,7 +12,7 @@
             type="com.akopyan757.linkit.viewmodel.observable.LinkObservable" />
         <variable
             name="listener"
-            type="com.akopyan757.linkit.viewmodel.listener.LinkClickListener" />
+            type="com.akopyan757.linkit.viewmodel.listener.LinkAdapterListener" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -23,12 +23,13 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/marginSecondary"
+            android:layout_marginEnd="@dimen/marginSecondary"
             android:onClick="@{(view) -> listener.onItemListener(observable)}"
             app:cardCornerRadius="@dimen/cornerRadius"
             app:cardElevation="@dimen/elevationTertiary"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/ivLinkDrag"
+            app:layout_constraintEnd_toStartOf="@+id/ivLinkDrag"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -125,13 +126,13 @@
             android:id="@+id/ivLinkDrag"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/marginSecondary"
+            android:layout_marginEnd="@dimen/marginSecondary"
             android:contentDescription="@string/todo"
-            app:visibility="@{editMode}"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_baseline_drag_handle_24" />
+            app:srcCompat="@drawable/ic_baseline_drag_handle_24"
+            app:visibility="@{editMode}" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
