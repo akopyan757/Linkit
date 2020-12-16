@@ -42,12 +42,7 @@ class PageFragment: BaseFragment<ViewDataBinding, PageViewModel>(), LinkClickLis
         }
     }
 
-    private val mUrlLayoutManager: RecyclerView.LayoutManager by lazy {
-        when (mObservable.type) {
-            1 -> LinearLayoutManagerWrapper(requireContext())
-            else -> GridLayoutManager(requireContext(), 2)
-        }
-    }
+    private lateinit var mUrlLayoutManager: RecyclerView.LayoutManager
 
     override fun onSetupView(binding: ViewDataBinding, bundle: Bundle?) {
         val urlRecyclerView = when (binding) {
@@ -55,9 +50,14 @@ class PageFragment: BaseFragment<ViewDataBinding, PageViewModel>(), LinkClickLis
             else -> null
         }
 
+        val urlLayoutManager = when (mObservable.type) {
+            1 -> LinearLayoutManagerWrapper(requireContext())
+            else -> GridLayoutManager(requireContext(), 2)
+        }
+
         urlRecyclerView?.apply {
             adapter = mUrlAdapter
-            layoutManager = mUrlLayoutManager
+            layoutManager = urlLayoutManager
         }
     }
 

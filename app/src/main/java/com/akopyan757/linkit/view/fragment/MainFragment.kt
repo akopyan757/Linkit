@@ -27,9 +27,7 @@ class MainFragment : BaseFragment<FragmentMainBinding, LinkViewModel>(), ViewTre
 
     override val mViewModel: LinkViewModel by sharedViewModel()
 
-    private val mAdapter: PageFragmentAdapter by lazy {
-        PageFragmentAdapter(requireActivity())
-    }
+    private lateinit var mAdapter: PageFragmentAdapter
 
     override fun getLayoutId() = R.layout.fragment_main
 
@@ -43,7 +41,7 @@ class MainFragment : BaseFragment<FragmentMainBinding, LinkViewModel>(), ViewTre
 
         setHasOptionsMenu(true)
 
-        binding.toolbarEdit.apply {
+        toolbarEdit.apply {
             setTitle(R.string.edit)
             setNavigationIcon(R.drawable.ic_baseline_close_24)
             setNavigationOnClickListener {
@@ -51,9 +49,8 @@ class MainFragment : BaseFragment<FragmentMainBinding, LinkViewModel>(), ViewTre
             }
         }
 
-        viewPager.apply {
-            adapter = mAdapter
-        }
+        mAdapter = PageFragmentAdapter(childFragmentManager, lifecycle)
+        viewPager.adapter = mAdapter
 
         TabLayoutMediator(tabLayoutFolder, viewPager) { tab, position ->
             tab.text = mAdapter.getItems()[position].name
@@ -90,8 +87,8 @@ class MainFragment : BaseFragment<FragmentMainBinding, LinkViewModel>(), ViewTre
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
 
-            R.id.itemCreateFolder -> {
-                findNavController().navigate(R.id.action_mainF_to_createFolderDF)
+            R.id.itemFolders -> {
+                findNavController().navigate(R.id.action_mainFragment_to_folderFragment)
                 true
             }
 

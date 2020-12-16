@@ -34,7 +34,7 @@ class CreateFolderDialogFragment : DialogFragment() {
 
         mViewModel.getLiveResponses().observe(viewLifecycleOwner, { state ->
             if (state == BaseViewModel.RequestState.SUCCESS) {
-                findNavController().navigate(R.id.action_createFolderDF_to_clipboardUrlDF)
+                findNavController().popBackStack()
             }
         })
 

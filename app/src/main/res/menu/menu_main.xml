@@ -3,9 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/itemCreateFolder"
+        android:id="@+id/itemFolders"
         android:title="@string/create_folder"
-        android:icon="@drawable/ic_baseline_create_new_folder_24"
+        android:icon="@drawable/ic_baseline_folder_24"
         app:showAsAction="ifRoom"/>
 
     <item

@@ -1,7 +1,9 @@
 package com.akopyan757.linkit.view.fragment
 
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.akopyan757.base.view.BaseFragment
@@ -38,16 +40,22 @@ class FolderFragment : BaseFragment<FragmentFolderBinding, FolderViewModel>() {
     override fun getVariableId(): Int = BR.viewModel
 
     override fun onSetupView(binding: FragmentFolderBinding, bundle: Bundle?): Unit = with(binding) {
+        (requireActivity() as AppCompatActivity).apply {
+            setSupportActionBar(binding.toolbar)
+        }
+
         toolbar.apply {
             setNavigationIcon(R.drawable.ic_baseline_arrow_back_24)
-            setNavigationOnClickListener {
-                findNavController().popBackStack()
-            }
+            setNavigationOnClickListener { findNavController().popBackStack() }
         }
 
         rvFolders.apply {
             adapter = mAdapter
             layoutManager = mLayoutManager
+        }
+
+        fabCreateFolder.setOnClickListener {
+            findNavController().navigate(R.id.action_folderFragment_to_createFolderDialogFragment)
         }
     }
 

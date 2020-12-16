@@ -11,9 +11,6 @@
         android:label="MainFragment"
         tools:layout="@layout/fragment_main" >
         <action
-            android:id="@+id/action_mainF_to_createFolderDF"
-            app:destination="@id/createFolderDialogFragment" />
-        <action
             android:id="@+id/action_mainF_to_clipboardUrlDF"
             app:destination="@id/clipboardUrlDialogFragment">
             <argument
@@ -29,24 +26,20 @@
         android:id="@+id/createFolderDialogFragment"
         android:name="com.akopyan757.linkit.view.dialog.CreateFolderDialogFragment"
         android:label="CreateFolderDialogFragment"
-        tools:layout="@layout/dialog_new_folder">
-        <action
-            android:id="@+id/action_createFolderDF_to_clipboardUrlDF"
-            app:popUpTo="@id/clipboardUrlDialogFragment" />
-    </dialog>
+        tools:layout="@layout/dialog_new_folder"/>
     <dialog
         android:id="@+id/clipboardUrlDialogFragment"
         android:name="com.akopyan757.linkit.view.dialog.ClipboardUrlDialogFragment"
         android:label="ClipboardUrlDialogFragment"
-        tools:layout="@layout/dialog_new_url">
-        <action
-            android:id="@+id/action_clipboardUrlDialogFragment_to_createFolderDialogFragment"
-            app:destination="@id/createFolderDialogFragment" />
-    </dialog>
+        tools:layout="@layout/dialog_new_url"/>
     <fragment
         android:id="@+id/folderFragment"
         android:name="com.akopyan757.linkit.view.fragment.FolderFragment"
         android:label="FolderFragment"
-        tools:layout="@layout/fragment_folder" />
+        tools:layout="@layout/fragment_folder" >
+        <action
+            android:id="@+id/action_folderFragment_to_createFolderDialogFragment"
+            app:destination="@id/createFolderDialogFragment" />
+    </fragment>
 
 </navigation>

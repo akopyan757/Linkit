@@ -12,6 +12,7 @@
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="#EBEBEB"
         android:theme="@style/Theme.Linkit"
         tools:context=".view.MainActivity">
 
@@ -23,37 +24,134 @@
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:visibility="@{!viewModel.editMode}"
-                app:titleTextColor="@color/white"/>
+                app:titleTextColor="@color/white"
+                app:visibility="@{!viewModel.editMode}" />
 
             <androidx.appcompat.widget.Toolbar
                 android:id="@+id/toolbarEdit"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:visibility="@{viewModel.editMode}"
-                app:titleTextColor="@color/white" />
+                app:titleTextColor="@color/white"
+                app:visibility="@{viewModel.editMode}" />
 
             <com.google.android.material.tabs.TabLayout
                 android:id="@+id/tabLayoutFolder"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/tabLayout_folder_height"
                 android:background="@android:color/transparent"
+                app:tabGravity="start"
                 app:tabIndicatorColor="@color/white"
-                app:tabTextColor="@color/white"
                 app:tabMode="scrollable"
-                app:tabGravity="start"/>
+                app:tabTextColor="@color/white" />
 
         </com.google.android.material.appbar.AppBarLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/constraintLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            app:layout_anchor="@+id/constraintLayout"
+            app:layout_anchorGravity="bottom|center"
             app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+
+            <HorizontalScrollView
+                android:id="@+id/tabLayout"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_margin="@dimen/marginSecondary"
+                android:background="@drawable/shadow_tab_layout"
+                android:scrollbars="none"
+                android:overScrollMode="never"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <RadioGroup
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
+
+                    <RadioButton
+                        android:id="@+id/radioButton1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_margin="4dp"
+                        android:background="@drawable/shadow_tab_item"
+                        android:button="@null"
+                        android:checked="true"
+                        android:elevation="2dp"
+                        android:gravity="start|center_vertical"
+                        android:paddingStart="12dp"
+                        android:paddingTop="4dp"
+                        android:paddingEnd="12dp"
+                        android:paddingBottom="4dp"
+                        android:text="All folders"
+                        android:textColor="@color/black" />
+
+                    <RadioButton
+                        android:id="@+id/radioButton2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_margin="4dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/shadow_tab_item"
+                        android:button="@null"
+                        android:elevation="2dp"
+                        android:gravity="start|center_vertical"
+                        android:paddingStart="12dp"
+                        android:paddingTop="4dp"
+                        android:paddingEnd="12dp"
+                        android:paddingBottom="4dp"
+                        android:text="All folders"
+                        android:textColor="@color/black" />
+
+                    <RadioButton
+                        android:id="@+id/radioButton3"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_margin="4dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/shadow_tab_item"
+                        android:button="@null"
+                        android:elevation="2dp"
+                        android:gravity="start|center_vertical"
+                        android:paddingStart="12dp"
+                        android:paddingTop="4dp"
+                        android:paddingEnd="12dp"
+                        android:paddingBottom="4dp"
+                        android:text="All folders"
+                        android:textColor="@color/black" />
+
+                    <RadioButton
+                        android:id="@+id/radioButton4"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_margin="4dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/shadow_tab_item"
+                        android:button="@null"
+                        android:elevation="2dp"
+                        android:gravity="start|center_vertical"
+                        android:paddingStart="12dp"
+                        android:paddingTop="4dp"
+                        android:paddingEnd="12dp"
+                        android:paddingBottom="4dp"
+                        android:text="All folders"
+                        android:textColor="@color/black" />
+
+                </RadioGroup>
+
+            </HorizontalScrollView>
+
 
             <androidx.viewpager2.widget.ViewPager2
                 android:id="@+id/viewPager"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:background="#EBEBEB"
+                app:layout_constraintTop_toBottomOf="@+id/tabLayout" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
