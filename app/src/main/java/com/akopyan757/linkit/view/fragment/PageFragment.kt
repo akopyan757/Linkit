@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.util.Log
 import androidx.databinding.ViewDataBinding
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.ItemTouchHelper
 import com.akopyan757.base.view.BaseFragment
 import com.akopyan757.base.viewmodel.list.LinearLayoutManagerWrapper
 import com.akopyan757.linkit.BR
@@ -11,6 +12,7 @@ import com.akopyan757.linkit.R
 import com.akopyan757.linkit.common.utils.AndroidUtils
 import com.akopyan757.linkit.databinding.FragmentPageBinding
 import com.akopyan757.linkit.view.adapter.LinkUrlAdapter
+import com.akopyan757.linkit.view.callback.ItemTouchHelperCallback
 import com.akopyan757.linkit.viewmodel.PageViewModel
 import com.akopyan757.linkit.viewmodel.listener.LinkClickListener
 import com.akopyan757.linkit.viewmodel.observable.FolderObservable
@@ -56,6 +58,10 @@ class PageFragment: BaseFragment<ViewDataBinding, PageViewModel>(), LinkClickLis
             adapter = mUrlAdapter
             layoutManager = urlLayoutManager
         }
+
+        val callback = ItemTouchHelperCallback(mUrlAdapter)
+        val touchHelper = ItemTouchHelper(callback)
+        touchHelper.attachToRecyclerView(urlRecyclerView)
     }
 
     override fun onSetupViewModel(viewModel: PageViewModel) = with(viewModel) {

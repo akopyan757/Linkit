@@ -27,11 +27,12 @@
             app:cardCornerRadius="@dimen/cornerRadius"
             app:cardElevation="@dimen/elevationTertiary"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/ivLinkDelete"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/ivLinkDrag"
             app:layout_constraintTop_toTopOf="parent">
 
             <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/clLinkContent"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
@@ -131,32 +132,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/ic_baseline_drag_handle_24" />
-
-        <ImageView
-            android:id="@+id/ivLinkDelete"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/marginSecondary"
-            android:contentDescription="@string/todo"
-            app:visibility="@{editMode}"
-            app:layout_constraintBottom_toTopOf="@+id/ivLinkEdit"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_chainStyle="packed"
-            app:srcCompat="@drawable/ic_baseline_delete_24" />
-
-        <ImageView
-            android:id="@+id/ivLinkEdit"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/marginSecondary"
-            android:contentDescription="@string/todo"
-            app:visibility="@{editMode}"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@+id/ivLinkDelete"
-            app:layout_constraintTop_toBottomOf="@+id/ivLinkDelete"
-            app:layout_constraintVertical_chainStyle="packed"
-            app:srcCompat="@drawable/ic_baseline_edit_24" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

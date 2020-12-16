@@ -10,13 +10,15 @@ import com.akopyan757.linkit.R
 import com.akopyan757.linkit.common.utils.AndroidUtils
 import com.akopyan757.linkit.databinding.ItemLinkBinding
 import com.akopyan757.linkit.databinding.ItemLinkBoxBinding
+import com.akopyan757.linkit.view.callback.ItemTouchHelperAdapter
 import com.akopyan757.linkit.viewmodel.listener.LinkClickListener
 import com.akopyan757.linkit.viewmodel.observable.LinkObservable
+import java.util.*
 
 class LinkUrlAdapter(
-        private val type: Type,
-        private val listener: LinkClickListener
-): UpdatableListAdapter<LinkObservable>() {
+    private val type: Type,
+    private val listener: LinkClickListener
+): UpdatableListAdapter<LinkObservable>(), ItemTouchHelperAdapter {
 
     private var editMode: Boolean = false
 
@@ -29,7 +31,7 @@ class LinkUrlAdapter(
         val inflater = LayoutInflater.from(parent.context)
 
         val layoutId = when (type) {
-            Type.ITEM ->  R.layout.item_link
+            Type.ITEM -> R.layout.item_link
             else -> R.layout.item_link_box
         }
 
@@ -42,8 +44,8 @@ class LinkUrlAdapter(
     }
 
     class LinkViewHolder(
-            private val binding: ViewDataBinding,
-            private val listener: LinkClickListener
+        private val binding: ViewDataBinding,
+        private val listener: LinkClickListener
     ): RecyclerView.ViewHolder(binding.root) {
 
         fun bind(observable: LinkObservable, editMode: Boolean) {
@@ -66,6 +68,20 @@ class LinkUrlAdapter(
                 }
             }
         }
+    }
+
+    override fun onItemMove(fromPosition: Int, toPosition: Int): Boolean {
+        if (fromPosition < toPosition) {
+            (fromPosition until toPosition).forEach { index ->
+                Collections.swap(items, index, index + 1)
+            }
+        } else {
+            (fromPosition downTo toPosition + 1).forEach { index ->
+                Collections.swap(items, index, index - 1)
+            }
+        }
+        notifyItemMoved(fromPosition, toPosition)
+        return true
     }
 
     enum class Type {
