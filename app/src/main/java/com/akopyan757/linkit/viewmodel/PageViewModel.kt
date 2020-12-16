@@ -2,8 +2,8 @@ package com.akopyan757.linkit.viewmodel
 
 import android.util.Log
 import androidx.databinding.Bindable
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.switchMap
 import com.akopyan757.base.viewmodel.BaseViewModel
 import com.akopyan757.base.viewmodel.list.ListLiveData
 import com.akopyan757.linkit.BR
@@ -23,6 +23,7 @@ class PageViewModel(private val folderId: Int): BaseViewModel(), KoinComponent {
     private val stateHandle: SavedStateHandle by inject(named(Config.HANDLE_URL))
 
     private val liveEditModel by LiveSavedStateBindable<Boolean>(stateHandle, Config.KEY_EDIT_MODE)
+    private val liveEditSave by LiveSavedStateBindable<Boolean>(stateHandle, Config.KEY_EDIT_SAVE)
 
     @get:Bindable
     var isEmptyPage: Boolean by DelegatedBindable(false, BR.emptyPage)
@@ -32,6 +33,7 @@ class PageViewModel(private val folderId: Int): BaseViewModel(), KoinComponent {
      */
     private val urlListData = ListLiveData<LinkObservable>()
 
+    private var editedList: List<LinkObservable> = emptyList()
     /**
      * Repository
      */
@@ -49,7 +51,7 @@ class PageViewModel(private val folderId: Int): BaseViewModel(), KoinComponent {
             Log.i(TAG, "GEL URL LINK: $item")
             val photoUrl = item.photoUrl?.takeUnless { it.isEmpty() } ?: item.logoUrl
             val imageFileName = item.contentFileName ?: item.logoFileName
-            LinkObservable(item.url, item.title, item.description, photoUrl, imageFileName)
+            LinkObservable(item.id, item.url, item.title, item.description, photoUrl, imageFileName)
         }
 
         urlListData.change(observables)
@@ -58,6 +60,24 @@ class PageViewModel(private val folderId: Int): BaseViewModel(), KoinComponent {
         Log.i(TAG, "GEL URL LINK LIST (FOLDER = $folderId): ${observables.isEmpty()} + ${urlListData.getList().isEmpty()} = $isEmptyPage")
     })
 
+    private val saveOrderResponse = liveEditSave.switchMap {
+        val pairs = editedList.mapIndexed { index, item -> Pair(item.id, index) }
+
+        requestLiveData(method = {
+            linkRepository.reorderLinks(pairs)
+        }, onLoading = {
+            Log.i(TAG, "REORDER URLS: LOADING")
+        }, onSuccess = {
+            val value = pairs.joinToString(", ") { "[${it.first}: order=${it.second}]" }
+            Log.i(TAG, "REORDER URLS: SUCCESS: $value")
+
+            editedList = emptyList()
+
+        }, onError = { exception ->
+            Log.i(TAG, "REORDER URLS: ERROR", exception)
+        })
+    }
+
     /**
      * PPublic method
      */
@@ -65,5 +85,9 @@ class PageViewModel(private val folderId: Int): BaseViewModel(), KoinComponent {
 
     fun getLiveEditMode() = liveEditModel
 
-    override fun getLiveResponses() = groupLiveResponses(getUrlAllResponse)
+    fun setEditObservables(observable: List<LinkObservable>) {
+        editedList = observable
+    }
+
+    override fun getLiveResponses() = groupLiveResponses(getUrlAllResponse, saveOrderResponse)
 }

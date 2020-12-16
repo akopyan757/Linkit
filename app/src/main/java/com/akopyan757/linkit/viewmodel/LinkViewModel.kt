@@ -9,6 +9,7 @@ import com.akopyan757.linkit.model.repository.LinkRepository
 import com.akopyan757.base.viewmodel.BaseViewModel
 import com.akopyan757.linkit.common.Config
 import com.akopyan757.linkit.common.Config.KEY_EDIT_MODE
+import com.akopyan757.linkit.common.Config.KEY_EDIT_SAVE
 import com.akopyan757.linkit.viewmodel.observable.FolderObservable
 import org.koin.core.KoinComponent
 import org.koin.core.inject
@@ -20,6 +21,9 @@ class LinkViewModel : BaseViewModel(), KoinComponent {
 
     @get:Bindable
     var editMode: Boolean by SavedStateBindable(stateHandle, KEY_EDIT_MODE, false, BR.editMode)
+
+    @get:Bindable
+    var savedState: Boolean by SavedStateBindable(stateHandle, KEY_EDIT_SAVE, false, BR.savedState)
 
     /**
      * List LiveData's
@@ -42,7 +46,6 @@ class LinkViewModel : BaseViewModel(), KoinComponent {
         }
     )
 
-
     /**
      * Public methods
      */
@@ -51,6 +54,11 @@ class LinkViewModel : BaseViewModel(), KoinComponent {
     }
 
     fun disableEditMode() {
+        editMode = false
+    }
+
+    fun saveEdit() {
+        savedState = true
         editMode = false
     }
 

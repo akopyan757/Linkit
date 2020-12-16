@@ -18,6 +18,9 @@ interface UrlLinkDao {
     @Query("SELECT * FROM url_link_data WHERE folder_id LIKE :folderId")
     fun getLiveFromFolder(folderId: String): LiveData<List<UrlLinkData>>
 
+    @Query("UPDATE url_link_data SET _order = :order WHERE id == :id")
+    fun updateOrder(id: Long, order: Int)
+
     @Query("DELETE from url_link_data WHERE url = :uri")
     fun removeByUri(uri: String)
 

@@ -3,6 +3,7 @@ package com.akopyan757.linkit.viewmodel.observable
 import com.akopyan757.base.viewmodel.DiffItemObservable
 
 data class LinkObservable(
+    val id: Long,
     val url: String,
     val title: String,
     val description: String,

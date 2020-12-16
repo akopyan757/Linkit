@@ -20,6 +20,7 @@
 
         <item name="toolbarStyle">@style/Theme.Linkit.Toolbar</item>
 
+        <item name="android:itemTextAppearance">@style/Theme.Linkit.TextAppearanceRegular</item>
     </style>
     
     <style name="Theme.Linkit.Toolbar" parent="Widget.AppCompat.Toolbar">

@@ -15,4 +15,5 @@ object Config {
     const val HANDLE_URL = "HANDLE_URL"
 
     const val KEY_EDIT_MODE = "KEY_EDIT_MODE"
+    const val KEY_EDIT_SAVE = "KEY_EDIT_SAVE"
 }

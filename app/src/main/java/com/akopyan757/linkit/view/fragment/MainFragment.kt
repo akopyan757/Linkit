@@ -21,10 +21,6 @@ import org.koin.android.viewmodel.ext.android.sharedViewModel
 
 class MainFragment : BaseFragment<FragmentMainBinding, LinkViewModel>(), ViewTreeObserver.OnWindowFocusChangeListener {
 
-    companion object {
-        private const val TAG = "MAIN_FRAGMENT"
-    }
-
     override val mViewModel: LinkViewModel by sharedViewModel()
 
     private lateinit var mAdapter: PageFragmentAdapter
@@ -46,6 +42,13 @@ class MainFragment : BaseFragment<FragmentMainBinding, LinkViewModel>(), ViewTre
             setNavigationIcon(R.drawable.ic_baseline_close_24)
             setNavigationOnClickListener {
                 mViewModel.disableEditMode()
+            }
+            inflateMenu(R.menu.menu_edit)
+            setOnMenuItemClickListener { item ->
+                when (item.itemId) {
+                    R.id.itemEditSave -> mViewModel.saveEdit()
+                }
+                true
             }
         }
 

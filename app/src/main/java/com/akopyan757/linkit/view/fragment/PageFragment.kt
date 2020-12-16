@@ -13,6 +13,7 @@ import com.akopyan757.linkit.R
 import com.akopyan757.linkit.common.utils.AndroidUtils
 import com.akopyan757.linkit.databinding.FragmentPageBinding
 import com.akopyan757.linkit.view.adapter.LinkUrlAdapter
+import com.akopyan757.linkit.view.callback.ItemTouchHelperAdapter
 import com.akopyan757.linkit.view.callback.ItemTouchHelperCallback
 import com.akopyan757.linkit.viewmodel.PageViewModel
 import com.akopyan757.linkit.viewmodel.listener.LinkAdapterListener
@@ -28,7 +29,13 @@ class PageFragment: BaseFragment<ViewDataBinding, PageViewModel>(), LinkAdapterL
     private lateinit var mObservable: FolderObservable
 
     private val mTouchHelper: ItemTouchHelper by lazy {
-        val callback = ItemTouchHelperCallback(mUrlAdapter)
+        val callback = ItemTouchHelperCallback(object : ItemTouchHelperAdapter{
+            override fun onItemMove(fromPosition: Int, toPosition: Int): Boolean {
+                val result = mUrlAdapter.onItemMove(fromPosition, toPosition)
+                mViewModel.setEditObservables(mUrlAdapter.items)
+                return result
+            }
+        })
         ItemTouchHelper(callback)
     }
 

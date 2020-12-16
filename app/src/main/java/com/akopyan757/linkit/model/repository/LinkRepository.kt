@@ -120,7 +120,7 @@ class LinkRepository: BaseRepository(), KoinComponent {
                     logoFileName = imageCache.getLogoName(data)
                     contentFileName = imageCache.getContentName(data)
                 }
-            }
+            }.sortedBy { it._order }
 
             ApiResponse.Success(data)
         }
@@ -140,6 +140,12 @@ class LinkRepository: BaseRepository(), KoinComponent {
         val folder = folderDao.getById(folderId) ?: throw Exception("Folder not found")
         folder.name = newFolderName
         folderDao.insertOrUpdate(folder)
+    }
+
+    fun reorderLinks(orders: List<Pair<Long, Int>>) = call(ioDispatcher) {
+        orders.forEach { (id, order) ->
+            urlLinkDao.updateOrder(id, order)
+        }
     }
 
     private suspend fun parseHttpUrl(
