@@ -11,7 +11,8 @@
     <string name="web_links">Web links</string>
     <string name="url">Url</string>
     <string name="add">Add</string>
-    <string name="url_from_clipboard">Url from Clipboard</string>
+    <string name="url_from_clipboard">Create bookmark</string>
+    <string name="prompt">Assign To Folder</string>
     <string name="add_file">Add file</string>
     <string name="messageEmptyPage">No urls or data</string>
     <string name="assign_to_folder">Assign to Folder</string>

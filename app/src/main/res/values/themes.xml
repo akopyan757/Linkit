@@ -62,27 +62,45 @@
         <item name="android:textAppearance">@style/Theme.Linkit.TextAppearanceRegular.Body2</item>
     </style>
 
+    <style name="Theme.Linkit.TextInputLayout" parent="Widget.MaterialComponents.TextInputLayout.FilledBox.Dense">
+        <item name="boxCornerRadiusTopStart">@dimen/cornerRadius</item>
+        <item name="boxCornerRadiusTopEnd">@dimen/cornerRadius</item>
+        <item name="boxCornerRadiusBottomStart">@dimen/cornerRadius</item>
+        <item name="boxCornerRadiusBottomEnd">@dimen/cornerRadius</item>
+        <item name="boxBackgroundColor">@color/white</item>
+        <item name="boxStrokeWidth">0dp</item>
+        <item name="boxStrokeWidthFocused">0dp</item>
+        <item name="android:textCursorDrawable">@null</item>
+        <item name="hintTextColor">@color/disabled</item>
+        <item name="colorControlActivated">@color/link</item>
+        <item name="colorControlHighlight">@color/link</item>
+        <item name="colorControlNormal">@color/link</item>
+    </style>
 
-    <style name="Theme.Linkit.SingleTextView" parent="Widget.AppCompat.TextView">
+    <style name="Theme.Linkit.EditText" parent="Widget.AppCompat.EditText">
+        <item name="android:textAppearance">@style/Theme.Linkit.TextAppearanceRegular</item>
+        <item name="android:textCursorDrawable">@drawable/cursor</item>
+    </style>
+
+    <style name="Theme.Linkit.EditText.SingleLine">
         <item name="android:ellipsize">end</item>
-        <item name="maxLines">1</item>
         <item name="android:ems">3</item>
         <item name="singleLine">true</item>
     </style>
 
-    <style name="Theme.Linkit.ClickableImageView">
-        <item name="android:clickable">true</item>
-        <item name="android:focusable">true</item>
-        <item name="android:background">?attr/selectableItemBackgroundBorderless</item>
-    </style>
-
-    <style name="Theme.Linkit.EditTextReadOnly" parent="Widget.AppCompat.TextView">
+    <style name="Theme.Linkit.EditText.ReadOnly" parent="Widget.AppCompat.TextView">
         <item name="android:clickable">false</item>
         <item name="android:focusable">false</item>
         <item name="android:cursorVisible">false</item>
         <item name="android:focusableInTouchMode">false</item>
         <item name="android:inputType">none</item>
         <item name="android:textIsSelectable">false</item>
+    </style>
+
+    <style name="Theme.Linkit.ClickableImageView">
+        <item name="android:clickable">true</item>
+        <item name="android:focusable">true</item>
+        <item name="android:background">?attr/selectableItemBackgroundBorderless</item>
     </style>
 
     <style name="Theme.Linkit.NoActionBar">

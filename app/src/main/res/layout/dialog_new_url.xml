@@ -12,6 +12,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@drawable/background_dialog"
         android:minWidth="@dimen/dialogMinWidth">
 
         <TextView
@@ -21,7 +22,7 @@
             android:layout_marginStart="@dimen/marginPrimary"
             android:layout_marginTop="@dimen/marginPrimary"
             android:text="@string/url_from_clipboard"
-            android:textAppearance="@style/Theme.Linkit.Text.Title"
+            android:textAppearance="@style/Theme.Linkit.TextAppearanceRegular.H1"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 

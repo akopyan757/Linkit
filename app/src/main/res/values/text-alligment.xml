@@ -9,6 +9,10 @@
         <item name="lineHeight">24sp</item>
     </style>
 
+    <style name="Theme.Linkit.TextAppearanceRegular.H1">
+        <item name="android:textSize">20sp</item>
+    </style>
+
     <style name="Theme.Linkit.TextAppearanceRegular.Body1">
         <item name="android:textSize">14sp</item>
         <item name="lineHeight">20sp</item>

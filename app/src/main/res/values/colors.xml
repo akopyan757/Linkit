@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <color name="black">#000000</color>
     <color name="blackOpacity">#4D000000</color>
     <color name="disabled">#DADDDF</color>
     <color name="grey">#898D94</color>
     <color name="greyLight">#EBEBEB</color>
-    <color name="background">#E5E5E5</color>
+    <color name="background">#F7F7F7</color>
     <color name="white">#FFFFFF</color>
     <color name="link">#001AFF</color>
     <color name="primary">#FFE376</color>
+
+    <color name="mtrl_textinput_default_box_stroke_color" tools:override="true">@color/disabled</color>
 </resources>
