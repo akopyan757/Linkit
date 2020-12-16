@@ -19,8 +19,6 @@ class PageFragmentAdapter(
 
     private var items: List<FolderObservable> = emptyList()
 
-    fun getItems() = items
-
     fun updateFolders(folders: List<FolderObservable>) {
         items = folders
         notifyDataSetChanged()
@@ -34,8 +32,9 @@ class PageFragmentAdapter(
     fun getTabView(position: Int): View {
         val inflater = LayoutInflater.from(activity)
         val view = inflater.inflate(R.layout.tab_folder, null, false)
-        val name = items[position].name
-        view.tabFolder.text = name.substring(0, 1).toUpperCase(Locale.ROOT) + name.substring(1)
+        view.tabFolder.text = items[position].name.let {
+            it.substring(0, 1).toUpperCase(Locale.ROOT) + it.substring(1)
+        }
         return view
     }
 }

@@ -2,19 +2,27 @@ package com.akopyan757.linkit.viewmodel
 
 import android.util.Log
 import androidx.databinding.Bindable
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.SavedStateHandle
 import com.akopyan757.base.viewmodel.BaseViewModel
 import com.akopyan757.base.viewmodel.list.ListLiveData
 import com.akopyan757.linkit.BR
+import com.akopyan757.linkit.common.Config
 import com.akopyan757.linkit.model.repository.LinkRepository
 import com.akopyan757.linkit.viewmodel.observable.LinkObservable
 import org.koin.core.KoinComponent
 import org.koin.core.inject
+import org.koin.core.qualifier.named
 
 class PageViewModel(private val folderId: Int): BaseViewModel(), KoinComponent {
 
     companion object {
         private const val TAG = "PAGE_VIEW_MODEL"
     }
+
+    private val stateHandle: SavedStateHandle by inject(named(Config.HANDLE_URL))
+
+    private val liveEditModel by LiveSavedStateBindable<Boolean>(stateHandle, Config.KEY_EDIT_MODE)
 
     @get:Bindable
     var isEmptyPage: Boolean by DelegatedBindable(false, BR.emptyPage)
@@ -54,6 +62,8 @@ class PageViewModel(private val folderId: Int): BaseViewModel(), KoinComponent {
      * PPublic method
      */
     fun getUrlLiveList() = urlListData
+
+    fun getLiveEditMode() = liveEditModel
 
     override fun getLiveResponses() = groupLiveResponses(getUrlAllResponse)
 }

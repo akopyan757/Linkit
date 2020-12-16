@@ -15,7 +15,7 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="56dp">
 
         <ImageView
             android:id="@+id/ivFolderDrag"
@@ -38,7 +38,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/marginSecondary"
             android:text="@{observable.name}"
-            android:textAppearance="@style/Theme.Linkit.Text"
+            android:textAppearance="@style/Theme.Linkit.TextAppearanceRegular"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@+id/ivFolderDrag"
             app:layout_constraintTop_toTopOf="parent"
@@ -62,9 +62,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/marginSecondary"
-            android:tint="@color/black"
             android:contentDescription="@string/todo"
             android:onClick="@{() -> listener.onEditFolder(observable)}"
+            android:tint="@color/black"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/ivFolderDelete"
             app:layout_constraintTop_toTopOf="parent"

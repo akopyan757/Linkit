@@ -11,4 +11,8 @@ object Config {
     const val CACHE_IMAGES_FOLDER = "images"
 
     const val TAG_SELECT_FOLDER = "TAG_SELECT_FOLDER"
+
+    const val HANDLE_URL = "HANDLE_URL"
+
+    const val KEY_EDIT_MODE = "KEY_EDIT_MODE"
 }

@@ -1,5 +1,6 @@
 package com.akopyan757.base.viewmodel
 
+import android.util.Log
 import androidx.databinding.PropertyChangeRegistry
 import androidx.lifecycle.*
 import com.akopyan757.base.model.ApiResponse
@@ -83,6 +84,39 @@ abstract class BaseViewModel: ViewModel(), BaseStateObservable {
         }
     }
 
+    inner class SavedStateBindable<T>(
+        private val savedStateHandle: SavedStateHandle,
+        private val key: String,
+        private val default: T,
+        private val brTarget: Int
+    ) {
+        operator fun getValue(thisRef: Any?, p: KProperty<*>): T {
+            return savedStateHandle.get(key) ?: default
+        }
+
+        operator fun setValue(thisRef: Any?, p: KProperty<*>, v: T) {
+            Log.i(TAG, "SAVED STATE HANDLE: SET = $v")
+            savedStateHandle.set(key, v)
+            notifyPropertyChanged(brTarget)
+        }
+    }
+
+    inner class LiveSavedStateBindable<T>(
+        private val savedStateHandle: SavedStateHandle,
+        private val key: String,
+        private val brTarget: Int? = null
+    ) {
+        operator fun getValue(thisRef: Any?, p: KProperty<*>): LiveData<T> {
+            val liveData = savedStateHandle.getLiveData<T>(key)
+            return Transformations.map<T, T>(liveData) { value ->
+                brTarget?.let { notifyPropertyChanged(brTarget) }
+                Log.i(TAG, "SAVED STATE HANDLE: LIVE = $value")
+                value
+            }
+
+        }
+    }
+
     inner class DelegatedBindable<T> private constructor(
         private var value: T,
         private var bindingTarget: Array<Int>,
@@ -110,5 +144,9 @@ abstract class BaseViewModel: ViewModel(), BaseStateObservable {
             bindingTarget.forEach { notifyPropertyChanged(it) }
             onValueChanged?.invoke(v)
         }
+    }
+
+    companion object {
+        private const val TAG = "VIEW_MODEL"
     }
 }

@@ -2,7 +2,6 @@ package com.akopyan757.linkit.view.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.recyclerview.widget.RecyclerView
@@ -19,8 +18,11 @@ class LinkUrlAdapter(
         private val listener: LinkClickListener
 ): UpdatableListAdapter<LinkObservable>() {
 
-    companion object {
-        private const val TAG = "LINK_URL_ADAPTER"
+    private var editMode: Boolean = false
+
+    fun setEditMode(mode: Boolean) {
+        editMode = mode
+        notifyDataSetChanged()
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -36,7 +38,7 @@ class LinkUrlAdapter(
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        (holder as LinkViewHolder).bind(items[position])
+        (holder as LinkViewHolder).bind(items[position], editMode)
     }
 
     class LinkViewHolder(
@@ -44,12 +46,13 @@ class LinkUrlAdapter(
             private val listener: LinkClickListener
     ): RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(observable: LinkObservable) {
+        fun bind(observable: LinkObservable, editMode: Boolean) {
             val context = binding.root.context
             val uri = AndroidUtils.getUriFromCache(context, observable.photoFileName)
             when (binding) {
                 is ItemLinkBinding -> {
                     binding.observable = observable
+                    binding.editMode = editMode
                     binding.ivLinkPhoto.setImageURI(uri)
                     binding.listener = listener
                     binding.executePendingBindings()

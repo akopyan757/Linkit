@@ -1,22 +1,25 @@
 package com.akopyan757.linkit.viewmodel
 
 import androidx.databinding.Bindable
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.SavedStateHandle
 import com.akopyan757.base.viewmodel.list.ListLiveData
 import com.akopyan757.linkit.BR
 import com.akopyan757.linkit.model.repository.LinkRepository
 import com.akopyan757.base.viewmodel.BaseViewModel
+import com.akopyan757.linkit.common.Config
+import com.akopyan757.linkit.common.Config.KEY_EDIT_MODE
 import com.akopyan757.linkit.viewmodel.observable.FolderObservable
 import org.koin.core.KoinComponent
 import org.koin.core.inject
+import org.koin.core.qualifier.named
 
 class LinkViewModel : BaseViewModel(), KoinComponent {
 
-    companion object {
-        private const val TAG = "LINK_VIEW_MODEL"
-    }
+    private val stateHandle: SavedStateHandle by inject(named(Config.HANDLE_URL))
 
     @get:Bindable
-    var editMode: Boolean by DelegatedBindable(false, BR.editMode)
+    var editMode: Boolean by SavedStateBindable(stateHandle, KEY_EDIT_MODE, false, BR.editMode)
 
     /**
      * List LiveData's

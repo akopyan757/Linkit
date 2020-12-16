@@ -1,9 +1,9 @@
 package com.akopyan757.linkit.view.fragment
 
 import android.os.Bundle
+import android.util.Log
 import androidx.databinding.ViewDataBinding
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.akopyan757.base.view.BaseFragment
 import com.akopyan757.base.viewmodel.list.LinearLayoutManagerWrapper
 import com.akopyan757.linkit.BR
@@ -35,14 +35,11 @@ class PageFragment: BaseFragment<ViewDataBinding, PageViewModel>(), LinkClickLis
     override fun getLayoutId() = R.layout.fragment_page
 
     private val mUrlAdapter: LinkUrlAdapter by lazy {
-
         when (mObservable.type) {
             1 -> LinkUrlAdapter(LinkUrlAdapter.Type.ITEM, this)
             else -> LinkUrlAdapter(LinkUrlAdapter.Type.BOX, this)
         }
     }
-
-    private lateinit var mUrlLayoutManager: RecyclerView.LayoutManager
 
     override fun onSetupView(binding: ViewDataBinding, bundle: Bundle?) {
         val urlRecyclerView = when (binding) {
@@ -63,6 +60,10 @@ class PageFragment: BaseFragment<ViewDataBinding, PageViewModel>(), LinkClickLis
 
     override fun onSetupViewModel(viewModel: PageViewModel) = with(viewModel) {
         getUrlLiveList().observeList(mUrlAdapter)
+        getLiveEditMode().observe(viewLifecycleOwner, { editMode ->
+            Log.i(TAG, "editMode = $editMode")
+            mUrlAdapter.setEditMode(editMode)
+        })
     }
 
     override fun onShareListener(link: LinkObservable) {
