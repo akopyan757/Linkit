@@ -49,12 +49,14 @@ class MainFragment : BaseFragment<FragmentMainBinding, LinkViewModel>(), ViewTre
             }
         }
 
-        mAdapter = PageFragmentAdapter(childFragmentManager, lifecycle)
+        mAdapter = PageFragmentAdapter(requireActivity())
         viewPager.adapter = mAdapter
 
         TabLayoutMediator(tabLayoutFolder, viewPager) { tab, position ->
-            tab.text = mAdapter.getItems()[position].name
+            tab.customView = mAdapter.getTabView(position)
         }.attach()
+
+        tabLayoutFolder.offsetLeftAndRight(0)
     }
 
     override fun onStart() {

@@ -2,19 +2,56 @@
     <!-- Base application theme. -->
     <style name="Theme.Linkit" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/purple_500</item>
-        <item name="colorPrimaryVariant">@color/purple_700</item>
-        <item name="colorOnPrimary">@color/white</item>
+        <item name="colorPrimary">@color/white</item>
+        <item name="colorPrimaryVariant">@color/background</item>
+        <item name="colorOnPrimary">@color/black</item>
+
         <!-- Secondary brand color. -->
-        <item name="colorSecondary">@color/teal_200</item>
-        <item name="colorSecondaryVariant">@color/teal_700</item>
+        <item name="colorSecondary">@color/primary</item>
+        <item name="colorSecondaryVariant">@color/disabled</item>
         <item name="colorOnSecondary">@color/black</item>
         <!-- Status bar color. -->
-        <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
+        <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimary</item>
         <!-- Customize your theme here. -->
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
+
+        <item name="android:windowBackground">@color/background</item>
+
+        <item name="toolbarStyle">@style/Theme.Linkit.Toolbar</item>
+        
     </style>
+    
+    <style name="Theme.Linkit.Toolbar" parent="Widget.AppCompat.Toolbar">
+        <item name="titleTextColor">@color/black</item>
+        <item name="titleTextAppearance">@style/Theme.Linkit.TextAppearanceTitle</item>
+    </style>
+
+    <style name="Theme.Linkit.TabLayout" parent="Widget.Design.TabLayout">
+        <item name="background">@drawable/shadow_tab_layout</item>
+        <item name="tabIndicator">@null</item>
+        <item name="tabMode">scrollable</item>
+        <item name="tabMinWidth">0dp</item>
+        <item name="tabGravity">fill</item>
+        <item name="tabRippleColor">@null</item>
+        <item name="tabPaddingStart">@dimen/marginTertiary</item>
+        <item name="tabPaddingEnd">@dimen/marginTertiary</item>
+        <item name="tabPaddingTop">@dimen/marginTertiary</item>
+        <item name="tabPaddingBottom">@dimen/marginTertiary</item>
+        <item name="android:tabStripEnabled">false</item>
+    </style>
+
+    <style name="Theme.Linkit.TabItem" parent="Widget.AppCompat.TextView">
+        <item name="android:gravity">center</item>
+        <item name="android:paddingTop">@dimen/marginTertiary</item>
+        <item name="android:paddingBottom">@dimen/marginTertiary</item>
+        <item name="android:paddingStart">@dimen/paddingFolderTabItem</item>
+        <item name="android:paddingEnd">@dimen/paddingFolderTabItem</item>
+        <item name="android:background">@drawable/shadow_tab_item</item>
+        <item name="android:elevation">@dimen/elevationTertiary</item>
+        <item name="android:textAppearance">@style/Theme.Linkit.TextAppearanceRegular</item>
+    </style>
+
 
     <style name="Theme.Linkit.SingleTextView" parent="Widget.AppCompat.TextView">
         <item name="android:ellipsize">end</item>

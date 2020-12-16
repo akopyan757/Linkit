@@ -14,7 +14,12 @@
     <dimen name="textSizeTertiary">12sp</dimen>
     <dimen name="textSizeQuartiary">10sp</dimen>
 
+    <dimen name="elevationPrimary">8dp</dimen>
     <dimen name="elevationSecondary">4dp</dimen>
+    <dimen name="elevationTertiary">2dp</dimen>
+
+    <dimen name="paddingFolderTabItem">12dp</dimen>
+
     <dimen name="cornerRadius">16dp</dimen>
     <dimen name="linkPictureWidth">60dp</dimen>
     <dimen name="linkPictureHeight">60dp</dimen>
@@ -26,4 +31,5 @@
     <dimen name="dialogMinWidth">300dp</dimen>
     <dimen name="linkMinWidth">100dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
+    <dimen name="tabPaddingHorizontally">12dp</dimen>
 </resources>

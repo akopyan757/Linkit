@@ -82,7 +82,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 style="@style/Theme.Linkit.ClickableImageView"
-                app:tint="@color/tintColor" />
+                app:tint="@color/black" />
 
             <TextView
                 android:id="@+id/tvLinkUrl"
@@ -97,7 +97,7 @@
                 android:maxLines="2"
                 android:singleLine="true"
                 android:text="@{observable.url}"
-                android:textColorLink="@color/linkColor"
+                android:textColorLink="@color/link"
                 android:textSize="@dimen/textSizeQuartiary"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="@+id/tvLinkTitle"

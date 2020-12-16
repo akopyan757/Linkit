@@ -90,7 +90,7 @@
                 android:src="@drawable/ic_baseline_share_24"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:tint="@color/tintColor" />
+                app:tint="@color/black" />
 
             <TextView
                 android:id="@+id/tvLinkUrl"
@@ -105,7 +105,7 @@
                 android:linksClickable="false"
                 android:singleLine="true"
                 android:text="@{observable.url}"
-                android:textColorLink="@color/linkColor"
+                android:textColorLink="@color/link"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/ivLinkShare"
                 app:layout_constraintStart_toStartOf="@+id/guidelineLink"
