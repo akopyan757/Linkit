@@ -52,6 +52,16 @@
         <item name="android:textAppearance">@style/Theme.Linkit.TextAppearanceRegular</item>
     </style>
 
+    <style name="Theme.Linkit.ItemUrl" parent="Widget.AppCompat.TextView">
+        <item name="android:autoLink">web</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:ems">3</item>
+        <item name="android:linksClickable">false</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:textColorLink">@color/link</item>
+        <item name="android:textAppearance">@style/Theme.Linkit.TextAppearanceRegular.Body2</item>
+    </style>
+
 
     <style name="Theme.Linkit.SingleTextView" parent="Widget.AppCompat.TextView">
         <item name="android:ellipsize">end</item>

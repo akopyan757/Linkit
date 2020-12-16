@@ -5,7 +5,18 @@
         <item name="android:textSize">16sp</item>
         <item name="android:fontFamily">@font/poppins</item>
         <item name="android:gravity">center_vertical|start</item>
+        <item name="android:textColorLink">@color/link</item>
         <item name="lineHeight">24sp</item>
+    </style>
+
+    <style name="Theme.Linkit.TextAppearanceRegular.Body1">
+        <item name="android:textSize">14sp</item>
+        <item name="lineHeight">20sp</item>
+    </style>
+
+    <style name="Theme.Linkit.TextAppearanceRegular.Body2">
+        <item name="android:textSize">12sp</item>
+        <item name="lineHeight">20sp</item>
     </style>
 
     <style name="Theme.Linkit.TextAppearanceTitle" parent="TextAppearance.AppCompat">
