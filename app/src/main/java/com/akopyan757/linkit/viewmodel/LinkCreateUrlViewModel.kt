@@ -34,13 +34,17 @@ class LinkCreateUrlViewModel(
      * Binding properties
      */
     @get:Bindable
-    var title: String by DelegatedBindable("", BR.title)
+    var title: String by DelegatedBindable("", BR.title, BR.enabledButton)
 
     @get:Bindable
     var description: String by DelegatedBindable("", BR.description)
 
     @get:Bindable
-    var selectedFolderName by DelegatedBindable("", BR.selectedFolderName)
+    var selectedFolderName: String by DelegatedBindable("", BR.selectedFolderName, BR.enabledButton)
+
+    @get:Bindable
+    val enabledButton: Boolean
+        get() = selectedFolderName.isNotEmpty() && title.isNotEmpty()
 
     /**
      * ListView

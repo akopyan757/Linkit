@@ -59,7 +59,7 @@
 
         </com.google.android.material.textfield.TextInputLayout>
 
-        <androidx.appcompat.widget.AppCompatSpinner
+        <Spinner
             android:id="@+id/spCreateLinkAssignToFolder"
             android:layout_width="0dp"
             android:layout_height="56dp"
@@ -70,7 +70,7 @@
             android:popupBackground="@drawable/background_edit_text"
             android:dropDownVerticalOffset="60dp"
             android:background="@drawable/background_spinner"
-            app:selectedValue="@={viewModel.selectedFolderName}"
+            selectedValue="@={viewModel.selectedFolderName}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@+id/tilClipboardUrl"
             app:layout_constraintStart_toStartOf="@+id/tilClipboardUrl"

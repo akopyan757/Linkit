@@ -14,11 +14,11 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Linkit"
         android:usesCleartextTraffic="true"
-        tools:targetApi="m">
+        tools:targetApi="m"
+        android:fullBackupContent="true">
         <activity
             android:name=".view.ReceiveUrlActivity"
-            android:label="@string/title_activity_recieve_url"
-            android:theme="@style/Theme.Linkit.NoActionBar">
+            android:label="@string/title_activity_recieve_url">
             <intent-filter>
                 <action android:name="android.intent.action.SEND" />
                 <category android:name="android.intent.category.DEFAULT" />
