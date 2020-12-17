@@ -16,8 +16,9 @@ import com.akopyan757.linkit.viewmodel.listener.LinkAdapterListener
 import com.akopyan757.linkit.viewmodel.observable.LinkObservable
 import java.util.*
 
+
 class LinkUrlAdapter(
-    private val listener: LinkAdapterListener
+        private val listener: LinkAdapterListener
 ): UpdatableListAdapter<LinkObservable>(), ItemTouchHelperAdapter {
 
     private var editMode: Boolean = false
@@ -39,18 +40,16 @@ class LinkUrlAdapter(
     }
 
     class LinkViewHolder(
-        private val binding: ItemLinkBinding,
-        private val listener: LinkAdapterListener
+            private val binding: ItemLinkBinding,
+            private val listener: LinkAdapterListener
     ): RecyclerView.ViewHolder(binding.root) {
 
         @SuppressLint("ClickableViewAccessibility")
         fun bind(observable: LinkObservable, editMode: Boolean) {
             val context = binding.root.context
-            val uri = AndroidUtils.getUriFromCache(context, observable.photoFileName)
-
+            observable.uri = AndroidUtils.getUriFromCache(context, observable.photoFileName)
             binding.observable = observable
             binding.editMode = editMode
-            binding.ivLinkPhoto.setImageURI(uri)
             binding.listener = listener
             val colorRes = if (observable.selected) R.color.greyLight else R.color.white
             val color = ContextCompat.getColor(context, colorRes)

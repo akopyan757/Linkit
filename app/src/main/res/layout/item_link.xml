@@ -28,6 +28,7 @@
             android:onClick="@{(view) -> listener.onItemListener(observable, editMode)}"
             app:cardCornerRadius="@dimen/cornerRadius"
             app:cardElevation="@dimen/elevationTertiary"
+            app:layout_constraintHeight_min="84dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/ivLinkDrag"
             app:layout_constraintStart_toStartOf="parent"
@@ -38,37 +39,30 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/scvLinkPhoto"
+                <ImageView
+                    android:id="@+id/ivLinkPhoto"
                     android:layout_width="0dp"
-                    android:layout_height="0dp"
-                    android:layout_marginStart="12dp"
-                    android:layout_marginTop="@dimen/marginPrimary"
-                    android:layout_marginEnd="@dimen/marginPrimary"
-                    android:layout_marginBottom="@dimen/marginPrimary"
-                    app:cardCornerRadius="12dp"
-                    app:cardElevation="2dp"
-                    app:layout_constraintBottom_toBottomOf="parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/marginSecondary"
+                    android:layout_marginTop="@dimen/marginSecondary"
+                    android:layout_marginEnd="@dimen/marginSecondary"
+                    android:layout_marginBottom="@dimen/marginSecondary"
+                    android:contentDescription="@string/todo"
+                    android:background="@drawable/background_image_view_corners"
+                    app:elevation="2dp"
+                    app:uri="@{observable.uri}"
                     app:layout_constraintDimensionRatio="1:1"
+                    app:layout_constrainedHeight="true"
+                    app:layout_constrainedWidth="true"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/guidelineLink"
-                    app:layout_constraintHeight_default="wrap"
                     app:layout_constraintHeight_max="@dimen/linkPictureHeight"
                     app:layout_constraintHeight_min="@dimen/linkIconMinHeight"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintWidth_default="spread"
                     app:layout_constraintWidth_max="@dimen/linkPictureWidth"
-                    app:layout_constraintWidth_min="@dimen/linkIconMinWidth">
-
-                    <ImageView
-                        android:id="@+id/ivLinkPhoto"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:contentDescription="@string/todo"
-                        android:scaleType="centerCrop"
-                        tools:src="@drawable/image_analysis" />
-
-                </androidx.cardview.widget.CardView>
+                    app:layout_constraintWidth_min="@dimen/linkIconMinWidth"
+                    tools:src="@drawable/image_analysis" />
 
                 <androidx.constraintlayout.widget.Guideline
                     android:id="@+id/guidelineLink"

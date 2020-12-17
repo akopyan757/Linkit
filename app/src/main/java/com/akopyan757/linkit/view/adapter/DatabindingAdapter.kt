@@ -11,9 +11,11 @@ import android.widget.Spinner
 import androidx.databinding.BindingAdapter
 import androidx.databinding.InverseBindingAdapter
 import androidx.databinding.InverseBindingListener
+import com.akopyan757.linkit.R
 import com.akopyan757.linkit.common.image.getBitmapFromURL
 import com.google.android.material.textfield.TextInputLayout
 import com.squareup.picasso.Picasso
+import jp.wasabeef.picasso.transformations.RoundedCornersTransformation
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -49,8 +51,16 @@ object DatabindingAdapter {
 
     @JvmStatic
     @BindingAdapter("app:uri")
-    fun ImageView.setUri(uri: Uri) {
-        Picasso.get().load(uri).into(this)
+    fun ImageView.setUri(uri: Uri?) {
+        val radius = context.resources.getDimensionPixelOffset(R.dimen.tabPaddingHorizontally)
+        val size = context.resources.getDimensionPixelOffset(R.dimen.linkPictureWidth)
+        Picasso.get()
+
+                .load(uri)
+                .resize(size, size)
+                .centerCrop()
+                .transform(RoundedCornersTransformation(radius, 0))
+                .into(this)
     }
 
     @JvmStatic

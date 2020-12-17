@@ -9,6 +9,7 @@ import org.koin.core.KoinComponent
 import org.koin.core.inject
 import java.io.File
 import java.io.FileOutputStream
+import java.io.IOException
 import java.net.URL
 
 
@@ -58,10 +59,12 @@ class ImageCache: KoinComponent {
         if (imageDir.exists()) imageDir.delete()
     }
 
-    private fun loadBitmap(urlValue: String): Bitmap? {
+    private fun loadBitmap(urlValue: String): Bitmap? = try {
         val url = URL(urlValue)
         val inputStream = url.openConnection().getInputStream()
-        return BitmapFactory.decodeStream(inputStream)
+        BitmapFactory.decodeStream(inputStream)
+    } catch (exception: IOException) {
+        null
     }
 
     private fun Bitmap.getResizedBitmap(maxSize: Int): Bitmap {

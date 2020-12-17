@@ -21,7 +21,7 @@
     <dimen name="paddingFolderTabItem">12dp</dimen>
 
     <dimen name="cornerRadius">16dp</dimen>
-    <dimen name="linkPictureWidth">60dp</dimen>
+    <dimen name="linkPictureWidth">68dp</dimen>
     <dimen name="linkPictureHeight">60dp</dimen>
     <dimen name="linkPictureBigWidth">150dp</dimen>
     <dimen name="linkPictureBigHeight">80dp</dimen>
