@@ -109,6 +109,7 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/marginSecondary"
             android:contentDescription="@string/todo"
+            app:visibility="@{editMode}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"

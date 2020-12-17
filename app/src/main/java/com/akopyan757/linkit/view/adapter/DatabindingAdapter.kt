@@ -55,7 +55,6 @@ object DatabindingAdapter {
         val radius = context.resources.getDimensionPixelOffset(R.dimen.tabPaddingHorizontally)
         val size = context.resources.getDimensionPixelOffset(R.dimen.linkPictureWidth)
         Picasso.get()
-
                 .load(uri)
                 .resize(size, size)
                 .centerCrop()
