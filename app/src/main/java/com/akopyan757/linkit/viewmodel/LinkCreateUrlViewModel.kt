@@ -7,6 +7,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.map
 import androidx.lifecycle.switchMap
 import com.akopyan757.base.viewmodel.BaseViewModel
+import com.akopyan757.base.viewmodel.list.ListLiveData
 import com.akopyan757.linkit.BR
 import com.akopyan757.linkit.model.entity.FolderData
 import com.akopyan757.linkit.model.repository.LinkRepository
@@ -49,7 +50,7 @@ class LinkCreateUrlViewModel(
     /**
      * ListView
      */
-    private var foldersList: MutableLiveData<List<FolderObservable>> = MutableLiveData()
+    private var foldersList = ListLiveData<FolderObservable>()
 
     /**
      * Repository
@@ -60,18 +61,15 @@ class LinkCreateUrlViewModel(
     private val addLinkRequest = MutableLiveData<LinkRequest>()
 
     /** Responses */
-    private val getListFolders = requestLiveData(
-            method = { linkRepository.getAllFolders() },
-            onLoading = {
-                Log.i(TAG, "GET FOLDER LIST: LOADING")
-            }, onSuccess = { folders ->
-                val names = folders.toTypedArray()
-                Log.i(TAG, "GET FOLDER LIST: SUCCESS: ${names.joinToString(", ")}")
-                foldersList.value = names.map { FolderObservable(it.id, it.name, it.order) }
-            }, onError = { exception ->
-                Log.i(TAG, "GET FOLDER LIST: ERROR", exception)
-            }
-    )
+    init {
+        bindLiveList(
+            request = linkRepository.getAllFolders(),
+            listLiveData = foldersList,
+            onMap = { folders -> folders.map { FolderObservable(it.id, it.name, it.order) } },
+            onFinished = { Log.i(TAG, "GET FOLDER LIST: SUCCESS") },
+            onError = { exception -> Log.i(TAG, "GET FOLDER LIST: ERROR", exception) }
+        )
+    }
 
     private val getInfoFromUrl = requestLiveData(
         method = { linkRepository.getDefaultInfoFromUrl(url) },
@@ -108,15 +106,16 @@ class LinkCreateUrlViewModel(
     }
 
     fun onAcceptUrl() {
-        val folderId = foldersList.value?.find { it.name == selectedFolderName }?.id  ?: FolderData.GENERAL_FOLDER_ID
+        val folderId = foldersList.getList()
+            .find { it.name == selectedFolderName }
+            ?.id  ?: FolderData.GENERAL_FOLDER_ID
+
         addLinkRequest.value = LinkRequest(title, description, url, folderId)
     }
 
     override fun getLiveResponses() = groupLiveResponses(
-        getInfoFromUrl, addLinkResponse, getListFolders
+        getInfoFromUrl, addLinkResponse
     )
 
-    fun getFolderList(): LiveData<Array<String>> = foldersList.map {
-        list -> list.map { it.name }.toTypedArray()
-    }
+    fun getFolderList() = foldersList
 }

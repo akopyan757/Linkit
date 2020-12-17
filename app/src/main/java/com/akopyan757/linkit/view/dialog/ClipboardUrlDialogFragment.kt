@@ -22,7 +22,6 @@ import com.akopyan757.linkit.viewmodel.LinkCreateUrlViewModel
 import org.koin.android.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
-
 class ClipboardUrlDialogFragment : DialogFragment() {
 
     companion object {
@@ -66,9 +65,10 @@ class ClipboardUrlDialogFragment : DialogFragment() {
     ) {
         initResources(getString(R.string.notSelected))
 
-        getFolderList().observe(owner, { names ->
-            binding.contentClipboard.spCreateLinkAssignToFolder.adapter = ArrayAdapter(
-                requireContext(), R.layout.item_folder_spinner, R.id.tvFolderSpinner, names
+        getFolderList().observe(owner, { holders ->
+            val spinner = binding.contentClipboard.spCreateLinkAssignToFolder
+            spinner.adapter = ArrayAdapter(
+                requireContext(), R.layout.item_folder_spinner, R.id.tvFolderSpinner, holders.data
             )
         })
 

@@ -18,19 +18,13 @@ class FolderViewModel : BaseViewModel(), KoinComponent {
     @get:Bindable
     var newFolderName: String by DelegatedBindable("", BR.newFolderName)
 
-    /**
-     * List LiveData's
-     */
+    /** List LiveData's */
     private val foldersSelectedLiveData = ListLiveData<FolderObservable>()
 
-    /**
-     * Repository
-     */
+    /** Repository */
     private val linkRepository: LinkRepository by inject()
 
-    /**
-     * Requests
-     */
+    /** Requests */
     private val requestDelete = MutableLiveData<Int>()
     private val requestEdit = MutableLiveData<Pair<Int, String>>()
     private val requestSave = MutableLiveData<List<Pair<Int, Int>>>()
@@ -38,18 +32,16 @@ class FolderViewModel : BaseViewModel(), KoinComponent {
     /**
      * Responses
      */
-    private val getAllFolder = requestLiveData(
-        method = { linkRepository.getAllFolders() },
-        onSuccess = { list ->
-            val observables = list.mapIndexed { index, folder ->
-                FolderObservable(folder.id, folder.name, index % 2 + 1)
-            }.filter {
-                it.id != FolderData.GENERAL_FOLDER_ID
+    init {
+        bindLiveList(
+            request = linkRepository.getAllFolders(),
+            listLiveData = foldersSelectedLiveData,
+            onMap = { data ->
+                data.map { item -> FolderObservable(item.id, item.name, 1) }
+                    .filter { observable -> observable.id != FolderData.GENERAL_FOLDER_ID }
             }
-
-            foldersSelectedLiveData.change(observables)
-        }
-    )
+        )
+    }
 
     private val responseDeleteFolder = requestDelete.switchMap { folderId ->
         requestLiveData(
@@ -123,7 +115,7 @@ class FolderViewModel : BaseViewModel(), KoinComponent {
     }
 
     override fun getLiveResponses() = groupLiveResponses(
-            getAllFolder, responseDeleteFolder, responseEditFolder, responseReorderFolder
+            responseDeleteFolder, responseEditFolder, responseReorderFolder
     )
 
     companion object {

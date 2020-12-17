@@ -33,34 +33,28 @@ class LinkViewModel : BaseViewModel(), KoinComponent {
 
     private val deleteUrlsVisible = selectedCount.map { count -> count > 0 }
 
-
-    /**
-     * List LiveData's
-     */
+    /** List LiveData's */
     private val foldersLiveData = ListLiveData<FolderObservable>()
 
-    /**
-     * Repository
-     */
+    /** Repository */
     private val linkRepository: LinkRepository by inject()
 
-    /**
-     * Responses
-     */
-    private val getAllFolder = requestLiveData(
-        method = { linkRepository.getAllFolders() },
-        onSuccess = { list ->
-            selectedCount.removeAll()
-            val observables = list.map { folder ->
-                val name = KEY_SELECTED_COUNT.format(folder.id)
-                val source: LiveData<Int> by LiveSavedStateBindable(stateHandle, name)
-                selectedCount.addSource(source, name)
-                FolderObservable(folder.id, folder.name, 1)
+    /** Responses */
+    init {
+        bindLiveList(
+            request = linkRepository.getAllFolders(),
+            listLiveData = foldersLiveData,
+            onStart = { selectedCount.removeAll() },
+            onMap = { list ->
+                list.map { folder ->
+                    val name = KEY_SELECTED_COUNT.format(folder.id)
+                    val source by LiveSavedStateBindable<Int>(stateHandle, name)
+                    selectedCount.addSource(source, name)
+                    FolderObservable(folder.id, folder.name, 1)
+                }
             }
-
-            foldersLiveData.init(observables)
-        }
-    )
+        )
+    }
 
     /**
      * Public methods
@@ -88,6 +82,4 @@ class LinkViewModel : BaseViewModel(), KoinComponent {
     fun getDeleteIconVisible() = deleteUrlsVisible
 
     fun getSelectedCount() = selectedCount
-
-    override fun getLiveResponses() = groupLiveResponses(getAllFolder)
 }

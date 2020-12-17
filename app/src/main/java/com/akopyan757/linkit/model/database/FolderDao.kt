@@ -28,7 +28,7 @@ interface FolderDao {
     @Query("SELECT * FROM folder_data WHERE name LIKE :name LIMIT 1")
     fun getByName(name: String): FolderData?
 
-    @Query("SELECT * FROM folder_data")
+    @Query("SELECT * FROM folder_data ORDER BY `order`")
     fun getLiveAll(): LiveData<List<FolderData>>
 
     @Query("UPDATE folder_data SET name = :name WHERE id == :id")

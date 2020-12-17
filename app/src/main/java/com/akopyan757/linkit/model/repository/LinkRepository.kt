@@ -89,9 +89,7 @@ class LinkRepository: BaseRepository(), KoinComponent {
     }
 
     fun addNewFolder(name: String) = call(ioDispatcher) {
-        if (!folderDao.addNewFolder(name)) {
-            throw FolderExistsException()
-        }
+        if (!folderDao.addNewFolder(name)) throw FolderExistsException()
     }
 
     fun getUrlLinksByFolder(folderId: Int, isLive: Boolean = true): LiveData<ApiResponse<List<UrlLinkData>>> {
@@ -114,10 +112,8 @@ class LinkRepository: BaseRepository(), KoinComponent {
         }.sortedBy { it._order }
     }
 
-    fun getAllFolders(): LiveData<ApiResponse<List<FolderData>>> = callLive(ioDispatcher) {
-        folderDao.getLiveAll().map { list ->
-            list.sortedBy { folder -> folder.order }.let { ApiResponse.Success(it) }
-        }
+    fun getAllFolders(): LiveData<List<FolderData>> = callLive(ioDispatcher) {
+        folderDao.getLiveAll()
     }
 
     fun deleteUrls(ids: List<Long>): LiveData<ApiResponse<Unit>> = call(ioDispatcher) {

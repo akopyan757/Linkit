@@ -2,9 +2,11 @@ package com.akopyan757.base.viewmodel.list
 
 import android.util.Log
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
+import com.akopyan757.base.R
 import com.akopyan757.base.viewmodel.DiffItemObservable
 
-class ListLiveData<T : DiffItemObservable> : LiveData<ListHolder<T>>() {
+class ListLiveData<T : DiffItemObservable> : MediatorLiveData<ListHolder<T>>() {
 
     fun getList(): List<T> = synchronized(this) {
         return super.getValue()?.data ?: emptyList()

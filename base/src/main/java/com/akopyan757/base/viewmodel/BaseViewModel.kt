@@ -4,6 +4,9 @@ import android.util.Log
 import androidx.databinding.PropertyChangeRegistry
 import androidx.lifecycle.*
 import com.akopyan757.base.model.ApiResponse
+import com.akopyan757.base.viewmodel.list.ListLiveData
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 import java.lang.Exception
 import kotlin.reflect.KProperty
 
@@ -47,6 +50,29 @@ abstract class BaseViewModel: ViewModel(), BaseStateObservable {
         }
 
         return mediatorGroup
+    }
+
+    fun <T, R : DiffItemObservable> bindLiveList(
+        request: LiveData<List<T>>,
+        listLiveData: ListLiveData<R>,
+        onMap: (List<T>) -> List<R>,
+        onStart: (() -> Unit)? = null,
+        onFinished: (() -> Unit)? = null,
+        onError: ((exception: Exception) -> Unit)? = null
+    ) {
+        listLiveData.addSource(request) { list ->
+            viewModelScope.launch {
+                try {
+                    onStart?.invoke()
+                    listLiveData.change(onMap.invoke(list)) {
+                        onFinished?.invoke()
+                    }
+                } catch (e: Exception) {
+                    mException.value = e
+                    onError?.invoke(e)
+                }
+            }
+        }
     }
 
     fun <T> requestLiveData(
