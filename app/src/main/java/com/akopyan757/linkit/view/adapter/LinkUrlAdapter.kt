@@ -11,14 +11,12 @@ import com.akopyan757.base.viewmodel.list.UpdatableListAdapter
 import com.akopyan757.linkit.R
 import com.akopyan757.linkit.common.utils.AndroidUtils
 import com.akopyan757.linkit.databinding.ItemLinkBinding
-import com.akopyan757.linkit.databinding.ItemLinkBoxBinding
 import com.akopyan757.linkit.view.callback.ItemTouchHelperAdapter
 import com.akopyan757.linkit.viewmodel.listener.LinkAdapterListener
 import com.akopyan757.linkit.viewmodel.observable.LinkObservable
 import java.util.*
 
 class LinkUrlAdapter(
-    private val type: Type,
     private val listener: LinkAdapterListener
 ): UpdatableListAdapter<LinkObservable>(), ItemTouchHelperAdapter {
 
@@ -31,12 +29,7 @@ class LinkUrlAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
-
-        val layoutId = when (type) {
-            Type.ITEM -> R.layout.item_link
-            else -> R.layout.item_link_box
-        }
-
+        val layoutId = R.layout.item_link
         val binding = DataBindingUtil.inflate<ViewDataBinding>(inflater, layoutId, parent, false)
         return LinkViewHolder(binding, listener)
     }
@@ -60,19 +53,14 @@ class LinkUrlAdapter(
                     binding.editMode = editMode
                     binding.ivLinkPhoto.setImageURI(uri)
                     binding.listener = listener
+                    val colorRes = if (observable.selected) R.color.background else R.color.white
+                    binding.clLinkContent.setBackgroundResource(colorRes)
                     binding.ivLinkDrag.setOnTouchListener { _, motionEvent ->
                         if (motionEvent.action == MotionEvent.ACTION_DOWN) {
                             listener.onStartDrag(this)
                         }
                         false
                     }
-                    binding.executePendingBindings()
-                }
-
-                is ItemLinkBoxBinding -> {
-                    binding.observable = observable
-                    binding.ivLinkPhoto.setImageURI(uri)
-                    binding.listener = listener
                     binding.executePendingBindings()
                 }
             }
@@ -91,9 +79,5 @@ class LinkUrlAdapter(
         }
         notifyItemMoved(fromPosition, toPosition)
         return true
-    }
-
-    enum class Type {
-        ITEM, BOX
     }
 }

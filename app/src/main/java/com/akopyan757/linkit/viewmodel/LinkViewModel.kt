@@ -38,8 +38,8 @@ class LinkViewModel : BaseViewModel(), KoinComponent {
     private val getAllFolder = requestLiveData(
         method = { linkRepository.getAllFolders() },
         onSuccess = { list ->
-            val observables = list.mapIndexed { index, folder ->
-                FolderObservable(folder.id, folder.name, index % 2 + 1)
+            val observables = list.map { folder ->
+                FolderObservable(folder.id, folder.name, 1)
             }
 
             foldersLiveData.init(observables)
@@ -54,6 +54,7 @@ class LinkViewModel : BaseViewModel(), KoinComponent {
     }
 
     fun disableEditMode() {
+        savedState = false
         editMode = false
     }
 

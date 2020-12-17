@@ -111,19 +111,24 @@ class LinkRepository: BaseRepository(), KoinComponent {
         folderDao.getByName(name)
     }
 
-    fun getAllUrlLinksByFolder(folderId: Int): LiveData<ApiResponse<List<UrlLinkData>>> = callLive(ioDispatcher) {
-        urlLinkDao.getLiveAll().map { list ->
-            val data = list.filter {
-                folderId == it.folderId
-            }.map { data ->
-                data.apply {
-                    logoFileName = imageCache.getLogoName(data)
-                    contentFileName = imageCache.getContentName(data)
-                }
-            }.sortedBy { it._order }
-
-            ApiResponse.Success(data)
+    fun getUrlLinksByFolder(folderId: Int, isLive: Boolean = true): LiveData<ApiResponse<List<UrlLinkData>>> {
+        return if (isLive) {
+            callLive(ioDispatcher) {
+                urlLinkDao.getLiveFromFolder(folderId)
+                    .map { list -> ApiResponse.Success(list.convertUrls()) }
+            }
+        } else {
+            call(ioDispatcher) { urlLinkDao.getByFolder(folderId).convertUrls() }
         }
+    }
+
+    private fun List<UrlLinkData>.convertUrls(): List<UrlLinkData> {
+        return map { data ->
+            data.apply {
+                logoFileName = imageCache.getLogoName(data)
+                contentFileName = imageCache.getContentName(data)
+            }
+        }.sortedBy { it._order }
     }
 
     fun getAllFolders(): LiveData<ApiResponse<List<FolderData>>> = callLive(ioDispatcher) {

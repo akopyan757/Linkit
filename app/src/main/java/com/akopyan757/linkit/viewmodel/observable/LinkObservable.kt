@@ -8,9 +8,10 @@ data class LinkObservable(
     val title: String,
     val description: String,
     val photoUrl: String? = null,
-    val photoFileName: String? = null
+    val photoFileName: String? = null,
+    var selected: Boolean = false
 ): DiffItemObservable {
-    override fun id() = url
+    override fun id() = id
 
     val descriptionVisible: Boolean
         get() = description.isNotEmpty()

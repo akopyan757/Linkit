@@ -22,21 +22,14 @@ import com.akopyan757.linkit.viewmodel.observable.LinkObservable
 import org.koin.android.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
-class PageFragment: BaseFragment<ViewDataBinding, PageViewModel>(), LinkAdapterListener {
+class PageFragment: BaseFragment<ViewDataBinding, PageViewModel>(), LinkAdapterListener, ItemTouchHelperAdapter {
 
     override val mViewModel: PageViewModel by viewModel { parametersOf(mObservable.id) }
 
     private lateinit var mObservable: FolderObservable
 
     private val mTouchHelper: ItemTouchHelper by lazy {
-        val callback = ItemTouchHelperCallback(object : ItemTouchHelperAdapter{
-            override fun onItemMove(fromPosition: Int, toPosition: Int): Boolean {
-                val result = mUrlAdapter.onItemMove(fromPosition, toPosition)
-                mViewModel.setEditObservables(mUrlAdapter.items)
-                return result
-            }
-        })
-        ItemTouchHelper(callback)
+        ItemTouchHelper(ItemTouchHelperCallback(this))
     }
 
     override fun getVariableId() = BR.viewModel
@@ -50,10 +43,7 @@ class PageFragment: BaseFragment<ViewDataBinding, PageViewModel>(), LinkAdapterL
     override fun getLayoutId() = R.layout.fragment_page
 
     private val mUrlAdapter: LinkUrlAdapter by lazy {
-        when (mObservable.type) {
-            1 -> LinkUrlAdapter(LinkUrlAdapter.Type.ITEM, this)
-            else -> LinkUrlAdapter(LinkUrlAdapter.Type.BOX, this)
-        }
+        LinkUrlAdapter(this)
     }
 
     override fun onSetupView(binding: ViewDataBinding, bundle: Bundle?) {
@@ -83,12 +73,24 @@ class PageFragment: BaseFragment<ViewDataBinding, PageViewModel>(), LinkAdapterL
         })
     }
 
-    override fun onShareListener(link: LinkObservable) {
-        startActivity(AndroidUtils.createShareIntent(link.url, link.title))
+    override fun onShareListener(link: LinkObservable, editMode: Boolean) {
+        if (!editMode) {
+            startActivity(AndroidUtils.createShareIntent(link.url, link.title))
+        }
     }
 
-    override fun onItemListener(link: LinkObservable) {
-        startActivity(AndroidUtils.createIntent(link.url))
+    override fun onItemListener(link: LinkObservable, editMode: Boolean) {
+        if (editMode) {
+            mViewModel.selectItem(link)
+        } else {
+            startActivity(AndroidUtils.createIntent(link.url))
+        }
+    }
+
+    override fun onItemMove(fromPosition: Int, toPosition: Int): Boolean {
+        val result = mUrlAdapter.onItemMove(fromPosition, toPosition)
+        mViewModel.setEditObservables(mUrlAdapter.items)
+        return result
     }
 
     override fun onStartDrag(viewHolder: RecyclerView.ViewHolder) {
