@@ -1,7 +1,6 @@
 package com.akopyan757.linkit.view.fragment
 
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
@@ -104,13 +103,14 @@ class MainFragment : BaseFragment<FragmentMainBinding, LinkViewModel>(), ViewTre
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
 
-            R.id.itemFolders -> {
+            R.id.itemFolders -> {3
                 findNavController().navigate(R.id.action_mainFragment_to_folderFragment)
                 true
             }
 
             R.id.itemEditFolder -> {
                 mViewModel.enableEditMode()
+                mBinding.toolbarEdit.menu.setGroupVisible(R.id.groupEditSave, false)
                 true
             }
 
