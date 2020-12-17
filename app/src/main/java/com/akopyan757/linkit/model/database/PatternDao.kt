@@ -1,12 +1,11 @@
 package com.akopyan757.linkit.model.database
 
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
+import android.util.Log
+import androidx.room.*
 import com.akopyan757.linkit.model.entity.ParsePatternData
 import com.akopyan757.linkit.model.entity.PatternHostData
 import com.akopyan757.linkit.model.entity.PatternSpecifiedData
+import com.akopyan757.linkit.model.repository.LinkRepository
 import com.akopyan757.urlparser.IPatternCache
 
 @Dao
@@ -17,6 +16,19 @@ interface PatternDao: IPatternCache<ParsePatternData, PatternHostData> {
 
     @Query("SELECT * FROM pattern_host_data WHERE :host LIKE '%' || host || '%'")
     override fun getHostPatterns(host: String): List<PatternHostData>
+
+    @Transaction
+    fun insertHostOrUpdate(data: List<PatternHostData>) {
+        removeSpecifiedAll()
+        removeHostAll()
+        data.forEach { hostData ->
+            val hostId = insertHostOrUpdate(hostData)
+            hostData.patterns.forEach { specifiedData ->
+                specifiedData.hostId = hostId.toInt()
+                insertSpecifiedOrUpdate(specifiedData)
+            }
+        }
+    }
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertHostOrUpdate(data: PatternHostData): Long

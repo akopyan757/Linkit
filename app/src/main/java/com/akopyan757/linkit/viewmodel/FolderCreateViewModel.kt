@@ -37,7 +37,6 @@ class FolderCreateViewModel: BaseViewModel(), KoinComponent {
     private val addFolderResponse = addFolderRequest.switchMap { name ->
         requestLiveData({
             linkRepository.addNewFolder(name)
-
         }, onLoading = {
             Log.i(TAG, "ADD NEW FOLDER: LOADING: NAME = $name")
         }, onSuccess = {

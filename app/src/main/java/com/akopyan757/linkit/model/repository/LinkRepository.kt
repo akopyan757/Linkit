@@ -1,23 +1,22 @@
 package com.akopyan757.linkit.model.repository
 
 import android.content.Context
-import android.util.Log
 import android.webkit.URLUtil
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.map
 import com.akopyan757.base.model.ApiResponse
 import com.akopyan757.base.model.BaseRepository
+import com.akopyan757.linkit.common.utils.JsonPatternsParser
+import com.akopyan757.linkit.model.cache.ImageCache
 import com.akopyan757.linkit.model.database.FolderDao
 import com.akopyan757.linkit.model.database.PatternDao
 import com.akopyan757.linkit.model.database.UrlLinkDao
 import com.akopyan757.linkit.model.entity.FolderData
 import com.akopyan757.linkit.model.entity.ParsePatternData
+import com.akopyan757.linkit.model.entity.PatternHostData
 import com.akopyan757.linkit.model.entity.UrlLinkData
 import com.akopyan757.linkit.model.exception.FolderExistsException
 import com.akopyan757.linkit.model.exception.UrlIsNotValidException
-import com.akopyan757.linkit.common.utils.JsonPatternsParser
-import com.akopyan757.linkit.model.cache.ImageCache
-import com.akopyan757.linkit.model.entity.PatternHostData
 import com.akopyan757.urlparser.UrlParser
 import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.CoroutineDispatcher
@@ -43,9 +42,7 @@ class LinkRepository: BaseRepository(), KoinComponent {
 
     private val urlParser: UrlParser<ParsePatternData, PatternHostData, UrlLinkData> by inject()
 
-    private val ioDispatcher: CoroutineDispatcher by lazy {
-        Dispatchers.IO
-    }
+    private val ioDispatcher: CoroutineDispatcher by lazy { Dispatchers.IO }
 
     init {
         CoroutineScope(ioDispatcher).launch {
@@ -55,19 +52,7 @@ class LinkRepository: BaseRepository(), KoinComponent {
             val context = get<Context>()
             val type = object : TypeToken<List<PatternHostData>>() {}.type
             val patterns = JsonPatternsParser.parse<PatternHostData>(context, FILE_NAME, type)
-
-            patternDao.removeHostAll()
-            patternDao.removeSpecifiedAll()
-
-            patterns.forEach { hostPattern ->
-                val id = patternDao.insertHostOrUpdate(hostPattern)
-
-                hostPattern.patterns.forEach { specifiedData ->
-                    specifiedData.hostId = id.toInt()
-                    Log.i(TAG, "SpecifiedData = $specifiedData; $id")
-                    patternDao.insertSpecifiedOrUpdate(specifiedData)
-                }
-            }
+            patternDao.insertHostOrUpdate(patterns)
         }
     }
 
@@ -104,11 +89,9 @@ class LinkRepository: BaseRepository(), KoinComponent {
     }
 
     fun addNewFolder(name: String) = call(ioDispatcher) {
-        val existedFolder = folderDao.getByName(name)
-        if (existedFolder != null) throw FolderExistsException()
-
-        folderDao.insertOrUpdate(FolderData(name = name, order = 1))
-        folderDao.getByName(name)
+        if (!folderDao.addNewFolder(name)) {
+            throw FolderExistsException()
+        }
     }
 
     fun getUrlLinksByFolder(folderId: Int, isLive: Boolean = true): LiveData<ApiResponse<List<UrlLinkData>>> {
@@ -138,7 +121,7 @@ class LinkRepository: BaseRepository(), KoinComponent {
     }
 
     fun deleteUrls(ids: List<Long>): LiveData<ApiResponse<Unit>> = call(ioDispatcher) {
-        ids.forEach { id -> urlLinkDao.removeById(id) }
+        urlLinkDao.removeByIds(ids)
     }
 
     fun deleteFolder(folderId: Int): LiveData<ApiResponse<Unit>> = call(ioDispatcher) {
@@ -146,9 +129,7 @@ class LinkRepository: BaseRepository(), KoinComponent {
     }
 
     fun renameFolder(folderId: Int, newFolderName: String) = call(ioDispatcher) {
-        val folder = folderDao.getById(folderId) ?: throw Exception("Folder not found")
-        folder.name = newFolderName
-        folderDao.insertOrUpdate(folder)
+        folderDao.updateName(folderId, newFolderName)
     }
 
     fun reorderLinks(orders: List<Pair<Long, Int>>) = call(ioDispatcher) {

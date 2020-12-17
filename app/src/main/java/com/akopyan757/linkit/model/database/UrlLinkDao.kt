@@ -29,6 +29,11 @@ interface UrlLinkDao {
     @Query("DELETE from url_link_data WHERE id = :id")
     fun removeById(id: Long)
 
+    @Transaction
+    fun removeByIds(ids: List<Long>) {
+        return ids.forEach { id -> removeById(id) }
+    }
+
     @Query("DELETE from url_link_data WHERE folder_id LIKE :folderId")
     fun removeByFolder(folderId: String)
 
