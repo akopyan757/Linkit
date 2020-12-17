@@ -29,6 +29,11 @@ class PageViewModel(private val folderId: Int): BaseViewModel(), KoinComponent {
     @get:Bindable
     var isEmptyPage: Boolean by DelegatedBindable(false, BR.emptyPage)
 
+    @get:Bindable
+    var selectedCount: Int by SavedStateBindable(
+        stateHandle, Config.KEY_SELECTED_COUNT.format(folderId), 0, BR.selectedCount
+    )
+
     /**
      * List LiveData's
      */
@@ -46,11 +51,7 @@ class PageViewModel(private val folderId: Int): BaseViewModel(), KoinComponent {
         linkRepository.getUrlLinksByFolder(folderId)
     }, onSuccess = { data ->
         Log.i(TAG, "GEL URL LINK LIST (FOLDER = $folderId): SIZE = ${data.size}")
-
-        val observables = data.map { item -> item.toObservable() }
-        urlListData.change(observables)
-        isEmptyPage = observables.isEmpty()
-        Log.i(TAG, "GEL URL LINK LIST (FOLDER = $folderId): ${observables.isEmpty()} + ${urlListData.getList().isEmpty()} = $isEmptyPage")
+        updateList(data)
     })
 
     private val saveOrderResponse = liveEditSave.switchMap { savedState ->
@@ -74,9 +75,7 @@ class PageViewModel(private val folderId: Int): BaseViewModel(), KoinComponent {
             requestLiveData(method = {
                 linkRepository.getUrlLinksByFolder(folderId, isLive=false)
             }, onSuccess = { data ->
-                val observables = data.map { item -> item.toObservable() }
-                urlListData.change(observables)
-                isEmptyPage = observables.isEmpty()
+                updateList(data)
             })
         }
     }
@@ -94,12 +93,20 @@ class PageViewModel(private val folderId: Int): BaseViewModel(), KoinComponent {
 
     fun selectItem(observable: LinkObservable) {
         observable.selected = !observable.selected
-        urlListData.changeItem(observable)
+        urlListData.changeItem(observable) {
+            selectedCount = urlListData.getList().count { it.selected }
+        }
     }
 
     /**
      * Private method
      */
+    private fun updateList(data: List<UrlLinkData>) {
+        val observables = data.map { item -> item.toObservable() }
+        urlListData.change(observables)
+        isEmptyPage = observables.isEmpty()
+    }
+
     private fun UrlLinkData.toObservable(): LinkObservable {
         val photoUrl = photoUrl?.takeUnless { it.isEmpty() } ?: logoUrl
         val imageFileName = contentFileName ?: logoFileName

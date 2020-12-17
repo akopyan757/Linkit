@@ -64,11 +64,10 @@ class ListLiveData<T : DiffItemObservable> : LiveData<ListHolder<T>>() {
     }
 
     fun changeItem(item: T, after: (() -> Unit)? = null) = synchronized(this) {
-        val list = getCopyOfList().apply {
-            val index = indexOfFirst { it.id() == item.id() }
-            set(index, item)
-        }
-        changeList(list, after)
+        val list = getCopyOfList()
+        val index = list.indexOfFirst { it.id() == item.id() }
+        list[index] = item
+        value = ListHolder(list, ListChangeStrategy.RangeChanged(IntRange(index, index), after))
     }
 
     fun deleteItem(item: T, after: (() -> Unit)? = null) = synchronized(this) {

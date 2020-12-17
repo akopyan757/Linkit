@@ -4,8 +4,8 @@ import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
-import androidx.databinding.ViewDataBinding
 import androidx.recyclerview.widget.RecyclerView
 import com.akopyan757.base.viewmodel.list.UpdatableListAdapter
 import com.akopyan757.linkit.R
@@ -52,8 +52,9 @@ class LinkUrlAdapter(
             binding.editMode = editMode
             binding.ivLinkPhoto.setImageURI(uri)
             binding.listener = listener
-            val colorRes = if (observable.selected) R.color.background else R.color.white
-            binding.clLinkContent.setBackgroundResource(colorRes)
+            val colorRes = if (observable.selected) R.color.greyLight else R.color.white
+            val color = ContextCompat.getColor(context, colorRes)
+            binding.mcvLinkContent.setCardBackgroundColor(color)
             binding.ivLinkDrag.setOnTouchListener { _, motionEvent ->
                 if (motionEvent.action == MotionEvent.ACTION_DOWN) {
                     listener.onStartDrag(this)

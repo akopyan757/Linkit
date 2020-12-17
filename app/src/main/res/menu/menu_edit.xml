@@ -2,8 +2,18 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <group android:id="@+id/groupEditSave">
+        <item
+            android:id="@+id/itemEditDelete"
+            android:title="@string/delete"
+            android:icon="@drawable/ic_baseline_delete_24"
+            app:showAsAction="ifRoom"/>
+    </group>
+
     <item
         android:id="@+id/itemEditSave"
         android:title="@string/save"
+        android:icon="@drawable/ic_baseline_save_24"
         app:showAsAction="ifRoom"/>
+
 </menu>

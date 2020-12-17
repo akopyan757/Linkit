@@ -16,6 +16,7 @@ import com.akopyan757.linkit.databinding.FragmentMainBinding
 import com.akopyan757.linkit.view.adapter.PageFragmentAdapter
 import com.akopyan757.linkit.viewmodel.LinkViewModel
 import com.google.android.material.tabs.TabLayoutMediator
+import kotlinx.android.synthetic.main.fragment_main.*
 import org.koin.android.viewmodel.ext.android.sharedViewModel
 
 
@@ -35,10 +36,13 @@ class MainFragment : BaseFragment<FragmentMainBinding, LinkViewModel>(), ViewTre
             setTitle(R.string.app_name)
         }
 
+        lifecycleOwner = this@MainFragment
+
         setHasOptionsMenu(true)
 
         toolbarEdit.apply {
-            setTitle(R.string.edit)
+            title = resources.getString(R.string.edit, Config.EMPTY)
+            menu.setGroupVisible(R.id.groupEditSave, false)
             setNavigationIcon(R.drawable.ic_baseline_close_24)
             setNavigationOnClickListener {
                 mViewModel.disableEditMode()
@@ -82,6 +86,13 @@ class MainFragment : BaseFragment<FragmentMainBinding, LinkViewModel>(), ViewTre
     override fun onSetupViewModel(viewModel: LinkViewModel): Unit = with(viewModel) {
         getFolderLiveList().observe(viewLifecycleOwner, { holders ->
             mAdapter.updateFolders(holders.data)
+        })
+        getDeleteIconVisible().observe(viewLifecycleOwner, { deleteVisible ->
+            toolbarEdit.menu.setGroupVisible(R.id.groupEditSave, deleteVisible)
+        })
+        getSelectedCount().observe(viewLifecycleOwner, { count ->
+            val countName = count.takeIf { it > 0 }?.let { " ($it)" } ?: Config.EMPTY
+            toolbarEdit.title = resources.getString(R.string.edit, countName)
         })
     }
 

@@ -2,7 +2,6 @@ package com.akopyan757.linkit.view.fragment
 
 import android.os.Bundle
 import android.util.Log
-import androidx.databinding.ViewDataBinding
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
@@ -22,7 +21,7 @@ import com.akopyan757.linkit.viewmodel.observable.LinkObservable
 import org.koin.android.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
-class PageFragment: BaseFragment<ViewDataBinding, PageViewModel>(), LinkAdapterListener, ItemTouchHelperAdapter {
+class PageFragment: BaseFragment<FragmentPageBinding, PageViewModel>(), LinkAdapterListener, ItemTouchHelperAdapter {
 
     override val mViewModel: PageViewModel by viewModel { parametersOf(mObservable.id) }
 
@@ -46,23 +45,19 @@ class PageFragment: BaseFragment<ViewDataBinding, PageViewModel>(), LinkAdapterL
         LinkUrlAdapter(this)
     }
 
-    override fun onSetupView(binding: ViewDataBinding, bundle: Bundle?) {
-        val urlRecyclerView = when (binding) {
-            is FragmentPageBinding -> binding.fragmentWebLinkList
-            else -> null
-        }
+    override fun onSetupView(binding: FragmentPageBinding, bundle: Bundle?) = with(binding) {
 
         val urlLayoutManager = when (mObservable.type) {
             1 -> LinearLayoutManagerWrapper(requireContext())
             else -> GridLayoutManager(requireContext(), 2)
         }
 
-        urlRecyclerView?.apply {
+        fragmentWebLinkList.apply {
             adapter = mUrlAdapter
             layoutManager = urlLayoutManager
         }
 
-        mTouchHelper.attachToRecyclerView(urlRecyclerView)
+        mTouchHelper.attachToRecyclerView(fragmentWebLinkList)
     }
 
     override fun onSetupViewModel(viewModel: PageViewModel) = with(viewModel) {
