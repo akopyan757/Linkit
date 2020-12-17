@@ -60,8 +60,7 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:srcCompat="@drawable/ic_baseline_folder_remove_24"
-                    app:tint="@color/black" />
+                    app:srcCompat="@drawable/ic_baseline_folder_remove_24"/>
 
                 <ImageView
                     android:id="@+id/ivFolderEdit"
@@ -70,7 +69,6 @@
                     android:layout_marginEnd="@dimen/marginSecondary"
                     android:contentDescription="@string/todo"
                     android:onClick="@{() -> listener.onEditFolder(observable)}"
-                    android:tint="@color/black"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/ivFolderDelete"
                     app:layout_constraintTop_toTopOf="parent"
@@ -88,7 +86,7 @@
             android:layout_marginEnd="@dimen/marginPrimary"
             android:layout_marginBottom="@dimen/marginSecondary"
             android:contentDescription="@string/todo"
-            android:src="@drawable/ic_baseline_drag_handle_24"
+            android:src="@drawable/ic_swap_vertical_24"
             android:tintMode="src_atop"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

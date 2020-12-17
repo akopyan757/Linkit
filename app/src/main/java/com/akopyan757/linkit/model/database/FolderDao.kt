@@ -1,10 +1,7 @@
 package com.akopyan757.linkit.model.database
 
 import androidx.lifecycle.LiveData
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
+import androidx.room.*
 import com.akopyan757.linkit.model.entity.FolderData
 
 @Dao
@@ -23,6 +20,11 @@ interface FolderDao {
 
     @Query("UPDATE folder_data SET `order` = :order WHERE id == :id")
     fun updateOrder(id: Int, order: Int)
+
+    @Transaction
+    fun updateOrders(pairs: List<Pair<Int, Int>>) {
+        pairs.forEach { (id, order) -> updateOrder(id, order) }
+    }
 
     @Query("DELETE FROM folder_data WHERE id = :folderId")
     fun removeById(folderId: Int)
