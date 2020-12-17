@@ -30,7 +30,7 @@ class LinkUrlAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         val layoutId = R.layout.item_link
-        val binding = DataBindingUtil.inflate<ViewDataBinding>(inflater, layoutId, parent, false)
+        val binding = DataBindingUtil.inflate<ItemLinkBinding>(inflater, layoutId, parent, false)
         return LinkViewHolder(binding, listener)
     }
 
@@ -39,7 +39,7 @@ class LinkUrlAdapter(
     }
 
     class LinkViewHolder(
-        private val binding: ViewDataBinding,
+        private val binding: ItemLinkBinding,
         private val listener: LinkAdapterListener
     ): RecyclerView.ViewHolder(binding.root) {
 
@@ -47,23 +47,23 @@ class LinkUrlAdapter(
         fun bind(observable: LinkObservable, editMode: Boolean) {
             val context = binding.root.context
             val uri = AndroidUtils.getUriFromCache(context, observable.photoFileName)
-            when (binding) {
-                is ItemLinkBinding -> {
-                    binding.observable = observable
-                    binding.editMode = editMode
-                    binding.ivLinkPhoto.setImageURI(uri)
-                    binding.listener = listener
-                    val colorRes = if (observable.selected) R.color.background else R.color.white
-                    binding.clLinkContent.setBackgroundResource(colorRes)
-                    binding.ivLinkDrag.setOnTouchListener { _, motionEvent ->
-                        if (motionEvent.action == MotionEvent.ACTION_DOWN) {
-                            listener.onStartDrag(this)
-                        }
-                        false
-                    }
-                    binding.executePendingBindings()
+
+            binding.observable = observable
+            binding.editMode = editMode
+            binding.ivLinkPhoto.setImageURI(uri)
+            binding.listener = listener
+            val colorRes = if (observable.selected) R.color.background else R.color.white
+            binding.clLinkContent.setBackgroundResource(colorRes)
+            binding.ivLinkDrag.setOnTouchListener { _, motionEvent ->
+                if (motionEvent.action == MotionEvent.ACTION_DOWN) {
+                    listener.onStartDrag(this)
                 }
+                false
             }
+            val marginRes = if (editMode) R.dimen.itemGuidelineBeginEdit else R.dimen.itemGuidelineBegin
+            val margin = context.resources.getDimensionPixelSize(marginRes)
+            binding.guidelineLink.setGuidelineBegin(margin)
+            binding.executePendingBindings()
         }
     }
 

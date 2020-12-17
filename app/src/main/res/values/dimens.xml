@@ -32,4 +32,6 @@
     <dimen name="linkMinWidth">100dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="tabPaddingHorizontally">12dp</dimen>
+    <dimen name="itemGuidelineBegin">84dp</dimen>
+    <dimen name="itemGuidelineBeginEdit">52dp</dimen>
 </resources>
