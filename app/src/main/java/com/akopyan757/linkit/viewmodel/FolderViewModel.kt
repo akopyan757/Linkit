@@ -4,11 +4,11 @@ import android.util.Log
 import androidx.databinding.Bindable
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.switchMap
-import com.akopyan757.linkit.BR
+import com.akopyan757.base.viewmodel.BaseViewModel
 import com.akopyan757.base.viewmodel.list.ListLiveData
+import com.akopyan757.linkit.BR
 import com.akopyan757.linkit.model.entity.FolderData
 import com.akopyan757.linkit.model.repository.LinkRepository
-import com.akopyan757.base.viewmodel.BaseViewModel
 import com.akopyan757.linkit.viewmodel.observable.FolderObservable
 import org.koin.core.KoinComponent
 import org.koin.core.inject
@@ -33,6 +33,7 @@ class FolderViewModel : BaseViewModel(), KoinComponent {
      */
     private val requestDelete = MutableLiveData<Int>()
     private val requestEdit = MutableLiveData<Pair<Int, String>>()
+    private val requestSave = MutableLiveData<List<Pair<Int, Int>>>()
 
     /**
      * Responses
@@ -83,6 +84,21 @@ class FolderViewModel : BaseViewModel(), KoinComponent {
         )
     }
 
+    private val responseReorderFolder = requestSave.switchMap { pairs ->
+        requestLiveData(
+            method = { linkRepository.reorderFolders(pairs) },
+            onLoading = {
+                val ids = pairs.joinToString(", ") { "[${it.first}: order = ${it.second}]" }
+                Log.i(TAG, "REORDER FOLDER: LOADING: $ids")
+            }, onSuccess = {
+                this emitAction ACTION_REORDER
+                Log.i(TAG, "REORDER FOLDER: SUCCESS")
+            }, onError = { exception ->
+                Log.i(TAG, "REORDER FOLDER: ERROR", exception)
+            }
+        )
+    }
+
     /**
      * Public methods
      */
@@ -92,15 +108,27 @@ class FolderViewModel : BaseViewModel(), KoinComponent {
         requestDelete.value = observable.id
     }
 
+    fun setEditObservables(observable: List<FolderObservable>) {
+        foldersSelectedLiveData.change(observable)
+    }
+
     fun onEditFolder(observable: FolderObservable) {
         requestEdit.value = Pair(observable.id, newFolderName)
     }
 
+    fun saveFolders() {
+        requestSave.value = foldersSelectedLiveData.getList().mapIndexed { index, observable ->
+            Pair(observable.id, index)
+        }
+    }
+
     override fun getLiveResponses() = groupLiveResponses(
-            getAllFolder, responseDeleteFolder, responseEditFolder
+            getAllFolder, responseDeleteFolder, responseEditFolder, responseReorderFolder
     )
 
     companion object {
+        const val ACTION_REORDER = 12211
+
         private const val TAG = "FOLDER_VIEW_MODEL"
     }
 }

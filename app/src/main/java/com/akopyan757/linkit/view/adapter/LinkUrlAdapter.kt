@@ -39,6 +39,20 @@ class LinkUrlAdapter(
         (holder as LinkViewHolder).bind(items[position], editMode)
     }
 
+    override fun onItemMove(fromPosition: Int, toPosition: Int): Boolean {
+        if (fromPosition < toPosition) {
+            (fromPosition until toPosition).forEach { index ->
+                Collections.swap(items, index, index + 1)
+            }
+        } else {
+            (fromPosition downTo toPosition + 1).forEach { index ->
+                Collections.swap(items, index, index - 1)
+            }
+        }
+        notifyItemMoved(fromPosition, toPosition)
+        return true
+    }
+
     class LinkViewHolder(
             private val binding: ItemLinkBinding,
             private val listener: LinkAdapterListener
@@ -62,19 +76,5 @@ class LinkUrlAdapter(
             }
             binding.executePendingBindings()
         }
-    }
-
-    override fun onItemMove(fromPosition: Int, toPosition: Int): Boolean {
-        if (fromPosition < toPosition) {
-            (fromPosition until toPosition).forEach { index ->
-                Collections.swap(items, index, index + 1)
-            }
-        } else {
-            (fromPosition downTo toPosition + 1).forEach { index ->
-                Collections.swap(items, index, index - 1)
-            }
-        }
-        notifyItemMoved(fromPosition, toPosition)
-        return true
     }
 }

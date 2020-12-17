@@ -21,6 +21,9 @@ interface FolderDao {
     @Query("SELECT * FROM folder_data")
     fun getLiveAll(): LiveData<List<FolderData>>
 
+    @Query("UPDATE folder_data SET `order` = :order WHERE id == :id")
+    fun updateOrder(id: Int, order: Int)
+
     @Query("DELETE FROM folder_data WHERE id = :folderId")
     fun removeById(folderId: Int)
 

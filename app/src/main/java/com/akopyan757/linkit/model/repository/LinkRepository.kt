@@ -157,6 +157,12 @@ class LinkRepository: BaseRepository(), KoinComponent {
         }
     }
 
+    fun reorderFolders(orders: List<Pair<Int, Int>>) = call(ioDispatcher) {
+        orders.forEach { (id, order) ->
+            folderDao.updateOrder(id, order)
+        }
+    }
+
     private suspend fun parseHttpUrl(
         url: String,
         folderId: Int? = null
