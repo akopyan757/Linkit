@@ -137,6 +137,10 @@ class LinkRepository: BaseRepository(), KoinComponent {
         }
     }
 
+    fun deleteUrls(ids: List<Long>): LiveData<ApiResponse<Unit>> = call(ioDispatcher) {
+        ids.forEach { id -> urlLinkDao.removeById(id) }
+    }
+
     fun deleteFolder(folderId: Int): LiveData<ApiResponse<Unit>> = call(ioDispatcher) {
         folderDao.removeById(folderId)
     }

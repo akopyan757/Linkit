@@ -24,8 +24,8 @@ interface UrlLinkDao {
     @Query("UPDATE url_link_data SET _order = :order WHERE id == :id")
     fun updateOrder(id: Long, order: Int)
 
-    @Query("DELETE from url_link_data WHERE url = :uri")
-    fun removeByUri(uri: String)
+    @Query("DELETE from url_link_data WHERE id = :id")
+    fun removeById(id: Long)
 
     @Query("DELETE from url_link_data WHERE folder_id LIKE :folderId")
     fun removeByFolder(folderId: String)

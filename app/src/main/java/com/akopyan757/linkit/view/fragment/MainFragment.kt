@@ -1,6 +1,7 @@
 package com.akopyan757.linkit.view.fragment
 
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
@@ -46,14 +47,13 @@ class MainFragment : BaseFragment<FragmentMainBinding, LinkViewModel>(), ViewTre
             setNavigationIcon(R.drawable.ic_baseline_close_24)
             setNavigationOnClickListener {
                 mViewModel.disableEditMode()
-
             }
             inflateMenu(R.menu.menu_edit)
             setOnMenuItemClickListener { item ->
                 when (item.itemId) {
                     R.id.itemEditSave -> mViewModel.saveEdit()
-                }
-                true
+                    R.id.itemEditDelete -> mViewModel.deleteSelected()
+                }; true
             }
         }
 

@@ -88,7 +88,7 @@ abstract class BaseViewModel: ViewModel(), BaseStateObservable {
         private val savedStateHandle: SavedStateHandle,
         private val key: String,
         private val default: T,
-        private val brTarget: Int
+        private val brTarget: Int? = null
     ) {
         operator fun getValue(thisRef: Any?, p: KProperty<*>): T {
             return savedStateHandle.get(key) ?: default
@@ -97,7 +97,7 @@ abstract class BaseViewModel: ViewModel(), BaseStateObservable {
         operator fun setValue(thisRef: Any?, p: KProperty<*>, v: T) {
             Log.i(TAG, "SAVED STATE HANDLE: SET = $v")
             savedStateHandle.set(key, v)
-            notifyPropertyChanged(brTarget)
+            brTarget?.also { notifyPropertyChanged(it) }
         }
     }
 

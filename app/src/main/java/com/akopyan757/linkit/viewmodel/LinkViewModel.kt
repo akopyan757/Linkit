@@ -1,15 +1,13 @@
 package com.akopyan757.linkit.viewmodel
 
 import androidx.databinding.Bindable
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MediatorLiveData
-import androidx.lifecycle.SavedStateHandle
-import androidx.lifecycle.map
+import androidx.lifecycle.*
 import com.akopyan757.base.viewmodel.list.ListLiveData
 import com.akopyan757.linkit.BR
 import com.akopyan757.linkit.model.repository.LinkRepository
 import com.akopyan757.base.viewmodel.BaseViewModel
 import com.akopyan757.linkit.common.Config
+import com.akopyan757.linkit.common.Config.KEY_EDIT_DELETE
 import com.akopyan757.linkit.common.Config.KEY_EDIT_MODE
 import com.akopyan757.linkit.common.Config.KEY_EDIT_SAVE
 import com.akopyan757.linkit.common.Config.KEY_SELECTED_COUNT
@@ -29,6 +27,8 @@ class LinkViewModel : BaseViewModel(), KoinComponent {
     @get:Bindable
     var savedState: Boolean by SavedStateBindable(stateHandle, KEY_EDIT_SAVE, false, BR.savedState)
 
+    private var deleteAction: Boolean by SavedStateBindable(stateHandle, KEY_EDIT_DELETE, false)
+
     private val selectedCount = SumLiveData()
 
     private val deleteUrlsVisible = selectedCount.map { count -> count > 0 }
@@ -44,6 +44,9 @@ class LinkViewModel : BaseViewModel(), KoinComponent {
      */
     private val linkRepository: LinkRepository by inject()
 
+    /**
+     * Responses
+     */
     private val getAllFolder = requestLiveData(
         method = { linkRepository.getAllFolders() },
         onSuccess = { list ->
@@ -74,6 +77,10 @@ class LinkViewModel : BaseViewModel(), KoinComponent {
     fun saveEdit() {
         savedState = true
         editMode = false
+    }
+
+    fun deleteSelected() {
+        deleteAction = true
     }
 
     fun getFolderLiveList() = foldersLiveData

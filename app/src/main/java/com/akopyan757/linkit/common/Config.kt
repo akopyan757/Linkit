@@ -16,5 +16,6 @@ object Config {
 
     const val KEY_EDIT_MODE = "KEY_EDIT_MODE"
     const val KEY_EDIT_SAVE = "KEY_EDIT_SAVE"
+    const val KEY_EDIT_DELETE = "KEY_EDIT_DELETE"
     const val KEY_SELECTED_COUNT = "KEY_SELECTED_%s"
 }

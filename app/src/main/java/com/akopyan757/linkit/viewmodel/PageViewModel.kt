@@ -25,6 +25,7 @@ class PageViewModel(private val folderId: Int): BaseViewModel(), KoinComponent {
 
     private val liveEditModel by LiveSavedStateBindable<Boolean>(stateHandle, Config.KEY_EDIT_MODE)
     private val liveEditSave by LiveSavedStateBindable<Boolean>(stateHandle, Config.KEY_EDIT_SAVE)
+    private val liveDelete by LiveSavedStateBindable<Boolean>(stateHandle, Config.KEY_EDIT_DELETE)
 
     @get:Bindable
     var isEmptyPage: Boolean by DelegatedBindable(false, BR.emptyPage)
@@ -80,6 +81,21 @@ class PageViewModel(private val folderId: Int): BaseViewModel(), KoinComponent {
         }
     }
 
+    private val deleteUrlsResponse = liveDelete.switchMap { delete ->
+        val ids = if (delete) {
+            urlListData.getList().mapNotNull { if (it.selected) it.id else null }
+        } else emptyList()
+
+        requestLiveData(
+            method = { linkRepository.deleteUrls(ids) },
+            onSuccess = {
+                val observables = urlListData.getList().filterNot { item -> ids.contains(item.id) }
+                urlListData.change(observables) {
+                    selectedCount = 0
+                }
+            }
+        )
+    }
     /**
      * PPublic method
      */
@@ -113,5 +129,7 @@ class PageViewModel(private val folderId: Int): BaseViewModel(), KoinComponent {
         return LinkObservable(id, url, title, description, photoUrl, imageFileName)
     }
 
-    override fun getLiveResponses() = groupLiveResponses(getUrlAllResponse, saveOrderResponse)
+    override fun getLiveResponses() = groupLiveResponses(
+        getUrlAllResponse, saveOrderResponse, deleteUrlsResponse
+    )
 }
