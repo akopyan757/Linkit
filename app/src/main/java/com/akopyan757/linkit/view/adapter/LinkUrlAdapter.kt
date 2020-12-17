@@ -1,9 +1,13 @@
 package com.akopyan757.linkit.view.adapter
 
 import android.annotation.SuppressLint
+import android.transition.AutoTransition
+import android.transition.TransitionManager
 import android.view.LayoutInflater
 import android.view.MotionEvent
+import android.view.View
 import android.view.ViewGroup
+import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
@@ -46,10 +50,22 @@ class LinkUrlAdapter(
 
         @SuppressLint("ClickableViewAccessibility")
         fun bind(observable: LinkObservable, editMode: Boolean) {
+
+            val visible = if (editMode) View.VISIBLE else View.GONE
+            ConstraintSet().apply {
+                clone(binding.clCardContent)
+                setVisibility(R.id.ivLinkDrag, visible)
+                val transition = AutoTransition().apply { duration = 300 }
+                TransitionManager.beginDelayedTransition(binding.clCardContent, transition)
+                applyTo(binding.clCardContent)
+            }
+
             val context = binding.root.context
-            observable.uri = AndroidUtils.getUriFromCache(context, observable.photoFileName)
+            val uri = AndroidUtils.getUriFromCache(context, observable.photoFileName)
+
             binding.observable = observable
             binding.editMode = editMode
+            binding.ivLinkPhoto.setImageURI(uri)
             binding.listener = listener
             val colorRes = if (observable.selected) R.color.greyLight else R.color.white
             val color = ContextCompat.getColor(context, colorRes)
@@ -60,9 +76,6 @@ class LinkUrlAdapter(
                 }
                 false
             }
-            val marginRes = if (editMode) R.dimen.itemGuidelineBeginEdit else R.dimen.itemGuidelineBegin
-            val margin = context.resources.getDimensionPixelSize(marginRes)
-            binding.guidelineLink.setGuidelineBegin(margin)
             binding.executePendingBindings()
         }
     }
