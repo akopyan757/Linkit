@@ -62,7 +62,7 @@ class LinkRepository: BaseRepository(), KoinComponent {
         if (!folderDao.addNewFolder(name)) throw FolderExistsException()
     }
 
-    fun getUrlLinksByFolder(folderId: Int) = urlLinkDao.getLiveFromFolder(folderId)
+    fun getUrlLinksByFolder(folderId: Int) = urlLinkDao.getLiveUrls(folderId)
             .map { list -> list.map { it.addFilePaths() } }
             .asLiveIO()
 

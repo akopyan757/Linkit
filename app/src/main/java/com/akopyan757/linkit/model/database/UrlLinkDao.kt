@@ -2,12 +2,21 @@ package com.akopyan757.linkit.model.database
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
+import com.akopyan757.linkit.model.entity.FolderData
 import com.akopyan757.linkit.model.entity.UrlLinkData
 
 @Dao
 interface UrlLinkDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertOrUpdate(data: UrlLinkData)
+
+    fun getLiveUrls(folderId: Int): LiveData<List<UrlLinkData>> {
+        return if (folderId == FolderData.GENERAL_FOLDER_ID) {
+            getLiveAll()
+        } else {
+            getLiveFromFolder(folderId)
+        }
+    }
 
     @Query("SELECT * FROM url_link_data")
     fun getLiveAll(): LiveData<List<UrlLinkData>>
