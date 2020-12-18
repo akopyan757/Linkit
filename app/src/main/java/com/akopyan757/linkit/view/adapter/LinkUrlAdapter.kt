@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.ViewGroup
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
@@ -65,8 +66,10 @@ class LinkUrlAdapter(
             binding.observable = observable
             binding.editMode = editMode
             binding.listener = listener
+
             val colorRes = if (observable.selected) R.color.greyLight else R.color.white
             val color = ContextCompat.getColor(context, colorRes)
+
             binding.mcvLinkContent.setCardBackgroundColor(color)
             binding.ivLinkDrag.setOnTouchListener { _, motionEvent ->
                 if (motionEvent.action == MotionEvent.ACTION_DOWN) {
@@ -75,6 +78,18 @@ class LinkUrlAdapter(
                 false
             }
             binding.executePendingBindings()
+
+            val imageSizeRes = if (editMode) R.dimen.linkPictureMinWidth else R.dimen.linkPictureWidth
+            val imageSize = context.resources.getDimensionPixelOffset(imageSizeRes)
+
+            binding.ivLinkPhoto.apply {
+                val params = layoutParams as ConstraintLayout.LayoutParams
+                params.matchConstraintMinHeight = imageSize
+                params.matchConstraintMaxHeight = imageSize
+                params.matchConstraintMinWidth = imageSize
+                params.matchConstraintMaxWidth = imageSize
+                layoutParams = params
+            }
         }
     }
 }

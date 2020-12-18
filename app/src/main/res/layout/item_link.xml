@@ -38,7 +38,8 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/clLinkContent"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:minHeight="@dimen/itemLinkMinHeight">
 
                 <ImageView
                     android:id="@+id/ivLinkPhoto"

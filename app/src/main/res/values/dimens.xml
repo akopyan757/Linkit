@@ -22,7 +22,11 @@
 
     <dimen name="marginBig">24dp</dimen>
 
+    <dimen name="itemLinkMinHeight">84dp</dimen>
+
     <dimen name="cornerRadius">16dp</dimen>
+    <dimen name="linkPictureMinWidth">36dp</dimen>
+    <dimen name="linkPictureMinHeight">36dp</dimen>
     <dimen name="linkPictureWidth">68dp</dimen>
     <dimen name="linkPictureHeight">68dp</dimen>
     <dimen name="linkPictureBigWidth">150dp</dimen>
