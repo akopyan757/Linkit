@@ -19,7 +19,7 @@ data class UrlLinkData(
     @ColumnInfo(name = "folder_id") var folderId: Int = 0,
     @ColumnInfo(name = "pattern_host") var hostPatternId: Int = 0,
     @ColumnInfo(name = "pattern_specified") var specPatternId: Int = 0,
-    @ColumnInfo(name = "_order") val _order: Int = 0,
+    @ColumnInfo(name = "_order") var _order: Int = 0,
 ): UrlData() {
 
     @Ignore var logoFileName: String? = null

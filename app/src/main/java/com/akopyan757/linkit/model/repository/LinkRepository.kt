@@ -50,7 +50,7 @@ class LinkRepository: BaseRepository(), KoinComponent {
     fun addNewLink(urlLinkData: UrlLinkData) = callIO {
         if (FormatUtils.isUrl(urlLinkData.url)) {
             imageCache.saveImages(urlLinkData)
-            urlLinkDao.insertOrUpdate(urlLinkData)
+            urlLinkDao.addNewData(urlLinkData)
         }
     }
 

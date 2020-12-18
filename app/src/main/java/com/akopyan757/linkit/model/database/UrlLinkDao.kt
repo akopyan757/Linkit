@@ -7,6 +7,13 @@ import com.akopyan757.linkit.model.entity.UrlLinkData
 
 @Dao
 interface UrlLinkDao {
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun addNewData(data: UrlLinkData) {
+        data._order = getMaxOrder() + 1
+        insertOrUpdate(data)
+    }
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertOrUpdate(data: UrlLinkData)
 
@@ -18,13 +25,13 @@ interface UrlLinkDao {
         }
     }
 
-    @Query("SELECT * FROM url_link_data")
+    @Query("SELECT * FROM url_link_data ORDER BY _order DESC")
     fun getLiveAll(): LiveData<List<UrlLinkData>>
 
-    @Query("SELECT * FROM url_link_data WHERE folder_id LIKE :folderId ORDER BY _order")
+    @Query("SELECT * FROM url_link_data WHERE folder_id LIKE :folderId ORDER BY _order DESC")
     fun getByFolder(folderId: Int): List<UrlLinkData>
 
-    @Query("SELECT * FROM url_link_data WHERE folder_id LIKE :folderId ORDER BY _order")
+    @Query("SELECT * FROM url_link_data WHERE folder_id LIKE :folderId ORDER BY _order DESC")
     fun getLiveFromFolder(folderId: Int): LiveData<List<UrlLinkData>>
 
     @Query("UPDATE url_link_data SET _order = :order WHERE id == :id")
@@ -48,4 +55,7 @@ interface UrlLinkDao {
 
     @Query("DELETE FROM url_link_data")
     fun removeAll()
+
+    @Query("SELECT MAX(`order`) FROM folder_data;")
+    fun getMaxOrder(): Int
 }
