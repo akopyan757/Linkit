@@ -3,12 +3,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/itemFolders"
-        android:title="@string/create_folder"
-        android:icon="@drawable/ic_baseline_folder_24"
-        app:showAsAction="ifRoom"/>
-
-    <item
         android:id="@+id/itemEditFolder"
         android:title="@string/edit_folder"
         android:icon="@drawable/ic_baseline_edit_24"

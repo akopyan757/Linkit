@@ -56,6 +56,10 @@ class MainFragment : BaseFragment<FragmentMainBinding, LinkViewModel>(), ViewTre
             }
         }
 
+        ivFolderSettings.setOnClickListener {
+            findNavController().navigate(R.id.action_mainFragment_to_folderFragment)
+        }
+
         mAdapter = PageFragmentAdapter(childFragmentManager, lifecycle)
         viewPager.adapter = mAdapter
 
@@ -102,11 +106,6 @@ class MainFragment : BaseFragment<FragmentMainBinding, LinkViewModel>(), ViewTre
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
-
-            R.id.itemFolders -> {
-                findNavController().navigate(R.id.action_mainFragment_to_folderFragment)
-                true
-            }
 
             R.id.itemEditFolder -> {
                 mViewModel.enableEditMode()

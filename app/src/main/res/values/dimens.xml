@@ -35,4 +35,5 @@
     <dimen name="tabPaddingHorizontally">12dp</dimen>
     <dimen name="itemGuidelineBegin">84dp</dimen>
     <dimen name="itemGuidelineBeginEdit">52dp</dimen>
+    <dimen name="tabLayoutFoldersHeight">40dp</dimen>
 </resources>
