@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="viewModel"
+            type="com.akopyan757.linkit.viewmodel.FolderViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/background_dialog"
+        android:minWidth="@dimen/dialogMinWidth"
+        android:theme="@style/Theme.Linkit">
+
+        <Button
+            android:id="@+id/btnCreateFolder"
+            style="@style/Theme.Linkit.Button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/marginPrimary"
+            android:contentDescription="@string/todo"
+            android:text="@string/create_folder"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/rvFolders" />
+
+        <TextView
+            android:id="@+id/tvFoldersTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/marginPrimary"
+            android:layout_marginTop="@dimen/marginPrimary"
+            android:text="@string/folder"
+            android:textAppearance="@style/Theme.Linkit.TextAppearanceRegular.H1"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvFolders"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/marginSecondary"
+            android:clipToPadding="false"
+            android:paddingTop="@dimen/marginSecondary"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvFoldersTitle"
+            tools:itemCount="5"
+            tools:listitem="@layout/item_folder" />
+
+        <Button
+            android:id="@+id/btnFoldersAccept"
+            style="@style/Theme.Linkit.Button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/marginPrimary"
+            android:contentDescription="@string/todo"
+            android:text="@string/accept"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/rvFolders" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>

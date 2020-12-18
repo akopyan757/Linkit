@@ -32,14 +32,14 @@
         android:name="com.akopyan757.linkit.view.dialog.ClipboardUrlDialogFragment"
         android:label="ClipboardUrlDialogFragment"
         tools:layout="@layout/dialog_new_url"/>
-    <fragment
+    <dialog
         android:id="@+id/folderFragment"
         android:name="com.akopyan757.linkit.view.fragment.FolderFragment"
         android:label="FolderFragment"
-        tools:layout="@layout/fragment_folder" >
+        tools:layout="@layout/dialog_folders_settings" >
         <action
             android:id="@+id/action_folderFragment_to_createFolderDialogFragment"
             app:destination="@id/createFolderDialogFragment" />
-    </fragment>
+    </dialog>
 
 </navigation>

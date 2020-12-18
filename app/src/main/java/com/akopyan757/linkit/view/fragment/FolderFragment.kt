@@ -4,16 +4,15 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
-import androidx.appcompat.app.AppCompatActivity
-import androidx.navigation.findNavController
+import androidx.lifecycle.LifecycleOwner
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.akopyan757.base.view.BaseFragment
+import com.akopyan757.base.view.BaseDialogFragment
 import com.akopyan757.linkit.BR
 import com.akopyan757.linkit.R
-import com.akopyan757.linkit.databinding.FragmentFolderBinding
+import com.akopyan757.linkit.databinding.DialogFoldersSettingsBinding
 import com.akopyan757.linkit.view.adapter.FolderAdapter
 import com.akopyan757.linkit.view.callback.ItemTouchHelperAdapter
 import com.akopyan757.linkit.view.callback.ItemTouchHelperCallback
@@ -22,7 +21,7 @@ import com.akopyan757.linkit.viewmodel.listener.FolderClickListener
 import com.akopyan757.linkit.viewmodel.observable.FolderObservable
 import org.koin.android.viewmodel.ext.android.viewModel
 
-class FolderFragment : BaseFragment<FragmentFolderBinding, FolderViewModel>(), ItemTouchHelperAdapter {
+class FolderFragment : BaseDialogFragment<DialogFoldersSettingsBinding, FolderViewModel>(), ItemTouchHelperAdapter {
 
     override val mViewModel: FolderViewModel by viewModel()
 
@@ -50,20 +49,10 @@ class FolderFragment : BaseFragment<FragmentFolderBinding, FolderViewModel>(), I
         LinearLayoutManager(requireContext())
     }
 
-    override fun getLayoutId() = R.layout.fragment_folder
+    override fun getLayoutId() = R.layout.dialog_folders_settings
     override fun getVariableId(): Int = BR.viewModel
 
-    override fun onSetupView(binding: FragmentFolderBinding, bundle: Bundle?): Unit = with(binding) {
-        (requireActivity() as AppCompatActivity).apply {
-            setSupportActionBar(toolbar)
-            setHasOptionsMenu(true)
-        }
-
-        toolbar.apply {
-            setNavigationIcon(R.drawable.ic_baseline_arrow_back_24)
-            setNavigationOnClickListener { findNavController().popBackStack() }
-        }
-
+    override fun onSetupView(binding: DialogFoldersSettingsBinding, bundle: Bundle?): Unit = with(binding) {
         rvFolders.apply {
             adapter = mAdapter
             layoutManager = mLayoutManager
@@ -71,8 +60,12 @@ class FolderFragment : BaseFragment<FragmentFolderBinding, FolderViewModel>(), I
 
         mTouchHelper.attachToRecyclerView(rvFolders)
 
-        fabCreateFolder.setOnClickListener {
+        btnCreateFolder.setOnClickListener {
             findNavController().navigate(R.id.action_folderFragment_to_createFolderDialogFragment)
+        }
+
+        btnFoldersAccept.setOnClickListener {
+            mViewModel.saveFolders()
         }
     }
 
@@ -81,20 +74,13 @@ class FolderFragment : BaseFragment<FragmentFolderBinding, FolderViewModel>(), I
         inflater.inflate(R.menu.menu_folders, menu)
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            R.id.itemFoldersSave -> mViewModel.saveFolders()
-        }
-        return true
-    }
-
     override fun onItemMove(fromPosition: Int, toPosition: Int): Boolean {
         val result = mAdapter.onItemMove(fromPosition, toPosition)
         mViewModel.setEditObservables(mAdapter.items)
         return result
     }
 
-    override fun onSetupViewModel(viewModel: FolderViewModel) = with(mViewModel) {
+    override fun onSetupViewModel(viewModel: FolderViewModel, owner: LifecycleOwner) = with(mViewModel) {
         getFolderLiveListForSelect().observeList(mAdapter)
     }
 

@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">Linkit</string>
-    <string name="create_folder">Create Folder</string>
+    <string name="create_folder">Create</string>
     <string name="edit_folder">Edit Folder</string>
     <string name="folder">Folders</string>
     <string name="edit">Edit%s</string>
@@ -32,4 +32,5 @@
     <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
     <string name="save">Save</string>
     <string name="delete">Delete</string>
+    <string name="accept">Accept</string>
 </resources>
