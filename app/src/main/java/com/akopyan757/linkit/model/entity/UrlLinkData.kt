@@ -20,14 +20,10 @@ data class UrlLinkData(
     @ColumnInfo(name = "pattern_host") var hostPatternId: Int = 0,
     @ColumnInfo(name = "pattern_specified") var specPatternId: Int = 0,
     @ColumnInfo(name = "_order") val _order: Int = 0,
-): UrlData(), ILink {
+): UrlData() {
 
     @Ignore var logoFileName: String? = null
     @Ignore var contentFileName: String? = null
-
-    override fun linkId() = id
-    override fun linkGroupId() = folderId
-    override fun linkOrder(): Int = _order
 
     override var dataUrl: String
         get() = url
