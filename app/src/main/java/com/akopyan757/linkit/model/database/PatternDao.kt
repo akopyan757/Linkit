@@ -21,9 +21,7 @@ interface PatternDao: IPatternCache<ParsePatternData, PatternHostData> {
     fun insertHostOrUpdate(list: List<PatternHostData>) {
         removeSpecifiedAll()
         removeHostAll()
-
-        list.indices.forEach { index ->
-            val hostData = list[index]
+        list.forEach { hostData ->
             val hostId = insertHostOrUpdate(hostData)
             hostData.patterns.forEach { specifiedData ->
                 specifiedData.hostId = hostId.toInt()

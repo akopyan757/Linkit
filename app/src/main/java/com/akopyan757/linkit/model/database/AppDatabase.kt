@@ -14,7 +14,6 @@ import com.akopyan757.linkit.model.entity.UrlLinkData
     PatternHostData::class,
     PatternSpecifiedData::class
 ], version = 16)
-@TypeConverters(value = [Converters::class])
 abstract class AppDatabase: RoomDatabase() {
     abstract fun urlLinkDao(): UrlLinkDao
     abstract fun folderDao(): FolderDao

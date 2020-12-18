@@ -1,6 +1,5 @@
 package com.akopyan757.linkit.model.entity
 
-import android.graphics.Bitmap
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.Ignore
