@@ -1,31 +1,24 @@
 package com.akopyan757.linkit.model.repository
 
-import android.content.Context
-import android.webkit.URLUtil
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.map
-import com.akopyan757.base.model.ApiResponse
 import com.akopyan757.base.model.BaseRepository
+import com.akopyan757.linkit.common.Config
+import com.akopyan757.linkit.common.utils.FormatUtils
 import com.akopyan757.linkit.common.utils.JsonPatternsParser
 import com.akopyan757.linkit.model.cache.ImageCache
 import com.akopyan757.linkit.model.database.FolderDao
 import com.akopyan757.linkit.model.database.PatternDao
 import com.akopyan757.linkit.model.database.UrlLinkDao
-import com.akopyan757.linkit.model.entity.FolderData
-import com.akopyan757.linkit.model.entity.ParsePatternData
 import com.akopyan757.linkit.model.entity.PatternHostData
 import com.akopyan757.linkit.model.entity.UrlLinkData
 import com.akopyan757.linkit.model.exception.FolderExistsException
 import com.akopyan757.linkit.model.exception.UrlIsNotValidException
-import com.akopyan757.urlparser.UrlParser
+import com.akopyan757.urlparser.IUrlParser
 import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import org.koin.core.KoinComponent
-import org.koin.core.get
 import org.koin.core.inject
+import org.koin.core.qualifier.named
 
 class LinkRepository: BaseRepository(), KoinComponent {
 
@@ -40,106 +33,67 @@ class LinkRepository: BaseRepository(), KoinComponent {
     private val patternDao: PatternDao by inject()
     private val imageCache: ImageCache by inject()
 
-    private val urlParser: UrlParser<ParsePatternData, PatternHostData, UrlLinkData> by inject()
+    private val parser: JsonPatternsParser by inject()
 
-    private val ioDispatcher: CoroutineDispatcher by lazy { Dispatchers.IO }
+    private val urlParser: IUrlParser<UrlLinkData> by inject()
 
-    init {
-        CoroutineScope(ioDispatcher).launch {
-            if (folderDao.getById(FolderData.GENERAL_FOLDER_ID) == null) {
-                folderDao.insertOrUpdate(FolderData.generalFolder())
-            }
-            val context = get<Context>()
+    override val coroutineDispatcher: CoroutineDispatcher by inject(named(Config.IO_DISPATCHERS))
+
+    fun initResources() = callIO {
+        if (folderDao.initFolderDao()) {
             val type = object : TypeToken<List<PatternHostData>>() {}.type
-            val patterns = JsonPatternsParser.parse<PatternHostData>(context, FILE_NAME, type)
+            val patterns = parser.parse<PatternHostData>(FILE_NAME, type)
             patternDao.insertHostOrUpdate(patterns)
         }
     }
 
-    fun addNewLink(
-        link: String,
-        folderId: Int?,
-        title: String?,
-        description: String?
-    ) = call(ioDispatcher) {
-        when {
-            URLUtil.isHttpUrl(link) || URLUtil.isHttpsUrl(link) -> {
-                val folder = folderId ?: FolderData.GENERAL_FOLDER_ID
-
-                parseHttpUrl(link, folder)?.also { linkData ->
-
-                    if (title != null) linkData.title = title
-                    if (description != null) linkData.description = description
-
-                    imageCache.saveImages(linkData)
-                    urlLinkDao.insertOrUpdate(linkData)
-                }
-            }
-
-            else -> null
+    fun addNewLink(urlLinkData: UrlLinkData) = callIO {
+        if (FormatUtils.isUrl(urlLinkData.url)) {
+            imageCache.saveImages(urlLinkData)
+            urlLinkDao.insertOrUpdate(urlLinkData)
         }
     }
 
-    fun getDefaultInfoFromUrl(url: String): LiveData<ApiResponse<UrlLinkData>> = call(ioDispatcher) {
-        if (URLUtil.isHttpUrl(url) || URLUtil.isHttpsUrl(url)) {
-            parseHttpUrl(url)
-        } else {
-            throw UrlIsNotValidException()
-        }
+    fun getDefaultInfoFromUrl(url: String) = callIO {
+        if (FormatUtils.isUrl(url)) urlParser.parseUrl(url) else throw UrlIsNotValidException()
     }
 
-    fun addNewFolder(name: String) = call(ioDispatcher) {
+    fun addNewFolder(name: String) = callIO {
         if (!folderDao.addNewFolder(name)) throw FolderExistsException()
     }
 
-    fun getUrlLinksByFolder(folderId: Int, isLive: Boolean = true): LiveData<ApiResponse<List<UrlLinkData>>> {
-        return if (isLive) {
-            callLive(ioDispatcher) {
-                urlLinkDao.getLiveFromFolder(folderId)
-                    .map { list -> ApiResponse.Success(list.convertUrls()) }
-            }
-        } else {
-            call(ioDispatcher) { urlLinkDao.getByFolder(folderId).convertUrls() }
-        }
+    fun getUrlLinksByFolder(folderId: Int) = urlLinkDao.getLiveFromFolder(folderId)
+            .map { list -> list.map { it.addFilePaths() } }
+            .asLiveIO()
+
+    fun getUrlLinksByFolder2(folderId: Int) = callIO {
+        urlLinkDao.getByFolder(folderId).map { item -> item.addFilePaths() }
     }
 
-    private fun List<UrlLinkData>.convertUrls(): List<UrlLinkData> {
-        return map { data ->
-            data.apply {
-                logoFileName = imageCache.getLogoName(data)
-                contentFileName = imageCache.getContentName(data)
-            }
-        }.sortedBy { it._order }
-    }
+    fun getAllFolders() = folderDao.getLiveAll().asLiveIO()
 
-    fun getAllFolders(): LiveData<List<FolderData>> = callLive(ioDispatcher) {
-        folderDao.getLiveAll()
-    }
-
-    fun deleteUrls(ids: List<Long>): LiveData<ApiResponse<Unit>> = call(ioDispatcher) {
+    fun deleteUrls(ids: List<Long>) = callIO {
         urlLinkDao.removeByIds(ids)
     }
 
-    fun deleteFolder(folderId: Int): LiveData<ApiResponse<Unit>> = call(ioDispatcher) {
+    fun deleteFolder(folderId: Int) = callIO {
         folderDao.removeById(folderId)
     }
 
-    fun renameFolder(folderId: Int, newFolderName: String) = call(ioDispatcher) {
+    fun renameFolder(folderId: Int, newFolderName: String) = callIO {
         folderDao.updateName(folderId, newFolderName)
     }
 
-    fun reorderLinks(orders: List<Pair<Long, Int>>) = call(ioDispatcher) {
+    fun reorderLinks(orders: List<Pair<Long, Int>>) = callIO {
         urlLinkDao.updateOrders(orders)
     }
 
-    fun reorderFolders(orders: List<Pair<Int, Int>>) = call(ioDispatcher) {
+    fun reorderFolders(orders: List<Pair<Int, Int>>) = callIO {
         folderDao.updateOrders(orders)
     }
 
-    private suspend fun parseHttpUrl(
-        url: String,
-        folderId: Int? = null
-    ) = urlParser.parseUrl(url)?.also { data ->
-        data.folderId = folderId ?: return@also
+    private fun UrlLinkData.addFilePaths() = apply {
+        logoFileName = imageCache.getLogoName(this)
+        contentFileName = imageCache.getContentName(this)
     }
 }

@@ -10,15 +10,15 @@ internal class UrlPattern {
             "?[a-zA-Z0-9@:%._\\+~#?&//=]{2,256}\\.[a-z]{2,6})\\b([-a-zA-Z0-9@:%._\\+~#?&//=]*)"
     }
 
-    fun getBaseUrl(url: String): String? {
+    fun getBaseUrl(url: String): String {
         val pattern = Pattern.compile(URL_REGEX)
         val matcher = pattern.matcher(url)
         return if (matcher.find()) {
-            (0 until matcher.groupCount()).forEach {
-                println("Group $it. ${matcher.group(it)}")
-            }
+            //(0 until matcher.groupCount()).forEach {
+            //    println("Group $it. ${matcher.group(it)}")
+            //}
             matcher.group(2)
-        } else null
+        } else throw Exception("Url is not valid.")
     }
 
     fun isMatchPattern(pattern: String, url: String): Boolean {

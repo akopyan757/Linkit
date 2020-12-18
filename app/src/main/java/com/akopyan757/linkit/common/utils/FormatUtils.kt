@@ -1,5 +1,6 @@
 package com.akopyan757.linkit.common.utils
 
+import android.webkit.URLUtil
 import kotlin.math.roundToLong
 
 /**
@@ -42,4 +43,6 @@ object FormatUtils {
             else -> FILE_SIZE_FORMAT.format(size.toDouble() / MILLION) + MEGA + BYTE
         }
     }
+
+    fun isUrl(url: String): Boolean = URLUtil.isHttpsUrl(url) || URLUtil.isHttpUrl(url)
 }

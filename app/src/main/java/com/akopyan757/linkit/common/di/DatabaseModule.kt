@@ -12,6 +12,8 @@ object DatabaseModule {
 
     val module = module {
 
+        single { ImageCache() }
+
         single {
             Room.databaseBuilder(androidContext(), AppDatabase::class.java, Config.DATABASE_NAME)
                 .fallbackToDestructiveMigration()

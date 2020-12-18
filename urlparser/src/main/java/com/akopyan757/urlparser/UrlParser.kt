@@ -7,17 +7,18 @@ class UrlParser<T, P, V>(
     private val patternCache: IPatternCache<T, P>,
     private val factory: IUrlDataFactory<V>,
     private val documentSearch: IDocumentSearch = DocumentSearchImpl(),
-) where T : IPatternHostData,
-        T : IPatternSpecifiedData,
-        P : IPatternHostData,
-        V: UrlData
+): IUrlParser<V> where
+    T : IPatternHostData,
+    T : IPatternSpecifiedData,
+    P : IPatternHostData,
+    V: UrlData
 {
 
     private val mUrlPattern = UrlPattern()
 
-    suspend fun parseUrl(url: String): V? {
+    override suspend fun parseUrl(url: String): V {
         documentSearch.request(url)
-        val baseUrl = mUrlPattern.getBaseUrl(url) ?: return null
+        val baseUrl = mUrlPattern.getBaseUrl(url)
         val patternList = patternCache.getPatterns(baseUrl)
         val pattern = patternList.find { mUrlPattern.isMatchPattern(it.specPattern(), url) }
 

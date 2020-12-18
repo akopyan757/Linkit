@@ -56,6 +56,10 @@ class LinkViewModel : BaseViewModel(), KoinComponent {
         )
     }
 
+    override fun getLiveResponses(): LiveData<RequestState> {
+        return requestLiveData(method = { linkRepository.initResources() })
+    }
+
     /**
      * Public methods
      */

@@ -8,6 +8,13 @@ import com.akopyan757.linkit.model.entity.FolderData
 interface FolderDao {
 
     @Transaction
+    fun initFolderDao(): Boolean {
+        return if (getById(FolderData.GENERAL_FOLDER_ID) == null) {
+            insertOrUpdate(FolderData.generalFolder()); true
+        } else false
+    }
+
+    @Transaction
     fun addNewFolder(name: String): Boolean {
         val folder = getByName(name)
         if (folder != null) return false

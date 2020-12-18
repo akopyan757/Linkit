@@ -57,15 +57,16 @@ abstract class BaseViewModel: ViewModel(), BaseStateObservable {
         listLiveData: ListLiveData<R>,
         onMap: (List<T>) -> List<R>,
         onStart: (() -> Unit)? = null,
-        onFinished: (() -> Unit)? = null,
+        onFinished: ((List<R>) -> Unit)? = null,
         onError: ((exception: Exception) -> Unit)? = null
     ) {
-        listLiveData.addSource(request) { list ->
+        listLiveData.addSource(request) { data ->
             viewModelScope.launch {
                 try {
                     onStart?.invoke()
-                    listLiveData.change(onMap.invoke(list)) {
-                        onFinished?.invoke()
+                    val observables = onMap.invoke(data)
+                    listLiveData.change(observables) {
+                        onFinished?.invoke(observables)
                     }
                 } catch (e: Exception) {
                     mException.value = e

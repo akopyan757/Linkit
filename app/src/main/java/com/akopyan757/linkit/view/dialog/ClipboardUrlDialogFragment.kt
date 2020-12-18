@@ -65,10 +65,11 @@ class ClipboardUrlDialogFragment : DialogFragment() {
     ) {
         initResources(getString(R.string.notSelected))
 
-        getFolderList().observe(owner, { holders ->
-            val spinner = binding.contentClipboard.spCreateLinkAssignToFolder
+        val spinner = binding.contentClipboard.spCreateLinkAssignToFolder
+
+        getFolderNameList().observe(owner, { names ->
             spinner.adapter = ArrayAdapter(
-                requireContext(), R.layout.item_folder_spinner, R.id.tvFolderSpinner, holders.data
+                requireContext(), R.layout.item_folder_spinner, R.id.tvFolderSpinner, names
             )
         })
 

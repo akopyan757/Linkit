@@ -12,10 +12,10 @@ interface UrlLinkDao {
     @Query("SELECT * FROM url_link_data")
     fun getLiveAll(): LiveData<List<UrlLinkData>>
 
-    @Query("SELECT * FROM url_link_data WHERE folder_id LIKE :folderId")
+    @Query("SELECT * FROM url_link_data WHERE folder_id LIKE :folderId ORDER BY _order")
     fun getByFolder(folderId: Int): List<UrlLinkData>
 
-    @Query("SELECT * FROM url_link_data WHERE folder_id LIKE :folderId")
+    @Query("SELECT * FROM url_link_data WHERE folder_id LIKE :folderId ORDER BY _order")
     fun getLiveFromFolder(folderId: Int): LiveData<List<UrlLinkData>>
 
     @Query("UPDATE url_link_data SET _order = :order WHERE id == :id")

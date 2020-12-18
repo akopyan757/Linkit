@@ -2,7 +2,6 @@ package com.akopyan757.linkit.viewmodel
 
 import android.util.Log
 import androidx.databinding.Bindable
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.map
 import androidx.lifecycle.switchMap
@@ -10,9 +9,9 @@ import com.akopyan757.base.viewmodel.BaseViewModel
 import com.akopyan757.base.viewmodel.list.ListLiveData
 import com.akopyan757.linkit.BR
 import com.akopyan757.linkit.model.entity.FolderData
+import com.akopyan757.linkit.model.entity.UrlLinkData
 import com.akopyan757.linkit.model.repository.LinkRepository
 import com.akopyan757.linkit.viewmodel.observable.FolderObservable
-import com.akopyan757.linkit.viewmodel.request.LinkRequest
 import org.koin.core.KoinComponent
 import org.koin.core.inject
 
@@ -47,18 +46,16 @@ class LinkCreateUrlViewModel(
     val enabledButton: Boolean
         get() = selectedFolderName.isNotEmpty() && title.isNotEmpty()
 
-    /**
-     * ListView
-     */
+    private lateinit var defaultUrlLinkData: UrlLinkData
+
+    /** ListView */
     private var foldersList = ListLiveData<FolderObservable>()
 
-    /**
-     * Repository
-     */
+    /** Repository */
     private val linkRepository: LinkRepository by inject()
 
     /** Requests */
-    private val addLinkRequest = MutableLiveData<LinkRequest>()
+    private val addLinkRequest = MutableLiveData<UrlLinkData>()
 
     /** Responses */
     init {
@@ -77,6 +74,7 @@ class LinkCreateUrlViewModel(
             Log.i(TAG, "GET INFO URL: LOADING")
         }, onSuccess = { urlLinkData ->
             Log.i(TAG, "GET INFO URL: SUCCESS: $urlLinkData")
+            defaultUrlLinkData = urlLinkData
             title = urlLinkData.title
             description = urlLinkData.description
         }, onError = { exception ->
@@ -84,12 +82,10 @@ class LinkCreateUrlViewModel(
         }
     )
 
-    private val addLinkResponse = addLinkRequest.switchMap {
+    private val addLinkResponse = addLinkRequest.switchMap { urlLinkData ->
         requestLiveData(
-            method = { linkRepository.addNewLink(it.link, it.folderId, it.title, it.description) },
-            onLoading = {
-                Log.i(TAG, "ADD LINK: LOADING")
-            },
+            method = { linkRepository.addNewLink(urlLinkData) },
+            onLoading = { Log.i(TAG, "ADD LINK: LOADING") },
             onSuccess = {
                 Log.i(TAG, "ADD LINK: SUCCESS")
                 this emitAction ACTION_DISMISS
@@ -99,6 +95,7 @@ class LinkCreateUrlViewModel(
             }
         )
     }
+
 
     /** Public methods */
     fun initResources(notSelected: String) {
@@ -110,12 +107,15 @@ class LinkCreateUrlViewModel(
             .find { it.name == selectedFolderName }
             ?.id  ?: FolderData.GENERAL_FOLDER_ID
 
-        addLinkRequest.value = LinkRequest(title, description, url, folderId)
+        defaultUrlLinkData.folderId = folderId
+        defaultUrlLinkData.title = title
+        defaultUrlLinkData.description = description
+        addLinkRequest.value = defaultUrlLinkData
     }
 
     override fun getLiveResponses() = groupLiveResponses(
         getInfoFromUrl, addLinkResponse
     )
 
-    fun getFolderList() = foldersList
+    fun getFolderNameList() = foldersList.map { holder -> holder.data.map { it.name } }
 }

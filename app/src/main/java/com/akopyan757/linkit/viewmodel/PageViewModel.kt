@@ -8,7 +8,6 @@ import com.akopyan757.base.viewmodel.BaseViewModel
 import com.akopyan757.base.viewmodel.list.ListLiveData
 import com.akopyan757.linkit.BR
 import com.akopyan757.linkit.common.Config
-import com.akopyan757.linkit.model.entity.UrlLinkData
 import com.akopyan757.linkit.model.repository.LinkRepository
 import com.akopyan757.linkit.viewmodel.observable.LinkObservable
 import org.koin.core.KoinComponent
@@ -21,6 +20,8 @@ class PageViewModel(private val folderId: Int): BaseViewModel(), KoinComponent {
         private const val TAG = "PAGE_VIEW_MODEL"
     }
 
+    private val keyCount = Config.KEY_SELECTED_COUNT.format(folderId)
+
     private val stateHandle: SavedStateHandle by inject(named(Config.HANDLE_URL))
 
     private val liveEditModel by LiveSavedStateBindable<Boolean>(stateHandle, Config.KEY_EDIT_MODE)
@@ -31,52 +32,42 @@ class PageViewModel(private val folderId: Int): BaseViewModel(), KoinComponent {
     var isEmptyPage: Boolean by DelegatedBindable(false, BR.emptyPage)
 
     @get:Bindable
-    var selectedCount: Int by SavedStateBindable(
-        stateHandle, Config.KEY_SELECTED_COUNT.format(folderId), 0, BR.selectedCount
-    )
+    var selectedCount: Int by SavedStateBindable(stateHandle, keyCount, 0, BR.selectedCount)
 
-    /**
-     * List LiveData's
-     */
+    /** List LiveData's */
     private val urlListData = ListLiveData<LinkObservable>()
 
-    /**
-     * Repository
-     */
+    /** Repository */
     private val linkRepository: LinkRepository by inject()
 
-    /**
-     * Responses
-     */
-    private val getUrlAllResponse = requestLiveData(method = {
-        linkRepository.getUrlLinksByFolder(folderId)
-    }, onSuccess = { data ->
-        Log.i(TAG, "GEL URL LINK LIST (FOLDER = $folderId): SIZE = ${data.size}")
-        updateList(data)
-    })
+    /** Responses */
+    init {
+        bindLiveList(
+            request = linkRepository.getUrlLinksByFolder(folderId),
+            listLiveData = urlListData,
+            onMap = { data -> data.map(LinkObservable::from) },
+            onFinished = { observables -> isEmptyPage = observables.isEmpty() }
+        )
+    }
 
     private val saveOrderResponse = liveEditSave.switchMap { savedState ->
         if (savedState) {
             val pairs = urlListData.getList().mapIndexed { index, item -> Pair(item.id, index) }
+            val value = pairs.joinToString(", ") { "[${it.first}: order=${it.second}]" }
 
-            requestLiveData(method = {
-                linkRepository.reorderLinks(pairs)
-            }, onLoading = {
-                Log.i(TAG, "REORDER URLS: LOADING")
-            }, onSuccess = {
-                val value = pairs.joinToString(", ") { "[${it.first}: order=${it.second}]" }
-                Log.i(TAG, "REORDER URLS: SUCCESS: $value")
-
-            }, onError = { exception ->
-                Log.i(TAG, "REORDER URLS: ERROR", exception)
-            })
-
+            requestLiveData(
+                method = { linkRepository.reorderLinks(pairs) },
+                onLoading = { Log.i(TAG, "REORDER URLS: LOADING") },
+                onSuccess = { Log.i(TAG, "REORDER URLS: SUCCESS: $value") },
+                onError = { exception -> Log.i(TAG, "REORDER URLS: ERROR", exception) }
+            )
         } else {
-
             requestLiveData(method = {
-                linkRepository.getUrlLinksByFolder(folderId, isLive=false)
+                linkRepository.getUrlLinksByFolder2(folderId)
             }, onSuccess = { data ->
-                updateList(data)
+                val observables = data.map(LinkObservable::from)
+                urlListData.change(observables)
+                isEmptyPage = observables.isEmpty()
             })
         }
     }
@@ -114,22 +105,7 @@ class PageViewModel(private val folderId: Int): BaseViewModel(), KoinComponent {
         }
     }
 
-    /**
-     * Private method
-     */
-    private fun updateList(data: List<UrlLinkData>) {
-        val observables = data.map { item -> item.toObservable() }
-        urlListData.change(observables)
-        isEmptyPage = observables.isEmpty()
-    }
-
-    private fun UrlLinkData.toObservable(): LinkObservable {
-        val photoUrl = photoUrl?.takeUnless { it.isEmpty() } ?: logoUrl
-        val imageFileName = contentFileName ?: logoFileName
-        return LinkObservable(id, url, title, description, photoUrl, imageFileName)
-    }
-
     override fun getLiveResponses() = groupLiveResponses(
-        getUrlAllResponse, saveOrderResponse, deleteUrlsResponse
+        saveOrderResponse, deleteUrlsResponse
     )
 }

@@ -6,28 +6,22 @@ import kotlinx.coroutines.CoroutineDispatcher
 
 abstract class BaseRepository {
 
-    protected fun <T : Any> call(
-        dispatcher: CoroutineDispatcher,
-        action: suspend () -> T?
-    ) = liveData(dispatcher) {
+    abstract val coroutineDispatcher: CoroutineDispatcher
+
+    protected fun <T : Any> callIO(
+        action: suspend () -> T
+    ) = liveData(coroutineDispatcher) {
         emit(ApiResponse.Loading)
 
         try {
             val data = action.invoke()
-            if (data != null) {
-                emit(ApiResponse.Success(data))
-            } else {
-                emit(ApiResponse.Error(NullPointerException()))
-            }
+            emit(ApiResponse.Success(data))
         } catch (e: Exception) {
             emit(ApiResponse.Error(e))
         }
     }
 
-    protected fun <T> callLive(
-        dispatcher: CoroutineDispatcher,
-        action: () -> LiveData<T>
-    ) = liveData(dispatcher) {
-        emitSource(action.invoke())
+    protected fun <T> LiveData<T>.asLiveIO() = liveData(coroutineDispatcher) {
+        emitSource(this@asLiveIO)
     }
 }

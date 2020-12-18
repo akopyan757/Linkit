@@ -18,10 +18,12 @@ interface PatternDao: IPatternCache<ParsePatternData, PatternHostData> {
     override fun getHostPatterns(host: String): List<PatternHostData>
 
     @Transaction
-    fun insertHostOrUpdate(data: List<PatternHostData>) {
+    fun insertHostOrUpdate(list: List<PatternHostData>) {
         removeSpecifiedAll()
         removeHostAll()
-        data.forEach { hostData ->
+
+        list.indices.forEach { index ->
+            val hostData = list[index]
             val hostId = insertHostOrUpdate(hostData)
             hostData.patterns.forEach { specifiedData ->
                 specifiedData.hostId = hostId.toInt()
