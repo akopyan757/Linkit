@@ -11,7 +11,7 @@ import com.akopyan757.linkit.viewmodel.FolderCreateViewModel
 import com.akopyan757.linkit.viewmodel.LinkCreateUrlViewModel
 import org.koin.android.viewmodel.ext.android.viewModel
 
-class CreateFolderDialogFragment : BaseDialogFragment<DialogNewFolderBinding, FolderCreateViewModel>() {
+class FolderCreateDialogFragment : BaseDialogFragment<DialogNewFolderBinding, FolderCreateViewModel>() {
 
     override val mViewModel: FolderCreateViewModel by viewModel()
 

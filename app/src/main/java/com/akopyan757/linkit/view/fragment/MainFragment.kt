@@ -62,7 +62,7 @@ class MainFragment : BaseFragment<FragmentMainBinding, LinkViewModel>(), ViewTre
         }
 
         tvFolderCreate.setOnClickListener {
-            findNavController().navigate(R.id.createFolderDialogFragment)
+            findNavController().navigate(R.id.folderCreateDialogFragment)
         }
 
         mAdapter = PageFragmentAdapter(childFragmentManager, lifecycle)

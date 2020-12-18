@@ -39,6 +39,11 @@ class FolderViewModel : BaseViewModel(), KoinComponent {
             onMap = { data ->
                 data.map { item -> FolderObservable(item.id, item.name, 1) }
                     .filter { observable -> observable.id != FolderData.GENERAL_FOLDER_ID }
+            }, onFinished = { observables ->
+                Log.i(TAG, "Observables=${observables.joinToString(", ")}")
+                if (observables.isEmpty()) {
+                    this emitAction ACTION_DISMISS
+                }
             }
         )
     }
@@ -83,7 +88,7 @@ class FolderViewModel : BaseViewModel(), KoinComponent {
                 val ids = pairs.joinToString(", ") { "[${it.first}: order = ${it.second}]" }
                 Log.i(TAG, "REORDER FOLDER: LOADING: $ids")
             }, onSuccess = {
-                this emitAction ACTION_REORDER
+                this emitAction ACTION_DISMISS
                 Log.i(TAG, "REORDER FOLDER: SUCCESS")
             }, onError = { exception ->
                 Log.i(TAG, "REORDER FOLDER: ERROR", exception)
@@ -119,7 +124,7 @@ class FolderViewModel : BaseViewModel(), KoinComponent {
     )
 
     companion object {
-        const val ACTION_REORDER = 12211
+        const val ACTION_DISMISS = 12211
 
         private const val TAG = "FOLDER_VIEW_MODEL"
     }

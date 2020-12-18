@@ -61,7 +61,7 @@
                 android:id="@+id/viewPager"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
-                android:layout_marginTop="48dp"
+                android:layout_marginTop="56dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
@@ -91,16 +91,18 @@
                 android:layout_width="wrap_content"
                 android:layout_height="40dp"
                 android:layout_marginStart="@dimen/marginSecondary"
+                android:layout_marginTop="@dimen/marginSecondary"
+                android:background="@drawable/shadow_tab_layout"
                 android:drawablePadding="@dimen/marginSecondary"
                 android:gravity="start|center_vertical"
+                android:paddingStart="@dimen/marginSecondary"
+                android:paddingEnd="@dimen/marginSecondary"
                 android:text="@string/add_folder"
-                android:textAppearance="@style/Theme.Linkit.TextAppearanceTitle"
-                android:textSize="@dimen/addFolderTextSize"
-                app:layout_constraintBottom_toTopOf="@+id/viewPager"
+                android:textAppearance="@style/Theme.Linkit.TextAppearanceRegular"
+                app:drawableStartCompat="@drawable/ic_baseline_folder_add_24"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:visibility="@{viewModel.foldersEmpty}"
-                app:drawableEndCompat="@drawable/ic_baseline_folder_add_24" />
+                app:visibility="@{viewModel.foldersEmpty}" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

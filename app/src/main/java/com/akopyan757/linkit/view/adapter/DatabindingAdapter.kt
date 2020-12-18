@@ -36,7 +36,6 @@ object DatabindingAdapter {
         Log.i("app:url", url ?: "")
         url?.takeUnless { it.isEmpty() } ?: return
 
-
         CoroutineScope(Dispatchers.Main).launch {
             val bitmapFromURL = try {
                 getBitmapFromURL(url)
@@ -54,12 +53,8 @@ object DatabindingAdapter {
     fun ImageView.setUri(uri: Uri?) {
         val radius = context.resources.getDimensionPixelOffset(R.dimen.tabPaddingHorizontally)
         val size = context.resources.getDimensionPixelOffset(R.dimen.linkPictureWidth)
-        Picasso.get()
-                .load(uri)
-                .resize(size, size)
-                .centerCrop()
-                .transform(RoundedCornersTransformation(radius, 0))
-                .into(this)
+        Picasso.get().load(uri).centerCrop().resize(size, size)
+                .transform(RoundedCornersTransformation(radius, 0)).into(this)
     }
 
     @JvmStatic

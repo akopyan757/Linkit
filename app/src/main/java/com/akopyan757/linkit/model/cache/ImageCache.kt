@@ -27,7 +27,7 @@ class ImageCache: KoinComponent {
         }
 
         if (logoUrl != null) {
-            val bitmap = loadBitmap(logoUrl)?.getResizedBitmap(MAX_SIZE)
+            val bitmap = loadBitmap(logoUrl)
             val name = LOGO_PREFIX.format(data.hostPatternId)
             if (bitmap != null) {
                 saveBitmap(bitmap, name)
@@ -36,7 +36,7 @@ class ImageCache: KoinComponent {
         }
 
         if (imageUrl != null) {
-            val bitmap = loadBitmap(imageUrl)?.getResizedBitmap(MAX_SIZE)
+            val bitmap = loadBitmap(imageUrl)
             val name = CONTENT_PREFIX.format(data.hostPatternId, data.specPatternId, data.url.hashCode())
             if (bitmap != null) {
                 saveBitmap(bitmap, name)

@@ -54,21 +54,23 @@
                     android:id="@+id/ivFolderDelete"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="@dimen/marginSecondary"
+                    android:layout_marginEnd="@dimen/marginTertiary"
                     android:contentDescription="@string/todo"
                     android:onClick="@{() -> listener.onDeleteFolder(observable)}"
+                    android:padding="@dimen/marginSecondary"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:srcCompat="@drawable/ic_baseline_folder_remove_24"/>
+                    app:srcCompat="@drawable/ic_baseline_folder_remove_24" />
 
                 <ImageView
                     android:id="@+id/ivFolderEdit"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="@dimen/marginSecondary"
+                    android:layout_marginEnd="@dimen/marginTertiary"
                     android:contentDescription="@string/todo"
                     android:onClick="@{() -> listener.onEditFolder(observable)}"
+                    android:padding="@dimen/marginSecondary"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/ivFolderDelete"
                     app:layout_constraintTop_toTopOf="parent"

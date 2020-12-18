@@ -34,4 +34,8 @@
     <string name="delete">Delete</string>
     <string name="accept">Accept</string>
     <string name="add_folder">Add Folder</string>
+    <string name="delete_folder_title">Delete Folder</string>
+    <string name="delete_folder_description">Are you sure want to delete the folder \'%s\'?</string>
+    <string name="cancel">Cancel</string>
+
 </resources>
