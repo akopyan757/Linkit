@@ -1,5 +1,6 @@
 package com.akopyan757.linkit.model.database
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.room.*
 import com.akopyan757.linkit.model.entity.FolderData
@@ -34,12 +35,23 @@ interface UrlLinkDao {
     @Query("SELECT * FROM url_link_data WHERE folder_id LIKE :folderId ORDER BY _order DESC")
     fun getLiveFromFolder(folderId: Int): LiveData<List<UrlLinkData>>
 
+    @Query("SELECT _order FROM url_link_data WHERE id LIKE :id ORDER BY _order DESC")
+    fun getOrderById(id: Long): Int
+
+    @Transaction
+    fun getOrderByIds(ids: List<Long>): List<Int> {
+        return ids.map { id -> getOrderById(id) }
+    }
+
     @Query("UPDATE url_link_data SET _order = :order WHERE id == :id")
     fun updateOrder(id: Long, order: Int)
 
     @Transaction
-    fun updateOrders(pairs: List<Pair<Long, Int>>) {
-        pairs.forEach { (id, order) -> updateOrder(id, order) }
+    fun updateOrders(ids: List<Long>) {
+        val orders = getOrderByIds(ids).sortedDescending()
+        ids.mapIndexed { index, id ->
+            updateOrder(id, orders[index])
+        }
     }
 
     @Query("DELETE from url_link_data WHERE id = :id")
@@ -56,6 +68,6 @@ interface UrlLinkDao {
     @Query("DELETE FROM url_link_data")
     fun removeAll()
 
-    @Query("SELECT MAX(`order`) FROM folder_data;")
+    @Query("SELECT MAX(_order) FROM url_link_data;")
     fun getMaxOrder(): Int
 }

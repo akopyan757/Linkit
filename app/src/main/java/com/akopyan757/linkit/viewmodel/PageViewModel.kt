@@ -52,11 +52,11 @@ class PageViewModel(private val folderId: Int): BaseViewModel(), KoinComponent {
 
     private val saveOrderResponse = liveEditSave.switchMap { savedState ->
         if (savedState) {
-            val pairs = urlListData.getList().mapIndexed { index, item -> Pair(item.id, index) }
-            val value = pairs.joinToString(", ") { "[${it.first}: order=${it.second}]" }
+            val ids = urlListData.getList().map { item -> item.id }
+            val value = ids.joinToString(", ")
 
             requestLiveData(
-                method = { linkRepository.reorderLinks(pairs) },
+                method = { linkRepository.reorderLinks(ids) },
                 onLoading = { Log.i(TAG, "REORDER URLS: LOADING") },
                 onSuccess = { Log.i(TAG, "REORDER URLS: SUCCESS: $value") },
                 onError = { exception -> Log.i(TAG, "REORDER URLS: ERROR", exception) }

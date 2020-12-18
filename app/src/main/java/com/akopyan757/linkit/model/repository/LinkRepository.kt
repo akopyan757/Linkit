@@ -84,7 +84,7 @@ class LinkRepository: BaseRepository(), KoinComponent {
         folderDao.updateName(folderId, newFolderName)
     }
 
-    fun reorderLinks(orders: List<Pair<Long, Int>>) = callIO {
+    fun reorderLinks(orders: List<Long>) = callIO {
         urlLinkDao.updateOrders(orders)
     }
 
