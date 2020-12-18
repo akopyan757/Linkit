@@ -8,6 +8,7 @@ import android.view.ViewTreeObserver
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.fragment.findNavController
 import com.akopyan757.base.view.BaseFragment
+import com.akopyan757.base.viewmodel.list.ListChangeStrategy
 import com.akopyan757.linkit.BR
 import com.akopyan757.linkit.R
 import com.akopyan757.linkit.common.Config
@@ -60,6 +61,10 @@ class MainFragment : BaseFragment<FragmentMainBinding, LinkViewModel>(), ViewTre
             findNavController().navigate(R.id.action_mainFragment_to_folderFragment)
         }
 
+        tvFolderCreate.setOnClickListener {
+            findNavController().navigate(R.id.createFolderDialogFragment)
+        }
+
         mAdapter = PageFragmentAdapter(childFragmentManager, lifecycle)
         viewPager.adapter = mAdapter
 
@@ -87,8 +92,11 @@ class MainFragment : BaseFragment<FragmentMainBinding, LinkViewModel>(), ViewTre
     }
 
     override fun onSetupViewModel(viewModel: LinkViewModel): Unit = with(viewModel) {
-        getFolderLiveList().observe(viewLifecycleOwner, { holders ->
-            mAdapter.updateFolders(holders.data)
+        getFolderLiveList().observe(viewLifecycleOwner, { holder ->
+            if (holder.strategy is ListChangeStrategy.CustomChanged) {
+                mAdapter.updateFolders(holder.data)
+                holder.strategy.after?.invoke()
+            }
         })
         getDeleteIconVisible().observe(viewLifecycleOwner, { deleteVisible ->
             toolbarEdit.menu.setGroupVisible(R.id.groupEditSave, deleteVisible)
