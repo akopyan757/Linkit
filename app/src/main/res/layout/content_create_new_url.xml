@@ -30,6 +30,9 @@
                 android:id="@+id/tietClipboardUrl"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:maxLines="3"
+                android:ems="3"
+                android:ellipsize="end"
                 android:hint="@string/url"
                 android:text="@{viewModel.url}"
                 style="@style/Theme.Linkit.EditText.ReadOnly"/>

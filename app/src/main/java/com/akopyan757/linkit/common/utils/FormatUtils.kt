@@ -1,6 +1,7 @@
 package com.akopyan757.linkit.common.utils
 
 import android.webkit.URLUtil
+import java.util.*
 import kotlin.math.roundToLong
 
 /**
@@ -45,4 +46,8 @@ object FormatUtils {
     }
 
     fun isUrl(url: String): Boolean = URLUtil.isHttpsUrl(url) || URLUtil.isHttpUrl(url)
+
+    fun updateStringFormat(value: String): String {
+        return value.substring(0, 1).toUpperCase(Locale.ROOT) + value.substring(1)
+    }
 }

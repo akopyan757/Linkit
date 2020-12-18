@@ -29,6 +29,7 @@
     <dimen name="linkIconMinHeight">32dp</dimen>
     <dimen name="createUrlFolderTitleMarginStart">12dp</dimen>
     <dimen name="dialogMinWidth">300dp</dimen>
+    <dimen name="dialogCreateMinWidth">250dp</dimen>
     <dimen name="linkMinWidth">100dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="tabPaddingHorizontally">12dp</dimen>

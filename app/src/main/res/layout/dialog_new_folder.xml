@@ -10,9 +10,10 @@
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:minWidth="@dimen/dialogMinWidth">
+        android:background="@drawable/background_dialog"
+        android:minWidth="@dimen/dialogCreateMinWidth">
 
         <TextView
             android:id="@+id/tvCreateLinkTitle"
@@ -27,36 +28,37 @@
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/tilCreateLinkName"
+            style="@style/Theme.Linkit.TextInputLayout"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/marginSecondary"
-            android:layout_marginTop="@dimen/marginPrimary"
+            android:layout_marginTop="@dimen/marginSecondary"
             android:layout_marginEnd="@dimen/marginSecondary"
-            android:textColorHint="@color/disabled"
-            app:hintTextColor="@color/disabled"
+            app:error="@{viewModel.errorName}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvCreateLinkTitle"
-            app:error="@{viewModel.errorName}">
+            app:layout_constraintTop_toBottomOf="@+id/tvCreateLinkTitle">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/tietCreateLinkName"
+                style="@style/Theme.Linkit.EditText.SingleLine"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/name"
+                android:maxLength="15"
                 android:text="@={viewModel.folderName}" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
         <Button
             android:id="@+id/btnCreateLinkAccept"
+            style="@style/Theme.Linkit.Button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/marginGiant"
-            android:layout_marginBottom="@dimen/marginPrimary"
-            android:text="@string/create"
-            android:textColor="@color/white"
+            android:layout_marginTop="@dimen/marginSecondary"
+            android:layout_marginBottom="@dimen/marginSecondary"
             android:onClick="@{() -> viewModel.onCreateFolderButtonClicked()}"
+            android:text="@string/create"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@+id/tilCreateLinkName"
             app:layout_constraintTop_toBottomOf="@+id/tilCreateLinkName" />

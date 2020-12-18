@@ -39,14 +39,13 @@
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnClipboardUrlAccept"
+            style="@style/Theme.Linkit.Button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/marginPrimary"
-            android:layout_marginEnd="@dimen/marginTertiary"
-            android:onClick="@{() -> viewModel.onAcceptUrl()}"
+            android:layout_margin="@dimen/marginSecondary"
             android:enabled="@{viewModel.enabledButton}"
+            android:onClick="@{() -> viewModel.onAcceptUrl()}"
             android:text="@string/add"
-            style="@style/Theme.Linkit.Button"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/contentClipboard" />

@@ -1,9 +1,12 @@
 package com.akopyan757.linkit.view.dialog
 
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.Window
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.DialogFragment
 import androidx.navigation.fragment.findNavController
@@ -28,6 +31,11 @@ class CreateFolderDialogFragment : DialogFragment() {
             inflater, R.layout.dialog_new_folder, container, false
         ).apply {
             viewModel = mViewModel
+        }
+
+        dialog?.window?.apply {
+            setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+            requestFeature(Window.FEATURE_NO_TITLE)
         }
 
         mViewModel.initResources(getString(R.string.notSelected))
