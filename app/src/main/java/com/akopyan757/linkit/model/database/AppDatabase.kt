@@ -2,7 +2,6 @@ package com.akopyan757.linkit.model.database
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
-import androidx.room.TypeConverters
 import com.akopyan757.linkit.model.entity.FolderData
 import com.akopyan757.linkit.model.entity.PatternHostData
 import com.akopyan757.linkit.model.entity.PatternSpecifiedData

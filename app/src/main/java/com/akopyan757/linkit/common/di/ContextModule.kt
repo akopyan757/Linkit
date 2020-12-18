@@ -13,7 +13,7 @@ object ContextModule {
 
     val it = module {
         single { androidContext().cacheDir }
-        single { JsonPatternsParser(androidContext()) }
+        single { JsonPatternsParser(androidContext().assets) }
         single(named(Config.IO_DISPATCHERS)) { Dispatchers.IO }
     }
 }
