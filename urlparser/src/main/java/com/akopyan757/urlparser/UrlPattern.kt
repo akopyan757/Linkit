@@ -3,7 +3,7 @@ package com.akopyan757.urlparser
 import java.util.regex.Pattern
 
 
-internal class UrlPattern {
+class UrlPattern {
 
     companion object {
         private const val URL_REGEX = "(http|https)://((www.)?" +

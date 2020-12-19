@@ -1,7 +1,5 @@
 package com.akopyan757.linkit.model.repository
 
-import android.util.Log
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.map
 import com.akopyan757.base.model.BaseRepository
 import com.akopyan757.linkit.BuildConfig
@@ -78,7 +76,14 @@ class LinkRepository: BaseRepository(), KoinComponent {
     }
 
     fun getUrlLinksByFolder(folderId: Int) = urlLinkDao.getLiveUrls(folderId)
-            .map { list -> list.map { it.addFilePaths() } }
+            .map { list ->
+                list.map { data ->
+                    FormatUtils.extractUrls(data.title).forEach { path ->
+                        data.title = data.title.replace(path, Config.EMPTY)
+                    }
+                    data.addFilePaths()
+                }
+            }
             .asLiveIO()
 
     fun getUrlLinksByFolder2(folderId: Int) = callIO {
