@@ -1,6 +1,5 @@
 package com.akopyan757.linkit.model.database
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.room.*
 import com.akopyan757.linkit.model.entity.FolderData
@@ -25,6 +24,9 @@ interface UrlLinkDao {
             getLiveFromFolder(folderId)
         }
     }
+
+    @Query("SELECT * FROM url_link_data WHERE url LIKE '%' || :host || '%' ")
+    fun getByHost(host: String): List<UrlLinkData>
 
     @Query("SELECT * FROM url_link_data ORDER BY _order DESC")
     fun getLiveAll(): LiveData<List<UrlLinkData>>

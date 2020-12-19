@@ -1,7 +1,10 @@
 package com.akopyan757.linkit.model.repository
 
+import android.util.Log
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.map
 import com.akopyan757.base.model.BaseRepository
+import com.akopyan757.linkit.BuildConfig
 import com.akopyan757.linkit.common.Config
 import com.akopyan757.linkit.common.utils.FormatUtils
 import com.akopyan757.linkit.model.cache.ImageCache
@@ -46,6 +49,15 @@ class LinkRepository: BaseRepository(), KoinComponent {
             items.forEach { item ->
                 patternDao.addPatternWithHost(item)
                 storePatterns.removeObserveItem(item)
+                if (BuildConfig.DEBUG) {
+                    urlLinkDao.getByHost(item.host).forEach { data ->
+                        val newData = urlParser.parseUrl(data.url).also {
+                            it.id = data.id
+                        }
+                        urlLinkDao.insertOrUpdate(newData)
+                        imageCache.saveImages(newData)
+                    }
+                }
             }
         }
     }

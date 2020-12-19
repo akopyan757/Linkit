@@ -10,7 +10,7 @@ import com.akopyan757.urlparser.UrlData
 @Entity(tableName = "url_link_data")
 data class UrlLinkData(
     @PrimaryKey(autoGenerate = true)
-    @ColumnInfo(name = "id") val id: Long = 0L,
+    @ColumnInfo(name = "id") var id: Long = 0L,
     @ColumnInfo(name = "url") var url: String = "",
     @ColumnInfo(name = "title") var title: String = "",
     @ColumnInfo(name = "description") var description: String = "",

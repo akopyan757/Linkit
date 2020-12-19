@@ -37,7 +37,11 @@ interface PatternDao: IPatternCache<ParsePatternData, PatternHostData> {
     fun addPatternWithHost(data: PatternHostData) {
         val oldData = getHostPatterns(data.host).firstOrNull()
         if (oldData != null) data.id = oldData.id
-        insertHostOrUpdate(data)
+        val hostId = insertHostOrUpdate(data)
+        data.patterns.forEach { specifiedData ->
+            specifiedData.hostId = hostId.toInt()
+            insertSpecifiedOrUpdate(specifiedData)
+        }
     }
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)

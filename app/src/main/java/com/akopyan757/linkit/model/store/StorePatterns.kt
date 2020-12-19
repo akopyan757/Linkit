@@ -5,10 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.akopyan757.linkit.common.Config
 import com.akopyan757.linkit.model.entity.PatternHostData
-import com.google.firebase.database.ChildEventListener
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.*
 import org.koin.core.KoinComponent
 import org.koin.core.inject
 import org.koin.core.qualifier.named
@@ -30,37 +27,45 @@ class StorePatterns: KoinComponent {
     fun getLivePatterns(): LiveData<List<PatternHostData>> = livePatterns
 
     fun removeObserveItem(patternHostData: PatternHostData) {
-        patterns.remove(patternHostData)
+        patterns.removeAll { it.host == patternHostData.host }
     }
 
     fun fetchData() {
         reference.addChildEventListener(object : ChildEventListener {
             override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
-                snapshot.getValue(PatternHostData::class.java)?.also { data ->
-                    patterns.add(data)
-                    Log.i(TAG, "patterns.size=${patterns.size} data=${data}")
-                    livePatterns.value = patterns
-                }
+                try {
+                    snapshot.getValue(PatternHostData::class.java)?.also { data ->
+                        patterns.add(data)
+                        Log.i(TAG, "patterns.size=${patterns.size} data=${data}")
+                        livePatterns.value = patterns
+                    }
+                } catch (e: DatabaseException) {}
             }
 
             override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {
-                snapshot.getValue(PatternHostData::class.java)?.also { data ->
-                    patterns.add(data)
-                    Log.i(TAG, "patterns.size=${patterns.size} data=${data}")
-                    livePatterns.value = patterns
-                }
+                try {
+                    snapshot.getValue(PatternHostData::class.java)?.also { data ->
+                        patterns.add(data)
+                        Log.i(TAG, "patterns.size=${patterns.size} data=${data}")
+                        livePatterns.value = patterns
+                    }
+                } catch (e: DatabaseException) {}
             }
 
             override fun onChildRemoved(snapshot: DataSnapshot) {
-                val data = snapshot.getValue(PatternHostData::class.java)
-                Log.i(TAG, "onChildRemoved=$data")
-                //if (data != null) CoroutineScope(coroutineDispatcher).launch { emit(data) }
+                try {
+                    val data = snapshot.getValue(PatternHostData::class.java)
+                    Log.i(TAG, "onChildRemoved=$data")
+                    //if (data != null) CoroutineScope(coroutineDispatcher).launch { emit(data) }
+                } catch (e: DatabaseException) {}
             }
 
             override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) {
-                val data = snapshot.getValue(PatternHostData::class.java)
-                Log.i(TAG, "onChildMoved=$data")
-                //if (data != null) CoroutineScope(coroutineDispatcher).launch { emit(data) }
+                try {
+                    val data = snapshot.getValue(PatternHostData::class.java)
+                    Log.i(TAG, "onChildMoved=$data")
+                    //if (data != null) CoroutineScope(coroutineDispatcher).launch { emit(data) }
+                } catch (e: DatabaseException) {}
             }
 
             override fun onCancelled(error: DatabaseError) {
