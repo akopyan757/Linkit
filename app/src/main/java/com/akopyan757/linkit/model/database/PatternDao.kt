@@ -33,6 +33,13 @@ interface PatternDao: IPatternCache<ParsePatternData, PatternHostData> {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertHostOrUpdate(data: PatternHostData): Long
 
+    @Transaction
+    fun addPatternWithHost(data: PatternHostData) {
+        val oldData = getHostPatterns(data.host).firstOrNull()
+        if (oldData != null) data.id = oldData.id
+        insertHostOrUpdate(data)
+    }
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertSpecifiedOrUpdate(data: PatternSpecifiedData): Long
 

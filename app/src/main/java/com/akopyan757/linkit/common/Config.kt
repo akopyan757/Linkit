@@ -22,4 +22,6 @@ object Config {
     const val KEY_ACCEPT_DELETE = "KEY_ACCEPT_DELETE"
 
     const val IO_DISPATCHERS = "IO"
+
+    const val PATTERNS = "patterns"
 }

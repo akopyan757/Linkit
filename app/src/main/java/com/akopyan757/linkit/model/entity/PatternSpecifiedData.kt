@@ -13,7 +13,7 @@ data class PatternSpecifiedData(
     @PrimaryKey(autoGenerate = true)
     @SerializedName("id")
     @ColumnInfo(name = "spec_id")
-    val id: Int,
+    var id: Int,
 
     @SerializedName("host_id")
     @ColumnInfo(name = "spec_host_id")
@@ -21,21 +21,23 @@ data class PatternSpecifiedData(
 
     @SerializedName("pattern")
     @ColumnInfo(name = "spec_pattern")
-    val pattern: String = "",
+    var pattern: String = "",
 
     @SerializedName("title_element")
     @ColumnInfo(name = "spec_title_element")
-    val titleElement: String? = null,
+    var titleElement: String? = null,
 
     @SerializedName("description_element")
     @ColumnInfo(name = "spec_description_element")
-    val descriptionElement: String? = null,
+    var descriptionElement: String? = null,
 
     @SerializedName("image_url_element")
     @ColumnInfo(name = "spec_image_url_element")
-    val imageUrlElement: String? = null,
+    var imageUrlElement: String? = null,
 
 ): IPatternSpecifiedData {
+
+    constructor() : this(0, 0, "", null, null, null)
 
     @Ignore override fun specId() = id
     @Ignore override fun specHostId() = hostId

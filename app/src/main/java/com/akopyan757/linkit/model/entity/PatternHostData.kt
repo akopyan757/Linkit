@@ -13,28 +13,30 @@ data class PatternHostData @Ignore constructor(
     @PrimaryKey(autoGenerate = true)
     @SerializedName("id")
     @ColumnInfo(name = "host_id")
-    val id: Int,
+    var id: Int,
 
     @SerializedName("host")
     @ColumnInfo(name = "host")
-    val host: String = "",
+    var host: String = "",
 
     @SerializedName("title_element")
     @ColumnInfo(name = "host_title_element")
-    val titleElement: String?,
+    var titleElement: String?,
 
     @SerializedName("description_element")
     @ColumnInfo(name = "host_description_element")
-    val descriptionElement: String?,
+    var descriptionElement: String?,
 
     @SerializedName("image_url_element")
     @ColumnInfo(name = "host_image_url_element")
-    val imageUrlElement: String?,
+    var imageUrlElement: String?,
 
     @Ignore
     @SerializedName("patterns")
     var patterns: List<PatternSpecifiedData> = emptyList()
 ): IPatternHostData {
+
+    constructor() : this(0, "", null, null, null, emptyList())
 
     constructor(
         id: Int,

@@ -12,7 +12,7 @@ import com.akopyan757.linkit.model.entity.UrlLinkData
     FolderData::class,
     PatternHostData::class,
     PatternSpecifiedData::class
-], version = 16)
+], version = 17)
 abstract class AppDatabase: RoomDatabase() {
     abstract fun urlLinkDao(): UrlLinkDao
     abstract fun folderDao(): FolderDao

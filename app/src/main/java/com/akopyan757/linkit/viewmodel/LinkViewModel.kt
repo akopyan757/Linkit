@@ -93,4 +93,6 @@ class LinkViewModel : BaseViewModel(), KoinComponent {
     fun getDeleteIconVisible() = deleteUrlsVisible
 
     fun getSelectedCount() = selectedCount
+
+    fun getLivePattern() = linkRepository.getLivePattern()
 }

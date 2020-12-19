@@ -4,18 +4,17 @@ import androidx.lifecycle.map
 import com.akopyan757.base.model.BaseRepository
 import com.akopyan757.linkit.common.Config
 import com.akopyan757.linkit.common.utils.FormatUtils
-import com.akopyan757.linkit.common.utils.JsonPatternsParser
 import com.akopyan757.linkit.model.cache.ImageCache
 import com.akopyan757.linkit.model.database.FolderDao
 import com.akopyan757.linkit.model.database.PatternDao
 import com.akopyan757.linkit.model.database.UrlLinkDao
-import com.akopyan757.linkit.model.entity.PatternHostData
 import com.akopyan757.linkit.model.entity.UrlLinkData
 import com.akopyan757.linkit.model.exception.FolderExistsException
 import com.akopyan757.linkit.model.exception.UrlIsNotValidException
+import com.akopyan757.linkit.model.store.StorePatterns
 import com.akopyan757.urlparser.IUrlParser
-import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.runBlocking
 import org.koin.core.KoinComponent
 import org.koin.core.inject
 import org.koin.core.qualifier.named
@@ -24,8 +23,6 @@ class LinkRepository: BaseRepository(), KoinComponent {
 
     companion object {
         const val TAG = "LINK_REPOSITORY"
-
-        const val FILE_NAME = "pattern.json"
     }
 
     private val urlLinkDao: UrlLinkDao by inject()
@@ -33,17 +30,23 @@ class LinkRepository: BaseRepository(), KoinComponent {
     private val patternDao: PatternDao by inject()
     private val imageCache: ImageCache by inject()
 
-    private val parser: JsonPatternsParser by inject()
-
     private val urlParser: IUrlParser<UrlLinkData> by inject()
+
+    private val storePatterns: StorePatterns by inject()
 
     override val coroutineDispatcher: CoroutineDispatcher by inject(named(Config.IO_DISPATCHERS))
 
     fun initResources() = callIO {
-        if (folderDao.initFolderDao()) {
-            val type = object : TypeToken<List<PatternHostData>>() {}.type
-            val patterns = parser.parse<PatternHostData>(FILE_NAME, type)
-            patternDao.insertHostOrUpdate(patterns)
+        folderDao.initFolderDao()
+        storePatterns.fetchData()
+    }
+
+    fun getLivePattern() = storePatterns.getLivePatterns().map { items ->
+        runBlocking(coroutineDispatcher) {
+            items.forEach { item ->
+                patternDao.addPatternWithHost(item)
+                storePatterns.removeObserveItem(item)
+            }
         }
     }
 
