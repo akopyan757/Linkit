@@ -25,6 +25,8 @@
     <dimen name="itemLinkMinHeight">84dp</dimen>
 
     <dimen name="cornerRadius">16dp</dimen>
+    <dimen name="cornerRadiusButton">20dp</dimen>
+
     <dimen name="linkPictureMinWidth">36dp</dimen>
     <dimen name="linkPictureMinHeight">36dp</dimen>
     <dimen name="linkPictureWidth">68dp</dimen>

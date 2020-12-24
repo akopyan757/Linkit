@@ -1,0 +1,14 @@
+{
+	"client":{
+		"appType":"1",
+		"cp_id":"1340007000008415566",
+		"product_id":"736430079244753632",
+		"client_id":"523522422725423744",
+		"client_secret":"DA061DA8A55CEA3F6628347B62116689AE5FF8B4C405B3F1937056FE4FA18C57",
+		"project_id":"736430079244753632",
+		"app_id":"103560237",
+		"api_key":"CgB6e3x9ZPjA5LMzjgmDSB7FS6zeHOvUOIMkvX37dQtddQp/fQm4m3U1cwX6rDcDGznPKRUuRNFPqykWWwRbVUEV",
+		"package_name":"com.akopyan757.linkit"
+	},
+	"configuration_version":"1.0"
+}

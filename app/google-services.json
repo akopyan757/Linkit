@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "801812080541",
+    "firebase_url": "https://linkit-d6059-default-rtdb.firebaseio.com",
+    "project_id": "linkit-d6059",
+    "storage_bucket": "linkit-d6059.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:801812080541:android:99db4493e2919c7fb4b174",
+        "android_client_info": {
+          "package_name": "com.akopyan757.linkit"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "801812080541-blsipmc1ldr5j6h9l1d7ei9l7itkbl5i.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.akopyan757.linkit",
+            "certificate_hash": "61cb98bdf54630036a9a3e877bba6877f230e0ad"
+          }
+        },
+        {
+          "client_id": "801812080541-3kp7a2cq51ekg85eo858fpe29livv726.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCjzI1XsqZ9Si9GYo_DLeuE7aqcuTkXiBs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "801812080541-3kp7a2cq51ekg85eo858fpe29livv726.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

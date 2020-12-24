@@ -37,5 +37,6 @@
     <string name="delete_folder_title">Delete Folder</string>
     <string name="delete_folder_description">Are you sure want to delete the folder \'%s\'?</string>
     <string name="cancel">Cancel</string>
+    <string name="authorization">Authorization</string>
 
 </resources>

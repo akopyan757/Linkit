@@ -17,7 +17,7 @@ class App: Application() {
             androidContext(this@App)
             // declare modules
             modules(listOf(ContextModule.it, DatabaseModule.module, ModelModule.module,
-                ViewModelModule.module))
+                ViewModelModule.module, ServiceModule.module))
         }
 
 
