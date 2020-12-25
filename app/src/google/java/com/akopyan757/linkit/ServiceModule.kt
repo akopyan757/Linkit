@@ -9,7 +9,9 @@ object ServiceModule {
 
     val module = module {
         single<IAuthorizationService> {
-                (activity: Activity) -> FirebaseAuthorizationService(activity)
+                (activity: Activity) ->
+
+            FirebaseAuthorizationService(activity)
         }
     }
 }

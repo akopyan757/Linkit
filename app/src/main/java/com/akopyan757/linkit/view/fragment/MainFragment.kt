@@ -1,5 +1,6 @@
 package com.akopyan757.linkit.view.fragment
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
@@ -17,14 +18,25 @@ import com.akopyan757.linkit.R
 import com.akopyan757.linkit.common.Config
 import com.akopyan757.linkit.common.clipboard.ClipboardUtils
 import com.akopyan757.linkit.databinding.FragmentMainBinding
+import com.akopyan757.linkit.view.AuthActivity
 import com.akopyan757.linkit.view.adapter.PageFragmentAdapter
+import com.akopyan757.linkit.view.service.IAuthorizationService
 import com.akopyan757.linkit.viewmodel.LinkViewModel
 import com.google.android.material.tabs.TabLayoutMediator
 import kotlinx.android.synthetic.main.fragment_main.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import org.koin.android.ext.android.getKoin
 import org.koin.android.viewmodel.ext.android.sharedViewModel
+import org.koin.core.parameter.parametersOf
 
 
 class MainFragment : BaseFragment<FragmentMainBinding, LinkViewModel>(), ViewTreeObserver.OnWindowFocusChangeListener {
+
+    private val mAuthorizationService: IAuthorizationService by lazy {
+        getKoin().get { parametersOf(this) }
+    }
 
     override val mViewModel: LinkViewModel by sharedViewModel()
 
@@ -125,6 +137,16 @@ class MainFragment : BaseFragment<FragmentMainBinding, LinkViewModel>(), ViewTre
             R.id.itemEditFolder -> {
                 mViewModel.enableEditMode()
                 mBinding.toolbarEdit.menu.setGroupVisible(R.id.groupEditSave, false)
+                true
+            }
+
+            R.id.itemLogOut -> {
+                CoroutineScope(Dispatchers.Main).launch {
+                    mAuthorizationService.signOut()
+                    val activity = requireActivity()
+                    startActivity(Intent(activity, AuthActivity::class.java))
+                    activity.finish()
+                }
                 true
             }
 

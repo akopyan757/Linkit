@@ -9,7 +9,9 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
-import com.google.firebase.auth.FirebaseAuth
+import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
+import kotlin.coroutines.suspendCoroutine
 
 
 class FirebaseAuthorizationService(private val activity: Activity): IAuthorizationService {
@@ -21,47 +23,56 @@ class FirebaseAuthorizationService(private val activity: Activity): IAuthorizati
             .build()
     }
 
-    private val client: GoogleSignInClient by lazy {
-        GoogleSignIn.getClient(activity, options)
-    }
-
-    private val firebaseAuth: FirebaseAuth by lazy {
-        FirebaseAuth.getInstance()
-    }
+    private lateinit var client: GoogleSignInClient
 
     override fun signIn() {
-        activity.startActivityForResult(client.signInIntent, REQUEST_CODE)
+        client = GoogleSignIn.getClient(activity.applicationContext, options)
+        val intent = client.signInIntent.apply {
+            flags = Intent.FLAG_ACTIVITY_NO_HISTORY
+        }
+        activity.startActivityForResult(intent, REQUEST_CODE)
+        Log.i(TAG, "signIn")
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?): ApiResponse<Unit> {
         return if (requestCode == REQUEST_CODE) {
              try {
-                val task = GoogleSignIn.getSignedInAccountFromIntent(data)
-                val account = task.getResult(ApiException::class.java)
-                Log.d(TAG, "firebaseAuthWithGoogle:" + account?.id)
-                ApiResponse.Success(Unit)
+                 val task = GoogleSignIn.getSignedInAccountFromIntent(data)
+                 val account = task.getResult(ApiException::class.java)
+                 Log.d(TAG, "signIn: onActivityResult: FirebaseAuthWithGoogle:" + account?.id)
+                 ApiResponse.Success(Unit)
             } catch (e: ApiException) {
-                Log.e(TAG, "Google sign in failed", e)
-                ApiResponse.Error(e)
+                 Log.e(TAG, "signIn: onActivityResult: Google sign in failed", e)
+                 ApiResponse.Error(e)
             }
         } else ApiResponse.Error(Exception("Incorrect Response"))
     }
 
-    override suspend fun signOut() {
-        firebaseAuth.signOut()
+    override suspend fun signOut() = suspendCoroutine<Unit> { cont ->
+        client.signOut().addOnSuccessListener {
+            Log.i(TAG, "signOut: OnSuccessListener")
+            cont.resume(Unit)
+        }.addOnFailureListener { exception ->
+            Log.e(TAG, "signOut: OnFailureListener", exception)
+            cont.resumeWithException(exception)
+        }
     }
 
-    override suspend fun silentSignIn(): ApiResponse<Unit> {
-        val user = firebaseAuth.currentUser
-        return if (user != null) {
-            ApiResponse.Success(Unit)
-        } else {
-            ApiResponse.Error(Exception("User not found"))
+    override suspend fun silentSignIn(): ApiResponse<Unit> = suspendCoroutine { cont ->
+        client = GoogleSignIn.getClient(activity.applicationContext, options)
+        client.silentSignIn().addOnSuccessListener { authAccount ->
+            // Obtain the user's ID information.
+            Log.i(TAG, "silentSignIn: displayName: " + authAccount.displayName)
+            cont.resume(ApiResponse.Success(Unit))
+        }.addOnFailureListener { exception ->
+            val apiException = exception as ApiException
+            Log.i(TAG, "silentSignIn: sign failed status:" + apiException.statusCode)
+            cont.resume(ApiResponse.Error(exception))
         }
     }
 
     companion object {
         private const val REQUEST_CODE = 6666
-        private const val TAG = "HMSAuthorizationService"
+        private const val TAG = "GMSAuthorizationService"
     }
 }

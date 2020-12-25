@@ -23,12 +23,12 @@ class HMSAuthorizationService(private val activity: Activity): IAuthorizationSer
             .createParams()
     }
 
-    private val service: AccountAuthService by lazy {
-        AccountAuthManager.getService(activity, authParams)
-    }
+    private lateinit var service: AccountAuthService
 
     override fun signIn() {
+        service = AccountAuthManager.getService(activity, authParams)
         activity.startActivityForResult(service.signInIntent, REQUEST_CODE)
+        Log.i(TAG, "signIn")
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?): ApiResponse<Unit> {
@@ -37,32 +37,37 @@ class HMSAuthorizationService(private val activity: Activity): IAuthorizationSer
             if (authAccountTask.isSuccessful) {
                 // The sign-in is successful, and the user's ID information and authorization code are obtained.
                 val authAccount = authAccountTask.result
-                Log.i(TAG, "ServerAuthCode:" + authAccount.authorizationCode)
+                Log.i(TAG, "signIn: onActivityResult: Success" + authAccount.authorizationCode)
                 ApiResponse.Success(Unit)
             } else {
                 val exception = authAccountTask.exception as ApiException
-                Log.e(TAG, "Sign in failed: " + exception.statusCode)
+                Log.e(TAG, "signIn: onActivityResult: Failed: " + exception.statusCode)
                 ApiResponse.Error(exception)
             }
         } else ApiResponse.Error(Exception("Incorrect Response"))
     }
 
     override suspend fun signOut() = suspendCoroutine<Unit> { cont ->
-        service.signOut().addOnCompleteListener{
+        service.signOut().addOnSuccessListener {
+            Log.i(TAG, "signOut: OnSuccessListener")
             cont.resume(Unit)
+        }.addOnFailureListener { exception ->
+            Log.e(TAG, "signOut: OnFailureListener", exception)
+            cont.resumeWithException(exception)
         }
     }
 
     override suspend fun silentSignIn() = suspendCoroutine<ApiResponse<Unit>> { cont ->
+        service = AccountAuthManager.getService(activity, authParams)
         val task = service.silentSignIn()
         task.addOnSuccessListener(activity) { authAccount ->
             // Obtain the user's ID information.
-            Log.i(TAG, "displayName:" + authAccount.displayName)
+            Log.i(TAG, "silentSignIn: displayName:" + authAccount.displayName)
             cont.resume(ApiResponse.Success(Unit))
         }
         task.addOnFailureListener(activity) { exception ->
             val apiException = exception as ApiException
-            Log.i(TAG, "sign failed status:" + apiException.statusCode)
+            Log.i(TAG, "silentSignIn: sign failed status:" + apiException.statusCode)
             cont.resumeWithException(exception)
         }
     }
