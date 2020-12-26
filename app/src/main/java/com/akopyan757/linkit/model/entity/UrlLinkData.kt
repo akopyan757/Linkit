@@ -6,6 +6,7 @@ import androidx.room.Ignore
 import androidx.room.PrimaryKey
 import com.akopyan757.urlparser.IUrlDataFactory
 import com.akopyan757.urlparser.UrlData
+import com.google.firebase.firestore.Exclude
 
 @Entity(tableName = "url_link_data")
 data class UrlLinkData(
@@ -22,35 +23,35 @@ data class UrlLinkData(
     @ColumnInfo(name = "_order") var _order: Int = 0,
 ): UrlData() {
 
-    @Ignore var logoFileName: String? = null
-    @Ignore var contentFileName: String? = null
+    @Exclude @Ignore var logoFileName: String? = null
+    @Exclude @Ignore var contentFileName: String? = null
 
     override var dataUrl: String
-        get() = url
+        @Exclude get() = url
         set(value) { url = value }
 
     override var dataTitle: String
-        get() = title
+        @Exclude get() = title
         set(value) { title = value }
 
     override var dataDescription: String
-        get() = description
+        @Exclude get() = description
         set(value) { description = value }
 
     override var dataImageContentUrl: String?
-        get() = photoUrl
+        @Exclude get() = photoUrl
         set(value) { photoUrl = value }
 
     override var dataLogoContentUrl: String?
-        get() = logoUrl
+        @Exclude get() = logoUrl
         set(value) { logoUrl = value }
 
     override var patternHostId: Int
-        get() = hostPatternId
+        @Exclude get() = hostPatternId
         set(value) { hostPatternId = value }
 
     override var patternSpecifiedId: Int
-        get() = specPatternId
+        @Exclude get() = specPatternId
         set(value) { specPatternId = value }
 
     class Factory: IUrlDataFactory<UrlLinkData> {
