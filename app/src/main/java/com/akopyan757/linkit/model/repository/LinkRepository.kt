@@ -12,6 +12,7 @@ import com.akopyan757.linkit.model.database.UrlLinkDao
 import com.akopyan757.linkit.model.entity.UrlLinkData
 import com.akopyan757.linkit.model.exception.FolderExistsException
 import com.akopyan757.linkit.model.exception.UrlIsNotValidException
+import com.akopyan757.linkit.model.store.StoreLinks
 import com.akopyan757.linkit.model.store.StorePatterns
 import com.akopyan757.urlparser.IUrlParser
 import kotlinx.coroutines.CoroutineDispatcher
@@ -34,6 +35,7 @@ class LinkRepository: BaseRepository(), KoinComponent {
     private val urlParser: IUrlParser<UrlLinkData> by inject()
 
     private val storePatterns: StorePatterns by inject()
+    private val storeLinks: StoreLinks by inject()
 
     override val coroutineDispatcher: CoroutineDispatcher by inject(named(Config.IO_DISPATCHERS))
 
@@ -72,7 +74,10 @@ class LinkRepository: BaseRepository(), KoinComponent {
     }
 
     fun addNewFolder(name: String) = callIO {
-        if (!folderDao.addNewFolder(name)) throw FolderExistsException()
+        val folder = folderDao.addNewFolder(name)
+        if (folder != null) {
+            storeLinks.addData(folder)
+        } else throw FolderExistsException()
     }
 
     fun getUrlLinksByFolder(folderId: Int) = urlLinkDao.getLiveUrls(folderId)

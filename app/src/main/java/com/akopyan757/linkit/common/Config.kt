@@ -24,4 +24,6 @@ object Config {
     const val IO_DISPATCHERS = "IO"
 
     const val PATTERNS = "patterns"
+    const val LINKS = "links"
+    const val USERS = "users"
 }

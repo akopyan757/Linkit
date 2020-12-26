@@ -15,16 +15,18 @@ interface FolderDao {
     }
 
     @Transaction
-    fun addNewFolder(name: String): Boolean {
+    fun addNewFolder(name: String): FolderData? {
         val folder = getByName(name)
-        if (folder != null) return false
+        if (folder != null) return null
         val order = getMaxOrder() + 1
-        insertOrUpdate(FolderData(name=name, order=order))
-        return true
+        val data = FolderData(name=name, order=order)
+        val id = insertOrUpdate(data)
+        data.id = id.toInt()
+        return data
     }
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertOrUpdate(data: FolderData)
+    fun insertOrUpdate(data: FolderData): Long
 
     @Query("SELECT MAX(`order`) FROM folder_data;")
     fun getMaxOrder(): Int

@@ -7,7 +7,7 @@ import androidx.room.PrimaryKey
 @Entity(tableName = "folder_data")
 class FolderData(
     @PrimaryKey(autoGenerate = true)
-    @ColumnInfo(name = "id") val id: Int = 0,
+    @ColumnInfo(name = "id") var id: Int = 0,
     @ColumnInfo(name = "name") var name: String,
     @ColumnInfo(name = "order") val order: Int = 0,
 ) {
