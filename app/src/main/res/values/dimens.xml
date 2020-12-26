@@ -45,4 +45,5 @@
     <dimen name="itemGuidelineBeginEdit">52dp</dimen>
     <dimen name="tabLayoutFoldersHeight">40dp</dimen>
     <dimen name="addFolderTextSize">18sp</dimen>
+    <dimen name="buttonAuthHeight">52dp</dimen>
 </resources>

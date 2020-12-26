@@ -20,6 +20,7 @@ import com.akopyan757.linkit.common.clipboard.ClipboardUtils
 import com.akopyan757.linkit.databinding.FragmentMainBinding
 import com.akopyan757.linkit.view.AuthActivity
 import com.akopyan757.linkit.view.adapter.PageFragmentAdapter
+import com.akopyan757.linkit.view.service.FirebaseEmailAuthorizationService
 import com.akopyan757.linkit.view.service.IAuthorizationService
 import com.akopyan757.linkit.viewmodel.LinkViewModel
 import com.google.android.material.tabs.TabLayoutMediator
@@ -35,7 +36,11 @@ import org.koin.core.parameter.parametersOf
 class MainFragment : BaseFragment<FragmentMainBinding, LinkViewModel>(), ViewTreeObserver.OnWindowFocusChangeListener {
 
     private val mAuthorizationService: IAuthorizationService by lazy {
-        getKoin().get { parametersOf(this) }
+        getKoin().get { parametersOf(requireActivity()) }
+    }
+
+    private val mSignInService: FirebaseEmailAuthorizationService by lazy {
+        getKoin().get { parametersOf(requireActivity()) }
     }
 
     override val mViewModel: LinkViewModel by sharedViewModel()
@@ -143,6 +148,8 @@ class MainFragment : BaseFragment<FragmentMainBinding, LinkViewModel>(), ViewTre
             R.id.itemLogOut -> {
                 CoroutineScope(Dispatchers.Main).launch {
                     mAuthorizationService.signOut()
+                    mSignInService.sinOut()
+
                     val activity = requireActivity()
                     startActivity(Intent(activity, AuthActivity::class.java))
                     activity.finish()

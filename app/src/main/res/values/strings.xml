@@ -39,5 +39,12 @@
     <string name="delete_folder_description">Are you sure want to delete the folder \'%s\'?</string>
     <string name="cancel">Cancel</string>
     <string name="authorization">Authorization</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="sign_in">Sign In</string>
+    <string name="registration">Registration</string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="sign_up">Sign Up</string>
+    <string name="error_passwords_match">Password do not match</string>
 
 </resources>

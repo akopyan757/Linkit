@@ -79,6 +79,11 @@
         <item name="colorControlNormal">@color/link</item>
     </style>
 
+    <style name="Theme.Linkit.TextInputLayout.Password">
+        <item name="passwordToggleEnabled">true</item>
+        <item name="passwordToggleTint">@color/black</item>
+    </style>
+
     <style name="Theme.Linkit.EditText" parent="Widget.AppCompat.EditText">
         <item name="android:textAppearance">@style/Theme.Linkit.TextAppearanceRegular</item>
         <item name="android:textCursorDrawable">@drawable/cursor</item>

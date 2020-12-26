@@ -23,11 +23,11 @@ class HMSAuthorizationService(private val activity: Activity): IAuthorizationSer
             .createParams()
     }
 
-    private lateinit var service: AccountAuthService
+    private var service: AccountAuthService? = null
 
     override fun signIn() {
         service = AccountAuthManager.getService(activity, authParams)
-        activity.startActivityForResult(service.signInIntent, REQUEST_CODE)
+        activity.startActivityForResult(service?.signInIntent, REQUEST_CODE)
         Log.i(TAG, "signIn")
     }
 
@@ -48,10 +48,15 @@ class HMSAuthorizationService(private val activity: Activity): IAuthorizationSer
     }
 
     override suspend fun signOut() = suspendCoroutine<Unit> { cont ->
-        service.signOut().addOnSuccessListener {
-            Log.i(TAG, "signOut: OnSuccessListener")
+        if (service == null) {
             cont.resume(Unit)
-        }.addOnFailureListener { exception ->
+        }
+
+        service?.signOut()?.addOnSuccessListener {
+            Log.i(TAG, "signOut: OnSuccessListener")
+            service = null
+            cont.resume(Unit)
+        }?.addOnFailureListener { exception ->
             Log.e(TAG, "signOut: OnFailureListener", exception)
             cont.resumeWithException(exception)
         }
@@ -59,13 +64,13 @@ class HMSAuthorizationService(private val activity: Activity): IAuthorizationSer
 
     override suspend fun silentSignIn() = suspendCoroutine<ApiResponse<Unit>> { cont ->
         service = AccountAuthManager.getService(activity, authParams)
-        val task = service.silentSignIn()
-        task.addOnSuccessListener(activity) { authAccount ->
+        val task = service?.silentSignIn()
+        task?.addOnSuccessListener(activity) { authAccount ->
             // Obtain the user's ID information.
             Log.i(TAG, "silentSignIn: displayName:" + authAccount.displayName)
             cont.resume(ApiResponse.Success(Unit))
         }
-        task.addOnFailureListener(activity) { exception ->
+        task?.addOnFailureListener(activity) { exception ->
             val apiException = exception as ApiException
             Log.i(TAG, "silentSignIn: sign failed status:" + apiException.statusCode)
             cont.resumeWithException(exception)

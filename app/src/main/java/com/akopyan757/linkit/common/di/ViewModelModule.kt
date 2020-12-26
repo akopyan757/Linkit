@@ -1,7 +1,11 @@
 package com.akopyan757.linkit.common.di
 
+import android.app.Activity
 import androidx.lifecycle.SavedStateHandle
+import com.akopyan757.linkit.HMSAuthorizationService
 import com.akopyan757.linkit.common.Config.HANDLE_URL
+import com.akopyan757.linkit.view.service.FirebaseEmailAuthorizationService
+import com.akopyan757.linkit.view.service.IAuthorizationService
 import com.akopyan757.linkit.viewmodel.*
 import org.koin.android.viewmodel.dsl.viewModel
 import org.koin.core.qualifier.named
@@ -18,5 +22,9 @@ object ViewModelModule {
         viewModel { FolderViewModel() }
         viewModel { FolderCreateViewModel() }
         viewModel { (folderId: Int) -> PageViewModel(folderId) }
+        viewModel { AuthSignInViewModel() }
+        viewModel { AuthSignUpViewModel() }
+
+        single { (activity: Activity) -> FirebaseEmailAuthorizationService(activity) }
     }
 }
