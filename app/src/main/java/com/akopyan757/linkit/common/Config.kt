@@ -27,4 +27,5 @@ object Config {
     const val LINKS = "links"
     const val USERS = "users"
     const val FOLDERS = "folders"
+    const val URLS = "urls"
 }

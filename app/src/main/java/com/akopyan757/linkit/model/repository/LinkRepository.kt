@@ -47,6 +47,9 @@ class LinkRepository: BaseRepository(), KoinComponent {
         storeLinks.loadFolders().also { list ->
             folderDao.insertOrUpdate(list)
         }
+        storeLinks.loadUrls().also { list ->
+            urlLinkDao.insertOrUpdate(list)
+        }
         Unit
     }
 
@@ -72,7 +75,9 @@ class LinkRepository: BaseRepository(), KoinComponent {
     fun addNewLink(urlLinkData: UrlLinkData) = callIO {
         if (FormatUtils.isUrl(urlLinkData.url)) {
             imageCache.saveImages(urlLinkData)
-            urlLinkDao.addNewData(urlLinkData)
+            val id = urlLinkDao.addNewData(urlLinkData)
+            urlLinkData.id = id
+            storeLinks.addLink(urlLinkData)
         }
     }
 
@@ -83,7 +88,7 @@ class LinkRepository: BaseRepository(), KoinComponent {
     fun addNewFolder(name: String) = callIO {
         val folder = folderDao.addNewFolder(name)
         if (folder != null) {
-            storeLinks.addData(folder)
+            storeLinks.addFolder(folder)
         } else throw FolderExistsException()
     }
 
@@ -106,6 +111,7 @@ class LinkRepository: BaseRepository(), KoinComponent {
 
     fun deleteUrls(ids: List<Long>) = callIO {
         urlLinkDao.removeByIds(ids)
+        storeLinks.deleteUrls(ids)
     }
 
     fun deleteFolder(folderId: Int) = callIO {
@@ -118,11 +124,13 @@ class LinkRepository: BaseRepository(), KoinComponent {
     }
 
     fun reorderLinks(orders: List<Long>) = callIO {
-        urlLinkDao.updateOrders(orders)
+        val pairs = urlLinkDao.updateOrders(orders)
+        storeLinks.reorderUrl(pairs)
     }
 
     fun reorderFolders(orders: List<Pair<Int, Int>>) = callIO {
-        folderDao.updateOrders(orders)
+        val pairs = folderDao.updateOrders(orders)
+        storeLinks.reorderFolders(pairs)
     }
 
     private fun UrlLinkData.addFilePaths() = apply {

@@ -52,8 +52,11 @@ interface FolderDao {
     fun updateOrder(id: Int, order: Int)
 
     @Transaction
-    fun updateOrders(pairs: List<Pair<Int, Int>>) {
-        pairs.forEach { (id, order) -> updateOrder(id, order) }
+    fun updateOrders(pairs: List<Pair<Int, Int>>): List<Pair<Int, Int>> {
+        return pairs.map { (id, order) ->
+            updateOrder(id, order)
+            Pair(id, order)
+        }
     }
 
     @Query("DELETE FROM folder_data WHERE id = :folderId")

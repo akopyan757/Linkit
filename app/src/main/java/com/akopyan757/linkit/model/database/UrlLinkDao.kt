@@ -9,13 +9,18 @@ import com.akopyan757.linkit.model.entity.UrlLinkData
 interface UrlLinkDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun addNewData(data: UrlLinkData) {
+    fun addNewData(data: UrlLinkData): Long {
         data._order = getMaxOrder() + 1
-        insertOrUpdate(data)
+        return insertOrUpdate(data)
+    }
+
+    @Transaction
+    fun insertOrUpdate(list: List<UrlLinkData>): List<Long> {
+        return list.map { data -> insertOrUpdate(data) }
     }
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertOrUpdate(data: UrlLinkData)
+    fun insertOrUpdate(data: UrlLinkData): Long
 
     fun getLiveUrls(folderId: Int): LiveData<List<UrlLinkData>> {
         return if (folderId == FolderData.GENERAL_FOLDER_ID) {
@@ -49,10 +54,11 @@ interface UrlLinkDao {
     fun updateOrder(id: Long, order: Int)
 
     @Transaction
-    fun updateOrders(ids: List<Long>) {
+    fun updateOrders(ids: List<Long>): List<Pair<Long, Int>> {
         val orders = getOrderByIds(ids).sortedDescending()
-        ids.mapIndexed { index, id ->
+        return ids.mapIndexed { index, id ->
             updateOrder(id, orders[index])
+            Pair(id, orders[index])
         }
     }
 
