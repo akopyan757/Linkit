@@ -2,6 +2,7 @@ package com.akopyan757.linkit.view.fragment
 
 import android.content.Intent
 import android.os.Bundle
+import androidx.navigation.fragment.findNavController
 import com.akopyan757.base.model.ApiResponse
 import com.akopyan757.base.view.BaseFragment
 import com.akopyan757.linkit.BR
@@ -31,6 +32,10 @@ class AuthSignUpFragment: BaseFragment<FragmentAuthSignUpBinding, AuthSignUpView
     override fun onSetupView(binding: FragmentAuthSignUpBinding, bundle: Bundle?) = with(binding) {
         btnAuthSignUp.setOnClickListener {
             mViewModel.startRegistration()
+        }
+
+        tvAuthSignInBackButton.setOnClickListener {
+            findNavController().popBackStack()
         }
     }
 

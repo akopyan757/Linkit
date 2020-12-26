@@ -16,7 +16,10 @@
         android:theme="@style/Theme.Linkit"
         android:usesCleartextTraffic="true"
         tools:targetApi="m">
-        <activity android:name=".view.AuthActivity">
+        <activity
+            android:name=".view.AuthActivity"
+            android:windowSoftInputMode="adjustResize"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />

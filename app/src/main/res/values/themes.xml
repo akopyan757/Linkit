@@ -114,6 +114,7 @@
         <item name="backgroundTint">@color/button_background</item>
         <item name="android:textColor">@color/button_text_size</item>
         <item name="android:textAppearance">@style/Theme.Linkit.TextAppearanceRegular</item>
+        <item name="elevation">@dimen/elevationSecondary</item>
         <item name="cornerRadius">24dp</item>
     </style>
 

@@ -20,11 +20,13 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/marginGiant"
-            android:layout_marginTop="@dimen/marginGiant"
             android:layout_marginEnd="@dimen/marginGiant"
+            android:nextFocusDown="@id/tilAuthSignUpPassword"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvAuthSignUpTitle">
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.33999997">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/tietAuthSignUpEmail"
@@ -45,6 +47,7 @@
             android:layout_marginStart="@dimen/marginGiant"
             android:layout_marginTop="@dimen/marginPrimary"
             android:layout_marginEnd="@dimen/marginGiant"
+            android:nextFocusDown="@id/tilAuthSignUpConfirmPassword"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tilAuthSignUpEmail">
@@ -87,11 +90,11 @@
             android:id="@+id/btnAuthSignUp"
             style="@style/Theme.Linkit.Button"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/buttonAuthHeight"
             android:layout_marginTop="@dimen/marginPrimary"
+            android:enabled="@{viewModel.buttonSignInEnable}"
             android:onClick="@{() -> viewModel.startRegistration()}"
             android:text="@string/sign_up"
-            android:enabled="@{viewModel.buttonSignInEnable}"
             app:layout_constraintEnd_toEndOf="@+id/tilAuthSignUpPassword"
             app:layout_constraintStart_toStartOf="@+id/tilAuthSignUpPassword"
             app:layout_constraintTop_toBottomOf="@+id/tvAuthSignUpError" />
@@ -102,11 +105,11 @@
             android:layout_height="@dimen/buttonAuthHeight"
             android:text="@string/registration"
             android:textAppearance="@style/Theme.Linkit.TextAppearanceTitle"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/tilAuthSignUpEmail"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.25" />
+            app:layout_constraintVertical_bias="0.75" />
 
         <TextView
             android:id="@+id/tvAuthSignUpError"
@@ -122,6 +125,21 @@
             app:layout_constraintTop_toBottomOf="@+id/tilAuthSignUpConfirmPassword"
             app:visibility="@{viewModel.errorVisible}"
             tools:text="Error" />
+
+        <TextView
+            android:id="@+id/tvAuthSignInBackButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/marginGiant"
+            android:padding="@dimen/marginTertiary"
+            android:text="@string/sign_in"
+            android:textAppearance="@style/Theme.Linkit.TextAppearanceRegular"
+            android:textColor="@color/link"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/btnAuthSignUp"
+            app:layout_constraintVertical_bias="1.0" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
