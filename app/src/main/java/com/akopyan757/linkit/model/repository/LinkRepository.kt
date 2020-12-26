@@ -42,6 +42,10 @@ class LinkRepository: BaseRepository(), KoinComponent {
     fun initResources() = callIO {
         folderDao.initFolderDao()
         storePatterns.fetchData()
+        storeLinks.loadFolders().also { list ->
+            folderDao.insertOrUpdate(list)
+        }
+        Unit
     }
 
     fun getLivePattern() = storePatterns.getLivePatterns().map { items ->

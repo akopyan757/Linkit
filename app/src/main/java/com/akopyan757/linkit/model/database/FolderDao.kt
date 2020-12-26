@@ -25,6 +25,11 @@ interface FolderDao {
         return data
     }
 
+    @Transaction
+    fun insertOrUpdate(list: List<FolderData>) {
+        list.forEach { data -> insertOrUpdate(data) }
+    }
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertOrUpdate(data: FolderData): Long
 

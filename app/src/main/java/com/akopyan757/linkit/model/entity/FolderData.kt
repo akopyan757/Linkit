@@ -9,8 +9,10 @@ class FolderData(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id") var id: Int = 0,
     @ColumnInfo(name = "name") var name: String,
-    @ColumnInfo(name = "order") val order: Int = 0,
+    @ColumnInfo(name = "order") var order: Int = 0
 ) {
+    constructor() : this(0, "", 0)
+
     companion object {
         const val GENERAL_FOLDER_ID = 1
         private const val GENERAL_FOLDER_NAME = "All"
