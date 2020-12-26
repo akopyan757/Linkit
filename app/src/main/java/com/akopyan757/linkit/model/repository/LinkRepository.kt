@@ -1,6 +1,8 @@
 package com.akopyan757.linkit.model.repository
 
+import androidx.lifecycle.liveData
 import androidx.lifecycle.map
+import androidx.lifecycle.switchMap
 import com.akopyan757.base.model.BaseRepository
 import com.akopyan757.linkit.BuildConfig
 import com.akopyan757.linkit.common.Config
@@ -16,7 +18,7 @@ import com.akopyan757.linkit.model.store.StoreLinks
 import com.akopyan757.linkit.model.store.StorePatterns
 import com.akopyan757.urlparser.IUrlParser
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.Dispatchers
 import org.koin.core.KoinComponent
 import org.koin.core.inject
 import org.koin.core.qualifier.named
@@ -48,8 +50,8 @@ class LinkRepository: BaseRepository(), KoinComponent {
         Unit
     }
 
-    fun getLivePattern() = storePatterns.getLivePatterns().map { items ->
-        runBlocking(coroutineDispatcher) {
+    fun getLivePattern() = storePatterns.getLivePatterns().switchMap { items ->
+        liveData(Dispatchers.IO) {
             items.forEach { item ->
                 patternDao.addPatternWithHost(item)
                 storePatterns.removeObserveItem(item)
@@ -63,6 +65,7 @@ class LinkRepository: BaseRepository(), KoinComponent {
                     }
                 }
             }
+            emit(Unit)
         }
     }
 

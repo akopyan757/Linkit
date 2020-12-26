@@ -5,28 +5,25 @@ import android.util.Log
 import com.akopyan757.base.model.ApiResponse
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
-import java.lang.Exception
+import org.koin.core.KoinComponent
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
 
-class FirebaseEmailAuthorizationService(private val activity: Activity) {
+class FirebaseEmailAuthorizationService(private val activity: Activity): KoinComponent {
 
     companion object {
         private const val TAG = "FIREBASE_EMAIL_AUTH"
     }
 
-    private var auth: FirebaseAuth? = null
-
     fun getUser(): FirebaseUser? {
-        return auth?.currentUser
+        return FirebaseAuth.getInstance().currentUser
     }
 
     suspend fun createUser(email: String, password: String): ApiResponse<FirebaseUser> = suspendCoroutine { cont ->
         try {
-            auth = FirebaseAuth.getInstance()
-            auth?.createUserWithEmailAndPassword(email, password)
-                ?.addOnCompleteListener(activity) { task ->
+            FirebaseAuth.getInstance().createUserWithEmailAndPassword(email, password)
+                .addOnCompleteListener(activity) { task ->
                     if (task.isSuccessful) {
                         Log.d(TAG, "createUser: success: $email")
                         val user = task.result?.user ?: return@addOnCompleteListener
@@ -43,10 +40,9 @@ class FirebaseEmailAuthorizationService(private val activity: Activity) {
     }
 
     suspend fun signIn(email: String, password: String): ApiResponse<FirebaseUser> = suspendCoroutine { cont ->
-        auth = FirebaseAuth.getInstance()
         try {
-            auth?.signInWithEmailAndPassword(email, password)
-                ?.addOnCompleteListener(activity) { task ->
+            FirebaseAuth.getInstance().signInWithEmailAndPassword(email, password)
+                .addOnCompleteListener(activity) { task ->
                     if (task.isSuccessful) {
                         Log.d(TAG, "signIn: success: $email")
                         val user = task.result?.user ?: return@addOnCompleteListener
@@ -63,8 +59,7 @@ class FirebaseEmailAuthorizationService(private val activity: Activity) {
     }
 
     fun sinOut() {
-        auth?.signOut()
-        auth = null
+        FirebaseAuth.getInstance().signOut()
     }
 
 }

@@ -1,6 +1,7 @@
 package com.akopyan757.linkit
 
 import android.app.Application
+import android.util.Log
 import com.akopyan757.linkit.common.di.ContextModule
 import com.akopyan757.linkit.common.di.DatabaseModule
 import com.akopyan757.linkit.common.di.ModelModule
@@ -20,6 +21,10 @@ class App: Application() {
                 ViewModelModule.module, ServiceModule.module))
         }
 
+
+        Thread.setDefaultUncaughtExceptionHandler { thread, throwable ->
+            Log.e("APP", "DefaultException handler: $thread", throwable)
+        }
 
     }
 }
