@@ -110,6 +110,7 @@ class LinkRepository: BaseRepository(), KoinComponent {
 
     fun deleteFolder(folderId: Int) = callIO {
         folderDao.removeById(folderId)
+        storeLinks.deleteFolder(folderId)
     }
 
     fun renameFolder(folderId: Int, newFolderName: String) = callIO {

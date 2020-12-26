@@ -20,8 +20,6 @@ class StoreLinks: KoinComponent {
     private val firebaseAuth: FirebaseAuth
         get() = FirebaseAuth.getInstance()
 
-
-
     suspend fun loadFolders(): List<FolderData> = suspendCoroutine { cont ->
         val uid = firebaseAuth.currentUser?.uid
 
@@ -57,6 +55,27 @@ class StoreLinks: KoinComponent {
                 cont.resume(Unit)
             }.addOnFailureListener { exception ->
                 Log.e(TAG, "addData: failure:", exception)
+                cont.resumeWithException(exception)
+            }
+    }
+
+    suspend fun deleteFolder(folderId: Int) = suspendCoroutine<Unit> { cont ->
+
+        val uid = firebaseAuth.currentUser?.uid
+
+        if (uid == null) {
+            cont.resumeWithException(FirebaseUserNotFound())
+            return@suspendCoroutine
+        }
+
+        reference.document(uid)
+            .collection(Config.FOLDERS)
+            .document(folderId.toString())
+            .delete().addOnSuccessListener {
+                Log.i(TAG, "deleteFolder: success: uid=$uid, folderId=$folderId")
+                cont.resume(Unit)
+            }.addOnFailureListener { exception ->
+                Log.e(TAG, "deleteFolder: failure:", exception)
                 cont.resumeWithException(exception)
             }
     }
