@@ -13,8 +13,7 @@ object ServiceModule {
 
 
     val module = module {
-        single<IAuthorizationService> { (activity: Activity) -> HMSAuthorizationService(activity)
-        }
+        single<IAuthorizationService> { (activity: Activity) -> HMSAuthorizationService(activity) }
 
         single {
             Retrofit.Builder()

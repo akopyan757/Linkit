@@ -38,9 +38,6 @@ class HMSAuthorizationService(
         AccountAuthManager.getService(activity.applicationContext, authParams)
     }
 
-    private val firebaseAuth: FirebaseAuth
-        get() = FirebaseAuth.getInstance()
-
     override fun getSignInIntent(): Intent = huaweiService.signInIntent
 
     override suspend fun getUserAfterAuthorization(data: Intent?): FirebaseUser {
@@ -52,7 +49,6 @@ class HMSAuthorizationService(
     override suspend fun signOut() = suspendCoroutine<Unit> { cont ->
         huaweiService.signOut().addOnSuccessListener {
             Log.i(TAG, "signOut: OnSuccessListener")
-            firebaseAuth.signOut()
             cont.resume(Unit)
         }?.addOnFailureListener { exception ->
             Log.e(TAG, "signOut: OnFailureListener", exception)

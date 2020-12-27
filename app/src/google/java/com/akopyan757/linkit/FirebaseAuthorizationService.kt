@@ -3,12 +3,14 @@ package com.akopyan757.linkit
 import android.app.Activity
 import android.content.Intent
 import android.util.Log
-import com.akopyan757.base.model.ApiResponse
 import com.akopyan757.linkit.view.service.IAuthorizationService
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.auth.GoogleAuthProvider
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
@@ -16,40 +18,28 @@ import kotlin.coroutines.suspendCoroutine
 
 class FirebaseAuthorizationService(private val activity: Activity): IAuthorizationService {
 
-    private val options: GoogleSignInOptions by lazy {
+    private val googleSignInOptions: GoogleSignInOptions by lazy {
         GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestIdToken(activity.getString(R.string.default_web_client_id))
             .requestEmail()
             .build()
     }
 
-    private lateinit var client: GoogleSignInClient
-
-    override fun signIn() {
-        client = GoogleSignIn.getClient(activity.applicationContext, options)
-        val intent = client.signInIntent.apply {
-            flags = Intent.FLAG_ACTIVITY_NO_HISTORY
-        }
-        activity.startActivityForResult(intent, REQUEST_CODE)
-        Log.i(TAG, "signIn")
+    private val googleSignInClient: GoogleSignInClient by lazy {
+        GoogleSignIn.getClient(activity.applicationContext, googleSignInOptions)
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?): ApiResponse<Unit> {
-        return if (requestCode == REQUEST_CODE) {
-             try {
-                 val task = GoogleSignIn.getSignedInAccountFromIntent(data)
-                 val account = task.getResult(ApiException::class.java)
-                 Log.d(TAG, "signIn: onActivityResult: FirebaseAuthWithGoogle:" + account?.id)
-                 ApiResponse.Success(Unit)
-            } catch (e: ApiException) {
-                 Log.e(TAG, "signIn: onActivityResult: Google sign in failed", e)
-                 ApiResponse.Error(e)
-            }
-        } else ApiResponse.Error(Exception("Incorrect Response"))
+    override fun getSignInIntent(): Intent = googleSignInClient.signInIntent
+
+    override suspend fun getUserAfterAuthorization(data: Intent?): FirebaseUser {
+        val task = GoogleSignIn.getSignedInAccountFromIntent(data)
+        val account = task.getResult(ApiException::class.java)
+        val idToken = account?.idToken ?: throw Exception("Id token not found")
+        return firebaseAuthWithGoogle(idToken)
     }
 
     override suspend fun signOut() = suspendCoroutine<Unit> { cont ->
-        client.signOut().addOnSuccessListener {
+        googleSignInClient.signOut().addOnSuccessListener {
             Log.i(TAG, "signOut: OnSuccessListener")
             cont.resume(Unit)
         }.addOnFailureListener { exception ->
@@ -58,21 +48,30 @@ class FirebaseAuthorizationService(private val activity: Activity): IAuthorizati
         }
     }
 
-    override suspend fun silentSignIn(): ApiResponse<Unit> = suspendCoroutine { cont ->
-        client = GoogleSignIn.getClient(activity.applicationContext, options)
-        client.silentSignIn().addOnSuccessListener { authAccount ->
-            // Obtain the user's ID information.
-            Log.i(TAG, "silentSignIn: displayName: " + authAccount.displayName)
-            cont.resume(ApiResponse.Success(Unit))
-        }.addOnFailureListener { exception ->
-            val apiException = exception as ApiException
-            Log.i(TAG, "silentSignIn: sign failed status:" + apiException.statusCode)
-            cont.resume(ApiResponse.Error(exception))
-        }
+    private suspend fun firebaseAuthWithGoogle(idToken: String): FirebaseUser = suspendCoroutine { cont ->
+        val credential = GoogleAuthProvider.getCredential(idToken, null)
+        FirebaseAuth.getInstance()
+            .signInWithCredential(credential)
+            .addOnCompleteListener(activity) { task ->
+                if (task.isSuccessful) {
+                    val user = task.result?.user
+                    if (user != null) {
+                        Log.d(TAG, "signInWithCredential:firebase:success: $user")
+                        cont.resume(user)
+                    } else {
+                        cont.resumeWithException(Exception("User not found"))
+                    }
+                } else {
+                    val exception = task.exception
+                    if (exception != null) {
+                        Log.e(TAG, "signInWithCredential:firebase:failure", task.exception)
+                        cont.resumeWithException(exception)
+                    }
+                }
+            }
     }
 
     companion object {
-        private const val REQUEST_CODE = 6666
         private const val TAG = "GMSAuthorizationService"
     }
 }
