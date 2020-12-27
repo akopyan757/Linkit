@@ -28,27 +28,21 @@ import kotlinx.android.synthetic.main.fragment_main.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import org.koin.android.ext.android.getKoin
-import org.koin.android.viewmodel.ext.android.sharedViewModel
+import org.koin.android.ext.android.inject
+import org.koin.android.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
 
 class MainFragment : BaseFragment<FragmentMainBinding, LinkViewModel>(), ViewTreeObserver.OnWindowFocusChangeListener {
 
-    private val mAuthorizationService: IAuthorizationService by lazy {
-        getKoin().get { parametersOf(requireActivity()) }
-    }
+    private val mAuthorizationService: IAuthorizationService by inject { parametersOf(requireActivity()) }
+    private val mSignInService: FirebaseEmailAuthorizationService by inject { parametersOf(requireActivity()) }
 
-    private val mSignInService: FirebaseEmailAuthorizationService by lazy {
-        getKoin().get { parametersOf(requireActivity()) }
-    }
-
-    override val mViewModel: LinkViewModel by sharedViewModel()
+    override val mViewModel: LinkViewModel by viewModel()
 
     private lateinit var mAdapter: PageFragmentAdapter
 
     override fun getLayoutId() = R.layout.fragment_main
-
     override fun getVariableId() = BR.viewModel
 
     override fun onSetupView(binding: FragmentMainBinding, bundle: Bundle?): Unit = with(binding) {

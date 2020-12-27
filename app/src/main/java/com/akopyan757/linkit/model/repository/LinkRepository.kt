@@ -16,6 +16,7 @@ import com.akopyan757.linkit.model.exception.FolderExistsException
 import com.akopyan757.linkit.model.exception.UrlIsNotValidException
 import com.akopyan757.linkit.model.store.StoreLinks
 import com.akopyan757.linkit.model.store.StorePatterns
+import com.akopyan757.linkit.view.scope.mainInject
 import com.akopyan757.urlparser.IUrlParser
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
@@ -29,15 +30,15 @@ class LinkRepository: BaseRepository(), KoinComponent {
         const val TAG = "LINK_REPOSITORY"
     }
 
-    private val urlLinkDao: UrlLinkDao by inject()
-    private val folderDao: FolderDao by inject()
-    private val patternDao: PatternDao by inject()
-    private val imageCache: ImageCache by inject()
+    private val urlLinkDao: UrlLinkDao by mainInject()
+    private val folderDao: FolderDao by mainInject()
+    private val patternDao: PatternDao by mainInject()
+    private val imageCache: ImageCache by mainInject()
 
-    private val urlParser: IUrlParser<UrlLinkData> by inject()
+    private val urlParser: IUrlParser<UrlLinkData> by mainInject()
 
-    private val storePatterns: StorePatterns by inject()
-    private val storeLinks: StoreLinks by inject()
+    private val storePatterns: StorePatterns by mainInject()
+    private val storeLinks: StoreLinks by mainInject()
 
     override val coroutineDispatcher: CoroutineDispatcher by inject(named(Config.IO_DISPATCHERS))
 

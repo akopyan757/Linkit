@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.akopyan757.linkit.common.Config
 import com.akopyan757.linkit.model.entity.PatternHostData
+import com.akopyan757.linkit.view.scope.mainInject
 import com.google.firebase.database.*
 import org.koin.core.KoinComponent
 import org.koin.core.inject
@@ -16,7 +17,7 @@ class StorePatterns: KoinComponent {
         private const val TAG = "STORE_PATTERNS"
     }
 
-    private val reference: DatabaseReference by inject(named(Config.PATTERNS))
+    private val reference: DatabaseReference by mainInject(named(Config.PATTERNS))
 
     private val patterns = mutableListOf<PatternHostData>()
 

@@ -9,35 +9,53 @@ import com.akopyan757.linkit.model.cache.ImageCache
 import com.akopyan757.linkit.model.database.AppDatabase
 import com.akopyan757.linkit.model.store.StoreLinks
 import com.akopyan757.linkit.model.store.StorePatterns
+import com.akopyan757.linkit.view.MainActivity
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.firestore.FirebaseFirestore
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.qualifier.named
+import org.koin.core.scope.Scope
+import org.koin.core.scope.ScopeCallback
 import org.koin.dsl.module
+import java.io.File
 
 object DatabaseModule {
 
     val module = module {
 
-        single { ImageCache() }
+        scope(named<MainActivity>()) {
+            scoped { File(androidContext().cacheDir , Config.CACHE_IMAGES_FOLDER) }
+            scoped { ImageCache() }
 
-        single { FirebaseDatabase.getInstance() }
-        single { FirebaseFirestore.getInstance() }
+            scoped { FirebaseDatabase.getInstance() }
+            scoped { FirebaseFirestore.getInstance() }
+            scoped { FirebaseAuth.getInstance() }
 
-        single(named(PATTERNS)) { get<FirebaseDatabase>().getReference(PATTERNS) }
-        single(named(LINKS)) { get<FirebaseFirestore>().collection(USERS) }
+            scoped(named(PATTERNS)) { get<FirebaseDatabase>().getReference(PATTERNS) }
+            scoped(named(LINKS)) { get<FirebaseFirestore>().collection(USERS) }
 
-        single { StorePatterns() }
-        single { StoreLinks() }
+            scoped { StorePatterns() }
+            scoped { StoreLinks() }
 
-        single {
-            Room.databaseBuilder(androidContext(), AppDatabase::class.java, Config.DATABASE_NAME)
-                .fallbackToDestructiveMigration()
-                .build()
+            scoped {
+                val userId = getProperty(Config.KEY_USER_ID, Config.EMPTY)
+                val databaseName = Config.DATABASE_NAME + "_" + userId
+                Room.databaseBuilder(androidContext(), AppDatabase::class.java, databaseName)
+                    .fallbackToDestructiveMigration()
+                    .build()
+                    .also { database ->
+                        registerCallback(object : ScopeCallback {
+                            override fun onScopeClose(scope: Scope) {
+                                database.close()
+                            }
+                        })
+                    }
+            }
+
+            scoped { get<AppDatabase>().urlLinkDao() }
+            scoped { get<AppDatabase>().folderDao() }
+            scoped { get<AppDatabase>().patternDao() }
         }
-
-        single { get<AppDatabase>().urlLinkDao() }
-        single { get<AppDatabase>().folderDao() }
-        single { get<AppDatabase>().patternDao() }
     }
 }

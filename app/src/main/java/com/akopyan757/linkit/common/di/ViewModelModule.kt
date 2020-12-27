@@ -13,6 +13,7 @@ object ViewModelModule {
 
     val module = module {
         single(named(HANDLE_URL)) { SavedStateHandle() }
+        single { (activity: Activity) -> FirebaseEmailAuthorizationService(activity) }
 
         viewModel { LinkViewModel() }
         viewModel { (url: String) -> LinkCreateUrlViewModel(url) }
@@ -21,7 +22,5 @@ object ViewModelModule {
         viewModel { (folderId: Int) -> PageViewModel(folderId) }
         viewModel { AuthSignInViewModel() }
         viewModel { AuthSignUpViewModel() }
-
-        single { (activity: Activity) -> FirebaseEmailAuthorizationService(activity) }
     }
 }

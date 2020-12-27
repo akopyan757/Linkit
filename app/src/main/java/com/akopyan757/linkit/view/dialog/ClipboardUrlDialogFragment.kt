@@ -21,7 +21,7 @@ class ClipboardUrlDialogFragment : BaseDialogFragment<DialogNewUrlBinding, LinkC
         private const val TAG = "CLIPBOARD_UR_DF"
     }
 
-    override val mViewModel: LinkCreateUrlViewModel by viewModel(
+    override val mViewModel: LinkCreateUrlViewModel by viewModel (
         parameters = { parametersOf(arguments?.getString(Config.CLIP_URL_LABEL)) }
     )
 

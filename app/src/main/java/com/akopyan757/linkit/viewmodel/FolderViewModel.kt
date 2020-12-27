@@ -9,9 +9,9 @@ import com.akopyan757.base.viewmodel.list.ListLiveData
 import com.akopyan757.linkit.BR
 import com.akopyan757.linkit.model.entity.FolderData
 import com.akopyan757.linkit.model.repository.LinkRepository
+import com.akopyan757.linkit.view.scope.mainInject
 import com.akopyan757.linkit.viewmodel.observable.FolderObservable
 import org.koin.core.KoinComponent
-import org.koin.core.inject
 
 class FolderViewModel : BaseViewModel(), KoinComponent {
 
@@ -22,7 +22,7 @@ class FolderViewModel : BaseViewModel(), KoinComponent {
     private val foldersSelectedLiveData = ListLiveData<FolderObservable>()
 
     /** Repository */
-    private val linkRepository: LinkRepository by inject()
+    private val linkRepository: LinkRepository by mainInject()
 
     /** Requests */
     private val requestDelete = MutableLiveData<Int>()

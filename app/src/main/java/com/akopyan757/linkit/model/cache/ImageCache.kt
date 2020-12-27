@@ -3,8 +3,9 @@ package com.akopyan757.linkit.model.cache
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.util.Log
-import com.akopyan757.linkit.common.Config
 import com.akopyan757.linkit.model.entity.UrlLinkData
+import com.akopyan757.linkit.view.scope.mainInject
+import com.akopyan757.linkit.view.scope.mainScope
 import org.koin.core.KoinComponent
 import org.koin.core.inject
 import java.io.File
@@ -15,8 +16,7 @@ import java.net.URL
 
 class ImageCache: KoinComponent {
 
-    private val cacheDir: File by inject()
-    private val imageDir: File by lazy { File(cacheDir, Config.CACHE_IMAGES_FOLDER) }
+    private val imageDir: File by mainInject()
 
     fun saveImages(data: UrlLinkData) {
         val logoUrl = data.logoUrl
@@ -67,20 +67,6 @@ class ImageCache: KoinComponent {
         null
     }
 
-    private fun Bitmap.getResizedBitmap(maxSize: Int): Bitmap {
-        var widthValue = width
-        var heightValue = height
-        val bitmapRatio = widthValue.toFloat() / heightValue.toFloat()
-        if (bitmapRatio > 1) {
-            widthValue = maxSize
-            heightValue = (width / bitmapRatio).toInt()
-        } else {
-            heightValue = maxSize
-            widthValue = (heightValue * bitmapRatio).toInt()
-        }
-        return Bitmap.createScaledBitmap(this, widthValue, heightValue, true)
-    }
-
     private fun saveBitmap(bitmap: Bitmap, name: String) {
         val path = File(imageDir, name)
         var fos: FileOutputStream? = null
@@ -97,7 +83,6 @@ class ImageCache: KoinComponent {
     companion object {
         private const val TAG = "IMAGE_CACHE"
 
-        private const val MAX_SIZE = 500
         private const val IMAGE_QUALITY = 100
 
         private const val CONTENT_PREFIX = "content_%d_%d_%d.png"

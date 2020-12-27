@@ -28,4 +28,6 @@ object Config {
     const val USERS = "users"
     const val FOLDERS = "folders"
     const val URLS = "urls"
+
+    const val KEY_USER_ID = "USER_ID"
 }

@@ -5,6 +5,8 @@ import com.akopyan757.linkit.common.Config
 import com.akopyan757.linkit.model.entity.FolderData
 import com.akopyan757.linkit.model.entity.UrlLinkData
 import com.akopyan757.linkit.model.exception.FirebaseUserNotFound
+import com.akopyan757.linkit.view.scope.mainInject
+import com.akopyan757.linkit.view.scope.mainScope
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.FirebaseFirestore
@@ -17,12 +19,9 @@ import kotlin.coroutines.suspendCoroutine
 
 class StoreLinks: KoinComponent {
 
-    private val reference: CollectionReference by inject(named(Config.LINKS))
-
-    private val database: FirebaseFirestore by inject()
-
-    private val firebaseAuth: FirebaseAuth
-        get() = FirebaseAuth.getInstance()
+    private val reference: CollectionReference by mainInject(named(Config.LINKS))
+    private val database: FirebaseFirestore by mainInject()
+    private val firebaseAuth: FirebaseAuth by mainInject()
 
     suspend fun loadFolders(): List<FolderData> = suspendCoroutine { cont ->
         val uid = firebaseAuth.currentUser?.uid

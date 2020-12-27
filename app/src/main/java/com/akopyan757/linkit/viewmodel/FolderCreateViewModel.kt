@@ -4,13 +4,13 @@ import android.util.Log
 import androidx.databinding.Bindable
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.switchMap
+import com.akopyan757.base.viewmodel.BaseViewModel
 import com.akopyan757.linkit.BR
 import com.akopyan757.linkit.common.Config
 import com.akopyan757.linkit.model.exception.FolderExistsException
 import com.akopyan757.linkit.model.repository.LinkRepository
-import com.akopyan757.base.viewmodel.BaseViewModel
+import com.akopyan757.linkit.view.scope.mainInject
 import org.koin.core.KoinComponent
-import org.koin.core.inject
 
 class FolderCreateViewModel: BaseViewModel(), KoinComponent {
 
@@ -28,7 +28,7 @@ class FolderCreateViewModel: BaseViewModel(), KoinComponent {
     var errorName: String by DelegatedBindable("", BR.errorName)
 
     /** Repository */
-    private val linkRepository: LinkRepository by inject()
+    private val linkRepository: LinkRepository by mainInject()
 
     /** Request */
     private val addFolderRequest = MutableLiveData<String>()

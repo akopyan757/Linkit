@@ -9,6 +9,7 @@ import com.akopyan757.base.viewmodel.list.ListLiveData
 import com.akopyan757.linkit.BR
 import com.akopyan757.linkit.common.Config
 import com.akopyan757.linkit.model.repository.LinkRepository
+import com.akopyan757.linkit.view.scope.mainInject
 import com.akopyan757.linkit.viewmodel.observable.LinkObservable
 import org.koin.core.KoinComponent
 import org.koin.core.inject
@@ -38,7 +39,7 @@ class PageViewModel(private val folderId: Int): BaseViewModel(), KoinComponent {
     private val urlListData = ListLiveData<LinkObservable>()
 
     /** Repository */
-    private val linkRepository: LinkRepository by inject()
+    private val linkRepository: LinkRepository by mainInject()
 
     /** Responses */
     init {
