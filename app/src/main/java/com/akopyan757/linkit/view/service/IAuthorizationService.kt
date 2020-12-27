@@ -1,11 +1,11 @@
 package com.akopyan757.linkit.view.service
 
 import android.content.Intent
-import com.akopyan757.base.model.ApiResponse
+import com.google.firebase.auth.FirebaseUser
 
 interface IAuthorizationService {
-    fun signIn()
+    fun getSignInIntent(): Intent
     suspend fun signOut()
-    suspend fun silentSignIn(): ApiResponse<Unit>
-    fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?): ApiResponse<Unit>
+    suspend fun silentSignIn(): FirebaseUser
+    suspend fun getUserAfterAuthorization(data: Intent?): FirebaseUser
 }

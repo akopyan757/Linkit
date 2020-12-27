@@ -40,15 +40,8 @@ class AuthSignInFragment: BaseFragment<FragmentAuthSignInBinding, AuthSignInView
         bundle: Bundle?
     ) = with(binding) {
         btnAuthHuawei.setOnClickListener {
-            CoroutineScope(Dispatchers.Main).launch {
-                val response = mAuthorizationService.silentSignIn()
-                if (response is ApiResponse.Success) {
-                    startActivity(Intent(requireContext(), MainActivity::class.java))
-                    requireActivity().finish()
-                } else {
-                    mAuthorizationService.signIn()
-                }
-            }
+            val intent = mAuthorizationService.getSignInIntent()
+            requireActivity().startActivityForResult(intent, REQUEST_CODE)
         }
 
         btnAuthSignIn.setOnClickListener {
@@ -74,21 +67,24 @@ class AuthSignInFragment: BaseFragment<FragmentAuthSignInBinding, AuthSignInView
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         Log.i(TAG, "onActivityResult($requestCode, $resultCode)")
-        when (mAuthorizationService.onActivityResult(requestCode, resultCode, data)) {
-            is ApiResponse.Success -> {
-                Log.i(TAG, "onActivityResult: HUAWEI")
-                startActivity(Intent(requireContext(), MainActivity::class.java))
-                requireActivity().finish()
+        if (requestCode == REQUEST_CODE) {
+
+            CoroutineScope(Dispatchers.IO).launch {
+
+                val firebaseUser = mAuthorizationService.getUserAfterAuthorization(data)
+                Log.i(TAG, "onActivityResult: $firebaseUser")
+
+                CoroutineScope(Dispatchers.Main).launch {
+                    startActivity(Intent(requireContext(), MainActivity::class.java))
+                    requireActivity().finish()
+                }
             }
 
-            else -> {
-                Log.i(TAG, "onActivityResult: else")
-                super.onActivityResult(requestCode, resultCode, data)
-            }
         }
     }
 
     companion object {
+        const val REQUEST_CODE = 7676
         const val TAG = "AUTH_SIGN_IN_FRAGMENT"
     }
 }

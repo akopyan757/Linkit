@@ -3,58 +3,56 @@ package com.akopyan757.linkit
 import android.app.Activity
 import android.content.Intent
 import android.util.Log
-import com.akopyan757.base.model.ApiResponse
+import com.akopyan757.linkit.network.CustomTokenApi
+import com.akopyan757.linkit.network.CustomTokenRequest
 import com.akopyan757.linkit.view.service.IAuthorizationService
-import com.huawei.hms.common.ApiException
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 import com.huawei.hms.support.account.AccountAuthManager
 import com.huawei.hms.support.account.request.AccountAuthParams
 import com.huawei.hms.support.account.request.AccountAuthParamsHelper
+import com.huawei.hms.support.account.result.AuthAccount
 import com.huawei.hms.support.account.service.AccountAuthService
+import org.koin.core.KoinComponent
+import org.koin.core.inject
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
 
 
-class HMSAuthorizationService(private val activity: Activity): IAuthorizationService {
+class HMSAuthorizationService(
+    private val activity: Activity
+): IAuthorizationService, KoinComponent {
 
     private val authParams: AccountAuthParams by lazy {
         AccountAuthParamsHelper(AccountAuthParams.DEFAULT_AUTH_REQUEST_PARAM)
-            .setAuthorizationCode()
+            .setEmail()
+            .setProfile()
+            .setIdToken()
             .createParams()
     }
 
-    private var service: AccountAuthService? = null
+    private val customTokenApi: CustomTokenApi by inject()
 
-    override fun signIn() {
-        service = AccountAuthManager.getService(activity, authParams)
-        activity.startActivityForResult(service?.signInIntent, REQUEST_CODE)
-        Log.i(TAG, "signIn")
+    private val huaweiService: AccountAuthService by lazy {
+        AccountAuthManager.getService(activity.applicationContext, authParams)
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?): ApiResponse<Unit> {
-        return if (requestCode == REQUEST_CODE) {
-            val authAccountTask = AccountAuthManager.parseAuthResultFromIntent(data)
-            if (authAccountTask.isSuccessful) {
-                // The sign-in is successful, and the user's ID information and authorization code are obtained.
-                val authAccount = authAccountTask.result
-                Log.i(TAG, "signIn: onActivityResult: Success" + authAccount.authorizationCode)
-                ApiResponse.Success(Unit)
-            } else {
-                val exception = authAccountTask.exception as ApiException
-                Log.e(TAG, "signIn: onActivityResult: Failed: " + exception.statusCode)
-                ApiResponse.Error(exception)
-            }
-        } else ApiResponse.Error(Exception("Incorrect Response"))
+    private val firebaseAuth: FirebaseAuth
+        get() = FirebaseAuth.getInstance()
+
+    override fun getSignInIntent(): Intent = huaweiService.signInIntent
+
+    override suspend fun getUserAfterAuthorization(data: Intent?): FirebaseUser {
+        val huaweiAccount = getHuaweiUserFromData(data)
+        val customToken = createCustomToken(huaweiAccount)
+        return signInWithCustomToken(customToken)
     }
 
     override suspend fun signOut() = suspendCoroutine<Unit> { cont ->
-        if (service == null) {
-            cont.resume(Unit)
-        }
-
-        service?.signOut()?.addOnSuccessListener {
+        huaweiService.signOut().addOnSuccessListener {
             Log.i(TAG, "signOut: OnSuccessListener")
-            service = null
+            firebaseAuth.signOut()
             cont.resume(Unit)
         }?.addOnFailureListener { exception ->
             Log.e(TAG, "signOut: OnFailureListener", exception)
@@ -62,23 +60,42 @@ class HMSAuthorizationService(private val activity: Activity): IAuthorizationSer
         }
     }
 
-    override suspend fun silentSignIn() = suspendCoroutine<ApiResponse<Unit>> { cont ->
-        service = AccountAuthManager.getService(activity, authParams)
-        val task = service?.silentSignIn()
-        task?.addOnSuccessListener(activity) { authAccount ->
-            // Obtain the user's ID information.
-            Log.i(TAG, "silentSignIn: displayName:" + authAccount.displayName)
-            cont.resume(ApiResponse.Success(Unit))
-        }
-        task?.addOnFailureListener(activity) { exception ->
-            val apiException = exception as ApiException
-            Log.i(TAG, "silentSignIn: sign failed status:" + apiException.statusCode)
-            cont.resumeWithException(exception)
+    private suspend fun getHuaweiUserFromData(data: Intent?): AuthAccount = suspendCoroutine { cont ->
+        val authAccountTask = AccountAuthManager.parseAuthResultFromIntent(data)
+        if (authAccountTask.isSuccessful) {
+            val account = authAccountTask.result
+            Log.i(TAG, "getHuaweiUserFromData: account=$account")
+            cont.resume(authAccountTask.result)
+        } else {
+            cont.resumeWithException(authAccountTask.exception)
         }
     }
 
+    private suspend fun createCustomToken(account: AuthAccount): String {
+        val request = CustomTokenRequest(
+            account.idToken, account.getUnionId(), account.avatarUriString,
+            account.displayName, account.email
+        )
+        return customTokenApi.createCustomToken(request).firebaseToken
+    }
+
+    private suspend fun signInWithCustomToken(token: String) = suspendCoroutine<FirebaseUser> { cont ->
+        FirebaseAuth.getInstance()
+            .signInWithCustomToken(token)
+            .addOnSuccessListener(activity) { authResult ->
+                val user = authResult.user
+                if (user != null) {
+                    Log.i(TAG, "signInWithCustomToken: Firebase: success: user: $user")
+                    cont.resume(user)
+                } else {
+                    cont.resumeWithException(Exception("User is not found."))
+                }
+            }.addOnFailureListener { exception ->
+                cont.resumeWithException(exception)
+            }
+    }
+
     companion object {
-        private const val REQUEST_CODE = 7777
         private const val TAG = "HMSAuthorizationService"
     }
 }
