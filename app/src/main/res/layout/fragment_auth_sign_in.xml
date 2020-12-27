@@ -68,8 +68,8 @@
             android:layout_width="0dp"
             android:layout_height="@dimen/buttonAuthHeight"
             android:layout_marginTop="@dimen/marginPrimary"
-            android:text="@string/sign_in"
             android:enabled="@{viewModel.buttonSignInEnable}"
+            android:text="@string/sign_in"
             app:layout_constraintEnd_toEndOf="@+id/tilAuthSignInPassword"
             app:layout_constraintStart_toStartOf="@+id/tilAuthSignInPassword"
             app:layout_constraintTop_toBottomOf="@+id/tvAuthError" />
@@ -119,16 +119,32 @@
             android:id="@+id/tvAuthRegistrationButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/marginGiant"
+            android:layout_marginBottom="@dimen/marginPrimary"
             android:padding="@dimen/marginTertiary"
             android:text="@string/registration"
             android:textAppearance="@style/Theme.Linkit.TextAppearanceRegular"
             android:textColor="@color/link"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@+id/btnAuthSignIn"
+            app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="@+id/btnAuthSignIn"
+            app:layout_constraintTop_toBottomOf="@+id/tvAuthForgotPasswordButton" />
+
+        <TextView
+            android:id="@+id/tvAuthForgotPasswordButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/marginSecondary"
+            android:padding="@dimen/marginTertiary"
+            android:text="@string/forgot_password"
+            android:textAppearance="@style/Theme.Linkit.TextAppearanceRegular"
+            android:textColor="@color/link"
+            app:layout_constraintBottom_toTopOf="@+id/tvAuthRegistrationButton"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/btnAuthHuawei"
-            app:layout_constraintVertical_bias="1.0" />
+            app:layout_constraintVertical_bias="0.82"
+            app:layout_constraintVertical_chainStyle="packed" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

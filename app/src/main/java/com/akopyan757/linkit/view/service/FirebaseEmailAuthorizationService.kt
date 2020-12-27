@@ -7,6 +7,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import org.koin.core.KoinComponent
 import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
 
 
@@ -56,6 +57,18 @@ class FirebaseEmailAuthorizationService(private val activity: Activity): KoinCom
         } catch (exception: Exception) {
             cont.resume(ApiResponse.Error(exception))
         }
+    }
+
+    suspend fun resetPassword(email: String) = suspendCoroutine<Unit> { cont ->
+        FirebaseAuth.getInstance().sendPasswordResetEmail(email)
+            .addOnSuccessListener {
+                Log.d(TAG, "Email sent ($email).")
+                cont.resume(Unit)
+            }
+            .addOnFailureListener { exception ->
+                Log.e(TAG, "Email error", exception)
+                cont.resumeWithException(exception)
+            }
     }
 
     fun sinOut() {

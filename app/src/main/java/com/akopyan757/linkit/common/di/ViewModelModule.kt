@@ -22,5 +22,6 @@ object ViewModelModule {
         viewModel { (folderId: Int) -> PageViewModel(folderId) }
         viewModel { AuthSignInViewModel() }
         viewModel { AuthSignUpViewModel() }
+        viewModel { AuthForgotPasswordViewModel() }
     }
 }

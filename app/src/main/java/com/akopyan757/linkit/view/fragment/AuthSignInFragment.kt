@@ -57,6 +57,9 @@ class AuthSignInFragment: BaseFragment<FragmentAuthSignInBinding, AuthSignInView
             }
         }
 
+        tvAuthForgotPasswordButton.setOnClickListener {
+            findNavController().navigate(R.id.action_authSignInFragment_to_authForgotPasswordFragment)
+        }
 
         tvAuthRegistrationButton.setOnClickListener {
             findNavController().navigate(R.id.action_authSignInFragment_to_authSignUpFragment)
