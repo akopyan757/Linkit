@@ -20,6 +20,9 @@
         <action
             android:id="@+id/action_mainFragment_to_folderFragment"
             app:destination="@id/folderFragment" />
+        <action
+            android:id="@+id/action_mainFragment_to_profileDialogFragment"
+            app:destination="@id/profileDialogFragment" />
     </fragment>
     <dialog
         android:id="@+id/folderCreateDialogFragment"
@@ -52,5 +55,10 @@
                 android:name="FOLDER_DATA" />
         </action>
     </dialog>
+    <dialog
+        android:id="@+id/profileDialogFragment"
+        android:name="com.akopyan757.linkit.view.dialog.ProfileDialogFragment"
+        android:label="ProfileDialogFragment"
+        tools:layout="@layout/dialog_profile"/>
 
 </navigation>

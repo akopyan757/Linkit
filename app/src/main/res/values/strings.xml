@@ -49,5 +49,9 @@
     <string name="reset_password">Reset password</string>
     <string name="forgot_password">Forgot password</string>
     <string name="toast_reset_password">A letter has been sent to your email \'%s\' with a link to change your password</string>
+    <string name="verify_email">Verify email</string>
+    <string name="sign_out">Sign Out</string>
+    <string name="change_password">Change Password</string>
+    <string name="setup_password">Setup Password</string>
 
 </resources>

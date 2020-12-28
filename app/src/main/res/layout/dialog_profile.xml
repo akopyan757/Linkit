@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="viewModel"
+            type="com.akopyan757.linkit.viewmodel.ProfileViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/background_dialog"
+        android:minWidth="@dimen/dialogMinWidth">
+
+        <com.google.android.material.circularreveal.cardview.CircularRevealCardView
+            android:id="@+id/ccvProfileAvatar"
+            android:layout_width="@dimen/profileIconBigSize"
+            android:layout_height="@dimen/profileIconBigSize"
+            android:layout_marginTop="@dimen/marginSecondary"
+            app:cardCornerRadius="@dimen/profileImageRadius"
+            app:cardElevation="@dimen/elevationSecondary"
+            app:layout_constraintBottom_toTopOf="@+id/tvProfileDisplayName"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:id="@+id/ivProfileAvatar"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:contentDescription="@string/todo"
+                app:photoUrl="@{viewModel.profileIconUrl}"
+                app:photoUrlDefaultRes="@{viewModel.profileIconDefaultRes}"
+                app:visibility="@{viewModel.profileIconVisible}"
+                tools:src="@drawable/ic_user" />
+
+        </com.google.android.material.circularreveal.cardview.CircularRevealCardView>
+
+        <TextView
+            android:id="@+id/tvProfileDisplayName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/marginSecondary"
+            android:text="@{viewModel.displayName}"
+            android:textAppearance="@style/Theme.Linkit.TextAppearanceTitle"
+            app:layout_constraintBottom_toTopOf="@+id/tvProfileEmail"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/ccvProfileAvatar"
+            tools:text="Name Surname" />
+
+        <TextView
+            android:id="@+id/tvProfileEmail"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/marginSecondary"
+            android:layout_marginBottom="@dimen/marginSecondary"
+            android:text="@{viewModel.email}"
+            android:textAppearance="@style/Theme.Linkit.TextAppearanceRegular"
+            app:layout_constraintBottom_toTopOf="@+id/btnProfileLinkWith"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvProfileDisplayName"
+            tools:text="email@hosting.ru" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnProfileLinkWith"
+            style="@style/Theme.Linkit.Button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawableLeft="@drawable/ic_login_icon"
+            android:drawablePadding="@dimen/marginPrimary"
+            android:text="@string/buttonLinkText"
+            android:textColor="@color/white"
+            app:backgroundTint="@color/buttonBackgroundColor"
+            app:layout_constraintBottom_toTopOf="@+id/btnProfileSetupPassword"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvProfileEmail" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnProfileSetupPassword"
+            style="@style/Theme.Linkit.Button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawableLeft="@drawable/ic_lock"
+            android:text="@string/setup_password"
+            app:layout_constraintBottom_toTopOf="@+id/btnProfileChangePassword"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/btnProfileLinkWith" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnProfileChangePassword"
+            style="@style/Theme.Linkit.Button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawableLeft="@drawable/ic_lock"
+            android:text="@string/change_password"
+            app:layout_constraintBottom_toTopOf="@+id/btnProfileVerify"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/btnProfileSetupPassword" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnProfileVerify"
+            style="@style/Theme.Linkit.Button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawableLeft="@drawable/ic_mail"
+            android:text="@string/verify_email"
+            app:layout_constraintBottom_toTopOf="@+id/btnProfileSignOut"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/btnProfileChangePassword" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnProfileSignOut"
+            style="@style/Theme.Linkit.Button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/marginSecondary"
+            android:drawableLeft="@drawable/ic_log_out"
+            android:text="@string/sign_out"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/btnProfileVerify" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

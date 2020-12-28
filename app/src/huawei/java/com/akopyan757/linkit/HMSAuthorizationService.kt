@@ -70,7 +70,7 @@ class HMSAuthorizationService(
     private suspend fun createCustomToken(account: AuthAccount): String {
         val request = CustomTokenRequest(
             account.idToken, account.getUnionId(), account.avatarUriString,
-            account.displayName, account.email
+            account.displayName, account.email,
         )
         return customTokenApi.createCustomToken(request).firebaseToken
     }

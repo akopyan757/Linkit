@@ -47,4 +47,6 @@
     <dimen name="addFolderTextSize">18sp</dimen>
     <dimen name="buttonAuthHeight">52dp</dimen>
     <dimen name="profileIconSize">24dp</dimen>
+    <dimen name="profileIconBigSize">64dp</dimen>
+    <dimen name="profileImageRadius">32dp</dimen>
 </resources>

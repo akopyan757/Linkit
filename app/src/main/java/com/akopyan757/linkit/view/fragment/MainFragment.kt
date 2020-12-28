@@ -1,6 +1,5 @@
 package com.akopyan757.linkit.view.fragment
 
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
@@ -18,25 +17,19 @@ import com.akopyan757.linkit.R
 import com.akopyan757.linkit.common.Config
 import com.akopyan757.linkit.common.clipboard.ClipboardUtils
 import com.akopyan757.linkit.databinding.FragmentMainBinding
-import com.akopyan757.linkit.view.AuthActivity
 import com.akopyan757.linkit.view.adapter.PageFragmentAdapter
-import com.akopyan757.linkit.view.service.FirebaseEmailAuthorizationService
-import com.akopyan757.linkit.view.service.IAuthorizationService
+import com.akopyan757.linkit.view.scope.mainInject
 import com.akopyan757.linkit.viewmodel.LinkViewModel
 import com.google.android.material.tabs.TabLayoutMediator
+import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.fragment_main.*
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import org.koin.android.ext.android.inject
 import org.koin.android.viewmodel.ext.android.viewModel
-import org.koin.core.parameter.parametersOf
+import org.koin.core.KoinComponent
 
 
-class MainFragment : BaseFragment<FragmentMainBinding, LinkViewModel>(), ViewTreeObserver.OnWindowFocusChangeListener {
+class MainFragment : BaseFragment<FragmentMainBinding, LinkViewModel>(), ViewTreeObserver.OnWindowFocusChangeListener, KoinComponent {
 
-    private val mAuthorizationService: IAuthorizationService by inject { parametersOf(requireActivity()) }
-    private val mSignInService: FirebaseEmailAuthorizationService by inject { parametersOf(requireActivity()) }
+    private val firebaseAuth: FirebaseAuth by mainInject()
 
     override val mViewModel: LinkViewModel by viewModel()
 
@@ -72,8 +65,8 @@ class MainFragment : BaseFragment<FragmentMainBinding, LinkViewModel>(), ViewTre
             }
         }
 
-        mSignInService.getUser()?.photoUrl?.toString()?.also { url ->
-            mViewModel.setProfileUrl(url)
+        firebaseAuth.currentUser?.photoUrl?.also { url ->
+            mViewModel.setProfileUrl(url.toString())
         }
 
         ivFolderSettings.setOnClickListener {
@@ -82,6 +75,10 @@ class MainFragment : BaseFragment<FragmentMainBinding, LinkViewModel>(), ViewTre
 
         tvFolderCreate.setOnClickListener {
             findNavController().navigate(R.id.folderCreateDialogFragment)
+        }
+
+        ccvIconProfile.setOnClickListener {
+            findNavController().navigate(R.id.action_mainFragment_to_profileDialogFragment)
         }
 
         mAdapter = PageFragmentAdapter(childFragmentManager, lifecycle)
@@ -141,18 +138,6 @@ class MainFragment : BaseFragment<FragmentMainBinding, LinkViewModel>(), ViewTre
             R.id.itemEditFolder -> {
                 mViewModel.enableEditMode()
                 mBinding.toolbarEdit.menu.setGroupVisible(R.id.groupEditSave, false)
-                true
-            }
-
-            R.id.itemLogOut -> {
-                CoroutineScope(Dispatchers.Main).launch {
-                    mAuthorizationService.signOut()
-                    mSignInService.sinOut()
-
-                    val activity = requireActivity()
-                    startActivity(Intent(activity, AuthActivity::class.java))
-                    activity.finish()
-                }
                 true
             }
 

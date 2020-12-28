@@ -23,5 +23,6 @@ object ViewModelModule {
         viewModel { AuthSignInViewModel() }
         viewModel { AuthSignUpViewModel() }
         viewModel { AuthForgotPasswordViewModel() }
+        viewModel { ProfileViewModel() }
     }
 }
