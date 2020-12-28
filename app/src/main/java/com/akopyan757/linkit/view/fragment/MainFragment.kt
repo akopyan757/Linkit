@@ -48,7 +48,8 @@ class MainFragment : BaseFragment<FragmentMainBinding, LinkViewModel>(), ViewTre
     override fun onSetupView(binding: FragmentMainBinding, bundle: Bundle?): Unit = with(binding) {
         (requireActivity() as AppCompatActivity).apply {
             setSupportActionBar(binding.toolbar)
-            setTitle(R.string.app_name)
+            supportActionBar?.setDisplayShowTitleEnabled(false)
+            supportActionBar?.title = Config.EMPTY
         }
 
         lifecycleOwner = this@MainFragment
@@ -69,6 +70,10 @@ class MainFragment : BaseFragment<FragmentMainBinding, LinkViewModel>(), ViewTre
                     R.id.itemEditDelete -> mViewModel.deleteSelected()
                 }; true
             }
+        }
+
+        mSignInService.getUser()?.photoUrl?.toString()?.also { url ->
+            mViewModel.setProfileUrl(url)
         }
 
         ivFolderSettings.setOnClickListener {

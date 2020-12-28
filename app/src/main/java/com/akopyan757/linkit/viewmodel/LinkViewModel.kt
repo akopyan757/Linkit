@@ -7,6 +7,7 @@ import androidx.lifecycle.map
 import com.akopyan757.base.viewmodel.BaseViewModel
 import com.akopyan757.base.viewmodel.list.ListLiveData
 import com.akopyan757.linkit.BR
+import com.akopyan757.linkit.R
 import com.akopyan757.linkit.common.Config
 import com.akopyan757.linkit.common.Config.KEY_EDIT_DELETE
 import com.akopyan757.linkit.common.Config.KEY_EDIT_MODE
@@ -32,6 +33,12 @@ class LinkViewModel : BaseViewModel(), KoinComponent {
 
     @get:Bindable
     var isFoldersEmpty: Boolean by DelegatedBindable(false, BR.foldersEmpty)
+
+    @get:Bindable
+    var profileIconUrl: String? by DelegatedBindable(null, BR.profileIconUrl)
+
+    @get:Bindable
+    var profileIconDefaultRes: Int = R.drawable.ic_user
 
     private var deleteAction: Boolean by SavedStateBindable(stateHandle, KEY_EDIT_DELETE, false)
 
@@ -87,6 +94,10 @@ class LinkViewModel : BaseViewModel(), KoinComponent {
 
     fun deleteSelected() {
         deleteAction = true
+    }
+
+    fun setProfileUrl(url: String) {
+        profileIconUrl = url
     }
 
     fun getFolderLiveList() = foldersLiveData

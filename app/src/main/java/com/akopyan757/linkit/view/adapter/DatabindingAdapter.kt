@@ -8,6 +8,7 @@ import android.widget.AdapterView.OnItemSelectedListener
 import android.widget.ArrayAdapter
 import android.widget.ImageView
 import android.widget.Spinner
+import androidx.annotation.DrawableRes
 import androidx.databinding.BindingAdapter
 import androidx.databinding.InverseBindingAdapter
 import androidx.databinding.InverseBindingListener
@@ -31,21 +32,13 @@ object DatabindingAdapter {
     }
 
     @JvmStatic
-    @BindingAdapter("app:url")
-    fun ImageView.setUrl(url: String?) {
-        Log.i("app:url", url ?: "")
-        url?.takeUnless { it.isEmpty() } ?: return
-
-        CoroutineScope(Dispatchers.Main).launch {
-            val bitmapFromURL = try {
-                getBitmapFromURL(url)
-            } catch (e: IOException) {
-                Log.e("TAG", "ERROR IO", e)
-                null
-            }
-
-            setImageBitmap(bitmapFromURL)
-        }
+    @BindingAdapter("app:photoUrl", "app:photoUrlDefaultRes")
+    fun ImageView.setUrl(url: String?, @DrawableRes drawableRes: Int) {
+        Picasso.get()
+            .load(url)
+            .error(drawableRes)
+            .placeholder(drawableRes)
+            .into(this)
     }
 
     @JvmStatic
