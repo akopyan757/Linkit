@@ -19,8 +19,8 @@ class AuthForgotPasswordFragment: BaseFragment<FragmentAuthResetPasswordBinding,
 
     override fun onSetupViewModel(viewModel: AuthForgotPasswordViewModel): Unit = with(viewModel) {
         getResetPasswordResponseLive().apply {
-            successResponse {
-                val message = getString(R.string.toast_reset_password, mViewModel.email)
+            successResponse { email ->
+                val message = getString(R.string.toast_reset_password, email)
                 Toast.makeText(requireContext(), message, Toast.LENGTH_LONG).show()
                 findNavController().popBackStack()
             }

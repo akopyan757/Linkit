@@ -13,6 +13,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
+import com.google.firebase.auth.EmailAuthProvider
 import com.huawei.hms.support.account.AccountAuthManager
 import com.huawei.hms.support.account.request.AccountAuthParams
 import com.huawei.hms.support.account.request.AccountAuthParamsHelper
@@ -28,6 +29,12 @@ class AuthWrapper(private val context: Context): KoinComponent {
 
     companion object {
         private const val TAG = "AUTH_WRAPPER"
+
+        fun existsEmailProvider(firebaseUser: FirebaseUser): Boolean {
+            return firebaseUser.providerData.find { userInfo ->
+                userInfo.providerId != EmailAuthProvider.PROVIDER_ID
+            } != null
+        }
     }
 
     private val googleSignInOptions: GoogleSignInOptions by lazy {

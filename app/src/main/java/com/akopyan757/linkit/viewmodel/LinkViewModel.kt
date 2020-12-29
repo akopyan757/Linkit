@@ -53,7 +53,7 @@ class LinkViewModel : BaseViewModel(), KoinComponent {
     private val linkRepository: LinkRepository by mainInject()
 
     /** Responses */
-    init {
+    fun bindAllFolders() {
         bindLiveList(
             request = linkRepository.getAllFolders(),
             listLiveData = foldersLiveData,

@@ -108,6 +108,8 @@ class MainFragment : BaseFragment<FragmentMainBinding, LinkViewModel>(), ViewTre
     }
 
     override fun onSetupViewModel(viewModel: LinkViewModel): Unit = with(viewModel) {
+        bindAllFolders()
+
         getLivePattern().observe(viewLifecycleOwner, Observer {
             Log.i("Pattern", "pattern")
         })
