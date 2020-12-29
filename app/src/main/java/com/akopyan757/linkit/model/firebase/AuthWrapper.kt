@@ -85,6 +85,7 @@ class AuthWrapper(private val context: Context): KoinComponent {
     }
 
     suspend fun signInWithCustomToken(token: String) = suspendCoroutine<FirebaseUser> { cont ->
+        Log.i(TAG, "signInWithCustomToken: success: user: $token")
         FirebaseAuth.getInstance()
             .signInWithCustomToken(token)
             .addOnSuccessListener { authResult ->

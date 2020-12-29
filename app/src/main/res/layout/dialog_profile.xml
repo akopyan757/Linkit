@@ -59,48 +59,30 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/marginSecondary"
-            android:layout_marginBottom="@dimen/marginSecondary"
-            android:text="@{viewModel.email}"
             android:drawablePadding="@dimen/marginQuartiary"
-            tools:drawableRight="@drawable/ic_check_verify"
+            android:text="@{viewModel.email}"
             android:textAppearance="@style/Theme.Linkit.TextAppearanceRegular"
-            app:layout_constraintBottom_toTopOf="@+id/btnProfileLinkWith"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tvProfileDisplayName"
+            tools:drawableRight="@drawable/ic_check_verify"
             tools:text="email@hosting.ru" />
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnProfileLinkWith"
-            style="@style/Theme.Linkit.Button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:drawableLeft="@drawable/ic_login_icon"
-            android:drawablePadding="@dimen/marginPrimary"
-            android:text="@string/buttonLinkText"
-            android:textColor="@color/white"
-            app:visibility="@{viewModel.linkButtonVisible}"
-            app:backgroundTint="@color/buttonBackgroundColor"
-            app:layout_constraintBottom_toTopOf="@+id/btnProfileSetupPassword"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvProfileEmail" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnProfileSetupPassword"
             style="@style/Theme.Linkit.Button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/marginPrimary"
             android:drawableLeft="@drawable/ic_lock"
             android:text="@string/setup_password"
-            app:visibility="@{viewModel.setPasswordButtonVisible}"
             app:layout_constraintBottom_toTopOf="@+id/btnProfileChangePassword"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/btnProfileLinkWith" />
+            app:layout_constraintTop_toBottomOf="@id/tvProfileEmail"
+            app:visibility="@{viewModel.setPasswordButtonVisible}" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnProfileChangePassword"
