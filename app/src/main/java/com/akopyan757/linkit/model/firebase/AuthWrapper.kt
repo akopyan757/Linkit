@@ -32,7 +32,7 @@ class AuthWrapper(private val context: Context): KoinComponent {
 
         fun existsEmailProvider(firebaseUser: FirebaseUser): Boolean {
             return firebaseUser.providerData.find { userInfo ->
-                userInfo.providerId != EmailAuthProvider.PROVIDER_ID
+                userInfo.providerId == EmailAuthProvider.PROVIDER_ID
             } != null
         }
     }
