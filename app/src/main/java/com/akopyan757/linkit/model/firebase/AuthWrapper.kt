@@ -4,16 +4,17 @@ import android.content.Context
 import android.content.Intent
 import android.util.Log
 import com.akopyan757.linkit.R
+import com.akopyan757.linkit.model.cache.TokenCache
 import com.akopyan757.linkit.model.service.network.CustomTokenApi
 import com.akopyan757.linkit.network.CustomTokenRequest
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
-import com.google.firebase.auth.EmailAuthProvider
 import com.huawei.hms.support.account.AccountAuthManager
 import com.huawei.hms.support.account.request.AccountAuthParams
 import com.huawei.hms.support.account.request.AccountAuthParamsHelper
@@ -63,6 +64,8 @@ class AuthWrapper(private val context: Context): KoinComponent {
 
     private val customTokenApi: CustomTokenApi by inject()
 
+    private val tokenCache: TokenCache by inject()
+
     suspend fun emailVerification() = suspendCoroutine<String> { cont ->
         val user = FirebaseAuth.getInstance().currentUser
         user?.sendEmailVerification()
@@ -88,6 +91,7 @@ class AuthWrapper(private val context: Context): KoinComponent {
                 val user = authResult.user
                 if (user != null) {
                     Log.i(TAG, "signInWithCustomToken: success: user: $user")
+                    tokenCache.saveToken(token)
                     cont.resume(user)
                 } else {
                     Log.i(TAG, "signInWithCustomToken: failure: user not found")
@@ -144,6 +148,40 @@ class AuthWrapper(private val context: Context): KoinComponent {
                 }
             }.addOnFailureListener { exception ->
                 Log.w(TAG, "createUser: failure", exception)
+                cont.resumeWithException(exception)
+            }
+    }
+
+    suspend fun reauthenticate() = suspendCoroutine<Unit> { cont ->
+        val user = FirebaseAuth.getInstance().currentUser ?: throw Exception("User is not found.")
+        val token = tokenCache.getToken() ?: throw Exception("Token is not found")
+        FirebaseAuth.getInstance()
+            .signInWithCustomToken(token)
+            .addOnSuccessListener {
+                Log.i(TAG, "reauthenticate: success: user: $user")
+                cont.resume(Unit)
+            }.addOnFailureListener { exception ->
+                Log.w(TAG, "reauthenticate: failure", exception)
+                cont.resumeWithException(exception)
+            }
+    }
+
+    suspend fun linkEmailToAccount(password: String): FirebaseUser = suspendCoroutine { cont ->
+        val user = FirebaseAuth.getInstance().currentUser ?: throw Exception("User is not found.")
+        val email = user.email ?: throw Exception("Email is not found.")
+        val credential = EmailAuthProvider.getCredential(email, password)
+        user.linkWithCredential(credential)
+            .addOnSuccessListener { result ->
+                val userResult = result?.user
+                if (userResult != null) {
+                    Log.i(TAG, "linkEmailToAccount: success: user: $userResult")
+                    cont.resume(user)
+                } else {
+                    Log.w(TAG, "linkEmailToAccount: failure: User not found")
+                    cont.resumeWithException(Exception("User is not found."))
+                }
+            }.addOnFailureListener { exception ->
+                Log.w(TAG, "linkEmailToAccount: failure", exception)
                 cont.resumeWithException(exception)
             }
     }

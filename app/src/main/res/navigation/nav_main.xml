@@ -59,6 +59,15 @@
         android:id="@+id/profileDialogFragment"
         android:name="com.akopyan757.linkit.view.dialog.ProfileDialogFragment"
         android:label="ProfileDialogFragment"
-        tools:layout="@layout/dialog_profile"/>
+        tools:layout="@layout/dialog_profile">
+        <action
+            android:id="@+id/action_profileDialogFragment_to_setPassword"
+            app:destination="@id/profileSetPasswordFragment" />
+    </dialog>
+    <fragment
+        android:id="@+id/profileSetPasswordFragment"
+        android:name="com.akopyan757.linkit.view.fragment.ProfileSetPasswordFragment"
+        android:label="ProfileSetPasswordFragment"
+        tools:layout="@layout/fragment_auth_reset_password"/>
 
 </navigation>

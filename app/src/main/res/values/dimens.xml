@@ -49,4 +49,5 @@
     <dimen name="profileIconSize">24dp</dimen>
     <dimen name="profileIconBigSize">64dp</dimen>
     <dimen name="profileImageRadius">32dp</dimen>
+    <dimen name="setPasswordBackIconMargin">24dp</dimen>
 </resources>

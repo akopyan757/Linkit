@@ -43,6 +43,7 @@
     <string name="password">Password</string>
     <string name="sign_in">Sign In</string>
     <string name="registration">Registration</string>
+    <string name="set_password">Password setup</string>
     <string name="confirm_password">Confirm Password</string>
     <string name="sign_up">Sign Up</string>
     <string name="error_passwords_match">Password do not match</string>
@@ -54,5 +55,8 @@
     <string name="sign_out">Sign Out</string>
     <string name="change_password">Change Password</string>
     <string name="setup_password">Set Password</string>
+    <string name="send">Send</string>
+    <string name="password_set">Password set</string>
+    <string name="error">Error</string>
 
 </resources>

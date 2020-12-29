@@ -1,10 +1,12 @@
 package com.akopyan757.linkit.view.dialog
 
 import android.content.Intent
+import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleOwner
+import androidx.navigation.fragment.findNavController
 import com.akopyan757.base.view.BaseDialogFragment
 import com.akopyan757.linkit.BR
 import com.akopyan757.linkit.R
@@ -20,6 +22,12 @@ class ProfileDialogFragment : BaseDialogFragment<DialogProfileBinding, ProfileVi
 
     override fun getLayoutId(): Int = R.layout.dialog_profile
     override fun getVariableId(): Int = BR.viewModel
+
+    override fun onSetupView(binding: DialogProfileBinding, bundle: Bundle?) = with(binding) {
+        btnProfileSetupPassword.setOnClickListener {
+            findNavController().navigate(R.id.action_profileDialogFragment_to_setPassword)
+        }
+    }
 
     override fun onSetupViewModel(viewModel: ProfileViewModel, owner: LifecycleOwner): Unit = with(viewModel) {
         getUserResponseLive().apply {
@@ -54,9 +62,5 @@ class ProfileDialogFragment : BaseDialogFragment<DialogProfileBinding, ProfileVi
                 )
             }
         })
-    }
-
-    companion object {
-        private const val TAG = "PROFILE_DIALOG_FRAGMENT"
     }
 }
