@@ -152,16 +152,42 @@ class AuthWrapper(private val context: Context): KoinComponent {
             }
     }
 
-    suspend fun reauthenticate() = suspendCoroutine<Unit> { cont ->
+    suspend fun reauthenticateCustomToken() = suspendCoroutine<Unit> { cont ->
         val user = FirebaseAuth.getInstance().currentUser ?: throw Exception("User is not found.")
         val token = tokenCache.getToken() ?: throw Exception("Token is not found")
         FirebaseAuth.getInstance()
             .signInWithCustomToken(token)
             .addOnSuccessListener {
-                Log.i(TAG, "reauthenticate: success: user: $user")
+                Log.i(TAG, "reauthenticateCustomToken: success: user: $user")
                 cont.resume(Unit)
             }.addOnFailureListener { exception ->
-                Log.w(TAG, "reauthenticate: failure", exception)
+                Log.w(TAG, "reauthenticateCustomToken: failure", exception)
+                cont.resumeWithException(exception)
+            }
+    }
+
+    suspend fun reauthenticateEmail(password: String) = suspendCoroutine<Unit> { cont ->
+        val user = FirebaseAuth.getInstance().currentUser ?: throw Exception("User is not found.")
+        val email = user.email ?: throw Exception("Email is not found.")
+        val credential = EmailAuthProvider.getCredential(email, password)
+        user.reauthenticate(credential)
+            .addOnSuccessListener {
+                Log.i(TAG, "reauthenticateEmail: success: user: $user")
+                cont.resume(Unit)
+            }.addOnFailureListener { exception ->
+                Log.w(TAG, "reauthenticateEmail: failure", exception)
+                cont.resumeWithException(exception)
+            }
+    }
+
+    suspend fun updatePassword(password: String) = suspendCoroutine<Unit> { cont ->
+        val user = FirebaseAuth.getInstance().currentUser ?: throw Exception("User is not found.")
+        user.updatePassword(password)
+            .addOnSuccessListener {
+                Log.i(TAG, "reauthenticateEmail: success: user: $user")
+                cont.resume(Unit)
+            }.addOnFailureListener { exception ->
+                Log.w(TAG, "reauthenticateEmail: failure", exception)
                 cont.resumeWithException(exception)
             }
     }

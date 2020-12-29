@@ -63,11 +63,20 @@
         <action
             android:id="@+id/action_profileDialogFragment_to_setPassword"
             app:destination="@id/profileSetPasswordFragment" />
+        <action
+            android:id="@+id/action_profileDialogFragment_to_updatePassword"
+            app:destination="@id/profileUpdatePasswordFragment" />
     </dialog>
     <fragment
         android:id="@+id/profileSetPasswordFragment"
         android:name="com.akopyan757.linkit.view.fragment.ProfileSetPasswordFragment"
         android:label="ProfileSetPasswordFragment"
         tools:layout="@layout/fragment_auth_reset_password"/>
+    <fragment
+        android:id="@+id/profileUpdatePasswordFragment"
+        android:name="com.akopyan757.linkit.view.fragment.ProfileUpdatePasswordFragment"
+        android:label="ProfileUpdatePasswordFragment"
+        tools:layout="@layout/fragment_auth_update_password"/>
+
 
 </navigation>

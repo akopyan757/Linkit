@@ -27,6 +27,9 @@ class ProfileDialogFragment : BaseDialogFragment<DialogProfileBinding, ProfileVi
         btnProfileSetupPassword.setOnClickListener {
             findNavController().navigate(R.id.action_profileDialogFragment_to_setPassword)
         }
+        btnProfileChangePassword.setOnClickListener {
+            findNavController().navigate(R.id.action_profileDialogFragment_to_updatePassword)
+        }
     }
 
     override fun onSetupViewModel(viewModel: ProfileViewModel, owner: LifecycleOwner): Unit = with(viewModel) {

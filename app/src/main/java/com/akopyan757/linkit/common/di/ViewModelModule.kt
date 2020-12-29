@@ -23,5 +23,6 @@ object ViewModelModule {
         viewModel { AuthSplashViewModel() }
         viewModel { ProfileViewModel() }
         viewModel { ProfileSetPasswordViewModel() }
+        viewModel { ProfileUpdatePasswordViewModel() }
     }
 }

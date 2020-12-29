@@ -26,12 +26,17 @@ class AuthRepository: BaseRepository(), KoinComponent {
     }
 
     fun linkPasswordToAccount(password: String) = callIO {
-        authWrapper.reauthenticate()
+        authWrapper.reauthenticateCustomToken()
         authWrapper.linkEmailToAccount(password)
     }
 
     fun resetPassword(email: String) = callIO {
         authWrapper.resetPassword(email)
+    }
+
+    fun updatePassword(oldPassword: String, newPassword: String) = callIO {
+        authWrapper.reauthenticateEmail(oldPassword)
+        authWrapper.updatePassword(newPassword)
     }
 
     fun signInWithData(data: Intent?) = callIO {
