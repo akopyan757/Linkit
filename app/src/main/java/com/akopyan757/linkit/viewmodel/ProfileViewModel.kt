@@ -2,14 +2,19 @@ package com.akopyan757.linkit.viewmodel
 
 import android.webkit.URLUtil
 import androidx.databinding.Bindable
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.switchMap
 import com.akopyan757.base.viewmodel.BaseViewModel
 import com.akopyan757.linkit.BR
 import com.akopyan757.linkit.R
 import com.akopyan757.linkit.common.Config
-import com.google.firebase.auth.FirebaseUser
+import com.akopyan757.linkit.model.repository.AuthRepository
+import org.koin.core.KoinComponent
+import org.koin.core.inject
 
-class ProfileViewModel : BaseViewModel() {
+class ProfileViewModel : BaseViewModel(), KoinComponent {
 
+    /** Databinding properties */
     @get:Bindable
     var displayName: String by DelegatedBindable("", BR.displayName)
 
@@ -29,9 +34,28 @@ class ProfileViewModel : BaseViewModel() {
     @get:Bindable
     var profileIconDefaultRes: Int = R.drawable.ic_user
 
-    fun setUser(firebaseUser: FirebaseUser) {
-        displayName = firebaseUser.displayName ?: Config.EMPTY
-        email = firebaseUser.email ?: Config.EMPTY
-        profileIconUrl = firebaseUser.photoUrl?.toString()
+    /** Models */
+    private val authRepository: AuthRepository by inject()
+
+    /** Requests */
+    private val requestSignOut = MutableLiveData<Unit>()
+
+    /** DataBinding methods */
+    fun onSignOutButtonClicked() {
+        requestSignOut.value = Unit
+    }
+
+    /** Responses */
+    fun getUserResponseLive() = requestConvertSimple(
+        method = { authRepository.getUser() },
+        onSuccess = { firebaseUser ->
+            displayName = firebaseUser.displayName ?: Config.EMPTY
+            email = firebaseUser.email ?: Config.EMPTY
+            profileIconUrl = firebaseUser.photoUrl?.toString()
+        }
+    )
+
+    fun getSignOutResponseLive() = requestSignOut.switchMap {
+        requestConvertSimple<Unit>({ authRepository.signOut() })
     }
 }

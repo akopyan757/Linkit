@@ -27,8 +27,8 @@ class StorePatterns: KoinComponent {
     fun getLiveError(): LiveData<Exception> = liveErrors
     fun getLivePatterns(): LiveData<List<PatternHostData>> = livePatterns
 
-    fun removeObserveItem(patternHostData: PatternHostData) {
-        patterns.removeAll { it.host == patternHostData.host }
+    fun removeObserveItems(list: List<PatternHostData>) {
+        patterns.removeAll { pattern -> list.find { it.host == pattern.host } != null }
     }
 
     fun fetchData() {

@@ -14,11 +14,13 @@ import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
 import com.akopyan757.base.viewmodel.BaseViewModel
 import com.akopyan757.base.viewmodel.DiffItemObservable
 import com.akopyan757.base.viewmodel.list.ListHolder
 import com.akopyan757.base.viewmodel.list.UpdatableListAdapter
 import com.akopyan757.base.viewmodel.list.observeList
+import java.lang.Exception
 
 abstract class BaseDialogFragment<V: ViewDataBinding, T: BaseViewModel> : DialogFragment() {
 
@@ -66,6 +68,14 @@ abstract class BaseDialogFragment<V: ViewDataBinding, T: BaseViewModel> : Dialog
 
         return mBinding.root
     }
+
+    fun <T> LiveData<out BaseViewModel.ResponseState<T>>.errorResponse(
+        onAction: (Exception) -> Unit
+    ) = errorResponse(viewLifecycleOwner, onAction)
+
+    fun <T> LiveData<out BaseViewModel.ResponseState<T>>.successResponse(
+        onAction: (T) -> Unit
+    ) = successResponse(viewLifecycleOwner, onAction)
 
     fun <T : DiffItemObservable> LiveData<ListHolder<T>>.observeList(
         adapter: UpdatableListAdapter<T>,

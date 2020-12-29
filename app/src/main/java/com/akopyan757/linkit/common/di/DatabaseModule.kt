@@ -1,5 +1,6 @@
 package com.akopyan757.linkit.common.di
 
+import android.util.Log
 import androidx.room.Room
 import com.akopyan757.linkit.common.Config
 import com.akopyan757.linkit.common.Config.LINKS
@@ -47,6 +48,7 @@ object DatabaseModule {
                     .also { database ->
                         registerCallback(object : ScopeCallback {
                             override fun onScopeClose(scope: Scope) {
+                                Log.i("Room", "onScopeClose")
                                 database.close()
                             }
                         })

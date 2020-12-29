@@ -1,6 +1,5 @@
-package com.akopyan757.linkit.view.service
+package com.akopyan757.linkit.model.service
 
-import android.app.Activity
 import android.util.Log
 import com.akopyan757.base.model.ApiResponse
 import com.google.firebase.auth.FirebaseAuth
@@ -11,7 +10,7 @@ import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
 
 
-class FirebaseEmailAuthorizationService(private val activity: Activity): KoinComponent {
+class FirebaseEmailAuthorizationService : KoinComponent {
 
     companion object {
         private const val TAG = "FIREBASE_EMAIL_AUTH"
@@ -24,7 +23,7 @@ class FirebaseEmailAuthorizationService(private val activity: Activity): KoinCom
     suspend fun createUser(email: String, password: String): ApiResponse<FirebaseUser> = suspendCoroutine { cont ->
         try {
             FirebaseAuth.getInstance().createUserWithEmailAndPassword(email, password)
-                .addOnCompleteListener(activity) { task ->
+                .addOnCompleteListener { task ->
                     if (task.isSuccessful) {
                         Log.d(TAG, "createUser: success: $email")
                         val user = task.result?.user ?: return@addOnCompleteListener
@@ -43,7 +42,7 @@ class FirebaseEmailAuthorizationService(private val activity: Activity): KoinCom
     suspend fun signIn(email: String, password: String): ApiResponse<FirebaseUser> = suspendCoroutine { cont ->
         try {
             FirebaseAuth.getInstance().signInWithEmailAndPassword(email, password)
-                .addOnCompleteListener(activity) { task ->
+                .addOnCompleteListener { task ->
                     if (task.isSuccessful) {
                         Log.d(TAG, "signIn: success: $email")
                         val user = task.result?.user ?: return@addOnCompleteListener

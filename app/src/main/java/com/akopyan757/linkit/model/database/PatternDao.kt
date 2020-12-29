@@ -34,13 +34,15 @@ interface PatternDao: IPatternCache<ParsePatternData, PatternHostData> {
     fun insertHostOrUpdate(data: PatternHostData): Long
 
     @Transaction
-    fun addPatternWithHost(data: PatternHostData) {
-        val oldData = getHostPatterns(data.host).firstOrNull()
-        if (oldData != null) data.id = oldData.id
-        val hostId = insertHostOrUpdate(data)
-        data.patterns.forEach { specifiedData ->
-            specifiedData.hostId = hostId.toInt()
-            insertSpecifiedOrUpdate(specifiedData)
+    fun addPatternsListWithHost(list: List<PatternHostData>) {
+        list.forEach { data ->
+            val oldData = getHostPatterns(data.host).firstOrNull()
+            if (oldData != null) data.id = oldData.id
+            val hostId = insertHostOrUpdate(data)
+            data.patterns.forEach { specifiedData ->
+                specifiedData.hostId = hostId.toInt()
+                insertSpecifiedOrUpdate(specifiedData)
+            }
         }
     }
 

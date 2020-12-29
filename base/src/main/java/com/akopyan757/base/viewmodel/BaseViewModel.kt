@@ -5,9 +5,7 @@ import androidx.databinding.PropertyChangeRegistry
 import androidx.lifecycle.*
 import com.akopyan757.base.model.ApiResponse
 import com.akopyan757.base.viewmodel.list.ListLiveData
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
-import java.lang.Exception
 import kotlin.reflect.KProperty
 
 abstract class BaseViewModel: ViewModel(), BaseStateObservable {
@@ -20,6 +18,12 @@ abstract class BaseViewModel: ViewModel(), BaseStateObservable {
         LOADING,
         SUCCESS,
         ERROR
+    }
+
+    sealed class ResponseState<out T> {
+        object Loading: ResponseState<Nothing>()
+        data class Success<out T>(val data: T): ResponseState<T>()
+        data class Error(val exception: Exception): ResponseState<Nothing>()
     }
 
     infix fun emitAction(code: Int) {
@@ -107,6 +111,55 @@ abstract class BaseViewModel: ViewModel(), BaseStateObservable {
                     mException.value = exception
                 }
                 RequestState.ERROR
+            }
+        }
+    }
+
+    fun <T> requestConvertSimple(
+        method: () -> LiveData<ApiResponse<T>>,
+        onLoading: (() -> Unit)? = null,
+        onSuccess: ((T) -> Unit)? = null,
+        onError: ((exception: Exception) -> Unit)? = null
+    ) = requestConvert(method, onLoading, onSuccess = { result ->
+        onSuccess?.invoke(result)
+        result
+    }, onError)
+
+    fun <T, V> requestConvert(
+        method: () -> LiveData<ApiResponse<T>>,
+        onLoading: (() -> Unit)? = null,
+        onSuccess: ((data: T) -> V)? = null,
+        onError: ((exception: Exception) -> Unit)? = null
+    ) = liveData(viewModelScope.coroutineContext) {
+        try {
+            method.invoke().also { liveData ->
+                emitSource(liveData)
+            }
+        } catch (e: Exception) {
+            emit(ApiResponse.Error(e))
+        }
+    }.map { response ->
+        when (response) {
+            is ApiResponse.Loading -> {
+                onLoading?.invoke()
+                ResponseState.Loading
+            }
+
+            is ApiResponse.Success -> {
+                val result = onSuccess?.invoke(response.data)
+                if (result != null) {
+                    ResponseState.Success(result)
+                } else {
+                    ResponseState.Error(Exception("Response data not found"))
+                }
+            }
+
+            is ApiResponse.Error -> {
+                response.exception.also { exception ->
+                    onError?.invoke(exception)
+                    mException.value = exception
+                }
+                ResponseState.Error(response.exception)
             }
         }
     }

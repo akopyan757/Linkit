@@ -132,6 +132,7 @@
             android:layout_marginBottom="@dimen/marginSecondary"
             android:drawableLeft="@drawable/ic_log_out"
             android:text="@string/sign_out"
+            android:onClick="@{() -> viewModel.onSignOutButtonClicked()}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"

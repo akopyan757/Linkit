@@ -13,7 +13,7 @@ class MainActivity : AppCompatActivity(), KoinComponent {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        getKoin().createScope(mainScopeId(), named<MainActivity>())
+        getKoin().getOrCreateScope(mainScopeId(), named<MainActivity>())
         setContentView(R.layout.activity_main)
     }
 

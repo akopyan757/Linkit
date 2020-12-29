@@ -76,9 +76,16 @@ abstract class BaseFragment<V: ViewDataBinding, T: BaseViewModel> : Fragment() {
         dialogFragment.show(activity.supportFragmentManager, tag)
     }
 
+    fun <T> LiveData<out BaseViewModel.ResponseState<T>>.errorResponse(
+        onAction: (Exception) -> Unit
+    ) = errorResponse(viewLifecycleOwner, onAction)
+
+    fun <T> LiveData<out BaseViewModel.ResponseState<T>>.successResponse(
+        onAction: (T) -> Unit
+    ) = successResponse(viewLifecycleOwner, onAction)
+
     fun <T : DiffItemObservable> LiveData<ListHolder<T>>.observeList(
         adapter: UpdatableListAdapter<T>,
         afterError: (() -> Unit)? = null
     ) = this.observeList(viewLifecycleOwner, adapter, afterError)
-
 }
