@@ -4,13 +4,13 @@ import android.util.Log
 import androidx.lifecycle.liveData
 import androidx.lifecycle.map
 import com.akopyan757.base.model.BaseRepository
-import com.akopyan757.linkit.BuildConfig
 import com.akopyan757.linkit.common.Config
 import com.akopyan757.linkit.common.utils.FormatUtils
 import com.akopyan757.linkit.model.cache.ImageCache
 import com.akopyan757.linkit.model.database.FolderDao
 import com.akopyan757.linkit.model.database.PatternDao
 import com.akopyan757.linkit.model.database.UrlLinkDao
+import com.akopyan757.linkit.model.entity.PatternHostData
 import com.akopyan757.linkit.model.entity.UrlLinkData
 import com.akopyan757.linkit.model.exception.FolderExistsException
 import com.akopyan757.linkit.model.exception.UrlIsNotValidException
@@ -18,7 +18,10 @@ import com.akopyan757.linkit.model.store.StoreLinks
 import com.akopyan757.linkit.model.store.StorePatterns
 import com.akopyan757.linkit.view.scope.mainInject
 import com.akopyan757.urlparser.IUrlParser
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import org.koin.core.KoinComponent
 import org.koin.core.inject
 import org.koin.core.qualifier.named
@@ -48,6 +51,7 @@ class LinkRepository: BaseRepository(), KoinComponent {
             folderDao.insertOrUpdate(list)
         }
         storeLinks.loadUrls().also { list ->
+            list.forEach { data -> imageCache.saveImages(data) }
             urlLinkDao.insertOrUpdate(list)
         }
         Unit
@@ -58,19 +62,7 @@ class LinkRepository: BaseRepository(), KoinComponent {
         liveData(Dispatchers.IO) {
             patternDao.addPatternsListWithHost(items)
             storePatterns.removeObserveItems(items)
-            if (BuildConfig.DEBUG) {
-                CoroutineScope(coroutineDispatcher).launch {
-                    items.forEach { item ->
-                        urlLinkDao.getByHost(item.host).forEach { data ->
-                            val newData = urlParser.parseUrl(data.url).also {
-                                it.id = data.id
-                            }
-                            urlLinkDao.insertOrUpdate(newData)
-                            imageCache.saveImages(newData)
-                        }
-                    }
-                }
-            }
+            contentDebugging(items)
             emit(Unit)
         }
     }.asLiveIO()
@@ -106,10 +98,6 @@ class LinkRepository: BaseRepository(), KoinComponent {
             }
             .asLiveIO()
 
-    fun getUrlLinksByFolder2(folderId: Int) = callIO {
-        urlLinkDao.getByFolder(folderId).map { item -> item.addFilePaths() }
-    }
-
     fun getAllFolders() = folderDao.getLiveAll().asLiveIO()
 
     fun deleteUrls(ids: List<Long>) = callIO {
@@ -135,8 +123,23 @@ class LinkRepository: BaseRepository(), KoinComponent {
         storeLinks.reorderFolders(pairs)
     }
 
+    /** Private methods **/
     private fun UrlLinkData.addFilePaths() = apply {
         logoFileName = imageCache.getLogoName(this)
         contentFileName = imageCache.getContentName(this)
+    }
+
+    private fun contentDebugging(items: List<PatternHostData>) {
+        CoroutineScope(coroutineDispatcher).launch {
+            items.forEach { item ->
+                urlLinkDao.getByHost(item.host).forEach { data ->
+                    val newData = urlParser.parseUrl(data.url).also {
+                        it.id = data.id
+                    }
+                    urlLinkDao.insertOrUpdate(newData)
+                    imageCache.saveImages(newData)
+                }
+            }
+        }
     }
 }
