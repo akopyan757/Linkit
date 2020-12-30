@@ -79,10 +79,14 @@ class PageViewModel(private val folderId: Int): BaseViewModel(), KoinComponent {
         )
     }
 
-    fun selectItem(observable: LinkObservable) {
+    fun onItemSelected(observable: LinkObservable) {
         observable.selected = !observable.selected
         urlListData.changeItem(observable) {
             selectedCount = urlListData.getList().count { it.selected }
         }
+    }
+
+    fun onUrlOpened(observable: LinkObservable) {
+        linkRepository.moveLinkToTop(observable.id)
     }
 }

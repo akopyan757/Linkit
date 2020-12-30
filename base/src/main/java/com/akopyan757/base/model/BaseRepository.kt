@@ -3,10 +3,18 @@ package com.akopyan757.base.model
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.liveData
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 
 abstract class BaseRepository {
 
     abstract val coroutineDispatcher: CoroutineDispatcher
+
+    protected fun launchIO(action: suspend () -> Unit) {
+        CoroutineScope(coroutineDispatcher).launch {
+            action.invoke()
+        }
+    }
 
     protected fun <T : Any> callIO(
         action: suspend () -> T

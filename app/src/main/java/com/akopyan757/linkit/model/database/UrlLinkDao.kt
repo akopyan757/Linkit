@@ -54,12 +54,9 @@ interface UrlLinkDao {
     fun updateOrder(id: Long, order: Int)
 
     @Transaction
-    fun updateOrders(ids: List<Long>): List<Pair<Long, Int>> {
-        val orders = getOrderByIds(ids).sortedDescending()
-        return ids.mapIndexed { index, id ->
-            updateOrder(id, orders[index])
-            Pair(id, orders[index])
-        }
+    fun moveUrlToTop(id: Long) {
+        val order = getMaxOrder() + 1
+        updateOrder(id, order)
     }
 
     @Query("DELETE from url_link_data WHERE id = :id")

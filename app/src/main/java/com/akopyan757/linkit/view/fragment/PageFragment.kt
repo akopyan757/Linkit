@@ -74,14 +74,15 @@ class PageFragment: BaseFragment<FragmentPageBinding, PageViewModel>(), LinkAdap
 
     override fun onItemListener(link: LinkObservable) {
         if (mViewModel.getEditModeState()) {
-            mViewModel.selectItem(link)
+            mViewModel.onItemSelected(link)
         } else {
             startActivity(AndroidUtils.createIntent(link.url))
+            mViewModel.onUrlOpened(link)
         }
     }
 
     override fun onItemLongClickListener(link: LinkObservable) {
-        mViewModel.selectItem(link)
+        mViewModel.onItemSelected(link)
     }
 
     override fun onItemMove(fromPosition: Int, toPosition: Int): Boolean {
