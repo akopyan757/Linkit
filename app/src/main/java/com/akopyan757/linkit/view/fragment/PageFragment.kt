@@ -1,10 +1,8 @@
 package com.akopyan757.linkit.view.fragment
 
 import android.os.Bundle
-import android.util.Log
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.ItemTouchHelper
-import androidx.recyclerview.widget.RecyclerView
 import com.akopyan757.base.view.BaseFragment
 import com.akopyan757.base.viewmodel.list.LinearLayoutManagerWrapper
 import com.akopyan757.linkit.BR
@@ -60,26 +58,30 @@ class PageFragment: BaseFragment<FragmentPageBinding, PageViewModel>(), LinkAdap
         mTouchHelper.attachToRecyclerView(fragmentWebLinkList)
     }
 
-    override fun onSetupViewModel(viewModel: PageViewModel) = with(viewModel) {
+    override fun onSetupViewModel(viewModel: PageViewModel): Unit = with(viewModel) {
+        bindUrlList()
         getUrlLiveList().observeList(mUrlAdapter)
-        getLiveEditMode().observe(viewLifecycleOwner, { editMode ->
-            Log.i(TAG, "editMode = $editMode")
-            mUrlAdapter.setEditMode(editMode)
-        })
+        getDeleteUrlsResponseLive().apply {
+            successResponse {}
+        }
     }
 
-    override fun onShareListener(link: LinkObservable, editMode: Boolean) {
-        if (!editMode) {
+    override fun onShareListener(link: LinkObservable) {
+        if (!mViewModel.getEditModeState()) {
             startActivity(AndroidUtils.createShareIntent(link.url, link.title))
         }
     }
 
-    override fun onItemListener(link: LinkObservable, editMode: Boolean) {
-        if (editMode) {
+    override fun onItemListener(link: LinkObservable) {
+        if (mViewModel.getEditModeState()) {
             mViewModel.selectItem(link)
         } else {
             startActivity(AndroidUtils.createIntent(link.url))
         }
+    }
+
+    override fun onItemLongClickListener(link: LinkObservable) {
+        mViewModel.selectItem(link)
     }
 
     override fun onItemMove(fromPosition: Int, toPosition: Int): Boolean {
@@ -88,12 +90,7 @@ class PageFragment: BaseFragment<FragmentPageBinding, PageViewModel>(), LinkAdap
         return result
     }
 
-    override fun onStartDrag(viewHolder: RecyclerView.ViewHolder) {
-        mTouchHelper.startDrag(viewHolder)
-    }
-
     companion object {
-        private const val TAG = "PAGE_FRAGMENT"
         private const val TAG_FOLDER = "FOLDER"
 
         fun newInstance(observable: FolderObservable) = PageFragment().also { fragment ->

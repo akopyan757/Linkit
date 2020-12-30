@@ -26,6 +26,15 @@ import java.io.IOException
 object DatabindingAdapter {
 
     @JvmStatic
+    @BindingAdapter("android:onLongClick")
+    fun View.setOnLongClickListener(onLongClick: () -> Unit) {
+        setOnLongClickListener {
+            onLongClick.invoke()
+            return@setOnLongClickListener true
+        }
+    }
+
+    @JvmStatic
     @BindingAdapter("app:visibility")
     fun View.setVisibility(visible: Boolean) {
         visibility = if (visible) View.VISIBLE else View.GONE

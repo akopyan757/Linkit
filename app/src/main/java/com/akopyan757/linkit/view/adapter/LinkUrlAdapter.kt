@@ -2,9 +2,7 @@ package com.akopyan757.linkit.view.adapter
 
 import android.annotation.SuppressLint
 import android.view.LayoutInflater
-import android.view.MotionEvent
 import android.view.ViewGroup
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
@@ -22,13 +20,6 @@ class LinkUrlAdapter(
         private val listener: LinkAdapterListener
 ): UpdatableListAdapter<LinkObservable>(), ItemTouchHelperAdapter {
 
-    private var editMode: Boolean = false
-
-    fun setEditMode(mode: Boolean) {
-        editMode = mode
-        notifyDataSetChanged()
-    }
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         val layoutId = R.layout.item_link
@@ -37,7 +28,7 @@ class LinkUrlAdapter(
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        (holder as LinkViewHolder).bind(items[position], editMode)
+        (holder as LinkViewHolder).bind(items[position])
     }
 
     override fun onItemMove(fromPosition: Int, toPosition: Int): Boolean {
@@ -60,36 +51,19 @@ class LinkUrlAdapter(
     ): RecyclerView.ViewHolder(binding.root) {
 
         @SuppressLint("ClickableViewAccessibility")
-        fun bind(observable: LinkObservable, editMode: Boolean) {
+        fun bind(observable: LinkObservable) {
             val context = binding.root.context
+
             observable.uri = AndroidUtils.getUriFromCache(context, observable.photoFileName)
+
             binding.observable = observable
-            binding.editMode = editMode
             binding.listener = listener
 
             val colorRes = if (observable.selected) R.color.greyLight else R.color.white
             val color = ContextCompat.getColor(context, colorRes)
 
             binding.mcvLinkContent.setCardBackgroundColor(color)
-            binding.ivLinkDrag.setOnTouchListener { _, motionEvent ->
-                if (motionEvent.action == MotionEvent.ACTION_DOWN) {
-                    listener.onStartDrag(this)
-                }
-                false
-            }
             binding.executePendingBindings()
-
-            val imageSizeRes = if (editMode) R.dimen.linkPictureMinWidth else R.dimen.linkPictureWidth
-            val imageSize = context.resources.getDimensionPixelOffset(imageSizeRes)
-
-            binding.ivLinkPhoto.apply {
-                val params = layoutParams as ConstraintLayout.LayoutParams
-                params.matchConstraintMinHeight = imageSize
-                params.matchConstraintMaxHeight = imageSize
-                params.matchConstraintMinWidth = imageSize
-                params.matchConstraintMaxWidth = imageSize
-                layoutParams = params
-            }
         }
     }
 }

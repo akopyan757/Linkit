@@ -10,8 +10,6 @@ import com.akopyan757.linkit.BR
 import com.akopyan757.linkit.R
 import com.akopyan757.linkit.common.Config
 import com.akopyan757.linkit.common.Config.KEY_EDIT_DELETE
-import com.akopyan757.linkit.common.Config.KEY_EDIT_MODE
-import com.akopyan757.linkit.common.Config.KEY_EDIT_SAVE
 import com.akopyan757.linkit.common.Config.KEY_SELECTED_COUNT
 import com.akopyan757.linkit.common.utils.SumLiveData
 import com.akopyan757.linkit.model.repository.LinkRepository
@@ -26,31 +24,32 @@ class LinkViewModel : BaseViewModel(), KoinComponent {
     private val stateHandle: SavedStateHandle by inject(named(Config.HANDLE_URL))
 
     @get:Bindable
-    var editMode: Boolean by SavedStateBindable(stateHandle, KEY_EDIT_MODE, false, BR.editMode)
+    var editMode: Boolean by SavedStateBindable(
+        stateHandle, Config.KEY_EDIT_MODE_STATE, false, BR.editMode
+    )
 
-    @get:Bindable
-    var savedState: Boolean by SavedStateBindable(stateHandle, KEY_EDIT_SAVE, false, BR.savedState)
+    @get:Bindable var isFoldersEmpty: Boolean by DelegatedBindable(false, BR.foldersEmpty)
 
-    @get:Bindable
-    var isFoldersEmpty: Boolean by DelegatedBindable(false, BR.foldersEmpty)
+    @get:Bindable var profileIconUrl: String? by DelegatedBindable(null, BR.profileIconUrl)
 
-    @get:Bindable
-    var profileIconUrl: String? by DelegatedBindable(null, BR.profileIconUrl)
-
-    @get:Bindable
-    var profileIconDefaultRes: Int = R.drawable.ic_user
+    @get:Bindable var profileIconDefaultRes: Int = R.drawable.ic_user
 
     private var deleteAction: Boolean by SavedStateBindable(stateHandle, KEY_EDIT_DELETE, false)
 
     private val selectedCount = SumLiveData()
 
-    private val deleteUrlsVisible = selectedCount.map { count -> count > 0 }
+    private val deleteUrlsVisible = selectedCount.map { count ->
+        editMode = count > 0
+        count > 0
+    }
 
     /** List LiveData's */
     private val foldersLiveData = ListLiveData<FolderObservable>()
 
     /** Repository */
     private val linkRepository: LinkRepository by mainInject()
+
+    /** Init */
 
     /** Responses */
     fun bindAllFolders() {
@@ -78,17 +77,7 @@ class LinkViewModel : BaseViewModel(), KoinComponent {
     /**
      * Public methods
      */
-    fun enableEditMode() {
-        editMode = true
-    }
-
     fun disableEditMode() {
-        savedState = false
-        editMode = false
-    }
-
-    fun saveEdit() {
-        savedState = true
         editMode = false
     }
 

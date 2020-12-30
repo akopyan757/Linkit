@@ -5,9 +5,6 @@
 
     <data>
         <variable
-            name="editMode"
-            type="Boolean"/>
-        <variable
             name="observable"
             type="com.akopyan757.linkit.viewmodel.observable.LinkObservable" />
         <variable
@@ -15,110 +12,90 @@
             type="com.akopyan757.linkit.viewmodel.listener.LinkAdapterListener" />
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/clCardContent"
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/mcvLinkContent"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/marginSecondary"
+        android:onClick="@{() -> listener.onItemListener(observable)}"
+        android:onLongClick="@{() -> listener.onItemLongClickListener(observable)}"
+        app:cardCornerRadius="@dimen/cornerRadius"
+        app:cardElevation="@dimen/elevationTertiary"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHeight_min="68dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/mcvLinkContent"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/marginSecondary"
-            android:layout_marginEnd="@dimen/marginSecondary"
-            android:onClick="@{(view) -> listener.onItemListener(observable, editMode)}"
-            app:cardCornerRadius="@dimen/cornerRadius"
-            app:cardElevation="@dimen/elevationTertiary"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/ivLinkDrag"
-            app:layout_constraintHeight_min="68dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/clLinkContent"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:minHeight="@dimen/itemLinkMinHeight">
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/clLinkContent"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:minHeight="@dimen/itemLinkMinHeight">
+            <ImageView
+                android:id="@+id/ivLinkPhoto"
+                android:layout_width="@dimen/linkPictureWidth"
+                android:layout_height="@dimen/linkPictureHeight"
+                android:layout_marginStart="@dimen/marginSecondary"
+                android:layout_marginTop="@dimen/marginSecondary"
+                android:layout_marginBottom="@dimen/marginSecondary"
+                android:background="@drawable/background_image_view_corners"
+                android:contentDescription="@string/todo"
+                app:elevation="2dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:uri="@{observable.uri}"
+                tools:src="@drawable/image_analysis" />
 
-                <ImageView
-                    android:id="@+id/ivLinkPhoto"
-                    android:layout_width="@dimen/linkPictureWidth"
-                    android:layout_height="@dimen/linkPictureHeight"
-                    android:layout_marginStart="@dimen/marginSecondary"
-                    android:layout_marginTop="@dimen/marginSecondary"
-                    android:layout_marginBottom="@dimen/marginSecondary"
-                    android:background="@drawable/background_image_view_corners"
-                    android:contentDescription="@string/todo"
-                    app:elevation="2dp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:uri="@{observable.uri}"
-                    tools:src="@drawable/image_analysis" />
+            <TextView
+                android:id="@+id/tvLinkTitle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/marginSecondary"
+                android:layout_marginTop="12dp"
+                android:ellipsize="end"
+                android:ems="3"
+                android:maxLines="3"
+                android:text="@{observable.title}"
+                android:textAppearance="@style/Theme.Linkit.TextAppearanceRegular.Body1"
+                app:layout_constraintEnd_toStartOf="@+id/ivLinkShare"
+                app:layout_constraintStart_toEndOf="@+id/ivLinkPhoto"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="Title" />
 
-                <TextView
-                    android:id="@+id/tvLinkTitle"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/marginSecondary"
-                    android:layout_marginTop="12dp"
-                    android:text="@{observable.title}"
-                    android:maxLines="3"
-                    android:ems="3"
-                    android:ellipsize="end"
-                    android:textAppearance="@style/Theme.Linkit.TextAppearanceRegular.Body1"
-                    app:layout_constraintEnd_toStartOf="@+id/ivLinkShare"
-                    app:layout_constraintStart_toEndOf="@+id/ivLinkPhoto"
-                    app:layout_constraintTop_toTopOf="parent"
-                    tools:text="Title" />
+            <TextView
+                android:id="@+id/tvLinkUrl"
+                style="@style/Theme.Linkit.ItemUrl"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/marginSecondary"
+                android:layout_marginBottom="@dimen/marginSecondary"
+                android:text="@{observable.url}"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/tvLinkTitle"
+                app:layout_constraintTop_toBottomOf="@+id/tvLinkTitle"
+                tools:layout_marginTop="@dimen/marginSecondary"
+                tools:text="https://google.com" />
 
-                <TextView
-                    android:id="@+id/tvLinkUrl"
-                    style="@style/Theme.Linkit.ItemUrl"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/marginSecondary"
-                    android:layout_marginBottom="@dimen/marginSecondary"
-                    android:text="@{observable.url}"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="@+id/tvLinkTitle"
-                    app:layout_constraintTop_toBottomOf="@+id/tvLinkTitle"
-                    tools:layout_marginTop="@dimen/marginSecondary"
-                    tools:text="https://google.com" />
+            <ImageView
+                android:id="@+id/ivLinkShare"
+                style="@style/Theme.Linkit.ClickableImageView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:clickable="true"
+                android:contentDescription="@string/todo"
+                android:focusable="true"
+                android:onClick="@{() -> listener.onShareListener(observable)}"
+                android:padding="@dimen/marginSecondary"
+                android:src="@drawable/ic_url_share"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-                <ImageView
-                    android:id="@+id/ivLinkShare"
-                    style="@style/Theme.Linkit.ClickableImageView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="?attr/selectableItemBackgroundBorderless"
-                    android:clickable="true"
-                    android:contentDescription="@string/todo"
-                    android:focusable="true"
-                    android:onClick="@{(view) -> listener.onShareListener(observable, editMode)}"
-                    android:padding="@dimen/marginSecondary"
-                    android:src="@drawable/ic_url_share"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-        </com.google.android.material.card.MaterialCardView>
-
-        <ImageView
-            android:id="@+id/ivLinkDrag"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/marginSecondary"
-            android:contentDescription="@string/todo"
-            app:visibility="@{editMode}"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_swap_vertical_24" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </com.google.android.material.card.MaterialCardView>
 
 </layout>

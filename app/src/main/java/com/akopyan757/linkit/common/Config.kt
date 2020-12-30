@@ -10,14 +10,11 @@ object Config {
     const val PROVIDER_NAME = ".file_provider"
     const val CACHE_IMAGES_FOLDER = "images"
 
-    const val TAG_SELECT_FOLDER = "TAG_SELECT_FOLDER"
-
     const val HANDLE_URL = "HANDLE_URL"
 
-    const val KEY_EDIT_MODE = "KEY_EDIT_MODE"
-    const val KEY_EDIT_SAVE = "KEY_EDIT_SAVE"
     const val KEY_EDIT_DELETE = "KEY_EDIT_DELETE"
     const val KEY_SELECTED_COUNT = "KEY_SELECTED_%s"
+    const val KEY_EDIT_MODE_STATE = "KEY_EDIT_MODE_STATE"
 
     const val KEY_ACCEPT_DELETE = "KEY_ACCEPT_DELETE"
 

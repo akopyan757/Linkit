@@ -174,9 +174,9 @@ abstract class BaseViewModel: ViewModel(), BaseStateObservable {
             return savedStateHandle.get(key) ?: default
         }
 
-        operator fun setValue(thisRef: Any?, p: KProperty<*>, v: T) {
-            Log.i(TAG, "SAVED STATE HANDLE: SET = $v")
-            savedStateHandle.set(key, v)
+        operator fun setValue(thisRef: Any?, p: KProperty<*>, value: T) {
+            Log.i(TAG, "SAVED STATE HANDLE: KEY = $key; VALUE = $value")
+            savedStateHandle.set(key, value)
             brTarget?.also { notifyPropertyChanged(it) }
         }
     }

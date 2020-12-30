@@ -2,9 +2,6 @@ package com.akopyan757.linkit.view.fragment
 
 import android.os.Bundle
 import android.util.Log
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
 import android.view.ViewTreeObserver
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
@@ -22,7 +19,6 @@ import com.akopyan757.linkit.view.scope.mainInject
 import com.akopyan757.linkit.viewmodel.LinkViewModel
 import com.google.android.material.tabs.TabLayoutMediator
 import com.google.firebase.auth.FirebaseAuth
-import kotlinx.android.synthetic.main.fragment_main.*
 import org.koin.android.viewmodel.ext.android.viewModel
 import org.koin.core.KoinComponent
 
@@ -51,15 +47,15 @@ class MainFragment : BaseFragment<FragmentMainBinding, LinkViewModel>(), ViewTre
 
         toolbarEdit.apply {
             title = resources.getString(R.string.edit, Config.EMPTY)
+
             menu.setGroupVisible(R.id.groupEditSave, false)
+
             setNavigationIcon(R.drawable.ic_baseline_close_24)
-            setNavigationOnClickListener {
-                mViewModel.disableEditMode()
-            }
+            setNavigationOnClickListener { mViewModel.disableEditMode() }
+
             inflateMenu(R.menu.menu_edit)
             setOnMenuItemClickListener { item ->
                 when (item.itemId) {
-                    R.id.itemEditSave -> mViewModel.saveEdit()
                     R.id.itemEditDelete -> mViewModel.deleteSelected()
                 }; true
             }
@@ -121,31 +117,11 @@ class MainFragment : BaseFragment<FragmentMainBinding, LinkViewModel>(), ViewTre
             }
         })
         getDeleteIconVisible().observe(viewLifecycleOwner, { deleteVisible ->
-            toolbarEdit.menu.setGroupVisible(R.id.groupEditSave, deleteVisible)
+            mBinding.toolbarEdit.menu.setGroupVisible(R.id.groupEditSave, deleteVisible)
         })
         getSelectedCount().observe(viewLifecycleOwner, { count ->
             val countName = count.takeIf { it > 0 }?.let { " ($it)" } ?: Config.EMPTY
-            toolbarEdit.title = resources.getString(R.string.edit, countName)
+            mBinding.toolbarEdit.title = resources.getString(R.string.edit, countName)
         })
     }
-
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        super.onCreateOptionsMenu(menu, inflater)
-        inflater.inflate(R.menu.menu_main, menu)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-
-            R.id.itemEditFolder -> {
-                mViewModel.enableEditMode()
-                mBinding.toolbarEdit.menu.setGroupVisible(R.id.groupEditSave, false)
-                true
-            }
-
-            else -> false
-        }
-    }
-
-
 }

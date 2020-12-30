@@ -10,10 +10,4 @@
             app:showAsAction="ifRoom"/>
     </group>
 
-    <item
-        android:id="@+id/itemEditSave"
-        android:title="@string/save"
-        android:icon="@drawable/ic_baseline_check_24"
-        app:showAsAction="ifRoom"/>
-
 </menu>
