@@ -2,7 +2,6 @@ package com.akopyan757.linkit.view.fragment
 
 import android.os.Bundle
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.ItemTouchHelper
 import com.akopyan757.base.view.BaseFragment
 import com.akopyan757.base.viewmodel.list.LinearLayoutManagerWrapper
 import com.akopyan757.linkit.BR
@@ -10,24 +9,19 @@ import com.akopyan757.linkit.R
 import com.akopyan757.linkit.common.utils.AndroidUtils
 import com.akopyan757.linkit.databinding.FragmentPageBinding
 import com.akopyan757.linkit.view.adapter.LinkUrlAdapter
-import com.akopyan757.linkit.view.callback.ItemTouchHelperAdapter
-import com.akopyan757.linkit.view.callback.ItemTouchHelperCallback
 import com.akopyan757.linkit.viewmodel.PageViewModel
 import com.akopyan757.linkit.viewmodel.listener.LinkAdapterListener
+import com.akopyan757.linkit.viewmodel.observable.AdObservable
 import com.akopyan757.linkit.viewmodel.observable.FolderObservable
 import com.akopyan757.linkit.viewmodel.observable.LinkObservable
 import org.koin.android.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
-class PageFragment: BaseFragment<FragmentPageBinding, PageViewModel>(), LinkAdapterListener, ItemTouchHelperAdapter {
+class PageFragment: BaseFragment<FragmentPageBinding, PageViewModel>(), LinkAdapterListener {
 
     override val mViewModel: PageViewModel by viewModel { parametersOf(mObservable.id) }
 
     private lateinit var mObservable: FolderObservable
-
-    private val mTouchHelper: ItemTouchHelper by lazy {
-        ItemTouchHelper(ItemTouchHelperCallback(this))
-    }
 
     override fun getVariableId() = BR.viewModel
 
@@ -43,7 +37,7 @@ class PageFragment: BaseFragment<FragmentPageBinding, PageViewModel>(), LinkAdap
         LinkUrlAdapter(this)
     }
 
-    override fun onSetupView(binding: FragmentPageBinding, bundle: Bundle?) = with(binding) {
+    override fun onSetupView(binding: FragmentPageBinding, bundle: Bundle?): Unit = with(binding) {
 
         val urlLayoutManager = when (mObservable.type) {
             1 -> LinearLayoutManagerWrapper(requireContext())
@@ -54,8 +48,6 @@ class PageFragment: BaseFragment<FragmentPageBinding, PageViewModel>(), LinkAdap
             adapter = mUrlAdapter
             layoutManager = urlLayoutManager
         }
-
-        mTouchHelper.attachToRecyclerView(fragmentWebLinkList)
     }
 
     override fun onSetupViewModel(viewModel: PageViewModel): Unit = with(viewModel) {
@@ -85,10 +77,8 @@ class PageFragment: BaseFragment<FragmentPageBinding, PageViewModel>(), LinkAdap
         mViewModel.onItemSelected(link)
     }
 
-    override fun onItemMove(fromPosition: Int, toPosition: Int): Boolean {
-        val result = mUrlAdapter.onItemMove(fromPosition, toPosition)
-        mViewModel.setEditObservables(mUrlAdapter.items)
-        return result
+    override fun onAdClosed(adObservable: AdObservable) {
+        mViewModel.onAdClosed(adObservable)
     }
 
     companion object {

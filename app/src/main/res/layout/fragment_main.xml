@@ -65,7 +65,6 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:layout_anchor="@+id/constraintLayout"
-            app:layout_anchorGravity="bottom|center"
             app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
             <com.google.android.material.tabs.TabLayout
@@ -132,6 +131,13 @@
                 app:visibility="@{viewModel.foldersEmpty}" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <include
+            android:id="@+id/bannerBottomAd"
+            layout="@layout/layout_banner_ads"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom" />
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 

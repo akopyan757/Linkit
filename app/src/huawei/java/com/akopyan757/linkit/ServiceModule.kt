@@ -6,6 +6,6 @@ import org.koin.dsl.module
 object ServiceModule {
 
     val module = module {
-        single<IAuthorizationService> { HMSAuthorizationService() }
+        single<IAuthorizationService> { HmsAuthorizationService() }
     }
 }

@@ -10,6 +10,7 @@ import androidx.navigation.fragment.findNavController
 import com.akopyan757.base.view.BaseFragment
 import com.akopyan757.base.viewmodel.list.ListChangeStrategy
 import com.akopyan757.linkit.BR
+import com.akopyan757.linkit.BannerViewExtension
 import com.akopyan757.linkit.R
 import com.akopyan757.linkit.common.Config
 import com.akopyan757.linkit.common.clipboard.ClipboardUtils
@@ -85,6 +86,8 @@ class MainFragment : BaseFragment<FragmentMainBinding, LinkViewModel>(), ViewTre
         }.attach()
 
         tabLayoutFolder.offsetLeftAndRight(0)
+
+        BannerViewExtension.loadAd(bannerBottomAd)
     }
 
     override fun onStart() {

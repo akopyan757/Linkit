@@ -8,7 +8,7 @@ import org.koin.core.KoinComponent
 import org.koin.core.inject
 
 
-class HMSAuthorizationService: IAuthorizationService, KoinComponent {
+class HmsAuthorizationService: IAuthorizationService, KoinComponent {
 
     private val authWrapper: AuthWrapper by inject()
 

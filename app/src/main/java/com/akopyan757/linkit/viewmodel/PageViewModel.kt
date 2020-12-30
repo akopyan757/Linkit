@@ -4,11 +4,13 @@ import androidx.databinding.Bindable
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.switchMap
 import com.akopyan757.base.viewmodel.BaseViewModel
+import com.akopyan757.base.viewmodel.DiffItemObservable
 import com.akopyan757.base.viewmodel.list.ListLiveData
 import com.akopyan757.linkit.BR
 import com.akopyan757.linkit.common.Config
 import com.akopyan757.linkit.model.repository.LinkRepository
 import com.akopyan757.linkit.view.scope.mainInject
+import com.akopyan757.linkit.viewmodel.observable.AdObservable
 import com.akopyan757.linkit.viewmodel.observable.LinkObservable
 import org.koin.core.KoinComponent
 import org.koin.core.inject
@@ -36,7 +38,7 @@ class PageViewModel(private val folderId: Int): BaseViewModel(), KoinComponent {
     )
 
     /** List LiveData's */
-    private val urlListData = ListLiveData<LinkObservable>()
+    private val urlListData = ListLiveData<DiffItemObservable>()
 
     /** Repository */
     private val linkRepository: LinkRepository by mainInject()
@@ -45,6 +47,7 @@ class PageViewModel(private val folderId: Int): BaseViewModel(), KoinComponent {
     fun getDeleteUrlsResponseLive() = liveDelete.switchMap { delete ->
         val ids = if (delete) {
             urlListData.getList()
+                    .mapNotNull { it as? LinkObservable }
                     .filter { it.selected }
                     .map { it.id }
         } else emptyList()
@@ -52,7 +55,7 @@ class PageViewModel(private val folderId: Int): BaseViewModel(), KoinComponent {
         requestConvertSimple<Unit>(
             method = { linkRepository.deleteUrls(ids) },
             onSuccess = {
-                val list = urlListData.getList()
+                val list = urlListData.getList().mapNotNull { it as? LinkObservable }
                 val observables = list.filterNot { item -> ids.contains(item.id) }
                 urlListData.change(observables) { selectedCount = 0 }
             }
@@ -66,15 +69,14 @@ class PageViewModel(private val folderId: Int): BaseViewModel(), KoinComponent {
 
     fun getEditModeState() = stateEditMode
 
-    fun setEditObservables(observable: List<LinkObservable>) {
-        urlListData.change(observable)
-    }
-
     fun bindUrlList() {
         bindLiveList(
             request = linkRepository.getUrlLinksByFolder(folderId),
             listLiveData = urlListData,
-            onMap = { data -> data.map(LinkObservable::from) },
+            onMap = { data ->
+                val linkObservables = data.map(LinkObservable::from)
+                addAdsObservables(linkObservables)
+            },
             onFinished = { observables -> isEmptyPage = observables.isEmpty() }
         )
     }
@@ -82,11 +84,32 @@ class PageViewModel(private val folderId: Int): BaseViewModel(), KoinComponent {
     fun onItemSelected(observable: LinkObservable) {
         observable.selected = !observable.selected
         urlListData.changeItem(observable) {
-            selectedCount = urlListData.getList().count { it.selected }
+            selectedCount = urlListData.getList()
+                .mapNotNull { it as? LinkObservable }
+                .count { it.selected }
         }
     }
 
     fun onUrlOpened(observable: LinkObservable) {
         linkRepository.moveLinkToTop(observable.id)
+    }
+
+    fun onAdClosed(adObservable: AdObservable) {
+        urlListData.deleteItem(adObservable)
+    }
+
+    /** Private Methods */
+    private fun addAdsObservables(list: List<LinkObservable>): List<DiffItemObservable> {
+        val linksSize = list.size
+        val mutableList = list.toMutableList<DiffItemObservable>()
+        (0 until linksSize / (AD_FREQUENCY - 1)).forEach { adIndex ->
+            val adObservable = AdObservable(adIndex + 1)
+            mutableList.add(adIndex * AD_FREQUENCY + AD_FREQUENCY - 1, adObservable)
+        }
+        return mutableList
+    }
+
+    companion object {
+        private const val AD_FREQUENCY = 7
     }
 }

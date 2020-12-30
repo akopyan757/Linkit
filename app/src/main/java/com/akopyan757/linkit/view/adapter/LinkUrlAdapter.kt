@@ -1,48 +1,49 @@
 package com.akopyan757.linkit.view.adapter
 
-import android.annotation.SuppressLint
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.akopyan757.base.viewmodel.DiffItemObservable
 import com.akopyan757.base.viewmodel.list.UpdatableListAdapter
+import com.akopyan757.linkit.BannerViewExtension
 import com.akopyan757.linkit.R
 import com.akopyan757.linkit.common.utils.AndroidUtils
 import com.akopyan757.linkit.databinding.ItemLinkBinding
-import com.akopyan757.linkit.view.callback.ItemTouchHelperAdapter
 import com.akopyan757.linkit.viewmodel.listener.LinkAdapterListener
+import com.akopyan757.linkit.viewmodel.observable.AdObservable
 import com.akopyan757.linkit.viewmodel.observable.LinkObservable
-import java.util.*
 
 
 class LinkUrlAdapter(
         private val listener: LinkAdapterListener
-): UpdatableListAdapter<LinkObservable>(), ItemTouchHelperAdapter {
+): UpdatableListAdapter<DiffItemObservable>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
-        val layoutId = R.layout.item_link
-        val binding = DataBindingUtil.inflate<ItemLinkBinding>(inflater, layoutId, parent, false)
-        return LinkViewHolder(binding, listener)
+        return if (viewType == R.layout.item_link) {
+            val binding = DataBindingUtil.inflate<ItemLinkBinding>(inflater, viewType, parent, false)
+            LinkViewHolder(binding, listener)
+        } else {
+            AdViewHolder(inflater.inflate(viewType, parent, false), listener)
+        }
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        (holder as LinkViewHolder).bind(items[position])
+        when (holder) {
+            is LinkViewHolder -> holder.bind(items[position] as LinkObservable)
+            is AdViewHolder -> holder.bind(items[position] as AdObservable)
+        }
     }
 
-    override fun onItemMove(fromPosition: Int, toPosition: Int): Boolean {
-        if (fromPosition < toPosition) {
-            (fromPosition until toPosition).forEach { index ->
-                Collections.swap(items, index, index + 1)
-            }
+    override fun getItemViewType(position: Int): Int {
+        return if (items[position] is LinkObservable) {
+            R.layout.item_link
         } else {
-            (fromPosition downTo toPosition + 1).forEach { index ->
-                Collections.swap(items, index, index - 1)
-            }
+            R.layout.layout_item_banner_ads
         }
-        notifyItemMoved(fromPosition, toPosition)
-        return true
     }
 
     class LinkViewHolder(
@@ -50,7 +51,6 @@ class LinkUrlAdapter(
             private val listener: LinkAdapterListener
     ): RecyclerView.ViewHolder(binding.root) {
 
-        @SuppressLint("ClickableViewAccessibility")
         fun bind(observable: LinkObservable) {
             val context = binding.root.context
 
@@ -64,6 +64,19 @@ class LinkUrlAdapter(
 
             binding.mcvLinkContent.setCardBackgroundColor(color)
             binding.executePendingBindings()
+        }
+    }
+
+    class AdViewHolder(
+        private val view: View,
+        private val listener: LinkAdapterListener
+    ): RecyclerView.ViewHolder(view) {
+
+        fun bind(observable: AdObservable) {
+            val viewId = BannerViewExtension.getItemBannerViewId()
+            BannerViewExtension.loadAd(view.findViewById(viewId), onClosed = {
+                listener.onAdClosed(observable)
+            })
         }
     }
 }

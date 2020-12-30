@@ -28,3 +28,6 @@
 -keepclassmembers class com.akopyan757.linkit.model.entity.* {
   *;
 }
+
+-keep class com.huawei.openalliance.ad.** { *; }
+-keep class com.huawei.hms.ads.** { *; }

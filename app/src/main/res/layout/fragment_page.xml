@@ -19,6 +19,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:overScrollMode="never"
+            android:paddingBottom="@dimen/bannerAdBottomHeight"
+            android:clipToPadding="false"
             tools:itemCount="3"
             tools:listitem="@layout/item_link" />
 
@@ -26,10 +28,11 @@
             android:id="@+id/fragmentEmptyPage"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
             android:text="@string/messageEmptyPage"
             android:textAppearance="@style/Theme.Linkit.Text.Body1"
-            android:layout_gravity="center"
-            app:visibility="@{viewModel.emptyPage}" />
+            app:visibility="@{viewModel.emptyPage}"
+            tools:visibility="invisible" />
 
     </FrameLayout>
 
