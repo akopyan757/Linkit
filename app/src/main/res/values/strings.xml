@@ -62,5 +62,10 @@
     <string name="password_set">Password set</string>
     <string name="password_updated">Password updated</string>
     <string name="error">Error</string>
+    <string name="ok">OK</string>
+
+    <string name="errorMessageAuthUserCollision">
+        A user with such account is already registered.\n\nTo setup password you need to log in with your \'%s\' and go to profile settings.
+    </string>
 
 </resources>

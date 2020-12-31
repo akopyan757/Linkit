@@ -2,4 +2,5 @@
 <resources>
     <string name="buttonText">Log in with Huawei ID</string>
     <string name="buttonLinkText">Link with Huawei ID</string>
+    <string name="signInMethod">Huawei ID</string>
 </resources>

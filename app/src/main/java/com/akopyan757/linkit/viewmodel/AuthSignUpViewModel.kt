@@ -5,7 +5,9 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.switchMap
 import com.akopyan757.base.viewmodel.BaseViewModel
 import com.akopyan757.linkit.BR
+import com.akopyan757.linkit.common.Config
 import com.akopyan757.linkit.model.repository.AuthRepository
+import com.google.firebase.auth.FirebaseAuthUserCollisionException
 import com.google.firebase.auth.FirebaseUser
 import org.koin.core.KoinComponent
 import org.koin.core.inject
@@ -59,14 +61,18 @@ class AuthSignUpViewModel: BaseViewModel(), KoinComponent {
     fun getSignUpResponseLive() = requestSetPassword.switchMap { password ->
         requestConvert<FirebaseUser, String> (
             method = { authRepository.createUser(email, password) },
-            onLoading = { isProgress = true },
-            onSuccess = { firebaseUser ->
+            onLoading = {
+                error = Config.EMPTY
+                isProgress = true
+            }, onSuccess = { firebaseUser ->
                 isProgress = false
                 firebaseUser.uid
             },
             onError = { exception ->
                 isProgress = false
-                error = exception.localizedMessage ?: "Error"
+                if (exception !is FirebaseAuthUserCollisionException) {
+                    error = exception.localizedMessage ?: "Error"
+                }
             }
         )
     }

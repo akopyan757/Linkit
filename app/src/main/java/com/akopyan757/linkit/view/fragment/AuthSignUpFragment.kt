@@ -1,5 +1,6 @@
 package com.akopyan757.linkit.view.fragment
 
+import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
@@ -11,6 +12,7 @@ import com.akopyan757.linkit.common.Config
 import com.akopyan757.linkit.databinding.FragmentAuthSignUpBinding
 import com.akopyan757.linkit.view.MainActivity
 import com.akopyan757.linkit.viewmodel.AuthSignUpViewModel
+import com.google.firebase.auth.FirebaseAuthUserCollisionException
 import org.koin.android.viewmodel.ext.android.viewModel
 import org.koin.core.KoinComponent
 
@@ -35,8 +37,23 @@ class AuthSignUpFragment: BaseFragment<FragmentAuthSignUpBinding, AuthSignUpView
                 startActivity(Intent(requireContext(), MainActivity::class.java))
                 requireActivity().finish()
             }
-            errorResponse {
-                Toast.makeText(requireContext(), "Error", Toast.LENGTH_LONG).show()
+            errorResponse { exception ->
+                when (exception) {
+                    is FirebaseAuthUserCollisionException -> {
+                        val method = getString(R.string.signInMethod)
+                        val message = getString(R.string.errorMessageAuthUserCollision, method)
+                        AlertDialog.Builder(context, R.style.Theme_Linkit_AlertDialog)
+                            .setTitle(R.string.error)
+                            .setMessage(message)
+                            .setPositiveButton(R.string.ok) { dialogInterface, _ ->
+                                dialogInterface?.dismiss()
+                            }
+                            .create()
+                            .show()
+                    }
+                }
+
+                Toast.makeText(requireContext(), R.string.error, Toast.LENGTH_LONG).show()
             }
         }
     }
