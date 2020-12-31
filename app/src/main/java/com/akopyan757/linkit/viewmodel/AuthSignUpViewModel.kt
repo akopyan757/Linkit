@@ -14,6 +14,9 @@ class AuthSignUpViewModel: BaseViewModel(), KoinComponent {
 
     /** Databinding properties */
     @get:Bindable
+    var isProgress: Boolean by DelegatedBindable(false, BR.progress)
+
+    @get:Bindable
     var email: String by DelegatedBindable("", BR.email, BR.buttonSignInEnable)
 
     @get:Bindable
@@ -56,8 +59,15 @@ class AuthSignUpViewModel: BaseViewModel(), KoinComponent {
     fun getSignUpResponseLive() = requestSetPassword.switchMap { password ->
         requestConvert<FirebaseUser, String> (
             method = { authRepository.createUser(email, password) },
-            onSuccess = { firebaseUser -> firebaseUser.uid },
-            onError = { exception -> error = exception.localizedMessage ?: "Error" }
+            onLoading = { isProgress = true },
+            onSuccess = { firebaseUser ->
+                isProgress = false
+                firebaseUser.uid
+            },
+            onError = { exception ->
+                isProgress = false
+                error = exception.localizedMessage ?: "Error"
+            }
         )
     }
 

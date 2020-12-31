@@ -6,14 +6,15 @@ import androidx.lifecycle.switchMap
 import com.akopyan757.base.viewmodel.BaseViewModel
 import com.akopyan757.linkit.BR
 import com.akopyan757.linkit.model.repository.AuthRepository
-import com.akopyan757.linkit.view.service.IAuthorizationService
-import com.google.firebase.auth.FirebaseUser
 import org.koin.core.KoinComponent
 import org.koin.core.inject
 
 class AuthForgotPasswordViewModel: BaseViewModel(), KoinComponent {
 
     /** Databinding properties */
+    @get:Bindable
+    var isProgress: Boolean by DelegatedBindable(false, BR.progress)
+
     @get:Bindable
     var email: String by DelegatedBindable("", BR.email, BR.buttonSignInEnable)
 
@@ -43,8 +44,12 @@ class AuthForgotPasswordViewModel: BaseViewModel(), KoinComponent {
     fun getResetPasswordResponseLive() = requestResetPassword.switchMap { email ->
         requestConvert<Unit, String> (
             method = { authRepository.resetPassword(email) },
-            onSuccess = { email },
-            onError = { exception -> error = exception.localizedMessage ?: "Error" }
+            onLoading = { isProgress = true },
+            onSuccess = { isProgress = false; email },
+            onError = { exception ->
+                isProgress = false
+                error = exception.localizedMessage ?: "Error"
+            }
         )
     }
 }

@@ -5,21 +5,20 @@ import android.util.Log
 import androidx.databinding.Bindable
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.switchMap
-import androidx.lifecycle.viewModelScope
 import com.akopyan757.base.viewmodel.BaseViewModel
 import com.akopyan757.linkit.BR
 import com.akopyan757.linkit.model.repository.AuthRepository
 import com.akopyan757.linkit.view.service.IAuthorizationService
 import com.google.firebase.auth.FirebaseUser
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import org.koin.core.KoinComponent
 import org.koin.core.inject
-import java.lang.Exception
 
 class AuthSignInViewModel: BaseViewModel(), KoinComponent {
 
     /** Databinding properties */
+    @get:Bindable
+    var isProgress: Boolean by DelegatedBindable(false, BR.progress)
+
     @get:Bindable
     var email: String by DelegatedBindable("", BR.email, BR.buttonSignInEnable)
 
@@ -54,17 +53,26 @@ class AuthSignInViewModel: BaseViewModel(), KoinComponent {
     fun getSignInResponseLive() = requestSignInWithEmail.switchMap { (email, password) ->
         requestConvert<FirebaseUser, String> (
             method = { authRepository.signInWithEmail(email, password) },
-            onSuccess = { firebaseUser -> firebaseUser.uid },
-            onError = { exception -> error = exception.localizedMessage ?: "Error" }
+            onLoading = { isProgress = true },
+            onSuccess = { firebaseUser ->
+                isProgress = false
+                firebaseUser.uid
+            },
+            onError = { exception ->
+                isProgress = false
+                error = exception.localizedMessage ?: "Error"
+            }
         )
     }
 
     fun getSignInServiceResponseLive() = requestSignInResult.switchMap { data ->
         requestConvert<FirebaseUser, String>(
             method = { authRepository.signInWithData(data) },
-            onSuccess = { firebaseUser -> firebaseUser.uid },
-            onError = { exception ->
+            onLoading = { isProgress = true },
+            onSuccess = { firebaseUser -> isProgress = false; firebaseUser.uid
+            }, onError = { exception ->
                 Log.i("TAG", "EXCEPTION", exception)
+                isProgress = false
                 error = exception.localizedMessage ?: "Error"
             }
         )

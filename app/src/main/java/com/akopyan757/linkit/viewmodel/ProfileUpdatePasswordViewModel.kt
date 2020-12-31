@@ -15,6 +15,9 @@ class ProfileUpdatePasswordViewModel: BaseViewModel(), KoinComponent {
 
     /** Databinding properties */
     @get:Bindable
+    var isProgress: Boolean by DelegatedBindable(false, BR.progress)
+
+    @get:Bindable
     var oldPassword: String by DelegatedBindable("", BR.oldPassword, BR.buttonSignInEnable)
 
     @get:Bindable
@@ -59,10 +62,13 @@ class ProfileUpdatePasswordViewModel: BaseViewModel(), KoinComponent {
     fun getSetPasswordResponseLive() = requestUpdatePassword.switchMap { (oldPassword, newPassword) ->
         requestConvertSimple<Unit> (
             method = { authRepository.updatePassword(oldPassword, newPassword) },
+            onLoading = { isProgress = true },
             onSuccess = { firebaseUser ->
+                isProgress = false
                 Log.i(TAG, "updatePassword: success: $firebaseUser")
             }, onError = { exception ->
                 Log.w(TAG, "updatePassword: failure", exception)
+                isProgress = false
                 error = exception.localizedMessage ?: "Error"
             }
         )
