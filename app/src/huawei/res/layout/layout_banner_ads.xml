@@ -3,7 +3,8 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:hwads="http://schemas.android.com/apk/res-auto"
     android:layout_height="wrap_content"
-    android:layout_width="match_parent"
+    android:layout_width="@dimen/bottomAdLandHeight"
+    android:maxHeight="@dimen/bottomAdLandHeight"
     hwads:bannerSize="BANNER_SIZE_360_57"
     hwads:adId="testw6vs28auh3"
     android:id="@+id/viewBannerId" />

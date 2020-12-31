@@ -2,6 +2,7 @@ package com.akopyan757.linkit.view.fragment
 
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.view.ViewTreeObserver
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
@@ -87,7 +88,10 @@ class MainFragment : BaseFragment<FragmentMainBinding, LinkViewModel>(), ViewTre
 
         tabLayoutFolder.offsetLeftAndRight(0)
 
-        BannerViewExtension.loadAd(bannerBottomAd)
+
+        BannerViewExtension.loadAd(bannerBottomAd) {
+            bannerBottomAd.visibility = View.GONE
+        }
     }
 
     override fun onStart() {

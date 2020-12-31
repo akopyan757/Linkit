@@ -64,14 +64,13 @@
             android:id="@+id/constraintLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:layout_anchor="@+id/constraintLayout"
             app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
             <com.google.android.material.tabs.TabLayout
                 android:id="@+id/tabLayoutFolder"
                 style="@style/Theme.Linkit.TabLayout"
                 android:layout_width="wrap_content"
-                android:layout_height="40dp"
+                android:layout_height="@dimen/tlFoldersHeight"
                 android:layout_marginStart="@dimen/marginSecondary"
                 android:layout_marginTop="@dimen/marginSecondary"
                 android:background="@drawable/shadow_tab_layout"
@@ -87,7 +86,7 @@
                 android:id="@+id/viewPager"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
-                android:layout_marginTop="56dp"
+                android:layout_marginTop="@dimen/viewPagerUrlsMarginTop"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
@@ -115,7 +114,7 @@
             <TextView
                 android:id="@+id/tvFolderCreate"
                 android:layout_width="wrap_content"
-                android:layout_height="40dp"
+                android:layout_height="@dimen/tlFoldersHeight"
                 android:layout_marginStart="@dimen/marginSecondary"
                 android:layout_marginTop="@dimen/marginSecondary"
                 android:background="@drawable/shadow_tab_layout"
