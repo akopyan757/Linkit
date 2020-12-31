@@ -1,5 +1,6 @@
 package com.akopyan757.linkit.view.fragment
 
+import android.content.res.Configuration
 import android.os.Bundle
 import androidx.recyclerview.widget.GridLayoutManager
 import com.akopyan757.base.view.BaseFragment
@@ -39,9 +40,9 @@ class PageFragment: BaseFragment<FragmentPageBinding, PageViewModel>(), LinkAdap
 
     override fun onSetupView(binding: FragmentPageBinding, bundle: Bundle?): Unit = with(binding) {
 
-        val urlLayoutManager = when (mObservable.type) {
-            1 -> LinearLayoutManagerWrapper(requireContext())
-            else -> GridLayoutManager(requireContext(), 2)
+        val urlLayoutManager = when (resources.configuration.orientation) {
+            Configuration.ORIENTATION_LANDSCAPE -> GridLayoutManager(requireContext(), 2)
+            else -> LinearLayoutManagerWrapper(requireContext())
         }
 
         fragmentWebLinkList.apply {
