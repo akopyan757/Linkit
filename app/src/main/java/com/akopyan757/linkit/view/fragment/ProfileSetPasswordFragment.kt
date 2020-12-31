@@ -6,6 +6,7 @@ import androidx.navigation.fragment.findNavController
 import com.akopyan757.base.view.BaseFragment
 import com.akopyan757.linkit.BR
 import com.akopyan757.linkit.R
+import com.akopyan757.linkit.common.utils.AndroidUtils
 import com.akopyan757.linkit.databinding.FragmentAuthSetPasswordBinding
 import com.akopyan757.linkit.viewmodel.ProfileSetPasswordViewModel
 import org.koin.android.viewmodel.ext.android.viewModel
@@ -27,6 +28,9 @@ class ProfileSetPasswordFragment: BaseFragment<FragmentAuthSetPasswordBinding, P
     override fun onSetupViewModel(viewModel: ProfileSetPasswordViewModel): Unit = with(viewModel) {
         initRes(getString(R.string.error_passwords_match))
         getSetPasswordResponseLive().apply {
+            loadingResponse {
+                AndroidUtils.hideKeyboard(requireActivity())
+            }
             successResponse {
                 Toast.makeText(requireContext(), R.string.password_set, Toast.LENGTH_LONG).show()
                 findNavController().popBackStack()

@@ -5,6 +5,7 @@ import androidx.navigation.fragment.findNavController
 import com.akopyan757.base.view.BaseFragment
 import com.akopyan757.linkit.BR
 import com.akopyan757.linkit.R
+import com.akopyan757.linkit.common.utils.AndroidUtils
 import com.akopyan757.linkit.databinding.FragmentAuthResetPasswordBinding
 import com.akopyan757.linkit.viewmodel.AuthForgotPasswordViewModel
 import org.koin.android.viewmodel.ext.android.viewModel
@@ -19,6 +20,9 @@ class AuthForgotPasswordFragment: BaseFragment<FragmentAuthResetPasswordBinding,
 
     override fun onSetupViewModel(viewModel: AuthForgotPasswordViewModel): Unit = with(viewModel) {
         getResetPasswordResponseLive().apply {
+            loadingResponse {
+                AndroidUtils.hideKeyboard(requireActivity())
+            }
             successResponse { email ->
                 val message = getString(R.string.toast_reset_password, email)
                 Toast.makeText(requireContext(), message, Toast.LENGTH_LONG).show()

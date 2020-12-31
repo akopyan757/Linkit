@@ -9,6 +9,7 @@ import com.akopyan757.base.view.BaseFragment
 import com.akopyan757.linkit.BR
 import com.akopyan757.linkit.R
 import com.akopyan757.linkit.common.Config
+import com.akopyan757.linkit.common.utils.AndroidUtils
 import com.akopyan757.linkit.databinding.FragmentAuthSignUpBinding
 import com.akopyan757.linkit.view.MainActivity
 import com.akopyan757.linkit.viewmodel.AuthSignUpViewModel
@@ -32,6 +33,9 @@ class AuthSignUpFragment: BaseFragment<FragmentAuthSignUpBinding, AuthSignUpView
     override fun onSetupViewModel(viewModel: AuthSignUpViewModel): Unit = with(viewModel) {
         initRes(getString(R.string.error_passwords_match))
         getSignUpResponseLive().apply {
+            loadingResponse {
+                AndroidUtils.hideKeyboard(requireActivity())
+            }
             successResponse { uid ->
                 getKoin().setProperty(Config.KEY_USER_ID, uid)
                 startActivity(Intent(requireContext(), MainActivity::class.java))

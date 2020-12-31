@@ -9,6 +9,7 @@ import com.akopyan757.base.view.BaseFragment
 import com.akopyan757.linkit.BR
 import com.akopyan757.linkit.R
 import com.akopyan757.linkit.common.Config
+import com.akopyan757.linkit.common.utils.AndroidUtils
 import com.akopyan757.linkit.databinding.FragmentAuthSignInBinding
 import com.akopyan757.linkit.view.MainActivity
 import com.akopyan757.linkit.viewmodel.AuthSignInViewModel
@@ -41,6 +42,9 @@ class AuthSignInFragment: BaseFragment<FragmentAuthSignInBinding, AuthSignInView
 
     override fun onSetupViewModel(viewModel: AuthSignInViewModel): Unit = with(viewModel) {
         getSignInResponseLive().apply {
+            loadingResponse {
+                AndroidUtils.hideKeyboard(requireActivity())
+            }
             successResponse { uid ->
                 getKoin().setProperty(Config.KEY_USER_ID, uid)
                 startActivity(Intent(requireContext(), MainActivity::class.java))
@@ -51,6 +55,9 @@ class AuthSignInFragment: BaseFragment<FragmentAuthSignInBinding, AuthSignInView
             }
         }
         getSignInServiceResponseLive().apply {
+            loadingResponse {
+                AndroidUtils.hideKeyboard(requireActivity())
+            }
             successResponse { uid ->
                 getKoin().setProperty(Config.KEY_USER_ID, uid)
                 startActivity(Intent(requireContext(), MainActivity::class.java))

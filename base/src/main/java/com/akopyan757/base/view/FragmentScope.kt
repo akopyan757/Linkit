@@ -35,3 +35,17 @@ fun <T> LiveData<out BaseViewModel.ResponseState<T>>.successResponse(
         onAction.invoke(result)
     })
 }
+
+
+fun <T> LiveData<out BaseViewModel.ResponseState<T>>.loadingResponse(
+    viewLifecycleOwner: LifecycleOwner,
+    onAction: () -> Unit
+) {
+    val responseLiveData = MediatorLiveData<Unit>()
+    responseLiveData.addSource(this) { response ->
+        if (response is BaseViewModel.ResponseState.Loading) {
+            responseLiveData.value = Unit
+        }
+    }
+    responseLiveData.observe(viewLifecycleOwner, { onAction.invoke() })
+}

@@ -77,6 +77,10 @@ abstract class BaseDialogFragment<V: ViewDataBinding, T: BaseViewModel> : Dialog
         onAction: (T) -> Unit
     ) = successResponse(viewLifecycleOwner, onAction)
 
+    fun <T> LiveData<out BaseViewModel.ResponseState<T>>.loadingResponse(
+        onAction: () -> Unit
+    ) = loadingResponse(viewLifecycleOwner, onAction)
+
     fun <T : DiffItemObservable> LiveData<ListHolder<T>>.observeList(
         adapter: UpdatableListAdapter<T>,
         afterError: (() -> Unit)? = null
