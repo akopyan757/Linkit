@@ -24,5 +24,6 @@ object ViewModelModule {
         viewModel { ProfileViewModel() }
         viewModel { ProfileSetPasswordViewModel() }
         viewModel { ProfileUpdatePasswordViewModel() }
+        viewModel { PreviewUrlViewModel() }
     }
 }

@@ -3,6 +3,7 @@ package com.akopyan757.linkit.view.adapter
 import android.net.Uri
 import android.util.Log
 import android.view.View
+import android.webkit.WebView
 import android.widget.AdapterView
 import android.widget.AdapterView.OnItemSelectedListener
 import android.widget.ArrayAdapter

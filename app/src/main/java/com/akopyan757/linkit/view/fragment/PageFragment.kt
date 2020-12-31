@@ -2,6 +2,9 @@ package com.akopyan757.linkit.view.fragment
 
 import android.content.res.Configuration
 import android.os.Bundle
+import android.util.Log
+import androidx.core.os.bundleOf
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.akopyan757.base.view.BaseFragment
 import com.akopyan757.base.viewmodel.list.LinearLayoutManagerWrapper
@@ -10,6 +13,7 @@ import com.akopyan757.linkit.R
 import com.akopyan757.linkit.common.utils.AndroidUtils
 import com.akopyan757.linkit.databinding.FragmentPageBinding
 import com.akopyan757.linkit.view.adapter.LinkUrlAdapter
+import com.akopyan757.linkit.view.dialog.PreviewUrlDialogFragment
 import com.akopyan757.linkit.viewmodel.PageViewModel
 import com.akopyan757.linkit.viewmodel.listener.LinkAdapterListener
 import com.akopyan757.linkit.viewmodel.observable.AdObservable
@@ -20,19 +24,19 @@ import org.koin.core.parameter.parametersOf
 
 class PageFragment: BaseFragment<FragmentPageBinding, PageViewModel>(), LinkAdapterListener {
 
-    override val mViewModel: PageViewModel by viewModel { parametersOf(mObservable.id) }
+    override val mViewModel: PageViewModel by viewModel { parametersOf(observable.id) }
 
-    private lateinit var mObservable: FolderObservable
+    private lateinit var observable: FolderObservable
 
     override fun getVariableId() = BR.viewModel
+
+    override fun getLayoutId() = R.layout.fragment_page
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        mObservable = arguments?.getSerializable(TAG_FOLDER) as? FolderObservable ?: return
+        observable = arguments?.getSerializable(TAG_FOLDER) as? FolderObservable ?: return
     }
-
-    override fun getLayoutId() = R.layout.fragment_page
 
     private val mUrlAdapter: LinkUrlAdapter by lazy {
         LinkUrlAdapter(this)
@@ -69,8 +73,9 @@ class PageFragment: BaseFragment<FragmentPageBinding, PageViewModel>(), LinkAdap
         if (mViewModel.getEditModeState()) {
             mViewModel.onItemSelected(link)
         } else {
-            startActivity(AndroidUtils.createIntent(link.url))
-            mViewModel.onUrlOpened(link)
+            Log.i("PAGE_FRAGMENT", "onItemListener($link)")
+            val bundle = bundleOf(PreviewUrlDialogFragment.PREVIEW_URL to link)
+            findNavController().navigate(R.id.action_mainFragment_to_preview, bundle)
         }
     }
 

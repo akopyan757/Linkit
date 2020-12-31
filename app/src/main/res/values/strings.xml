@@ -67,5 +67,6 @@
     <string name="errorMessageAuthUserCollision">
         A user with such account is already registered.\n\nTo setup password you need to log in with your \'%s\' and go to profile settings.
     </string>
+    <string name="preview">Preview</string>
 
 </resources>

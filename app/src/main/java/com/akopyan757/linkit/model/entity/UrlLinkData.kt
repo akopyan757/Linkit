@@ -25,6 +25,7 @@ data class UrlLinkData(
 
     @Exclude @Ignore var logoFileName: String? = null
     @Exclude @Ignore var contentFileName: String? = null
+    @Exclude @Ignore var screenshotFileName: String? = null
 
     override var dataUrl: String
         @Exclude get() = url

@@ -127,6 +127,7 @@ class LinkRepository: BaseRepository(), KoinComponent {
     private fun UrlLinkData.addFilePaths() = apply {
         logoFileName = imageCache.getLogoName(this)
         contentFileName = imageCache.getContentName(this)
+        screenshotFileName = imageCache.getScreenshotName(this.id)
     }
 
     private fun contentDebugging(items: List<PatternHostData>) {

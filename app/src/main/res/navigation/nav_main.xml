@@ -23,6 +23,13 @@
         <action
             android:id="@+id/action_mainFragment_to_profileDialogFragment"
             app:destination="@id/profileDialogFragment" />
+        <action
+            android:id="@+id/action_mainFragment_to_preview"
+            app:destination="@id/previewUrlDialogFragment">
+            <argument
+                android:name="PREVIEW_URL"
+                app:argType="com.akopyan757.linkit.viewmodel.observable.FolderObservable" />
+        </action>
     </fragment>
     <dialog
         android:id="@+id/folderCreateDialogFragment"
@@ -77,6 +84,11 @@
         android:name="com.akopyan757.linkit.view.fragment.ProfileUpdatePasswordFragment"
         android:label="ProfileUpdatePasswordFragment"
         tools:layout="@layout/fragment_auth_update_password"/>
+    <dialog
+        android:id="@+id/previewUrlDialogFragment"
+        android:name="com.akopyan757.linkit.view.dialog.PreviewUrlDialogFragment"
+        android:label="PreviewUrlDialogFragment"
+        tools:layout="@layout/dialog_preview_url"/>
 
 
 </navigation>
