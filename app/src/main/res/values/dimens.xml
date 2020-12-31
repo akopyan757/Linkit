@@ -21,7 +21,7 @@
 
     <dimen name="marginBig">24dp</dimen>
 
-    <dimen name="itemLinkMinHeight">84dp</dimen>
+    <dimen name="itemLinkMinHeight">60dp</dimen>
 
     <dimen name="cornerRadius">16dp</dimen>
     <dimen name="cornerRadiusButton">20dp</dimen>

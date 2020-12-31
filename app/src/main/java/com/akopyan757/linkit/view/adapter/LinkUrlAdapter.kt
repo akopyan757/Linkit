@@ -54,7 +54,10 @@ class LinkUrlAdapter(
         fun bind(observable: LinkObservable) {
             val context = binding.root.context
 
-            observable.uri = AndroidUtils.getUriFromCache(context, observable.photoFileName)
+            observable.apply {
+                uri = AndroidUtils.getUriFromCache(context, observable.photoFileName)
+                photoVisible = uri != null
+            }
 
             binding.observable = observable
             binding.listener = listener

@@ -9,22 +9,18 @@ data class LinkObservable(
     val url: String,
     val title: String,
     val description: String,
-    val photoUrl: String? = null,
     val photoFileName: String? = null,
     var selected: Boolean = false,
-    var uri: Uri? = null
+    var uri: Uri? = null,
+    var photoVisible: Boolean = false
 ): DiffItemObservable {
     override fun id() = id
 
-    val descriptionVisible: Boolean
-        get() = description.isNotEmpty()
-
     companion object {
         fun from(data: UrlLinkData): LinkObservable {
-            val photoUrl = data.photoUrl?.takeUnless { it.isEmpty() } ?: data.logoUrl
             val imageFileName = data.contentFileName ?: data.logoFileName
             return LinkObservable(
-                data.id, data.url, data.title, data.description, photoUrl, imageFileName
+                data.id, data.url, data.title, data.description, imageFileName
             )
         }
     }

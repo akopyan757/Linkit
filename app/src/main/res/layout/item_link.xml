@@ -41,12 +41,16 @@
                 android:layout_marginBottom="@dimen/marginSecondary"
                 android:background="@drawable/background_image_view_corners"
                 android:contentDescription="@string/todo"
-                app:elevation="2dp"
+                android:maxWidth="@dimen/linkPictureWidth"
+                android:maxHeight="@dimen/linkPictureHeight"
+                app:elevation="@dimen/elevationTertiary"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:uri="@{observable.uri}"
-                tools:src="@drawable/image_analysis" />
+                app:visibility="@{observable.photoVisible}"
+                tools:src="@drawable/image_analysis"
+                tools:visibility="gone" />
 
             <TextView
                 android:id="@+id/tvLinkTitle"
@@ -62,6 +66,7 @@
                 app:layout_constraintEnd_toStartOf="@+id/ivLinkShare"
                 app:layout_constraintStart_toEndOf="@+id/ivLinkPhoto"
                 app:layout_constraintTop_toTopOf="parent"
+                app:layout_goneMarginStart="@dimen/marginPrimary"
                 tools:text="Title" />
 
             <TextView
