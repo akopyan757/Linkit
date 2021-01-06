@@ -20,6 +20,9 @@ object Config {
 
     const val IO_DISPATCHERS = "IO"
 
+    const val SCREENSHOT_FILENAME = "screenshot.png"
+    const val SCREENSHOT_QUALITY = 100
+
     const val PATTERNS = "patterns"
     const val LINKS = "links"
     const val USERS = "users"
@@ -27,4 +30,7 @@ object Config {
     const val URLS = "urls"
 
     const val KEY_USER_ID = "USER_ID"
+
+    const val CACHE_DIR = "cache_dir"
+    const val CACHE_IMAGE_DIR = "cache_image_dir"
 }

@@ -84,11 +84,11 @@
         android:name="com.akopyan757.linkit.view.fragment.ProfileUpdatePasswordFragment"
         android:label="ProfileUpdatePasswordFragment"
         tools:layout="@layout/fragment_auth_update_password"/>
-    <dialog
+    <fragment
         android:id="@+id/previewUrlDialogFragment"
-        android:name="com.akopyan757.linkit.view.dialog.PreviewUrlDialogFragment"
+        android:name="com.akopyan757.linkit.view.fragment.PreviewUrlFragment"
         android:label="PreviewUrlDialogFragment"
-        tools:layout="@layout/dialog_preview_url"/>
+        tools:layout="@layout/fragment_preview_url"/>
 
 
 </navigation>

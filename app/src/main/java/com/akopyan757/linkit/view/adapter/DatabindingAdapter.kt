@@ -67,6 +67,12 @@ object DatabindingAdapter {
     }
 
     @JvmStatic
+    @BindingAdapter("app:loadUrl")
+    fun WebView.setPreviewUrl(url: String) {
+        loadUrl(url)
+    }
+
+    @JvmStatic
     @BindingAdapter(value = ["selectedValue", "selectedValueAttrChanged"], requireAll = false)
     fun bindSpinnerData(
         pAppCompatSpinner: Spinner,

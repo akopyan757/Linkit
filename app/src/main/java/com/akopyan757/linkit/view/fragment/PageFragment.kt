@@ -13,7 +13,6 @@ import com.akopyan757.linkit.R
 import com.akopyan757.linkit.common.utils.AndroidUtils
 import com.akopyan757.linkit.databinding.FragmentPageBinding
 import com.akopyan757.linkit.view.adapter.LinkUrlAdapter
-import com.akopyan757.linkit.view.dialog.PreviewUrlDialogFragment
 import com.akopyan757.linkit.viewmodel.PageViewModel
 import com.akopyan757.linkit.viewmodel.listener.LinkAdapterListener
 import com.akopyan757.linkit.viewmodel.observable.AdObservable
@@ -74,7 +73,7 @@ class PageFragment: BaseFragment<FragmentPageBinding, PageViewModel>(), LinkAdap
             mViewModel.onItemSelected(link)
         } else {
             Log.i("PAGE_FRAGMENT", "onItemListener($link)")
-            val bundle = bundleOf(PreviewUrlDialogFragment.PREVIEW_URL to link)
+            val bundle = bundleOf(PreviewUrlFragment.PREVIEW_URL to link)
             findNavController().navigate(R.id.action_mainFragment_to_preview, bundle)
         }
     }

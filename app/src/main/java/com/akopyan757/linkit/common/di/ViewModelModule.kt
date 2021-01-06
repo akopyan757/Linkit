@@ -3,6 +3,7 @@ package com.akopyan757.linkit.common.di
 import androidx.lifecycle.SavedStateHandle
 import com.akopyan757.linkit.common.Config.HANDLE_URL
 import com.akopyan757.linkit.viewmodel.*
+import com.akopyan757.linkit.viewmodel.observable.LinkObservable
 import org.koin.android.viewmodel.dsl.viewModel
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
@@ -24,6 +25,6 @@ object ViewModelModule {
         viewModel { ProfileViewModel() }
         viewModel { ProfileSetPasswordViewModel() }
         viewModel { ProfileUpdatePasswordViewModel() }
-        viewModel { PreviewUrlViewModel() }
+        viewModel { (observable: LinkObservable) -> PreviewUrlViewModel(observable) }
     }
 }

@@ -123,6 +123,10 @@ class LinkRepository: BaseRepository(), KoinComponent {
         storeLinks.reorderFolders(pairs)
     }
 
+    fun moveScreenshotToImageFolder(linkId: Long) = callIO {
+        imageCache.moveScreenshot(linkId)
+    }
+
     /** Private methods **/
     private fun UrlLinkData.addFilePaths() = apply {
         logoFileName = imageCache.getLogoName(this)

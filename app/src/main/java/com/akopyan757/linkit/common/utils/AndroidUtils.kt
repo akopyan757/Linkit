@@ -3,13 +3,20 @@ package com.akopyan757.linkit.common.utils
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.graphics.Paint
 import android.net.Uri
+import android.util.Log
 import android.view.View
 import android.view.inputmethod.InputMethodManager
+import android.webkit.WebView
 import androidx.core.content.FileProvider
 import com.akopyan757.linkit.BuildConfig
 import com.akopyan757.linkit.common.Config
 import java.io.File
+import java.io.FileOutputStream
+import java.io.OutputStream
 
 
 object AndroidUtils {
@@ -41,5 +48,28 @@ object AndroidUtils {
         val imm = activity.getSystemService(Activity.INPUT_METHOD_SERVICE) as? InputMethodManager ?: return
         val view = activity.currentFocus ?: View(activity)
         imm.hideSoftInputFromWindow(view.windowToken, 0)
+    }
+
+    fun takeScreenshotFromWebView(webView: WebView) {
+        val cacheDir = webView.context.cacheDir
+        val imageFile = File(cacheDir, Config.SCREENSHOT_FILENAME)
+
+        val width = webView.measuredWidth
+        val bm = Bitmap.createBitmap(width, width, Bitmap.Config.ARGB_8888)
+        val bigCanvas = Canvas(bm)
+        bigCanvas.drawBitmap(bm, 0F, 0F, Paint())
+        webView.draw(bigCanvas)
+
+        var fOut: OutputStream? = null
+        try {
+            fOut = FileOutputStream(imageFile)
+            bm.compress(Bitmap.CompressFormat.PNG, Config.SCREENSHOT_QUALITY, fOut)
+            bm.recycle()
+        } catch (e: Exception) {
+            Log.e("takeScreenshotWeb", "ERROR", e)
+        } finally {
+            fOut?.flush()
+            fOut?.close()
+        }
     }
 }

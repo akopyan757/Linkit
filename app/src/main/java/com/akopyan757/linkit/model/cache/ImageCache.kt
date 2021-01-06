@@ -2,25 +2,23 @@ package com.akopyan757.linkit.model.cache
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.graphics.Canvas
-import android.graphics.Paint
 import android.util.Log
-import android.view.View
-import android.webkit.WebView
+import com.akopyan757.linkit.common.Config
 import com.akopyan757.linkit.model.entity.UrlLinkData
 import com.akopyan757.linkit.view.scope.mainInject
-import com.akopyan757.linkit.viewmodel.observable.LinkObservable
 import org.koin.core.KoinComponent
+import org.koin.core.qualifier.named
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
-import java.io.OutputStream
 import java.net.URL
+import kotlin.jvm.Throws
 
 
 class ImageCache: KoinComponent {
 
-    private val imageDir: File by mainInject()
+    private val cacheDir: File by mainInject(named(Config.CACHE_DIR))
+    private val imageDir: File by mainInject(named(Config.CACHE_IMAGE_DIR))
 
     fun saveImages(data: UrlLinkData) {
         val logoUrl = data.logoUrl
@@ -49,37 +47,11 @@ class ImageCache: KoinComponent {
         }
     }
 
-    fun saveScreenshot(webView: WebView, linkObservable: LinkObservable) {
-        val name = SCREENSHOT_PREFIX.format(linkObservable.id)
-        if (File(imageDir, name).exists()) return
-
-        val width = webView.measuredWidth
-        val widthSpec = View.MeasureSpec.makeMeasureSpec(
-                View.MeasureSpec.UNSPECIFIED,
-                View.MeasureSpec.UNSPECIFIED
-        )
-        val heightSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
-        View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
-        webView.measure(widthSpec, heightSpec)
-        val bm = Bitmap.createBitmap(width, width, Bitmap.Config.ARGB_8888)
-        val size = bm?.width?.toFloat() ?: 0F
-        val bigCanvas = Canvas(bm)
-        bigCanvas.drawBitmap(bm, 0F, size, Paint())
-        webView.draw(bigCanvas)
-        if (bm != null) {
-            var fOut: OutputStream? = null
-            try {
-                val file = File(imageDir, name)
-                fOut = FileOutputStream(file)
-                bm.compress(Bitmap.CompressFormat.PNG, 100, fOut)
-                bm.recycle()
-            } catch (e: Exception) {
-               Log.e(TAG, "ERROR", e)
-            } finally {
-                fOut?.flush()
-                fOut?.close()
-            }
-        }
+    fun moveScreenshot(linkId: Long) {
+        val screenshotFile = File(cacheDir, Config.SCREENSHOT_FILENAME)
+        val imageFile = File(imageDir, SCREENSHOT_PREFIX.format(linkId))
+        screenshotFile.copyTo(imageFile, true)
+        screenshotFile.delete()
     }
 
     fun getLogoName(data: UrlLinkData): String? {

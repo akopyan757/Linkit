@@ -26,7 +26,11 @@ object DatabaseModule {
     val module = module {
 
         scope(named<MainActivity>()) {
-            scoped { File(androidContext().cacheDir , Config.CACHE_IMAGES_FOLDER) }
+            scoped(named(Config.CACHE_DIR)) { androidContext().cacheDir }
+            scoped(named(Config.CACHE_IMAGE_DIR)) {
+                File(androidContext().cacheDir , Config.CACHE_IMAGES_FOLDER)
+            }
+
             scoped { ImageCache() }
 
             scoped { FirebaseDatabase.getInstance() }
