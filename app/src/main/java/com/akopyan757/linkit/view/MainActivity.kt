@@ -19,8 +19,6 @@ class MainActivity : AppCompatActivity(), KoinComponent {
 
     override fun onDestroy() {
         super.onDestroy()
-
-        mainScope().close()
         getKoin().deleteScope(mainScopeId())
     }
 }

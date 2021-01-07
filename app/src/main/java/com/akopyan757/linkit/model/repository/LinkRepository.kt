@@ -1,7 +1,5 @@
 package com.akopyan757.linkit.model.repository
 
-import android.util.Log
-import androidx.lifecycle.liveData
 import androidx.lifecycle.map
 import com.akopyan757.base.model.BaseRepository
 import com.akopyan757.linkit.common.Config
@@ -18,10 +16,7 @@ import com.akopyan757.linkit.model.store.StoreLinks
 import com.akopyan757.linkit.model.store.StorePatterns
 import com.akopyan757.linkit.view.scope.mainInject
 import com.akopyan757.urlparser.IUrlParser
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import org.koin.core.KoinComponent
 import org.koin.core.inject
 import org.koin.core.qualifier.named
@@ -58,14 +53,12 @@ class LinkRepository: BaseRepository(), KoinComponent {
     }
 
     fun getLivePattern() = storePatterns.getLivePatterns().map { items ->
-        Log.i(TAG, "getLivePattern:\n${items.joinToString("\n") { it.toString() }}")
-        liveData(Dispatchers.IO) {
+        runBlocking(Dispatchers.IO) {
             patternDao.addPatternsListWithHost(items)
             storePatterns.removeObserveItems(items)
             contentDebugging(items)
-            emit(Unit)
         }
-    }.asLiveIO()
+    }
 
     fun addNewLink(urlLinkData: UrlLinkData) = callIO {
         if (FormatUtils.isUrl(urlLinkData.url)) {
