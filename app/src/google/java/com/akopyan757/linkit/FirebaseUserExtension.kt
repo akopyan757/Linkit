@@ -1,3 +1,7 @@
+package com.akopyan757.linkit
+
+import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.auth.GoogleAuthProvider
 
 object FirebaseUserExtension {
     

@@ -5,8 +5,6 @@ import android.content.Intent
 import android.util.Log
 import com.akopyan757.linkit.R
 import com.akopyan757.linkit.model.cache.TokenCache
-import com.akopyan757.linkit.model.service.network.CustomTokenApi
-import com.akopyan757.linkit.network.CustomTokenRequest
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
@@ -61,8 +59,6 @@ class AuthWrapper(private val context: Context): KoinComponent {
     private val huaweiService: AccountAuthService by lazy {
         AccountAuthManager.getService(context, authParams)
     }
-
-    private val customTokenApi: CustomTokenApi by inject()
 
     private val tokenCache: TokenCache by inject()
 
@@ -211,22 +207,6 @@ class AuthWrapper(private val context: Context): KoinComponent {
                 Log.w(TAG, "linkEmailToAccount: failure", exception)
                 cont.resumeWithException(exception)
             }
-    }
-
-    suspend fun createCustomToken(account: AuthAccount): String {
-        val request = CustomTokenRequest(
-            account.idToken, account.unionId, account.avatarUriString,
-            account.displayName, account.email,
-        )
-        Log.i(TAG, "createCustomToken: start: $request")
-        return try {
-            customTokenApi.createCustomToken(request).also {
-                Log.i(TAG, "createCustomToken=$it")
-            }.firebaseToken
-        } catch(e: Exception) {
-            Log.e(TAG, "createCustomToken", e)
-            ""
-        }
     }
 
     fun getHuaweiSignInIntent(): Intent = huaweiService.signInIntent

@@ -2,4 +2,5 @@
 <resources>
     <string name="buttonText">Log in with Google</string>
     <string name="buttonLinkText">Link with Google</string>
+    <string name="signInMethod">Google</string>
 </resources>

@@ -134,6 +134,8 @@ dependencies {
 
     huaweiImplementation "com.huawei.hms:ads-lite:13.4.37.300"
     huaweiImplementation 'com.huawei.hms:ads-identifier:3.4.30.307'
+
+    googleImplementation 'com.google.android.gms:play-services-ads:19.7.0'
 }
 
 kapt {
