@@ -14,7 +14,7 @@
         android:layout_height="100dp"
         android:layout_width="match_parent"
         android:id="@+id/itemViewBannerAd"
-        ads:adSize="BANNER"
+        ads:adSize="LARGE_BANNER"
         ads:adUnitId="ca-app-pub-3940256099942544/6300978111" />
 
 </com.google.android.material.card.MaterialCardView>
