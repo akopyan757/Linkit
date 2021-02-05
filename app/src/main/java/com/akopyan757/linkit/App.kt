@@ -1,10 +1,14 @@
 package com.akopyan757.linkit
 
 import android.app.Application
+import android.text.TextUtils
 import android.util.Log
 import com.akopyan757.linkit.common.di.*
+import com.huawei.agconnect.config.AGConnectServicesConfig
+import com.huawei.hms.aaid.HmsInstanceId
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
+
 
 class App: Application() {
 

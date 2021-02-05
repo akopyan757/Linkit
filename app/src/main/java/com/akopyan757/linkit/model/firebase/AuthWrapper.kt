@@ -48,6 +48,8 @@ class AuthWrapper(private val context: Context): KoinComponent {
             .setEmail()
             .setProfile()
             .setIdToken()
+            .setAccessToken()
+            .setAuthorizationCode()
             .createParams()
     }
 
