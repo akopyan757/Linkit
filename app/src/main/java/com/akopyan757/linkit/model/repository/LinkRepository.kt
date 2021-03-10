@@ -62,9 +62,6 @@ class LinkRepository: BaseRepository(), KoinComponent {
             throw UrlIsNotValidException()
 
         val htmlHeadTags = htmlParser.parseHeadTagsFromResource(url)
-
-        Log.i(TAG, htmlHeadTags.toString())
-
         return@callIO createNewUrlDataFromTags(htmlHeadTags)
     }
 
