@@ -1,22 +1,21 @@
 package com.akopyan757.linkit.model.repository
 
+import android.util.Log
 import androidx.lifecycle.map
 import com.akopyan757.base.model.BaseRepository
 import com.akopyan757.linkit.common.Config
 import com.akopyan757.linkit.common.utils.FormatUtils
 import com.akopyan757.linkit.model.cache.ImageCache
 import com.akopyan757.linkit.model.database.FolderDao
-import com.akopyan757.linkit.model.database.PatternDao
 import com.akopyan757.linkit.model.database.UrlLinkDao
-import com.akopyan757.linkit.model.entity.PatternHostData
 import com.akopyan757.linkit.model.entity.UrlLinkData
 import com.akopyan757.linkit.model.exception.FolderExistsException
 import com.akopyan757.linkit.model.exception.UrlIsNotValidException
+import com.akopyan757.linkit.model.parser.HtmlParser
+import com.akopyan757.linkit.model.parser.tags.HtmlTags
 import com.akopyan757.linkit.model.store.StoreLinks
-import com.akopyan757.linkit.model.store.StorePatterns
 import com.akopyan757.linkit.view.scope.mainInject
-import com.akopyan757.urlparser.IUrlParser
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineDispatcher
 import org.koin.core.KoinComponent
 import org.koin.core.inject
 import org.koin.core.qualifier.named
@@ -29,19 +28,16 @@ class LinkRepository: BaseRepository(), KoinComponent {
 
     private val urlLinkDao: UrlLinkDao by mainInject()
     private val folderDao: FolderDao by mainInject()
-    private val patternDao: PatternDao by mainInject()
     private val imageCache: ImageCache by mainInject()
 
-    private val urlParser: IUrlParser<UrlLinkData> by mainInject()
+    private val htmlParser: HtmlParser by mainInject()
 
-    private val storePatterns: StorePatterns by mainInject()
     private val storeLinks: StoreLinks by mainInject()
 
     override val coroutineDispatcher: CoroutineDispatcher by inject(named(Config.IO_DISPATCHERS))
 
     fun initResources() = callIO {
         folderDao.initFolderDao()
-        storePatterns.fetchData()
         storeLinks.loadFolders().also { list ->
             folderDao.insertOrUpdate(list)
         }
@@ -50,14 +46,6 @@ class LinkRepository: BaseRepository(), KoinComponent {
             urlLinkDao.insertOrUpdate(list)
         }
         Unit
-    }
-
-    fun getLivePattern() = storePatterns.getLivePatterns().map { items ->
-        runBlocking(Dispatchers.IO) {
-            patternDao.addPatternsListWithHost(items)
-            storePatterns.removeObserveItems(items)
-            contentDebugging(items)
-        }
     }
 
     fun addNewLink(urlLinkData: UrlLinkData) = callIO {
@@ -70,7 +58,14 @@ class LinkRepository: BaseRepository(), KoinComponent {
     }
 
     fun getDefaultInfoFromUrl(url: String) = callIO {
-        if (FormatUtils.isUrl(url)) urlParser.parseUrl(url) else throw UrlIsNotValidException()
+        if (!FormatUtils.isUrl(url))
+            throw UrlIsNotValidException()
+
+        val htmlHeadTags = htmlParser.parseHeadTagsFromResource(url)
+
+        Log.i(TAG, htmlHeadTags.toString())
+
+        return@callIO createNewUrlDataFromTags(htmlHeadTags)
     }
 
     fun addNewFolder(name: String) = callIO {
@@ -127,17 +122,11 @@ class LinkRepository: BaseRepository(), KoinComponent {
         screenshotFileName = imageCache.getScreenshotName(this.id)
     }
 
-    private fun contentDebugging(items: List<PatternHostData>) {
-        CoroutineScope(coroutineDispatcher).launch {
-            items.forEach { item ->
-                urlLinkDao.getByHost(item.host).forEach { data ->
-                    val newData = urlParser.parseUrl(data.url).also {
-                        it.id = data.id
-                    }
-                    urlLinkDao.insertOrUpdate(newData)
-                    imageCache.saveImages(newData)
-                }
-            }
+    private fun createNewUrlDataFromTags(htmlTags: HtmlTags): UrlLinkData {
+        return UrlLinkData().apply {
+            title = htmlTags.getTitle()
+            description = htmlTags.getDescription()
+            photoUrl = htmlTags.getImage()
         }
     }
 }

@@ -1,11 +1,9 @@
 package com.akopyan757.linkit.view.fragment
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.view.ViewTreeObserver
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.Observer
 import androidx.lifecycle.observe
 import androidx.navigation.fragment.findNavController
 import com.akopyan757.base.view.BaseFragment
@@ -88,7 +86,6 @@ class MainFragment : BaseFragment<FragmentMainBinding, LinkViewModel>(), ViewTre
 
         tabLayoutFolder.offsetLeftAndRight(0)
 
-
         BannerViewExtension.loadAd(bannerBottomAd) {
             bannerBottomAd.visibility = View.GONE
         }
@@ -112,10 +109,6 @@ class MainFragment : BaseFragment<FragmentMainBinding, LinkViewModel>(), ViewTre
 
     override fun onSetupViewModel(viewModel: LinkViewModel): Unit = with(viewModel) {
         bindAllFolders()
-
-        getLivePattern().observe(viewLifecycleOwner, Observer {
-            Log.i("Pattern", "pattern")
-        })
 
         getFolderLiveList().observe(viewLifecycleOwner, { holder ->
             if (holder.strategy is ListChangeStrategy.CustomChanged) {

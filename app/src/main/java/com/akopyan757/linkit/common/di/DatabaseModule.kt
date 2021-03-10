@@ -9,7 +9,6 @@ import com.akopyan757.linkit.common.Config.USERS
 import com.akopyan757.linkit.model.cache.ImageCache
 import com.akopyan757.linkit.model.database.AppDatabase
 import com.akopyan757.linkit.model.store.StoreLinks
-import com.akopyan757.linkit.model.store.StorePatterns
 import com.akopyan757.linkit.view.MainActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
@@ -40,7 +39,6 @@ object DatabaseModule {
             scoped(named(PATTERNS)) { get<FirebaseDatabase>().getReference(PATTERNS) }
             scoped(named(LINKS)) { get<FirebaseFirestore>().collection(USERS) }
 
-            scoped { StorePatterns() }
             scoped { StoreLinks() }
 
             scoped {
@@ -61,7 +59,6 @@ object DatabaseModule {
 
             scoped { get<AppDatabase>().urlLinkDao() }
             scoped { get<AppDatabase>().folderDao() }
-            scoped { get<AppDatabase>().patternDao() }
         }
     }
 }

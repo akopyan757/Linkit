@@ -81,7 +81,6 @@ android {
 
 dependencies {
     api project(':base')
-    implementation project(':urlparser')
 
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.4.2'
 
@@ -138,6 +137,8 @@ dependencies {
     googleImplementation 'com.google.android.gms:play-services-ads:19.7.0'
 
     implementation 'com.huawei.hms:push:5.0.4.302'
+
+    implementation 'org.jsoup:jsoup:1.13.1'
 }
 
 kapt {

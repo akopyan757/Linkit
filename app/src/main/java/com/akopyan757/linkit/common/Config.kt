@@ -33,4 +33,6 @@ object Config {
 
     const val CACHE_DIR = "cache_dir"
     const val CACHE_IMAGE_DIR = "cache_image_dir"
+
+    const val USER_AGENT = "Mozilla/5.0 (Windows; U; WindowsNT 5.1; en-US; rv1.8.1.6) Gecko/20070725 Firefox/2.0.0.6"
 }

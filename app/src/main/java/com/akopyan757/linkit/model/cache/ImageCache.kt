@@ -12,7 +12,6 @@ import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
 import java.net.URL
-import kotlin.jvm.Throws
 
 
 class ImageCache: KoinComponent {
@@ -30,7 +29,7 @@ class ImageCache: KoinComponent {
 
         if (logoUrl != null) {
             val bitmap = loadBitmap(logoUrl)
-            val name = LOGO_PREFIX.format(data.hostPatternId)
+            val name = LOGO_PREFIX.format(data.id)
             if (bitmap != null) {
                 saveBitmap(bitmap, name)
                 Log.i(TAG, "LOGO SAVED: NAME = $name")
@@ -39,7 +38,7 @@ class ImageCache: KoinComponent {
 
         if (imageUrl != null) {
             val bitmap = loadBitmap(imageUrl)
-            val name = CONTENT_PREFIX.format(data.hostPatternId, data.specPatternId, data.url.hashCode())
+            val name = CONTENT_PREFIX.format(data.id, data.url.hashCode())
             if (bitmap != null) {
                 saveBitmap(bitmap, name)
                 Log.i(TAG, "CONTENT IMAGE SAVED: NAME = $name")
@@ -55,21 +54,17 @@ class ImageCache: KoinComponent {
     }
 
     fun getLogoName(data: UrlLinkData): String? {
-        return LOGO_PREFIX.format(data.hostPatternId)
+        return LOGO_PREFIX.format(data.id)
             .takeIf { name -> File(imageDir, name).exists() }
     }
 
     fun getContentName(data: UrlLinkData): String? {
-        return CONTENT_PREFIX.format(data.hostPatternId, data.specPatternId, data.url.hashCode())
+        return CONTENT_PREFIX.format(data.id, data.url.hashCode())
             .takeIf { name -> File(imageDir, name).exists() }
     }
 
     fun getScreenshotName(id: Long): String? {
         return SCREENSHOT_PREFIX.format(id).takeIf { name -> File(imageDir, name).exists() }
-    }
-
-    fun clear() {
-        if (imageDir.exists()) imageDir.delete()
     }
 
     private fun loadBitmap(urlValue: String): Bitmap? = try {
@@ -98,7 +93,7 @@ class ImageCache: KoinComponent {
 
         private const val IMAGE_QUALITY = 100
 
-        private const val CONTENT_PREFIX = "content_%d_%d_%d.png"
+        private const val CONTENT_PREFIX = "content_%d_%d.png"
         private const val SCREENSHOT_PREFIX = "screenshot_%d.png"
         private const val LOGO_PREFIX = "logo_%d.png"
     }

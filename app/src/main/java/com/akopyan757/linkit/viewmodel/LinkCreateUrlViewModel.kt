@@ -12,10 +12,8 @@ import com.akopyan757.linkit.model.entity.FolderData
 import com.akopyan757.linkit.model.entity.UrlLinkData
 import com.akopyan757.linkit.model.repository.LinkRepository
 import com.akopyan757.linkit.view.scope.mainInject
-import com.akopyan757.linkit.view.scope.mainScope
 import com.akopyan757.linkit.viewmodel.observable.FolderObservable
 import org.koin.core.KoinComponent
-import org.koin.core.inject
 
 class LinkCreateUrlViewModel(
     @get:Bindable val url: String
@@ -40,6 +38,9 @@ class LinkCreateUrlViewModel(
 
     @get:Bindable
     var description: String by DelegatedBindable("", BR.description)
+
+    @get:Bindable
+    var imageUrl: String? by DelegatedBindable(null, BR.imageUrl)
 
     @get:Bindable
     var selectedFolderName: String by DelegatedBindable("", BR.selectedFolderName, BR.enabledButton)
@@ -74,11 +75,13 @@ class LinkCreateUrlViewModel(
         method = { linkRepository.getDefaultInfoFromUrl(url) },
         onLoading = {
             Log.i(TAG, "GET INFO URL: LOADING")
-        }, onSuccess = { urlLinkData ->
-            Log.i(TAG, "GET INFO URL: SUCCESS: $urlLinkData")
-            defaultUrlLinkData = urlLinkData
-            title = urlLinkData.title
-            description = urlLinkData.description
+        }, onSuccess = { data ->
+            Log.i(TAG, "GET INFO URL: SUCCESS: $data")
+
+            title = data.title
+            description = data.description
+            imageUrl = data.photoUrl
+
         }, onError = { exception ->
             Log.e(TAG, "GET INFO URL: ERROR", exception)
         }
@@ -105,13 +108,10 @@ class LinkCreateUrlViewModel(
     }
 
     fun onAcceptUrl() {
-        val folderId = foldersList.getList()
-            .find { it.name == selectedFolderName }
-            ?.id  ?: FolderData.GENERAL_FOLDER_ID
+        val folderId = getSelectedFolderIdOrDefault()
 
         defaultUrlLinkData.folderId = folderId
-        defaultUrlLinkData.title = title
-        defaultUrlLinkData.description = description
+
         addLinkRequest.value = defaultUrlLinkData
     }
 
@@ -120,4 +120,9 @@ class LinkCreateUrlViewModel(
     )
 
     fun getFolderNameList() = foldersList.map { holder -> holder.data.map { it.name } }
+
+    private fun getSelectedFolderIdOrDefault(): Int {
+        val folder = foldersList.getList().find { it.name == selectedFolderName }
+        return folder?.id ?: FolderData.GENERAL_FOLDER_ID
+    }
 }
