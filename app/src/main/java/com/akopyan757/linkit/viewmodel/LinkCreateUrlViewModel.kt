@@ -33,23 +33,9 @@ class LinkCreateUrlViewModel(
     /**
      * Binding properties
      */
-    @get:Bindable
-    var title: String by DelegatedBindable("", BR.title, BR.enabledButton)
 
     @get:Bindable
-    var description: String by DelegatedBindable("", BR.description)
-
-    @get:Bindable
-    var imageUrl: String? by DelegatedBindable(null, BR.imageUrl)
-
-    @get:Bindable
-    var selectedFolderName: String by DelegatedBindable("", BR.selectedFolderName, BR.enabledButton)
-
-    @get:Bindable
-    val enabledButton: Boolean
-        get() = selectedFolderName.isNotEmpty() && title.isNotEmpty()
-
-    private lateinit var defaultUrlLinkData: UrlLinkData
+    var selectedFolderName: String by DelegatedBindable("", BR.selectedFolderName)
 
     /** ListView */
     private var foldersList = ListLiveData<FolderObservable>()
@@ -58,7 +44,7 @@ class LinkCreateUrlViewModel(
     private val linkRepository: LinkRepository by mainInject()
 
     /** Requests */
-    private val addLinkRequest = MutableLiveData<UrlLinkData>()
+    private val addLinkRequest = MutableLiveData<Any>()
 
     /** Responses */
     init {
@@ -71,33 +57,11 @@ class LinkCreateUrlViewModel(
         )
     }
 
-    private val getInfoFromUrl = requestLiveData(
-        method = { linkRepository.getDefaultInfoFromUrl(url) },
-        onLoading = {
-            Log.i(TAG, "GET INFO URL: LOADING")
-        }, onSuccess = { data ->
-            Log.i(TAG, "GET INFO URL: SUCCESS: $data")
-
-            title = data.title
-            description = data.description
-            imageUrl = data.photoUrl
-
-        }, onError = { exception ->
-            Log.e(TAG, "GET INFO URL: ERROR", exception)
-        }
-    )
-
-    private val addLinkResponse = addLinkRequest.switchMap { urlLinkData ->
+    private val addLinkResponse = addLinkRequest.switchMap {
+        val folderId: Int = getSelectedFolderIdOrDefault()
         requestLiveData(
-            method = { linkRepository.addNewLink(urlLinkData) },
-            onLoading = { Log.i(TAG, "ADD LINK: LOADING") },
-            onSuccess = {
-                Log.i(TAG, "ADD LINK: SUCCESS")
-                this emitAction ACTION_DISMISS
-            },
-            onError = { exception ->
-                Log.e(TAG, "ADD LINK: ERROR", exception)
-            }
+            method = { linkRepository.addNewLink(url, folderId) },
+            onSuccess = { this emitAction ACTION_DISMISS },
         )
     }
 
@@ -108,15 +72,11 @@ class LinkCreateUrlViewModel(
     }
 
     fun onAcceptUrl() {
-        val folderId = getSelectedFolderIdOrDefault()
-
-        defaultUrlLinkData.folderId = folderId
-
-        addLinkRequest.value = defaultUrlLinkData
+        addLinkRequest.value = Any()
     }
 
     override fun getLiveResponses() = groupLiveResponses(
-        getInfoFromUrl, addLinkResponse
+        addLinkResponse
     )
 
     fun getFolderNameList() = foldersList.map { holder -> holder.data.map { it.name } }

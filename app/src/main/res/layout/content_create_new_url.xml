@@ -28,44 +28,16 @@
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/tietClipboardUrl"
+                style="@style/Theme.Linkit.EditText.ReadOnly"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:maxLines="3"
-                android:ems="3"
                 android:ellipsize="end"
+                android:ems="3"
                 android:hint="@string/url"
-                android:text="@{viewModel.url}"
-                style="@style/Theme.Linkit.EditText.ReadOnly"/>
+                android:maxLines="5"
+                android:text="@{viewModel.url}" />
 
         </com.google.android.material.textfield.TextInputLayout>
-
-        <TextView
-            android:id="@+id/tvHtmlTitle"
-            style="@style/Theme.Linkit.TextAppearanceRegular.H1"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/marginSecondary"
-            android:layout_marginTop="@dimen/marginPrimary"
-            android:layout_marginEnd="@dimen/marginSecondary"
-            android:text="@{viewModel.title}"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tilClipboardUrl"
-            tools:text="Title" />
-
-        <TextView
-            android:id="@+id/tvHtmlDescription"
-            style="@style/Theme.Linkit.TextAppearanceRegular.Body1"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/marginSecondary"
-            android:layout_marginTop="@dimen/marginSecondary"
-            android:layout_marginEnd="@dimen/marginSecondary"
-            android:text="@{viewModel.description}"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvHtmlTitle"
-            tools:text="Description" />
 
         <Spinner
             android:id="@+id/spCreateLinkAssignToFolder"
@@ -82,7 +54,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@+id/tilClipboardUrl"
             app:layout_constraintStart_toStartOf="@+id/tilClipboardUrl"
-            app:layout_constraintTop_toBottomOf="@+id/tvHtmlDescription"
+            app:layout_constraintTop_toBottomOf="@+id/tilClipboardUrl"
             tools:text="Folder"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>

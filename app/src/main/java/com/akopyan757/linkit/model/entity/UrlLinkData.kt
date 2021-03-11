@@ -22,4 +22,11 @@ data class UrlLinkData(
     @Exclude @Ignore var logoFileName: String? = null
     @Exclude @Ignore var contentFileName: String? = null
     @Exclude @Ignore var screenshotFileName: String? = null
+
+    companion object {
+        fun createWithAssignFolder(url: String, folderId: Int) = UrlLinkData().apply {
+            this.url = url
+            this.folderId = folderId
+        }
+    }
 }

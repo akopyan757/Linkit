@@ -91,7 +91,8 @@ object DatabindingAdapter {
 
             override fun onNothingSelected(parent: AdapterView<*>?) {}
         }
-        val pos = (pAppCompatSpinner.adapter as? ArrayAdapter<String>)?.getPosition(newSelectedValue)
+        val adapter = pAppCompatSpinner.adapter as? ArrayAdapter<String>
+        val pos = adapter?.getPosition(newSelectedValue)
         if (pos != null) pAppCompatSpinner.setSelection(pos, true)
     }
 

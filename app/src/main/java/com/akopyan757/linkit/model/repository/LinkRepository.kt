@@ -1,6 +1,5 @@
 package com.akopyan757.linkit.model.repository
 
-import android.util.Log
 import androidx.lifecycle.map
 import com.akopyan757.base.model.BaseRepository
 import com.akopyan757.linkit.common.Config
@@ -16,6 +15,8 @@ import com.akopyan757.linkit.model.parser.tags.HtmlTags
 import com.akopyan757.linkit.model.store.StoreLinks
 import com.akopyan757.linkit.view.scope.mainInject
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 import org.koin.core.KoinComponent
 import org.koin.core.inject
 import org.koin.core.qualifier.named
@@ -48,21 +49,22 @@ class LinkRepository: BaseRepository(), KoinComponent {
         Unit
     }
 
-    fun addNewLink(urlLinkData: UrlLinkData) = callIO {
-        if (FormatUtils.isUrl(urlLinkData.url)) {
-            imageCache.saveImages(urlLinkData)
-            val id = urlLinkDao.addNewData(urlLinkData)
-            urlLinkData.id = id
-            storeLinks.addLink(urlLinkData)
-        }
-    }
-
-    fun getDefaultInfoFromUrl(url: String) = callIO {
+    fun addNewLink(url: String, folderId: Int) = callIO {
         if (!FormatUtils.isUrl(url))
             throw UrlIsNotValidException()
 
-        val htmlHeadTags = htmlParser.parseHeadTagsFromResource(url)
-        return@callIO createNewUrlDataFromTags(htmlHeadTags)
+        val data = UrlLinkData.createWithAssignFolder(url, folderId)
+        val linkId = urlLinkDao.addNewData(data)
+        data.id = linkId
+        storeLinks.addLink(data)
+
+        CoroutineScope(coroutineDispatcher).launch {
+            val htmlHeadTags = htmlParser.parseHeadTagsFromResource(url)
+            val urlLinkData = createNewUrlDataFromTags(htmlHeadTags)
+            urlLinkDao.insertOrUpdate(urlLinkData)
+            storeLinks.addLink(urlLinkData)
+            imageCache.saveImages(data)
+        }
     }
 
     fun addNewFolder(name: String) = callIO {
@@ -119,11 +121,9 @@ class LinkRepository: BaseRepository(), KoinComponent {
         screenshotFileName = imageCache.getScreenshotName(this.id)
     }
 
-    private fun createNewUrlDataFromTags(htmlTags: HtmlTags): UrlLinkData {
-        return UrlLinkData().apply {
-            title = htmlTags.getTitle()
-            description = htmlTags.getDescription()
-            photoUrl = htmlTags.getImage()
-        }
+    private fun createNewUrlDataFromTags(htmlTags: HtmlTags) = UrlLinkData().apply {
+        title = htmlTags.getTitle()
+        description = htmlTags.getDescription()
+        photoUrl = htmlTags.getImage()
     }
 }
