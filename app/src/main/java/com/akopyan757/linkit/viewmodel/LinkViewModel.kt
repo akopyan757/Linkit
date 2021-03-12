@@ -21,6 +21,8 @@ import org.koin.core.qualifier.named
 
 class LinkViewModel : BaseViewModel(), KoinComponent {
 
+    private val linkRepository: LinkRepository by mainInject()
+
     private val stateHandle: SavedStateHandle by inject(named(Config.HANDLE_URL))
 
     @get:Bindable
@@ -43,16 +45,9 @@ class LinkViewModel : BaseViewModel(), KoinComponent {
         count > 0
     }
 
-    /** List LiveData's */
     private val foldersLiveData = ListLiveData<FolderObservable>()
 
-    /** Repository */
-    private val linkRepository: LinkRepository by mainInject()
-
-    /** Init */
-
-    /** Responses */
-    fun bindAllFolders() {
+    fun bindAllFoldersWithList() {
         bindLiveList(
             request = linkRepository.getAllFolders(),
             listLiveData = foldersLiveData,
@@ -70,9 +65,10 @@ class LinkViewModel : BaseViewModel(), KoinComponent {
         )
     }
 
-    override fun getLiveResponses(): LiveData<RequestState> {
-        return requestLiveData(method = { linkRepository.initResources() })
-    }
+    fun requestInitResource() = requestConvert(
+        request = linkRepository.initResources(),
+        onSuccess = {}
+    )
 
     /**
      * Public methods
@@ -91,7 +87,7 @@ class LinkViewModel : BaseViewModel(), KoinComponent {
 
     fun getFolderLiveList() = foldersLiveData
 
-    fun getDeleteIconVisible() = deleteUrlsVisible
+    fun getVisibleDeleteIcon() = deleteUrlsVisible
 
     fun getSelectedCount() = selectedCount
 }

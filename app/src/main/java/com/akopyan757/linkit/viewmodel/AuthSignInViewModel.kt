@@ -1,15 +1,11 @@
 package com.akopyan757.linkit.viewmodel
 
 import android.content.Intent
-import android.util.Log
 import androidx.databinding.Bindable
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.switchMap
 import com.akopyan757.base.viewmodel.BaseViewModel
 import com.akopyan757.linkit.BR
 import com.akopyan757.linkit.model.repository.AuthRepository
 import com.akopyan757.linkit.view.service.IAuthorizationService
-import com.google.firebase.auth.FirebaseUser
 import org.koin.core.KoinComponent
 import org.koin.core.inject
 
@@ -40,48 +36,26 @@ class AuthSignInViewModel: BaseViewModel(), KoinComponent {
     private val authService: IAuthorizationService by inject()
     private val authRepository: AuthRepository by inject()
 
-    /** Requests */
-    private val requestSignInWithEmail = MutableLiveData<Pair<String, String>>()
-    private val requestSignInResult = MutableLiveData<Intent>()
+    fun getSignInWithEmailLiveResponse() = requestConvert(
+        request = authRepository.signInWithEmail(email, password),
+        onLoading = { isProgress = true },
+        onError = { isProgress = false },
+        onSuccess = { firebaseUser ->
+            isProgress = false
+            firebaseUser.uid
+        }
+    )
 
-    /** DataBinding methods */
-    fun onSignInButtonClicked() {
-        requestSignInWithEmail.value = Pair(email, password)
-    }
+    fun getSignInWithServiceLiveResponse(data: Intent?) = requestConvert(
+        request = authRepository.signInWithData(data),
+        onLoading = { isProgress = true },
+        onSuccess = { firebaseUser ->
+            isProgress = false;
+            return@requestConvert firebaseUser.uid
+        }, onError = {
+            isProgress = false
+        }
+    )
 
-    /** Responses */
-    fun getSignInResponseLive() = requestSignInWithEmail.switchMap { (email, password) ->
-        requestConvert<FirebaseUser, String> (
-            method = { authRepository.signInWithEmail(email, password) },
-            onLoading = { isProgress = true },
-            onSuccess = { firebaseUser ->
-                isProgress = false
-                firebaseUser.uid
-            },
-            onError = { exception ->
-                isProgress = false
-                error = exception.localizedMessage ?: "Error"
-            }
-        )
-    }
-
-    fun getSignInServiceResponseLive() = requestSignInResult.switchMap { data ->
-        requestConvert<FirebaseUser, String>(
-            method = { authRepository.signInWithData(data) },
-            onLoading = { isProgress = true },
-            onSuccess = { firebaseUser -> isProgress = false; firebaseUser.uid
-            }, onError = { exception ->
-                Log.i("TAG", "EXCEPTION", exception)
-                isProgress = false
-                error = exception.localizedMessage ?: "Error"
-            }
-        )
-    }
-
-    /** Public methods */
     fun getSignInIntent() = authService.getSignInIntent()
-
-    fun onHuaweiDataResult(data: Intent?) {
-        requestSignInResult.value = data
-    }
 }

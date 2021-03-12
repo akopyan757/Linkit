@@ -1,17 +1,13 @@
 package com.akopyan757.linkit.view.fragment
 
 import android.app.AlertDialog
-import android.content.Intent
 import android.os.Bundle
-import android.widget.Toast
 import androidx.navigation.fragment.findNavController
 import com.akopyan757.base.view.BaseFragment
 import com.akopyan757.linkit.BR
 import com.akopyan757.linkit.R
-import com.akopyan757.linkit.common.Config
 import com.akopyan757.linkit.common.utils.AndroidUtils
 import com.akopyan757.linkit.databinding.FragmentAuthSignUpBinding
-import com.akopyan757.linkit.view.MainActivity
 import com.akopyan757.linkit.viewmodel.AuthSignUpViewModel
 import com.google.firebase.auth.FirebaseAuthUserCollisionException
 import org.koin.android.viewmodel.ext.android.viewModel
@@ -25,41 +21,36 @@ class AuthSignUpFragment: BaseFragment<FragmentAuthSignUpBinding, AuthSignUpView
     override fun getVariableId(): Int = BR.viewModel
 
     override fun onSetupView(binding: FragmentAuthSignUpBinding, bundle: Bundle?) = with(binding) {
-        tvAuthSignInBackButton.setOnClickListener {
-            findNavController().popBackStack()
+        tvAuthSignInBackButton.setOnClickListener { findNavController().popBackStack() }
+        btnAuthSignUp.setOnClickListener { signUpRequest() }
+    }
+
+    private fun signUpRequest() {
+        mViewModel.getSignUpRequest().apply {
+            observeEmptyResponse {
+                mViewModel.setErrorMessage(getString(R.string.error_passwords_match))
+            }
+            observeLoadingResponse { AndroidUtils.hideKeyboard(requireActivity()) }
+            observeSuccessResponse { uid -> openMainScreen(uid) }
+            observeErrorResponse { exception ->
+                if (exception.isUserCollision())
+                    showUserCollisionErrorDialog()
+                showErrorToast(exception)
+            }
         }
     }
 
-    override fun onSetupViewModel(viewModel: AuthSignUpViewModel): Unit = with(viewModel) {
-        initRes(getString(R.string.error_passwords_match))
-        getSignUpResponseLive().apply {
-            loadingResponse {
-                AndroidUtils.hideKeyboard(requireActivity())
-            }
-            successResponse { uid ->
-                getKoin().setProperty(Config.KEY_USER_ID, uid)
-                startActivity(Intent(requireContext(), MainActivity::class.java))
-                requireActivity().finish()
-            }
-            errorResponse { exception ->
-                when (exception) {
-                    is FirebaseAuthUserCollisionException -> {
-                        val method = getString(R.string.signInMethod)
-                        val message = getString(R.string.errorMessageAuthUserCollision, method)
-                        AlertDialog.Builder(context, R.style.Theme_Linkit_AlertDialog)
-                            .setTitle(R.string.error)
-                            .setMessage(message)
-                            .setPositiveButton(R.string.ok) { dialogInterface, _ ->
-                                dialogInterface?.dismiss()
-                            }
-                            .create()
-                            .show()
-                    }
-                }
+    private fun Exception.isUserCollision() = this is FirebaseAuthUserCollisionException
 
-                Toast.makeText(requireContext(), R.string.error, Toast.LENGTH_LONG).show()
-            }
-        }
+    private fun showUserCollisionErrorDialog() {
+        val method = getString(R.string.signInMethod)
+        val message = getString(R.string.errorMessageAuthUserCollision, method)
+        AlertDialog.Builder(context, R.style.Theme_Linkit_AlertDialog)
+            .setTitle(R.string.error)
+            .setMessage(message)
+            .setPositiveButton(R.string.ok) { dialogInterface, _ -> dialogInterface?.dismiss() }
+            .create()
+            .show()
     }
 
     companion object {

@@ -44,7 +44,7 @@ class PageViewModel(private val folderId: Int): BaseViewModel(), KoinComponent {
     private val linkRepository: LinkRepository by mainInject()
 
     /** Responses */
-    fun getDeleteUrlsResponseLive() = liveDelete.switchMap { delete ->
+    fun getDeleteUrlsLiveResponse() = liveDelete.switchMap { delete ->
         val ids = if (delete) {
             urlListData.getList()
                     .mapNotNull { it as? LinkObservable }
@@ -52,8 +52,8 @@ class PageViewModel(private val folderId: Int): BaseViewModel(), KoinComponent {
                     .map { it.id }
         } else emptyList()
 
-        requestConvertSimple<Unit>(
-            method = { linkRepository.deleteUrls(ids) },
+        requestConvert(
+            request = linkRepository.deleteUrls(ids),
             onSuccess = {
                 val list = urlListData.getList().mapNotNull { it as? LinkObservable }
                 val observables = list.filterNot { item -> ids.contains(item.id) }
@@ -67,7 +67,7 @@ class PageViewModel(private val folderId: Int): BaseViewModel(), KoinComponent {
      */
     fun getUrlLiveList() = urlListData
 
-    fun getEditModeState() = stateEditMode
+    fun isEditMode() = stateEditMode
 
     fun bindUrlList() {
         bindLiveList(
@@ -81,7 +81,7 @@ class PageViewModel(private val folderId: Int): BaseViewModel(), KoinComponent {
         )
     }
 
-    fun onItemSelected(observable: LinkObservable) {
+    fun onLinkItemSelected(observable: LinkObservable) {
         observable.selected = !observable.selected
         urlListData.changeItem(observable) {
             selectedCount = urlListData.getList()

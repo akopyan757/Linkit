@@ -2,10 +2,10 @@ package com.akopyan757.linkit.view.fragment
 
 import android.content.res.Configuration
 import android.os.Bundle
-import android.util.Log
 import androidx.core.os.bundleOf
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.akopyan757.base.view.BaseFragment
 import com.akopyan757.base.viewmodel.list.LinearLayoutManagerWrapper
 import com.akopyan757.linkit.BR
@@ -23,67 +23,72 @@ import org.koin.core.parameter.parametersOf
 
 class PageFragment: BaseFragment<FragmentPageBinding, PageViewModel>(), LinkAdapterListener {
 
-    override val mViewModel: PageViewModel by viewModel { parametersOf(observable.id) }
-
-    private lateinit var observable: FolderObservable
+    override val mViewModel: PageViewModel by viewModel {
+        val folderObservable = getFolderObservableFromArguments()
+        parametersOf(folderObservable?.id)
+    }
 
     override fun getVariableId() = BR.viewModel
-
     override fun getLayoutId() = R.layout.fragment_page
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    private val linksAdapter: LinkUrlAdapter by lazy { LinkUrlAdapter(this) }
 
-        observable = arguments?.getSerializable(TAG_FOLDER) as? FolderObservable ?: return
-    }
+    override fun onSetupView(binding: FragmentPageBinding, bundle: Bundle?) {
 
-    private val mUrlAdapter: LinkUrlAdapter by lazy {
-        LinkUrlAdapter(this)
-    }
-
-    override fun onSetupView(binding: FragmentPageBinding, bundle: Bundle?): Unit = with(binding) {
-
-        val urlLayoutManager = when (resources.configuration.orientation) {
-            Configuration.ORIENTATION_LANDSCAPE -> GridLayoutManager(requireContext(), 2)
-            else -> LinearLayoutManagerWrapper(requireContext())
-        }
-
-        fragmentWebLinkList.apply {
-            adapter = mUrlAdapter
-            layoutManager = urlLayoutManager
+        binding.fragmentWebLinkList.apply {
+            adapter = linksAdapter
+            layoutManager = getLinksListLayoutManager()
         }
     }
 
     override fun onSetupViewModel(viewModel: PageViewModel): Unit = with(viewModel) {
         bindUrlList()
-        getUrlLiveList().observeList(mUrlAdapter)
-        getDeleteUrlsResponseLive().apply {
-            successResponse {}
+        getUrlLiveList().observeList(linksAdapter)
+        getDeleteUrlsLiveResponse().apply {
+            observeSuccessResponse {}
         }
     }
 
     override fun onShareListener(link: LinkObservable) {
-        if (!mViewModel.getEditModeState()) {
+        if (mViewModel.isEditMode().not()) {
             startActivity(AndroidUtils.createShareIntent(link.url, link.title))
         }
     }
 
     override fun onItemListener(link: LinkObservable) {
-        if (mViewModel.getEditModeState()) {
-            mViewModel.onItemSelected(link)
+        if (mViewModel.isEditMode()) {
+            mViewModel.onLinkItemSelected(link)
         } else {
-            Log.i("PAGE_FRAGMENT", "onItemListener($link)")
-            val bundle = bundleOf(PreviewUrlFragment.PREVIEW_URL to link)
-            findNavController().navigate(R.id.action_mainFragment_to_preview, bundle)
+            openPreviewScreen(link)
         }
     }
 
     override fun onItemLongClickListener(link: LinkObservable) {
-        mViewModel.onItemSelected(link)
+        mViewModel.onLinkItemSelected(link)
     }
 
     override fun onAdClosed(adObservable: AdObservable) {
         mViewModel.onAdClosed(adObservable)
+    }
+
+    private fun getLinksListLayoutManager(): RecyclerView.LayoutManager {
+        return if (isLandscapeOrientation())
+            GridLayoutManager(requireContext(), 2)
+        else
+            LinearLayoutManagerWrapper(requireContext())
+    }
+
+    private fun isLandscapeOrientation(): Boolean {
+        return resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
+    }
+
+    private fun openPreviewScreen(observable: LinkObservable) {
+        val bundle = bundleOf(PreviewUrlFragment.PREVIEW_URL to observable)
+        findNavController().navigate(R.id.action_mainFragment_to_preview, bundle)
+    }
+
+    private fun getFolderObservableFromArguments(): FolderObservable? {
+        return arguments?.getSerializable(TAG_FOLDER) as? FolderObservable
     }
 
     companion object {

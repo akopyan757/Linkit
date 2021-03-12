@@ -32,7 +32,7 @@ class FolderViewModel : BaseViewModel(), KoinComponent {
     /**
      * Responses
      */
-    init {
+    fun bindFoldersList() {
         bindLiveList(
             request = linkRepository.getAllFolders(),
             listLiveData = foldersSelectedLiveData,
@@ -48,51 +48,31 @@ class FolderViewModel : BaseViewModel(), KoinComponent {
         )
     }
 
-    private val responseDeleteFolder = requestDelete.switchMap { folderId ->
-        requestLiveData(
-            method = { linkRepository.deleteFolder(folderId) },
-            onLoading = {
-                Log.i(TAG, "DELETE FOLDER: LOADING: ID = $folderId")
-            }, onSuccess = {
-                Log.i(TAG, "DELETE FOLDER: SUCCESS: ID = $folderId")
-                val observable = foldersSelectedLiveData.getList().first { it.id == folderId }
-                foldersSelectedLiveData.deleteItem(observable)
-            }, onError = { exception ->
-                Log.e(TAG, "DELETE FOLDER: ERROR", exception)
-            }
-        )
-    }
+    fun getDeleteFolderRequest(folderId: Int) = requestConvert(
+        request = linkRepository.deleteFolder(folderId),
+        onSuccess = {
+            val observable = foldersSelectedLiveData.getList().first { it.id == folderId }
+            foldersSelectedLiveData.deleteItem(observable)
+        }
+    )
 
-    private val responseEditFolder = requestEdit.switchMap { (folderId, folderName) ->
-        requestLiveData(
-            method = { linkRepository.renameFolder(folderId, folderName) },
-            onLoading = {
-                Log.i(TAG, "RENAME FOLDER: LOADING: ID = $folderId; NEW NAME = $folderName")
-            }, onSuccess = {
-                Log.i(TAG, "RENAME FOLDER: SUCCESS: ID = $folderId")
+    fun getRenameFolderRequest() = requestEdit.switchMap { (folderId, folderName) ->
+        requestConvert(
+            request = linkRepository.renameFolder(folderId, folderName),
+            onSuccess = {
                 val observable = foldersSelectedLiveData.getList()
                         .first { it.id == folderId }
                         .apply { name = folderName }
                 val index = foldersSelectedLiveData.getList().indexOf(observable)
                 foldersSelectedLiveData.insertWithChanged(observable, index)
-            }, onError = { exception ->
-                Log.e(TAG, "RENAME FOLDER: ERROR", exception)
             }
         )
     }
 
-    private val responseReorderFolder = requestSave.switchMap { pairs ->
-        requestLiveData(
-            method = { linkRepository.reorderFolders(pairs) },
-            onLoading = {
-                val ids = pairs.joinToString(", ") { "[${it.first}: order = ${it.second}]" }
-                Log.i(TAG, "REORDER FOLDER: LOADING: $ids")
-            }, onSuccess = {
-                this emitAction ACTION_DISMISS
-                Log.i(TAG, "REORDER FOLDER: SUCCESS")
-            }, onError = { exception ->
-                Log.i(TAG, "REORDER FOLDER: ERROR", exception)
-            }
+    fun getReorderFoldersRequest() = requestSave.switchMap { pairs ->
+        requestConvert(
+            request = linkRepository.reorderFolders(pairs),
+            onSuccess = { emitAction(ACTION_DISMISS) }
         )
     }
 
@@ -118,10 +98,6 @@ class FolderViewModel : BaseViewModel(), KoinComponent {
             Pair(observable.id, index)
         }
     }
-
-    override fun getLiveResponses() = groupLiveResponses(
-            responseDeleteFolder, responseEditFolder, responseReorderFolder
-    )
 
     companion object {
         const val ACTION_DISMISS = 12211

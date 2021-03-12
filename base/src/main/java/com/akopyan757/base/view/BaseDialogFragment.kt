@@ -3,24 +3,23 @@ package com.akopyan757.base.view
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.Window
+import android.widget.Toast
+import androidx.annotation.StringRes
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.Observable
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MediatorLiveData
 import com.akopyan757.base.viewmodel.BaseViewModel
 import com.akopyan757.base.viewmodel.DiffItemObservable
 import com.akopyan757.base.viewmodel.list.ListHolder
 import com.akopyan757.base.viewmodel.list.UpdatableListAdapter
 import com.akopyan757.base.viewmodel.list.observeList
-import java.lang.Exception
 
 abstract class BaseDialogFragment<V: ViewDataBinding, T: BaseViewModel> : DialogFragment() {
 
@@ -59,26 +58,43 @@ abstract class BaseDialogFragment<V: ViewDataBinding, T: BaseViewModel> : Dialog
             onAction(action)
         })
 
-        mViewModel.getLiveResponses()?.observe(viewLifecycleOwner, {
-            Log.i("STATE", "OBSERVES")
-        })
-
         onSetupView(mBinding, arguments)
         onSetupViewModel(mViewModel, viewLifecycleOwner)
 
         return mBinding.root
     }
 
-    fun <T> LiveData<out BaseViewModel.ResponseState<T>>.errorResponse(
-        onAction: (Exception) -> Unit
+    fun showToast(message: String) {
+        Toast.makeText(requireContext(), message, Toast.LENGTH_LONG).show()
+    }
+
+    fun showToast(@StringRes messageRes: Int) {
+        Toast.makeText(requireContext(), resources.getText(messageRes), Toast.LENGTH_LONG).show()
+    }
+
+    fun showErrorToast(exception: Exception) {
+        val message = exception.localizedMessage ?: "Error"
+        Toast.makeText(requireContext(), message, Toast.LENGTH_LONG).show()
+    }
+
+    fun <T> LiveData<out BaseViewModel.ResponseState<T>>.observeErrorResponse(
+            onAction: (Exception) -> Unit
     ) = errorResponse(viewLifecycleOwner, onAction)
 
-    fun <T> LiveData<out BaseViewModel.ResponseState<T>>.successResponse(
-        onAction: (T) -> Unit
+    fun <T> LiveData<out BaseViewModel.ResponseState<T>>.observeEmptyResponse(
+            onAction: (T) -> Unit
     ) = successResponse(viewLifecycleOwner, onAction)
 
-    fun <T> LiveData<out BaseViewModel.ResponseState<T>>.loadingResponse(
-        onAction: () -> Unit
+    fun <T> LiveData<out BaseViewModel.ResponseState<T>>.observeSuccessResponse(
+            onAction: (T) -> Unit
+    ) = successResponse(viewLifecycleOwner, onAction)
+
+    fun LiveData<out BaseViewModel.ResponseState<Unit>>.observeSuccessResponse(
+            onAction: () -> Unit
+    ) = successEmptyResponse(viewLifecycleOwner, onAction)
+
+    fun <T> LiveData<out BaseViewModel.ResponseState<T>>.observeLoadingResponse(
+            onAction: () -> Unit
     ) = loadingResponse(viewLifecycleOwner, onAction)
 
     fun <T : DiffItemObservable> LiveData<ListHolder<T>>.observeList(

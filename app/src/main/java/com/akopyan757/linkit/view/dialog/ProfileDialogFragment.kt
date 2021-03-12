@@ -3,9 +3,7 @@ package com.akopyan757.linkit.view.dialog
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import android.widget.Toast
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.LifecycleOwner
 import androidx.navigation.fragment.findNavController
 import com.akopyan757.base.view.BaseDialogFragment
 import com.akopyan757.linkit.BR
@@ -24,46 +22,78 @@ class ProfileDialogFragment : BaseDialogFragment<DialogProfileBinding, ProfileVi
     override fun getVariableId(): Int = BR.viewModel
 
     override fun onSetupView(binding: DialogProfileBinding, bundle: Bundle?) = with(binding) {
-        btnProfileSetupPassword.setOnClickListener {
-            findNavController().navigate(R.id.action_profileDialogFragment_to_setPassword)
-        }
-        btnProfileChangePassword.setOnClickListener {
-            findNavController().navigate(R.id.action_profileDialogFragment_to_updatePassword)
+        btnProfileSetupPassword.setOnClickListener { openSetPasswordScreen() }
+        btnProfileChangePassword.setOnClickListener { openUpdatePasswordScreen() }
+        btnProfileVerify.setOnClickListener { requestVerifyEmail() }
+        btnProfileSignOut.setOnClickListener { requestSignOut() }
+        requestGetUserData()
+        observeEmailVerifyLiveState()
+    }
+
+    private fun requestGetUserData() {
+        mViewModel.getUserResponseLive().apply {
+            observeSuccessResponse {}
+            observeErrorResponse{ dismiss() }
         }
     }
 
-    override fun onSetupViewModel(viewModel: ProfileViewModel, owner: LifecycleOwner): Unit = with(viewModel) {
-        getUserResponseLive().apply {
-            successResponse {}
-            errorResponse {}
+    private fun requestVerifyEmail() {
+        mViewModel.getVerifyLiveResponse().observeSuccessResponse { email ->
+            showToast(getString(R.string.toast_verify_email, email))
         }
-        getSignOutResponseLive().apply {
-            successResponse {
-                val activity = requireActivity()
-                startActivity(Intent(activity, AuthActivity::class.java))
-                activity.finish()
-            }
+    }
+
+    private fun requestSignOut() {
+        mViewModel.getSignOutResponseLive().observeSuccessResponse {
+            showAuthorizationScreen()
         }
-        getVerifyResponseLive().apply {
-            successResponse { email ->
-                val message = getString(R.string.toast_verify_email, email)
-                Toast.makeText(requireContext(), message, Toast.LENGTH_LONG).show()
-            }
-        }
-        getEmailVerifyState().observe(viewLifecycleOwner, { isEmailVerify ->
-            val nullDrawable = null
+    }
+
+    private fun observeEmailVerifyLiveState() {
+        mViewModel.getEmailVerifyState().observe(viewLifecycleOwner) { isEmailVerify ->
             if (isEmailVerify) {
-                val iconDrawable = ContextCompat.getDrawable(requireContext(), R.drawable.ic_check_verify)
-                mBinding.btnProfileVerify.visibility = View.GONE
-                mBinding.tvProfileEmail.setCompoundDrawablesWithIntrinsicBounds(
-                    nullDrawable, nullDrawable, iconDrawable, nullDrawable
-                )
+                resetVisibleVerifyButton()
+                setVisibleVerifyIcon()
             } else {
-                mBinding.btnProfileVerify.visibility = View.VISIBLE
-                mBinding.tvProfileEmail.setCompoundDrawablesRelative(
-                    nullDrawable, nullDrawable, nullDrawable, nullDrawable
-                )
+                setVisibleVerifyButton()
+                resetVisibleVerifyIcon()
             }
-        })
+        }
+    }
+
+    private fun showAuthorizationScreen() {
+        startActivity(Intent(requireActivity(), AuthActivity::class.java))
+        requireActivity().finish()
+    }
+
+    private fun openSetPasswordScreen() {
+        findNavController().navigate(R.id.action_profileDialogFragment_to_setPassword)
+    }
+
+    private fun openUpdatePasswordScreen() {
+        findNavController().navigate(R.id.action_profileDialogFragment_to_updatePassword)
+    }
+
+    private fun setVisibleVerifyIcon() {
+        val iconDrawable = ContextCompat.getDrawable(requireContext(), R.drawable.ic_check_verify)
+        val nullDrawable = null
+        mBinding.tvProfileEmail.setCompoundDrawablesWithIntrinsicBounds(
+            nullDrawable, nullDrawable, iconDrawable, nullDrawable
+        )
+    }
+
+    private fun resetVisibleVerifyIcon() {
+        val nullDrawable = null
+        mBinding.tvProfileEmail.setCompoundDrawablesRelative(
+            nullDrawable, nullDrawable, nullDrawable, nullDrawable
+        )
+    }
+
+    private fun setVisibleVerifyButton() {
+        mBinding.btnProfileVerify.visibility = View.VISIBLE
+    }
+
+    private fun resetVisibleVerifyButton() {
+        mBinding.btnProfileVerify.visibility = View.GONE
     }
 }

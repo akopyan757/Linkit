@@ -32,6 +32,7 @@ class AuthRepository: BaseRepository(), KoinComponent {
 
     fun resetPassword(email: String) = callIO {
         authWrapper.resetPassword(email)
+        return@callIO email
     }
 
     fun updatePassword(oldPassword: String, newPassword: String) = callIO {

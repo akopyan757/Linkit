@@ -1,7 +1,6 @@
 package com.akopyan757.base.view
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -51,10 +50,6 @@ abstract class BaseFragment<V: ViewDataBinding, T: BaseViewModel> : Fragment() {
             onAction(action)
         })
 
-        mViewModel.getLiveResponses()?.observe(viewLifecycleOwner, {
-            Log.i("STATE", "OBSERVES")
-        })
-
         onSetupView(mBinding, arguments)
         onSetupViewModel(mViewModel)
 
@@ -62,13 +57,16 @@ abstract class BaseFragment<V: ViewDataBinding, T: BaseViewModel> : Fragment() {
     }
 
     fun showToast(@StringRes messageRes: Int) {
-        val context = context ?: return
-        Toast.makeText(context, resources.getText(messageRes), Toast.LENGTH_LONG).show()
+        Toast.makeText(requireContext(), resources.getText(messageRes), Toast.LENGTH_LONG).show()
     }
 
     fun showToast(message: String) {
-        val context = context ?: return
-        Toast.makeText(context, message, Toast.LENGTH_LONG).show()
+        Toast.makeText(requireContext(), message, Toast.LENGTH_LONG).show()
+    }
+
+    fun showErrorToast(exception: Exception) {
+        val message = exception.localizedMessage ?: "Error"
+        Toast.makeText(requireContext(), message, Toast.LENGTH_LONG).show()
     }
 
     fun showDialog(dialogFragment: DialogFragment, tag: String) {
@@ -76,17 +74,25 @@ abstract class BaseFragment<V: ViewDataBinding, T: BaseViewModel> : Fragment() {
         dialogFragment.show(activity.supportFragmentManager, tag)
     }
 
-    fun <T> LiveData<out BaseViewModel.ResponseState<T>>.errorResponse(
+    fun <T> LiveData<out BaseViewModel.ResponseState<T>>.observeErrorResponse(
         onAction: (Exception) -> Unit
     ) = errorResponse(viewLifecycleOwner, onAction)
 
-    fun <T> LiveData<out BaseViewModel.ResponseState<T>>.successResponse(
+    fun <T> LiveData<out BaseViewModel.ResponseState<T>>.observeSuccessResponse(
         onAction: (T) -> Unit
     ) = successResponse(viewLifecycleOwner, onAction)
 
-    fun <T> LiveData<out BaseViewModel.ResponseState<T>>.loadingResponse(
+    fun LiveData<out BaseViewModel.ResponseState<Unit>>.observeSuccessResponse(
+        onAction: () -> Unit
+    ) = successEmptyResponse(viewLifecycleOwner, onAction)
+
+    fun <T> LiveData<out BaseViewModel.ResponseState<T>>.observeLoadingResponse(
         onAction: () -> Unit
     ) = loadingResponse(viewLifecycleOwner, onAction)
+
+    fun <T> LiveData<out BaseViewModel.ResponseState<T>>.observeEmptyResponse(
+        onAction: () -> Unit
+    ) = emptyResponse(viewLifecycleOwner, onAction)
 
     fun <T : DiffItemObservable> LiveData<ListHolder<T>>.observeList(
         adapter: UpdatableListAdapter<T>,

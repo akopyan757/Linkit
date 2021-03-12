@@ -2,6 +2,7 @@ package com.akopyan757.linkit.common
 
 object Config {
     const val EMPTY = ""
+    const val ERROR = "Error"
     const val DATABASE_NAME = "database"
     const val CLIP_URL_LABEL = "url"
 

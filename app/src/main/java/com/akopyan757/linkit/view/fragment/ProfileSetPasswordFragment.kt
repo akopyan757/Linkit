@@ -1,7 +1,6 @@
 package com.akopyan757.linkit.view.fragment
 
 import android.os.Bundle
-import android.widget.Toast
 import androidx.navigation.fragment.findNavController
 import com.akopyan757.base.view.BaseFragment
 import com.akopyan757.linkit.BR
@@ -23,21 +22,20 @@ class ProfileSetPasswordFragment: BaseFragment<FragmentAuthSetPasswordBinding, P
         ivSetPasswordBack.setOnClickListener {
             findNavController().popBackStack()
         }
+        btnSetPasswordSend.setOnClickListener { setPasswordRequest() }
     }
 
-    override fun onSetupViewModel(viewModel: ProfileSetPasswordViewModel): Unit = with(viewModel) {
-        initRes(getString(R.string.error_passwords_match))
-        getSetPasswordResponseLive().apply {
-            loadingResponse {
-                AndroidUtils.hideKeyboard(requireActivity())
+    private fun setPasswordRequest() {
+        mViewModel.getSetPasswordResponseLive().apply {
+            observeEmptyResponse {
+                mViewModel.setErrorMessage(getString(R.string.error_passwords_match))
             }
-            successResponse {
-                Toast.makeText(requireContext(), R.string.password_set, Toast.LENGTH_LONG).show()
+            observeLoadingResponse { AndroidUtils.hideKeyboard(requireActivity()) }
+            observeSuccessResponse {
+                showToast(R.string.password_set)
                 findNavController().popBackStack()
             }
-            errorResponse {
-                Toast.makeText(requireContext(), R.string.error, Toast.LENGTH_LONG).show()
-            }
+            observeErrorResponse { showToast(R.string.error) }
         }
     }
 }

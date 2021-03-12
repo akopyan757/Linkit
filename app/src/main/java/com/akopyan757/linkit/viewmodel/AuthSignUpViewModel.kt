@@ -1,20 +1,19 @@
 package com.akopyan757.linkit.viewmodel
 
 import androidx.databinding.Bindable
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.switchMap
+import androidx.lifecycle.LiveData
 import com.akopyan757.base.viewmodel.BaseViewModel
 import com.akopyan757.linkit.BR
 import com.akopyan757.linkit.common.Config
 import com.akopyan757.linkit.model.repository.AuthRepository
 import com.google.firebase.auth.FirebaseAuthUserCollisionException
-import com.google.firebase.auth.FirebaseUser
 import org.koin.core.KoinComponent
 import org.koin.core.inject
 
 class AuthSignUpViewModel: BaseViewModel(), KoinComponent {
 
-    /** Databinding properties */
+    private val authRepository: AuthRepository by inject()
+
     @get:Bindable
     var isProgress: Boolean by DelegatedBindable(false, BR.progress)
 
@@ -38,47 +37,29 @@ class AuthSignUpViewModel: BaseViewModel(), KoinComponent {
     val errorVisible: Boolean
         get() = error.isNotEmpty()
 
-    /** Private properties */
-    private var resErrorNotMatch: String = ""
+    fun getSignUpRequest(): LiveData<ResponseState<String>> {
+        if (password.isNotEmpty() && password != passwordConfirm)
+            return emptyLiveRequest()
 
-    /** Models */
-    private val authRepository: AuthRepository by inject()
-
-    /** Requests */
-    private val requestSetPassword = MutableLiveData<String>()
-
-    /** DataBinding methods */
-    fun onSignUpButtonClicked() {
-        if (password.isNotEmpty() && password != passwordConfirm) {
-            error = resErrorNotMatch
-            return
-        }
-
-        requestSetPassword.value = password
-    }
-
-    /** Responses */
-    fun getSignUpResponseLive() = requestSetPassword.switchMap { password ->
-        requestConvert<FirebaseUser, String> (
-            method = { authRepository.createUser(email, password) },
+        return requestConvert(
+            request = authRepository.createUser(email, password),
             onLoading = {
-                error = Config.EMPTY
                 isProgress = true
+                error = Config.EMPTY
             }, onSuccess = { firebaseUser ->
                 isProgress = false
-                firebaseUser.uid
+                return@requestConvert firebaseUser.uid
             },
             onError = { exception ->
                 isProgress = false
                 if (exception !is FirebaseAuthUserCollisionException) {
-                    error = exception.localizedMessage ?: "Error"
+                    error = exception.localizedMessage ?: Config.ERROR
                 }
             }
         )
     }
 
-    /** Public method */
-    fun initRes(errorNotMatch: String) {
-        resErrorNotMatch = errorNotMatch
+    fun setErrorMessage(message: String) {
+        error = message
     }
 }

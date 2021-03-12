@@ -2,8 +2,6 @@ package com.akopyan757.linkit.view.fragment
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
-import android.widget.Toast
 import androidx.navigation.fragment.findNavController
 import com.akopyan757.base.view.BaseFragment
 import com.akopyan757.linkit.BR
@@ -27,8 +25,13 @@ class AuthSignInFragment: BaseFragment<FragmentAuthSignInBinding, AuthSignInView
         binding: FragmentAuthSignInBinding,
         bundle: Bundle?
     ) = with(binding) {
+
         btnAuthHuawei.setOnClickListener {
-            startActivityForResult(mViewModel.getSignInIntent(), REQUEST_CODE)
+            startActivityForResult(mViewModel.getSignInIntent(), SERVICE_SIGN_IN_REQUEST_CODE)
+        }
+
+        btnAuthSignIn.setOnClickListener {
+            signInWithEmailAndPasswordRequest()
         }
 
         tvAuthForgotPasswordButton.setOnClickListener {
@@ -40,44 +43,31 @@ class AuthSignInFragment: BaseFragment<FragmentAuthSignInBinding, AuthSignInView
         }
     }
 
-    override fun onSetupViewModel(viewModel: AuthSignInViewModel): Unit = with(viewModel) {
-        getSignInResponseLive().apply {
-            loadingResponse {
-                AndroidUtils.hideKeyboard(requireActivity())
-            }
-            successResponse { uid ->
-                getKoin().setProperty(Config.KEY_USER_ID, uid)
-                startActivity(Intent(requireContext(), MainActivity::class.java))
-                requireActivity().finish()
-            }
-            errorResponse {
-                Toast.makeText(requireContext(), "Error", Toast.LENGTH_LONG).show()
-            }
-        }
-        getSignInServiceResponseLive().apply {
-            loadingResponse {
-                AndroidUtils.hideKeyboard(requireActivity())
-            }
-            successResponse { uid ->
-                getKoin().setProperty(Config.KEY_USER_ID, uid)
-                startActivity(Intent(requireContext(), MainActivity::class.java))
-                requireActivity().finish()
-            }
-            errorResponse {
-                Toast.makeText(requireContext(), "Error", Toast.LENGTH_LONG).show()
-            }
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (requestCode.isServiceSignIn())
+            signInWithServiceRequest(data)
+    }
+
+    private fun signInWithEmailAndPasswordRequest() {
+        mViewModel.getSignInWithEmailLiveResponse().apply {
+            observeLoadingResponse { AndroidUtils.hideKeyboard(requireActivity()) }
+            observeSuccessResponse { firebaseUid -> openMainScreen(firebaseUid) }
+            observeErrorResponse { exception -> showErrorToast(exception) }
         }
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        Log.i(TAG, "onActivityResult($requestCode, $resultCode)")
-        if (requestCode == REQUEST_CODE) {
-            mViewModel.onHuaweiDataResult(data)
+    private fun signInWithServiceRequest(data: Intent?) {
+        mViewModel.getSignInWithServiceLiveResponse(data).apply {
+            observeLoadingResponse { AndroidUtils.hideKeyboard(requireActivity()) }
+            observeSuccessResponse { firebaseUid -> openMainScreen(firebaseUid) }
+            observeErrorResponse { exception -> showErrorToast(exception) }
         }
     }
+
+    private fun Int.isServiceSignIn() = this == SERVICE_SIGN_IN_REQUEST_CODE
 
     companion object {
-        const val REQUEST_CODE = 7676
+        const val SERVICE_SIGN_IN_REQUEST_CODE = 7676
         const val TAG = "AUTH_SIGN_IN_FRAGMENT"
     }
 }

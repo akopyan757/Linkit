@@ -1,6 +1,6 @@
 package com.akopyan757.linkit.view.fragment
 
-import android.widget.Toast
+import android.os.Bundle
 import androidx.navigation.fragment.findNavController
 import com.akopyan757.base.view.BaseFragment
 import com.akopyan757.linkit.BR
@@ -18,19 +18,23 @@ class AuthForgotPasswordFragment: BaseFragment<FragmentAuthResetPasswordBinding,
     override fun getLayoutId(): Int = R.layout.fragment_auth_reset_password
     override fun getVariableId(): Int = BR.viewModel
 
-    override fun onSetupViewModel(viewModel: AuthForgotPasswordViewModel): Unit = with(viewModel) {
-        getResetPasswordResponseLive().apply {
-            loadingResponse {
-                AndroidUtils.hideKeyboard(requireActivity())
-            }
-            successResponse { email ->
-                val message = getString(R.string.toast_reset_password, email)
-                Toast.makeText(requireContext(), message, Toast.LENGTH_LONG).show()
+    override fun onSetupView(
+            binding: FragmentAuthResetPasswordBinding,
+            bundle: Bundle?
+    ) = with(binding) {
+        btnAuthForgotPassword.setOnClickListener {
+            resetPasswordRequest()
+        }
+    }
+
+    private fun resetPasswordRequest() {
+        mViewModel.getResetPasswordResponse().apply {
+            observeLoadingResponse { AndroidUtils.hideKeyboard(requireActivity()) }
+            observeSuccessResponse { email ->
+                showToast(getString(R.string.toast_reset_password, email))
                 findNavController().popBackStack()
             }
-            errorResponse {
-                Toast.makeText(requireContext(), "Error", Toast.LENGTH_LONG).show()
-            }
+            observeErrorResponse { exception -> showErrorToast(exception) }
         }
     }
 

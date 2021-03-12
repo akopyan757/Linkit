@@ -1,17 +1,16 @@
 package com.akopyan757.linkit.viewmodel
 
-import android.util.Log
 import androidx.databinding.Bindable
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.switchMap
+import androidx.lifecycle.LiveData
 import com.akopyan757.base.viewmodel.BaseViewModel
 import com.akopyan757.linkit.BR
 import com.akopyan757.linkit.model.repository.AuthRepository
-import com.google.firebase.auth.FirebaseUser
 import org.koin.core.KoinComponent
 import org.koin.core.inject
 
 class ProfileUpdatePasswordViewModel: BaseViewModel(), KoinComponent {
+
+    private val authRepository: AuthRepository by inject()
 
     /** Databinding properties */
     @get:Bindable
@@ -37,49 +36,23 @@ class ProfileUpdatePasswordViewModel: BaseViewModel(), KoinComponent {
     val errorVisible: Boolean
         get() = error.isNotEmpty()
 
-    /** Private properties */
-    private var resErrorNotMatch: String = ""
-
-    /** Models */
-    private val authRepository: AuthRepository by inject()
-
-    /** Requests */
-    private val requestUpdatePassword = MutableLiveData<Pair<String, String>>()
-
-    /** DataBinding methods */
-    fun onUpdatePasswordButtonClicked() {
+    fun getSetPasswordLiveResponseOrNull(): LiveData<ResponseState<Unit>>? {
         if (password.isNotEmpty() && password != passwordConfirm) {
-            error = resErrorNotMatch
-            return
+            return null
         }
 
-        Log.i(TAG, "password=$password")
-
-        requestUpdatePassword.value = Pair(oldPassword, password)
-    }
-
-    /** Responses */
-    fun getSetPasswordResponseLive() = requestUpdatePassword.switchMap { (oldPassword, newPassword) ->
-        requestConvertSimple<Unit> (
-            method = { authRepository.updatePassword(oldPassword, newPassword) },
+        return requestConvert (
+            request = authRepository.updatePassword(oldPassword, password),
             onLoading = { isProgress = true },
-            onSuccess = { firebaseUser ->
-                isProgress = false
-                Log.i(TAG, "updatePassword: success: $firebaseUser")
-            }, onError = { exception ->
-                Log.w(TAG, "updatePassword: failure", exception)
+            onSuccess = { isProgress = false },
+            onError = { exception ->
                 isProgress = false
                 error = exception.localizedMessage ?: "Error"
             }
         )
     }
 
-    /** Public method */
-    fun initRes(errorNotMatch: String) {
-        resErrorNotMatch = errorNotMatch
-    }
-
-    companion object {
-        private const val TAG = "PROFILE_SET_PASSWORD_VM"
+    fun setErrorMessage(message: String) {
+        error = message
     }
 }

@@ -11,17 +11,12 @@ import kotlin.reflect.KProperty
 abstract class BaseViewModel: ViewModel(), BaseStateObservable {
 
     private val mAction = MutableLiveData<Int>()
-    private val mException = MutableLiveData<Exception>()
     private val mCallbacks: PropertyChangeRegistry by lazy { PropertyChangeRegistry() }
 
-    enum class RequestState {
-        LOADING,
-        SUCCESS,
-        ERROR
-    }
-
     sealed class ResponseState<out T> {
+        object Empty: ResponseState<Nothing>()
         object Loading: ResponseState<Nothing>()
+        object SuccessEmpty: ResponseState<Nothing>()
         data class Success<out T>(val data: T): ResponseState<T>()
         data class Error(val exception: Exception): ResponseState<Nothing>()
     }
@@ -30,30 +25,10 @@ abstract class BaseViewModel: ViewModel(), BaseStateObservable {
         mAction.value = code
     }
 
-    infix fun emitException(exception: Exception) {
-        mException.value = exception
-    }
-
     fun getLiveAction(): LiveData<Int> = mAction
-
-    fun getLiveException(): LiveData<Exception> = mException
-
-    open fun getLiveResponses(): LiveData<RequestState>? = null
 
     override fun getCallback(): PropertyChangeRegistry {
         return mCallbacks
-    }
-
-    fun groupLiveResponses(vararg responses: LiveData<RequestState>): LiveData<RequestState> {
-        val mediatorGroup = MediatorLiveData<RequestState>()
-
-        responses.forEach { response ->
-            mediatorGroup.addSource(response) { requestState ->
-                mediatorGroup.value = requestState
-            }
-        }
-
-        return mediatorGroup
     }
 
     fun <T, R : DiffItemObservable> bindLiveList(
@@ -73,73 +48,23 @@ abstract class BaseViewModel: ViewModel(), BaseStateObservable {
                         onFinished?.invoke(observables)
                     }
                 } catch (e: Exception) {
-                    mException.value = e
                     onError?.invoke(e)
                 }
             }
         }
     }
 
-    fun <T> requestLiveData(
-        method: () -> LiveData<ApiResponse<T>>,
-        onLoading: (() -> Unit)? = null,
-        onSuccess: ((data: T) -> Unit)? = null,
-        onError: ((exception: Exception) -> Unit)? = null
-    ) = liveData(viewModelScope.coroutineContext) {
-        try {
-            method.invoke().also { liveData ->
-                emitSource(liveData)
-            }
-        } catch (e: Exception) {
-            emit(ApiResponse.Error(e))
-        }
-    }.map { response ->
-        when (response) {
-            is ApiResponse.Loading -> {
-                onLoading?.invoke()
-                RequestState.LOADING
-            }
-
-            is ApiResponse.Success -> {
-                onSuccess?.invoke(response.data)
-                RequestState.SUCCESS
-            }
-
-            is ApiResponse.Error -> {
-                response.exception.also { exception ->
-                    onError?.invoke(exception)
-                    mException.value = exception
-                }
-                RequestState.ERROR
-            }
-        }
+    fun <T> emptyLiveRequest(): LiveData<ResponseState<T>> = liveData {
+        emit(ResponseState.Empty)
     }
 
-    fun <T> requestConvertSimple(
-        method: () -> LiveData<ApiResponse<T>>,
-        onLoading: (() -> Unit)? = null,
-        onSuccess: ((T) -> Unit)? = null,
-        onError: ((exception: Exception) -> Unit)? = null
-    ) = requestConvert(method, onLoading, onSuccess = { result ->
-        onSuccess?.invoke(result)
-        result
-    }, onError)
-
     fun <T, V> requestConvert(
-        method: () -> LiveData<ApiResponse<T>>,
+        request: LiveData<ApiResponse<T>>,
         onLoading: (() -> Unit)? = null,
         onSuccess: ((data: T) -> V)? = null,
         onError: ((exception: Exception) -> Unit)? = null
-    ) = liveData(viewModelScope.coroutineContext) {
-        try {
-            method.invoke().also { liveData ->
-                emitSource(liveData)
-            }
-        } catch (e: Exception) {
-            emit(ApiResponse.Error(e))
-        }
-    }.map { response ->
-        when (response) {
+    ): LiveData<ResponseState<V>> = Transformations.map(request) { response ->
+        return@map when (response) {
             is ApiResponse.Loading -> {
                 onLoading?.invoke()
                 ResponseState.Loading
@@ -150,15 +75,12 @@ abstract class BaseViewModel: ViewModel(), BaseStateObservable {
                 if (result != null) {
                     ResponseState.Success(result)
                 } else {
-                    ResponseState.Error(Exception("Response data not found"))
+                    ResponseState.SuccessEmpty
                 }
             }
 
             is ApiResponse.Error -> {
-                response.exception.also { exception ->
-                    onError?.invoke(exception)
-                    mException.value = exception
-                }
+                onError?.invoke(response.exception)
                 ResponseState.Error(response.exception)
             }
         }

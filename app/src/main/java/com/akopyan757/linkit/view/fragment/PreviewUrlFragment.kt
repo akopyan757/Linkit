@@ -3,7 +3,6 @@ package com.akopyan757.linkit.view.fragment
 import android.os.Bundle
 import android.webkit.WebView
 import android.webkit.WebViewClient
-import android.widget.Toast
 import androidx.navigation.fragment.findNavController
 import com.akopyan757.base.view.BaseFragment
 import com.akopyan757.linkit.BR
@@ -19,24 +18,21 @@ import org.koin.core.parameter.parametersOf
 
 class PreviewUrlFragment: BaseFragment<FragmentPreviewUrlBinding, PreviewUrlViewModel>(), KoinComponent {
 
-    override val mViewModel: PreviewUrlViewModel by viewModel { parametersOf(data) }
+    override val mViewModel: PreviewUrlViewModel by viewModel {
+        parametersOf(getLinkObservableFromArgumentsOrNull())
+    }
 
     override fun getLayoutId() = R.layout.fragment_preview_url
     override fun getVariableId() = BR.viewModel
 
-    private lateinit var data: LinkObservable
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val observable = arguments?.getSerializable(PREVIEW_URL) as? LinkObservable
-        if (observable != null) {
-            data = observable
-        } else {
+        if (isPreviewObservableEmpty()) {
             findNavController().popBackStack()
         }
     }
 
-    override fun onSetupView(binding: FragmentPreviewUrlBinding, bundle: Bundle?): Unit = with(binding) {
+    override fun onSetupView(binding: FragmentPreviewUrlBinding, bundle: Bundle?) = with(binding) {
 
         toolbarPreviewPage.setNavigationOnClickListener {
             findNavController().popBackStack()
@@ -45,11 +41,23 @@ class PreviewUrlFragment: BaseFragment<FragmentPreviewUrlBinding, PreviewUrlView
         wvPreviewPage.webViewClient = object: WebViewClient() {
             override fun onPageFinished(view: WebView, url: String) {
                 AndroidUtils.takeScreenshotFromWebView(view)
-                mViewModel.moveScreenshotTiImageCache().successResponse {
-                    Toast.makeText(requireContext(), "Screenshot done", Toast.LENGTH_LONG).show()
-                }
+                moveScreenshotToCache()
             }
         }
+    }
+
+    fun moveScreenshotToCache() {
+        mViewModel.requestMoveScreenshotToCache().observeSuccessResponse {
+            showToast("Screenshot done")
+        }
+    }
+
+    private fun getLinkObservableFromArgumentsOrNull(): LinkObservable? {
+        return arguments?.getSerializable(PREVIEW_URL) as? LinkObservable
+    }
+
+    private fun isPreviewObservableEmpty(): Boolean {
+        return arguments?.getSerializable(PREVIEW_URL) == null
     }
 
     companion object {

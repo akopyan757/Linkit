@@ -25,18 +25,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".view.ReceiveUrlActivity"
-            android:label="@string/title_activity_recieve_url">
-            <intent-filter>
-                <action android:name="android.intent.action.SEND" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
-                <data android:mimeType="text/plain" />
-            </intent-filter>
-        </activity>
 
         <uses-library
             android:name="org.apache.http.legacy"

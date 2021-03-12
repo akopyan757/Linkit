@@ -6,6 +6,21 @@ import androidx.lifecycle.MediatorLiveData
 import com.akopyan757.base.viewmodel.BaseViewModel
 import java.lang.Exception
 
+fun <T> LiveData<out BaseViewModel.ResponseState<T>>.emptyResponse(
+        viewLifecycleOwner: LifecycleOwner,
+        onAction: () -> Unit
+) {
+    val responseLiveData = MediatorLiveData<Unit>()
+    responseLiveData.addSource(this) { response ->
+        if (response is BaseViewModel.ResponseState.Empty) {
+            responseLiveData.value = Unit
+        }
+    }
+    responseLiveData.observe(viewLifecycleOwner) {
+        onAction.invoke()
+    }
+}
+
 fun <T> LiveData<out BaseViewModel.ResponseState<T>>.errorResponse(
     viewLifecycleOwner: LifecycleOwner,
     onAction: (Exception) -> Unit
@@ -36,6 +51,20 @@ fun <T> LiveData<out BaseViewModel.ResponseState<T>>.successResponse(
     })
 }
 
+fun LiveData<out BaseViewModel.ResponseState<Unit>>.successEmptyResponse(
+        viewLifecycleOwner: LifecycleOwner,
+        onAction: () -> Unit
+) {
+    val responseLiveData = MediatorLiveData<Unit>()
+    responseLiveData.addSource(this) { response ->
+        if (response is BaseViewModel.ResponseState.SuccessEmpty) {
+            responseLiveData.value = Unit
+        }
+    }
+    responseLiveData.observe(viewLifecycleOwner, {
+        onAction.invoke()
+    })
+}
 
 fun <T> LiveData<out BaseViewModel.ResponseState<T>>.loadingResponse(
     viewLifecycleOwner: LifecycleOwner,

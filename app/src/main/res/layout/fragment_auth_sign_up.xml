@@ -93,7 +93,6 @@
             android:layout_height="@dimen/buttonAuthHeight"
             android:layout_marginTop="@dimen/marginPrimary"
             android:enabled="@{viewModel.buttonSignInEnable}"
-            android:onClick="@{() -> viewModel.onSignUpButtonClicked()}"
             android:text="@string/sign_up"
             app:layout_constraintEnd_toEndOf="@+id/tilAuthSignUpPassword"
             app:layout_constraintStart_toStartOf="@+id/tilAuthSignUpPassword"

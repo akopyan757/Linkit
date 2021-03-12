@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
 import androidx.core.os.bundleOf
-import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.SavedStateHandle
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -23,57 +22,27 @@ import com.akopyan757.linkit.viewmodel.listener.FolderClickListener
 import com.akopyan757.linkit.viewmodel.observable.FolderObservable
 import org.koin.android.viewmodel.ext.android.viewModel
 
-class FolderDialogFragment : BaseDialogFragment<DialogFoldersSettingsBinding, FolderViewModel>(), ItemTouchHelperAdapter {
+class FolderDialogFragment : BaseDialogFragment<DialogFoldersSettingsBinding, FolderViewModel>(),
+        ItemTouchHelperAdapter, FolderClickListener {
 
     override val mViewModel: FolderViewModel by viewModel()
 
-    private val mTouchHelper: ItemTouchHelper by lazy {
-        ItemTouchHelper(ItemTouchHelperCallback(this))
-    }
-
-    private val savedStateHandle: SavedStateHandle? by lazy {
-        findNavController().currentBackStackEntry?.savedStateHandle
-    }
-
-    private val mAdapter: FolderAdapter by lazy {
-        FolderAdapter(object : FolderClickListener {
-            override fun onDeleteFolder(observable: FolderObservable) {
-                val bundle = bundleOf(FolderDeleteDialogFragment.FOLDER_DATA to observable)
-                findNavController().navigate(R.id.action_folderFragment_to_delete, bundle)
-            }
-
-            override fun onEditFolder(observable: FolderObservable) {
-                //mViewModel.onEditFolder(observable)
-            }
-
-            override fun onStartDrag(viewHolder: RecyclerView.ViewHolder) {
-                mTouchHelper.startDrag(viewHolder)
-            }
-        })
-    }
-
-    private val mLayoutManager: RecyclerView.LayoutManager by lazy {
-        LinearLayoutManager(requireContext())
-    }
+    private lateinit var recyclerTouchHelper: ItemTouchHelper
+    private lateinit var recyclerAdapter: FolderAdapter
+    private lateinit var recyclerLayoutManager: RecyclerView.LayoutManager
 
     override fun getLayoutId() = R.layout.dialog_folders_settings
     override fun getVariableId(): Int = BR.viewModel
 
     override fun onSetupView(binding: DialogFoldersSettingsBinding, bundle: Bundle?): Unit = with(binding) {
-        rvFolders.apply {
-            adapter = mAdapter
-            layoutManager = mLayoutManager
-        }
-
-        mTouchHelper.attachToRecyclerView(rvFolders)
-
-        btnCreateFolder.setOnClickListener {
-            findNavController().navigate(R.id.action_folderFragment_to_create)
-        }
-
-        btnFoldersAccept.setOnClickListener {
-            mViewModel.saveFolders()
-        }
+        setupRecyclerView()
+        btnCreateFolder.setOnClickListener { openCreateFolderScreen() }
+        btnFoldersAccept.setOnClickListener { mViewModel.saveFolders() }
+        mViewModel.bindFoldersList()
+        mViewModel.getRenameFolderRequest().observeSuccessResponse {}
+        mViewModel.getReorderFoldersRequest().observeSuccessResponse {}
+        mViewModel.getFolderLiveListForSelect().observeList(recyclerAdapter)
+        observeDeleteAcceptState()
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -81,26 +50,66 @@ class FolderDialogFragment : BaseDialogFragment<DialogFoldersSettingsBinding, Fo
         inflater.inflate(R.menu.menu_folders, menu)
     }
 
+    override fun onDeleteFolder(observable: FolderObservable) {
+        openDeleteFolderDialog(observable)
+    }
+
+    override fun onEditFolder(observable: FolderObservable) {
+        //mViewModel.onEditFolder(observable)
+    }
+
+    override fun onStartDrag(viewHolder: RecyclerView.ViewHolder) {
+        recyclerTouchHelper.startDrag(viewHolder)
+    }
+
     override fun onItemMove(fromPosition: Int, toPosition: Int): Boolean {
-        val result = mAdapter.onItemMove(fromPosition, toPosition)
-        mViewModel.setEditObservables(mAdapter.items)
+        val result = recyclerAdapter.onItemMove(fromPosition, toPosition)
+        mViewModel.setEditObservables(recyclerAdapter.items)
         return result
     }
 
-    override fun onSetupViewModel(viewModel: FolderViewModel, owner: LifecycleOwner): Unit = with(mViewModel) {
-        getFolderLiveListForSelect().observeList(mAdapter)
-        savedStateHandle
-                ?.getLiveData<FolderObservable>(Config.KEY_ACCEPT_DELETE)
-                ?.observe(owner, { folderObservable ->
-                    mViewModel.onDeleteFolder(folderObservable)
-                })
+    override fun onAction(action: Int) {
+        if (action == FolderViewModel.ACTION_DISMISS) {
+            dismissDialog()
+        }
     }
 
-    override fun onAction(action: Int): Unit = when (action) {
-        FolderViewModel.ACTION_DISMISS -> {
-            findNavController().popBackStack(); Unit
-        }
+    private fun setupRecyclerView() {
+        recyclerAdapter = FolderAdapter(this)
+        recyclerLayoutManager = LinearLayoutManager(requireContext())
+        val folderRecyclerView = mBinding.rvFolders
+        folderRecyclerView.adapter = recyclerAdapter
+        folderRecyclerView.layoutManager = recyclerLayoutManager
+        recyclerTouchHelper = ItemTouchHelper(ItemTouchHelperCallback(this))
+        recyclerTouchHelper.attachToRecyclerView(folderRecyclerView)
+    }
 
-        else -> {}
+    private fun observeDeleteAcceptState() {
+        val savedStateHandle = getDeleteStateHandle() ?: return
+        val liveData = savedStateHandle.getLiveData<FolderObservable>(Config.KEY_ACCEPT_DELETE)
+        liveData.observe(viewLifecycleOwner, { folderObservable ->
+            onDeleteFolder(folderObservable.id)
+        })
+    }
+
+    private fun onDeleteFolder(folderId: Int) {
+        mViewModel.getDeleteFolderRequest(folderId).observeSuccessResponse {}
+    }
+
+    private fun dismissDialog() {
+        findNavController().popBackStack()
+    }
+
+    private fun getDeleteStateHandle(): SavedStateHandle? {
+        return findNavController().currentBackStackEntry?.savedStateHandle
+    }
+
+    private fun openCreateFolderScreen() {
+        findNavController().navigate(R.id.action_folderFragment_to_create)
+    }
+
+    private fun openDeleteFolderDialog(observable: FolderObservable) {
+        val bundle = bundleOf(FolderDeleteDialogFragment.FOLDER_DATA to observable)
+        findNavController().navigate(R.id.action_folderFragment_to_delete, bundle)
     }
 }
