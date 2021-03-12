@@ -37,9 +37,8 @@ class FolderDialogFragment : BaseDialogFragment<DialogFoldersSettingsBinding, Fo
     override fun onSetupView(bundle: Bundle?) {
         setupRecyclerView()
         binding.btnCreateFolder.setOnClickListener { openCreateFolderScreen() }
-        binding.btnFoldersAccept.setOnClickListener { viewModel.saveFolders() }
+        binding.btnFoldersAccept.setOnClickListener {  }
         viewModel.bindFoldersList()
-        viewModel.getRenameFolderRequest().observeSuccessResponse {}
         viewModel.getReorderFoldersRequest().observeSuccessResponse {}
         viewModel.getFolderLiveListForSelect().observeList(recyclerAdapter)
         observeDeleteAcceptState()
@@ -55,7 +54,7 @@ class FolderDialogFragment : BaseDialogFragment<DialogFoldersSettingsBinding, Fo
     }
 
     override fun onEditFolder(observable: FolderObservable) {
-        //viewModel.onEditFolder(observable)
+        viewModel.requestRenameFolder(observable).observeSuccessResponse {}
     }
 
     override fun onStartDrag(viewHolder: RecyclerView.ViewHolder) {
@@ -84,16 +83,20 @@ class FolderDialogFragment : BaseDialogFragment<DialogFoldersSettingsBinding, Fo
         recyclerTouchHelper.attachToRecyclerView(folderRecyclerView)
     }
 
+    private fun acceptFolders() {
+        viewModel.saveFolders()
+    }
+
     private fun observeDeleteAcceptState() {
         val savedStateHandle = getDeleteStateHandle() ?: return
         val liveData = savedStateHandle.getLiveData<FolderObservable>(Config.KEY_ACCEPT_DELETE)
         liveData.observe(viewLifecycleOwner, { folderObservable ->
-            onDeleteFolder(folderObservable.id)
+            deleteFolder(folderObservable.id)
         })
     }
 
-    private fun onDeleteFolder(folderId: Int) {
-        viewModel.getDeleteFolderRequest(folderId).observeSuccessResponse {}
+    private fun deleteFolder(folderId: Int) {
+        viewModel.requestDeleteFolder(folderId).observeSuccessResponse {}
     }
 
     private fun dismissDialog() {

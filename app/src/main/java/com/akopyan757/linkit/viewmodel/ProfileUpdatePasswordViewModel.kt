@@ -14,23 +14,23 @@ class ProfileUpdatePasswordViewModel: BaseViewModel(), KoinComponent {
 
     /** Databinding properties */
     @get:Bindable
-    var isProgress: Boolean by DelegatedBindable(false, BR.progress)
+    var isProgress: Boolean by DB(false, BR.progress)
 
     @get:Bindable
-    var oldPassword: String by DelegatedBindable("", BR.oldPassword, BR.buttonSignInEnable)
+    var oldPassword: String by DB("", BR.oldPassword, BR.buttonSignInEnable)
 
     @get:Bindable
-    var password: String by DelegatedBindable("", BR.password, BR.buttonSignInEnable)
+    var password: String by DB("", BR.password, BR.buttonSignInEnable)
 
     @get:Bindable
-    var passwordConfirm: String by DelegatedBindable("", BR.passwordConfirm, BR.buttonSignInEnable)
+    var passwordConfirm: String by DB("", BR.passwordConfirm, BR.buttonSignInEnable)
 
     @get:Bindable
     val buttonSignInEnable: Boolean
         get() = oldPassword.isNotEmpty() && password.isNotEmpty() && passwordConfirm.isNotEmpty()
 
     @get:Bindable
-    var error: String by DelegatedBindable("", BR.error, BR.errorVisible)
+    var error: String by DB("", BR.error, BR.errorVisible)
 
     @get:Bindable
     val errorVisible: Boolean

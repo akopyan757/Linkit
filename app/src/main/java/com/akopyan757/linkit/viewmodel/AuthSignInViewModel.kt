@@ -14,24 +14,15 @@ class AuthSignInViewModel: BaseViewModel(), KoinComponent {
     private val authRepository: AuthRepository by inject()
     private val authService: IAuthorizationService by inject()
 
-    @get:Bindable
-    var isProgress: Boolean by DelegatedBindable(false, BR.progress)
+    @get:Bindable var isProgress: Boolean by DB(false, BR.progress)
+    @get:Bindable var email: String by DB("", BR.email, BR.buttonSignInEnable)
+    @get:Bindable var password: String by DB("", BR.password, BR.buttonSignInEnable)
+    @get:Bindable var error: String by DB("", BR.error, BR.errorVisible)
 
-    @get:Bindable
-    var email: String by DelegatedBindable("", BR.email, BR.buttonSignInEnable)
-
-    @get:Bindable
-    var password: String by DelegatedBindable("", BR.password, BR.buttonSignInEnable)
-
-    @get:Bindable
-    val buttonSignInEnable: Boolean
+    @get:Bindable val buttonSignInEnable: Boolean
         get() = email.isNotEmpty() && password.isNotEmpty()
 
-    @get:Bindable
-    var error: String by DelegatedBindable("", BR.error, BR.errorVisible)
-
-    @get:Bindable
-    val errorVisible: Boolean
+    @get:Bindable val errorVisible: Boolean
         get() = error.isNotEmpty()
 
     fun requestSignInWithEmail() = requestConvert(
@@ -48,7 +39,7 @@ class AuthSignInViewModel: BaseViewModel(), KoinComponent {
         request = authRepository.signInWithData(data),
         onLoading = { isProgress = true },
         onSuccess = { firebaseUser ->
-            isProgress = false;
+            isProgress = false
             return@requestConvert firebaseUser.uid
         }, onError = {
             isProgress = false

@@ -11,9 +11,9 @@ class AuthForgotPasswordViewModel: BaseViewModel(), KoinComponent {
 
     private val authRepository: AuthRepository by inject()
 
-    @get:Bindable var isProgress: Boolean by DelegatedBindable(false, BR.progress)
-    @get:Bindable var email: String by DelegatedBindable("", BR.email, BR.buttonSignInEnable)
-    @get:Bindable var error: String by DelegatedBindable("", BR.error, BR.errorVisible)
+    @get:Bindable var isProgress: Boolean by DB(false, BR.progress)
+    @get:Bindable var email: String by DB("", BR.email, BR.buttonSignInEnable)
+    @get:Bindable var error: String by DB("", BR.error, BR.errorVisible)
 
     @get:Bindable val buttonSignInEnable: Boolean
         get() = email.isNotEmpty()

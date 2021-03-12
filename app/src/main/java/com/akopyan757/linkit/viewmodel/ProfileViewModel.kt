@@ -20,13 +20,13 @@ class ProfileViewModel : BaseViewModel(), KoinComponent {
     private val authRepository: AuthRepository by inject()
 
     @get:Bindable
-    var displayName: String by DelegatedBindable("", BR.displayName)
+    var displayName: String by DB("", BR.displayName)
 
     @get:Bindable
-    var email: String by DelegatedBindable("", BR.email)
+    var email: String by DB("", BR.email)
 
     @get:Bindable
-    var profileIconUrl: String? by DelegatedBindable(null, BR.profileIconUrl, BR.profileIconVisible)
+    var profileIconUrl: String? by DB(null, BR.profileIconUrl, BR.profileIconVisible)
 
     @get:Bindable
     val profileIconVisible: Boolean
@@ -36,16 +36,16 @@ class ProfileViewModel : BaseViewModel(), KoinComponent {
     var profileIconDefaultRes: Int = R.drawable.ic_user
 
     @get:Bindable
-    var verifyButtonEnabled: Boolean by DelegatedBindable(true, BR.verifyButtonEnabled)
+    var verifyButtonEnabled: Boolean by DB(true, BR.verifyButtonEnabled)
 
     @get:Bindable
-    var changePasswordButtonVisible: Boolean by DelegatedBindable(false, BR.changePasswordButtonVisible)
+    var changePasswordButtonVisible: Boolean by DB(false, BR.changePasswordButtonVisible)
 
     @get:Bindable
-    var setPasswordButtonVisible: Boolean by DelegatedBindable(false, BR.setPasswordButtonVisible)
+    var setPasswordButtonVisible: Boolean by DB(false, BR.setPasswordButtonVisible)
 
     @get:Bindable
-    var linkButtonVisible: Boolean by DelegatedBindable(false, BR.linkButtonVisible)
+    var linkButtonVisible: Boolean by DB(false, BR.linkButtonVisible)
 
     private val isVerifyEmailState = MutableLiveData<Boolean>()
 

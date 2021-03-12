@@ -21,8 +21,7 @@ class LinkCreateUrlViewModel(
 
     private val linkRepository: LinkRepository by mainInject()
 
-    @get:Bindable
-    var selectedFolderName: String by DelegatedBindable("", BR.selectedFolderName)
+    @get:Bindable var selectedFolderName: String by DB("", BR.selectedFolderName)
 
     private var foldersList = ListLiveData<FolderObservable>()
 

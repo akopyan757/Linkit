@@ -31,8 +31,8 @@ class LinkViewModel : BaseViewModel(), KoinComponent {
         stateHandle, Config.KEY_EDIT_MODE_STATE, false, BR.editMode
     )
 
-    @get:Bindable var isFoldersEmpty: Boolean by DelegatedBindable(false, BR.foldersEmpty)
-    @get:Bindable var profileIconUrl: String? by DelegatedBindable(null, BR.profileIconUrl)
+    @get:Bindable var isFoldersEmpty: Boolean by DB(false, BR.foldersEmpty)
+    @get:Bindable var profileIconUrl: String? by DB(null, BR.profileIconUrl)
     @get:Bindable var profileIconDefaultRes: Int = R.drawable.ic_user
 
     private var deleteAction: Boolean by SavedStateBindable(stateHandle, KEY_EDIT_DELETE, false)

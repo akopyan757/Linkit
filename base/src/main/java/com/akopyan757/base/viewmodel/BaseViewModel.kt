@@ -119,7 +119,7 @@ abstract class BaseViewModel: ViewModel(), BaseStateObservable {
         }
     }
 
-    inner class DelegatedBindable<T> private constructor(
+    inner class DB<T> private constructor(
         private var value: T,
         private var bindingTarget: Array<Int>,
         private var isIdentity: Boolean,

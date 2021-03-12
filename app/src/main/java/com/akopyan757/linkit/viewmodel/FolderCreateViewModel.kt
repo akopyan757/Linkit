@@ -14,8 +14,8 @@ class FolderCreateViewModel: BaseViewModel(), KoinComponent {
 
     private val linkRepository: LinkRepository by mainInject()
 
-    @get:Bindable var folderName: String by DelegatedBindable("", BR.folderName)
-    @get:Bindable var errorName: String by DelegatedBindable("", BR.errorName)
+    @get:Bindable var folderName: String by DB("", BR.folderName)
+    @get:Bindable var errorName: String by DB("", BR.errorName)
 
     fun requestCreateFolder(): LiveData<ResponseState<Unit>> {
         if (folderName.trim().isEmpty()) {
