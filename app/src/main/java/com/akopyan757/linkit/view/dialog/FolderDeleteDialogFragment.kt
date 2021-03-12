@@ -14,7 +14,8 @@ import kotlinx.android.synthetic.main.dialog_folder_delete.view.*
 class FolderDeleteDialogFragment: DialogFragment() {
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val folderObservable = getFolderObservableFromArguments() ?: return super.onCreateDialog(savedInstanceState)
+        val folderObservable = getFolderObservableFromArguments()
+                ?: return super.onCreateDialog(savedInstanceState)
         val dialogView = createDialogViewFromFolder(folderObservable)
         return createCustomDialog(dialogView)
     }

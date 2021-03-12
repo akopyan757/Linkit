@@ -11,7 +11,9 @@ import org.koin.core.inject
 
 class AuthSignInViewModel: BaseViewModel(), KoinComponent {
 
-    /** Databinding properties */
+    private val authRepository: AuthRepository by inject()
+    private val authService: IAuthorizationService by inject()
+
     @get:Bindable
     var isProgress: Boolean by DelegatedBindable(false, BR.progress)
 
@@ -31,10 +33,6 @@ class AuthSignInViewModel: BaseViewModel(), KoinComponent {
     @get:Bindable
     val errorVisible: Boolean
         get() = error.isNotEmpty()
-
-    /** Models */
-    private val authService: IAuthorizationService by inject()
-    private val authRepository: AuthRepository by inject()
 
     fun requestSignInWithEmail() = requestConvert(
         request = authRepository.signInWithEmail(email, password),

@@ -14,20 +14,20 @@ import org.koin.core.KoinComponent
 
 class ProfileUpdatePasswordFragment: BaseFragment<FragmentAuthUpdatePasswordBinding, ProfileUpdatePasswordViewModel>(), KoinComponent {
 
-    override val mViewModel: ProfileUpdatePasswordViewModel by viewModel()
+    override val viewModel: ProfileUpdatePasswordViewModel by viewModel()
 
     override fun getLayoutId(): Int = R.layout.fragment_auth_update_password
     override fun getVariableId(): Int = BR.viewModel
 
     override fun onSetupView(bundle: Bundle?) {
-        mBinding.ivUpdatePasswordBack.setOnClickListener { findNavController().popBackStack() }
-        mBinding.btnUpdatePasswordSend.setOnClickListener { setPasswordToAccount() }
+        binding.ivUpdatePasswordBack.setOnClickListener { findNavController().popBackStack() }
+        binding.btnUpdatePasswordSend.setOnClickListener { setPasswordToAccount() }
     }
 
     private fun setPasswordToAccount() {
-        mViewModel.requestSetPassword().apply {
+        viewModel.requestSetPassword().apply {
             observeEmptyResponse {
-                mViewModel.setErrorMessage(getString(R.string.error_passwords_match))
+                viewModel.setErrorMessage(getString(R.string.error_passwords_match))
             }
             observeLoadingResponse { AndroidUtils.hideKeyboard(requireActivity()) }
             observeSuccessResponse {
@@ -35,7 +35,7 @@ class ProfileUpdatePasswordFragment: BaseFragment<FragmentAuthUpdatePasswordBind
                 backToProfileDialog()
             }
             observeErrorResponse { exception ->
-                mViewModel.setErrorMessage(exception.localizedMessage ?: Config.ERROR)
+                viewModel.setErrorMessage(exception.localizedMessage ?: Config.ERROR)
                 showToast(R.string.error)
             }
         }

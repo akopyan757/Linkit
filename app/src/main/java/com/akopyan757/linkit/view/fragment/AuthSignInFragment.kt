@@ -14,16 +14,16 @@ import org.koin.core.KoinComponent
 
 class AuthSignInFragment: BaseFragment<FragmentAuthSignInBinding, AuthSignInViewModel>(), KoinComponent {
 
-    override val mViewModel: AuthSignInViewModel by viewModel()
+    override val viewModel: AuthSignInViewModel by viewModel()
 
     override fun getLayoutId(): Int = R.layout.fragment_auth_sign_in
     override fun getVariableId(): Int = BR.viewModel
 
     override fun onSetupView(bundle: Bundle?) {
-        mBinding.btnAuthHuawei.setOnClickListener { signInWithSpecificService() }
-        mBinding.btnAuthSignIn.setOnClickListener { signInWithEmailAndPassword() }
-        mBinding.tvAuthForgotPassword.setOnClickListener { openForgotPasswordScreen() }
-        mBinding.tvAuthRegistration.setOnClickListener { openSignUpScreen() }
+        binding.btnAuthHuawei.setOnClickListener { signInWithSpecificService() }
+        binding.btnAuthSignIn.setOnClickListener { signInWithEmailAndPassword() }
+        binding.tvAuthForgotPassword.setOnClickListener { openForgotPasswordScreen() }
+        binding.tvAuthRegistration.setOnClickListener { openSignUpScreen() }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -33,11 +33,11 @@ class AuthSignInFragment: BaseFragment<FragmentAuthSignInBinding, AuthSignInView
     }
 
     private fun signInWithSpecificService() {
-        startActivityForResult(mViewModel.getSignInIntent(), SERVICE_SIGN_IN_REQUEST_CODE)
+        startActivityForResult(viewModel.getSignInIntent(), SERVICE_SIGN_IN_REQUEST_CODE)
     }
 
     private fun signInWithEmailAndPassword() {
-        mViewModel.requestSignInWithEmail().apply {
+        viewModel.requestSignInWithEmail().apply {
             observeLoadingResponse { AndroidUtils.hideKeyboard(requireActivity()) }
             observeSuccessResponse { firebaseUid -> openMainScreen(firebaseUid) }
             observeErrorResponse { exception -> showErrorToast(exception) }
@@ -45,7 +45,7 @@ class AuthSignInFragment: BaseFragment<FragmentAuthSignInBinding, AuthSignInView
     }
 
     private fun signInWithSpecificService(data: Intent?) {
-        mViewModel.requestSignInWithService(data).apply {
+        viewModel.requestSignInWithService(data).apply {
             observeLoadingResponse { AndroidUtils.hideKeyboard(requireActivity()) }
             observeSuccessResponse { firebaseUid -> openMainScreen(firebaseUid) }
             observeErrorResponse { exception -> showErrorToast(exception) }

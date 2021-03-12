@@ -23,7 +23,7 @@ import org.koin.core.parameter.parametersOf
 
 class PageFragment: BaseFragment<FragmentPageBinding, PageViewModel>(), LinkAdapterListener {
 
-    override val mViewModel: PageViewModel by viewModel {
+    override val viewModel: PageViewModel by viewModel {
         val folderObservable = getFolderObservableFromArguments()
         parametersOf(folderObservable?.id)
     }
@@ -36,38 +36,38 @@ class PageFragment: BaseFragment<FragmentPageBinding, PageViewModel>(), LinkAdap
 
     override fun onSetupView(bundle: Bundle?) {
         updateRecyclerLinks()
-        mViewModel.bindUrlList()
-        mViewModel.getUrlLiveList().observeList(recyclerLinksAdapter)
-        mViewModel.requestDeleteUrls().observeSuccessResponse {}
+        viewModel.bindUrlList()
+        viewModel.getUrlLiveList().observeList(recyclerLinksAdapter)
+        viewModel.requestDeleteUrls().observeSuccessResponse {}
     }
 
     override fun onShareListener(link: LinkObservable) {
-        if (mViewModel.isEditMode().not()) {
+        if (viewModel.isEditMode().not()) {
             openLinkSharing(link)
         }
     }
 
     override fun onItemListener(link: LinkObservable) {
-        if (mViewModel.isEditMode()) {
-            mViewModel.onLinkItemSelected(link)
+        if (viewModel.isEditMode()) {
+            viewModel.onLinkItemSelected(link)
         } else {
             openPreviewScreen(link)
         }
     }
 
     override fun onItemLongClickListener(link: LinkObservable) {
-        mViewModel.onLinkItemSelected(link)
+        viewModel.onLinkItemSelected(link)
     }
 
     override fun onAdClosed(adObservable: AdObservable) {
-        mViewModel.onAdClosed(adObservable)
+        viewModel.onAdClosed(adObservable)
     }
 
     private fun updateRecyclerLinks() {
         recyclerLinksAdapter = LinkUrlAdapter(this)
         recyclerLayoutManager = getLinksListLayoutManager()
-        mBinding.rvLinks.adapter = recyclerLinksAdapter
-        mBinding.rvLinks.layoutManager = getLinksListLayoutManager()
+        binding.rvLinks.adapter = recyclerLinksAdapter
+        binding.rvLinks.layoutManager = getLinksListLayoutManager()
     }
 
     private fun getLinksListLayoutManager(): RecyclerView.LayoutManager {

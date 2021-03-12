@@ -11,17 +11,17 @@ import org.koin.android.viewmodel.ext.android.viewModel
 
 class FolderCreateDialogFragment : BaseDialogFragment<DialogNewFolderBinding, FolderCreateViewModel>() {
 
-    override val mViewModel: FolderCreateViewModel by viewModel()
+    override val viewModel: FolderCreateViewModel by viewModel()
 
     override fun getLayoutId() = R.layout.dialog_new_folder
     override fun getVariableId(): Int = BR.viewModel
 
     override fun onSetupView(bundle: Bundle?) {
-        mBinding.btnCreateLinkAccept.setOnClickListener { createFolder() }
+        binding.btnCreateLinkAccept.setOnClickListener { createFolder() }
     }
 
     private fun createFolder() {
-        mViewModel.requestCreateFolder().apply {
+        viewModel.requestCreateFolder().apply {
             observeSuccessResponse { dismissDialog() }
             observeEmptyResponse { showCreateFolderError() }
         }
@@ -32,6 +32,6 @@ class FolderCreateDialogFragment : BaseDialogFragment<DialogNewFolderBinding, Fo
     }
 
     private fun showCreateFolderError() {
-        mViewModel.setErrorMessage(getString(R.string.notSelected))
+        viewModel.setErrorMessage(getString(R.string.notSelected))
     }
 }

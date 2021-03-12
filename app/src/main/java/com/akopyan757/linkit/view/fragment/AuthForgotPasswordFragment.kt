@@ -13,17 +13,17 @@ import org.koin.core.KoinComponent
 
 class AuthForgotPasswordFragment: BaseFragment<FragmentAuthResetPasswordBinding, AuthForgotPasswordViewModel>(), KoinComponent {
 
-    override val mViewModel: AuthForgotPasswordViewModel by viewModel()
+    override val viewModel: AuthForgotPasswordViewModel by viewModel()
 
     override fun getLayoutId(): Int = R.layout.fragment_auth_reset_password
     override fun getVariableId(): Int = BR.viewModel
 
     override fun onSetupView(bundle: Bundle?) {
-        mBinding.btnAuthForgotPassword.setOnClickListener { resetPasswordRequest() }
+        binding.btnAuthForgotPassword.setOnClickListener { resetPasswordRequest() }
     }
 
     private fun resetPasswordRequest() {
-        mViewModel.requestResetPassword().apply {
+        viewModel.requestResetPassword().apply {
             observeLoadingResponse { AndroidUtils.hideKeyboard(requireActivity()) }
             observeSuccessResponse { email ->
                 showToast(getString(R.string.toast_reset_password, email))

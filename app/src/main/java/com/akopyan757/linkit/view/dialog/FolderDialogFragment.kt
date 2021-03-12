@@ -25,7 +25,7 @@ import org.koin.android.viewmodel.ext.android.viewModel
 class FolderDialogFragment : BaseDialogFragment<DialogFoldersSettingsBinding, FolderViewModel>(),
         ItemTouchHelperAdapter, FolderClickListener {
 
-    override val mViewModel: FolderViewModel by viewModel()
+    override val viewModel: FolderViewModel by viewModel()
 
     private lateinit var recyclerTouchHelper: ItemTouchHelper
     private lateinit var recyclerAdapter: FolderAdapter
@@ -36,12 +36,12 @@ class FolderDialogFragment : BaseDialogFragment<DialogFoldersSettingsBinding, Fo
 
     override fun onSetupView(bundle: Bundle?) {
         setupRecyclerView()
-        mBinding.btnCreateFolder.setOnClickListener { openCreateFolderScreen() }
-        mBinding.btnFoldersAccept.setOnClickListener { mViewModel.saveFolders() }
-        mViewModel.bindFoldersList()
-        mViewModel.getRenameFolderRequest().observeSuccessResponse {}
-        mViewModel.getReorderFoldersRequest().observeSuccessResponse {}
-        mViewModel.getFolderLiveListForSelect().observeList(recyclerAdapter)
+        binding.btnCreateFolder.setOnClickListener { openCreateFolderScreen() }
+        binding.btnFoldersAccept.setOnClickListener { viewModel.saveFolders() }
+        viewModel.bindFoldersList()
+        viewModel.getRenameFolderRequest().observeSuccessResponse {}
+        viewModel.getReorderFoldersRequest().observeSuccessResponse {}
+        viewModel.getFolderLiveListForSelect().observeList(recyclerAdapter)
         observeDeleteAcceptState()
     }
 
@@ -55,7 +55,7 @@ class FolderDialogFragment : BaseDialogFragment<DialogFoldersSettingsBinding, Fo
     }
 
     override fun onEditFolder(observable: FolderObservable) {
-        //mViewModel.onEditFolder(observable)
+        //viewModel.onEditFolder(observable)
     }
 
     override fun onStartDrag(viewHolder: RecyclerView.ViewHolder) {
@@ -64,7 +64,7 @@ class FolderDialogFragment : BaseDialogFragment<DialogFoldersSettingsBinding, Fo
 
     override fun onItemMove(fromPosition: Int, toPosition: Int): Boolean {
         val result = recyclerAdapter.onItemMove(fromPosition, toPosition)
-        mViewModel.setEditObservables(recyclerAdapter.items)
+        viewModel.setEditObservables(recyclerAdapter.items)
         return result
     }
 
@@ -77,7 +77,7 @@ class FolderDialogFragment : BaseDialogFragment<DialogFoldersSettingsBinding, Fo
     private fun setupRecyclerView() {
         recyclerAdapter = FolderAdapter(this)
         recyclerLayoutManager = LinearLayoutManager(requireContext())
-        val folderRecyclerView = mBinding.rvFolders
+        val folderRecyclerView = binding.rvFolders
         folderRecyclerView.adapter = recyclerAdapter
         folderRecyclerView.layoutManager = recyclerLayoutManager
         recyclerTouchHelper = ItemTouchHelper(ItemTouchHelperCallback(this))
@@ -93,7 +93,7 @@ class FolderDialogFragment : BaseDialogFragment<DialogFoldersSettingsBinding, Fo
     }
 
     private fun onDeleteFolder(folderId: Int) {
-        mViewModel.getDeleteFolderRequest(folderId).observeSuccessResponse {}
+        viewModel.getDeleteFolderRequest(folderId).observeSuccessResponse {}
     }
 
     private fun dismissDialog() {

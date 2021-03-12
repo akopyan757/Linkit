@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.annotation.StringRes
 import androidx.databinding.DataBindingUtil
-import androidx.databinding.Observable
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
@@ -20,13 +19,11 @@ import com.akopyan757.base.viewmodel.list.observeList
 
 abstract class BaseFragment<V: ViewDataBinding, T: BaseViewModel> : Fragment() {
 
-    protected abstract val mViewModel: T
-    protected lateinit var mBinding: V
+    protected abstract val viewModel: T
+    protected lateinit var binding: V
 
-    protected open fun onPropertyChanged(propertyId: Int) {}
     protected open fun onAction(action: Int) {}
     protected open fun onSetupView(bundle: Bundle?) {}
-
     abstract fun getLayoutId(): Int
     abstract fun getVariableId(): Int
 
@@ -35,22 +32,15 @@ abstract class BaseFragment<V: ViewDataBinding, T: BaseViewModel> : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        mBinding = DataBindingUtil.inflate(inflater, getLayoutId(), container, false)
-        mBinding.setVariable(getVariableId(), mViewModel)
-
-        mViewModel.addOnPropertyChangedCallback(object : Observable.OnPropertyChangedCallback() {
-            override fun onPropertyChanged(sender: Observable?, propertyId: Int) {
-                onPropertyChanged(propertyId)
-            }
-        })
-
-        mViewModel.getLiveAction().observe(viewLifecycleOwner, { action ->
-            onAction(action)
-        })
-
+        binding = DataBindingUtil.inflate(inflater, getLayoutId(), container, false)
+        binding.setVariable(getVariableId(), viewModel)
+        observeActions()
         onSetupView(arguments)
+        return binding.root
+    }
 
-        return mBinding.root
+    private fun observeActions() {
+        viewModel.getLiveAction().observe(viewLifecycleOwner, { action -> onAction(action) })
     }
 
     fun showToast(@StringRes messageRes: Int) {

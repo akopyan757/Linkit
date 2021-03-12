@@ -16,7 +16,7 @@ import org.koin.core.parameter.parametersOf
 
 class ClipboardUrlDialogFragment : BaseDialogFragment<DialogNewUrlBinding, LinkCreateUrlViewModel>() {
 
-    override val mViewModel: LinkCreateUrlViewModel by viewModel (
+    override val viewModel: LinkCreateUrlViewModel by viewModel (
         parameters = { parametersOf(getClipboardUrlFromArguments()) }
     )
 
@@ -24,9 +24,9 @@ class ClipboardUrlDialogFragment : BaseDialogFragment<DialogNewUrlBinding, LinkC
     override fun getVariableId(): Int = BR.viewModel
 
     override fun onSetupView(bundle: Bundle?) {
-        mBinding.btnClipboardUrlAccept.setOnClickListener { createNewLink() }
-        mViewModel.bindFolderList()
-        mViewModel.getFolderNameList().observe(viewLifecycleOwner, { folderNames ->
+        binding.btnClipboardUrlAccept.setOnClickListener { createNewLink() }
+        viewModel.bindFolderList()
+        viewModel.getFolderNameList().observe(viewLifecycleOwner, { folderNames ->
             updateSpinnerFolderNames(folderNames)
         })
     }
@@ -44,11 +44,11 @@ class ClipboardUrlDialogFragment : BaseDialogFragment<DialogNewUrlBinding, LinkC
     }
 
     private fun createNewLink() {
-        mViewModel.requestCreateNewLink().observeSuccessResponse {}
+        viewModel.requestCreateNewLink().observeSuccessResponse {}
     }
 
     private fun updateSpinnerFolderNames(folderNames: List<String>) {
-        val spinner = mBinding.contentClipboard.spCreateLinkAssignToFolder
+        val spinner = binding.contentClipboard.spCreateLinkAssignToFolder
         val spinnerAdapter = ArrayAdapter(
             requireContext(), R.layout.item_folder_spinner, R.id.tvFolderSpinner, folderNames
         )

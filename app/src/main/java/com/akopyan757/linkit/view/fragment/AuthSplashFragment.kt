@@ -12,7 +12,7 @@ import org.koin.core.KoinComponent
 
 class AuthSplashFragment: BaseFragment<FragmentSplashBinding, AuthSplashViewModel>(), KoinComponent {
 
-    override val mViewModel: AuthSplashViewModel by viewModel()
+    override val viewModel: AuthSplashViewModel by viewModel()
 
     override fun getLayoutId() = R.layout.fragment_splash
     override fun getVariableId() = BR.viewModel
@@ -22,7 +22,7 @@ class AuthSplashFragment: BaseFragment<FragmentSplashBinding, AuthSplashViewMode
     }
 
     private fun receiveUserAccount() {
-        mViewModel.requestGetUser().apply {
+        viewModel.requestGetUser().apply {
             observeSuccessResponse { firebaseUser -> openMainScreen(firebaseUser.uid) }
             observeErrorResponse { openSignInScreen() }
         }

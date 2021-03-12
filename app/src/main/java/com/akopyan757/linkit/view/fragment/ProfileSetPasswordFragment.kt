@@ -13,19 +13,19 @@ import org.koin.core.KoinComponent
 
 class ProfileSetPasswordFragment: BaseFragment<FragmentAuthSetPasswordBinding, ProfileSetPasswordViewModel>(), KoinComponent {
 
-    override val mViewModel: ProfileSetPasswordViewModel by viewModel()
+    override val viewModel: ProfileSetPasswordViewModel by viewModel()
 
     override fun getLayoutId(): Int = R.layout.fragment_auth_set_password
     override fun getVariableId(): Int = BR.viewModel
 
     override fun onSetupView(bundle: Bundle?) {
-        mBinding.ivSetPasswordBack.setOnClickListener { backToMainScreen() }
-        mBinding.btnSetPasswordSend.setOnClickListener { setPasswordRequest() }
+        binding.ivSetPasswordBack.setOnClickListener { backToMainScreen() }
+        binding.btnSetPasswordSend.setOnClickListener { setPasswordRequest() }
     }
 
     private fun setPasswordRequest() {
-        mViewModel.requestSetPassword().apply {
-            observeEmptyResponse { mViewModel.setErrorMessage(getString(R.string.error_passwords_match)) }
+        viewModel.requestSetPassword().apply {
+            observeEmptyResponse { viewModel.setErrorMessage(getString(R.string.error_passwords_match)) }
             observeLoadingResponse { AndroidUtils.hideKeyboard(requireActivity()) }
             observeSuccessResponse {
                 showToast(R.string.password_set)

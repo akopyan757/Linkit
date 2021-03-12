@@ -10,10 +10,8 @@ import android.view.Window
 import android.widget.Toast
 import androidx.annotation.StringRes
 import androidx.databinding.DataBindingUtil
-import androidx.databinding.Observable
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.DialogFragment
-import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import com.akopyan757.base.viewmodel.BaseViewModel
 import com.akopyan757.base.viewmodel.DiffItemObservable
@@ -23,14 +21,11 @@ import com.akopyan757.base.viewmodel.list.observeList
 
 abstract class BaseDialogFragment<V: ViewDataBinding, T: BaseViewModel> : DialogFragment() {
 
-    protected abstract val mViewModel: T
+    protected abstract val viewModel: T
+    protected lateinit var binding: V
 
-    protected lateinit var mBinding: V
-
-    protected open fun onPropertyChanged(propertyId: Int) {}
     protected open fun onAction(action: Int) {}
     protected open fun onSetupView(bundle: Bundle?) {}
-
     abstract fun getLayoutId(): Int
     abstract fun getVariableId(): Int
 
@@ -39,27 +34,22 @@ abstract class BaseDialogFragment<V: ViewDataBinding, T: BaseViewModel> : Dialog
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        mBinding = DataBindingUtil.inflate(inflater, getLayoutId(), container, false)
-        mBinding.setVariable(getVariableId(), mViewModel)
-
-        dialog?.window?.apply {
-            setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-            requestFeature(Window.FEATURE_NO_TITLE)
-        }
-
-        mViewModel.addOnPropertyChangedCallback(object : Observable.OnPropertyChangedCallback() {
-            override fun onPropertyChanged(sender: Observable?, propertyId: Int) {
-                onPropertyChanged(propertyId)
-            }
-        })
-
-        mViewModel.getLiveAction().observe(viewLifecycleOwner, { action ->
-            onAction(action)
-        })
-
+        binding = DataBindingUtil.inflate(inflater, getLayoutId(), container, false)
+        binding.setVariable(getVariableId(), viewModel)
+        setTransparentDialogBackground()
+        observeActions()
         onSetupView(arguments)
+        return binding.root
+    }
 
-        return mBinding.root
+    private fun setTransparentDialogBackground() {
+        val window = dialog?.window ?: return
+        window.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        window.requestFeature(Window.FEATURE_NO_TITLE)
+    }
+
+    private fun observeActions() {
+        viewModel.getLiveAction().observe(viewLifecycleOwner, { action -> onAction(action) })
     }
 
     fun showToast(message: String) {

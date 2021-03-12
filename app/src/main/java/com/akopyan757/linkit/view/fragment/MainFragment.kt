@@ -26,7 +26,7 @@ import org.koin.core.KoinComponent
 
 class MainFragment : BaseFragment<FragmentMainBinding, LinkViewModel>(), ViewTreeObserver.OnWindowFocusChangeListener, KoinComponent {
 
-    override val mViewModel: LinkViewModel by viewModel()
+    override val viewModel: LinkViewModel by viewModel()
 
     private lateinit var pageAdapter: PageFragmentAdapter
 
@@ -38,16 +38,21 @@ class MainFragment : BaseFragment<FragmentMainBinding, LinkViewModel>(), ViewTre
         setupActionBar()
         setupLinkViewPages()
         setupAdViews()
-        mBinding.ivFolderSettings.setOnClickListener { openFolderDialog() }
-        mBinding.tvFolderCreate.setOnClickListener { openCreateFolderDialog() }
-        mBinding.ccvIconProfile.setOnClickListener { openProfileDialog() }
-        mViewModel.bindAllFoldersWithList()
-        mViewModel.requestInitResource().observeSuccessResponse {}
-        observeStates(mViewModel.getFolderLiveList()) { holder -> updateFoldersList(holder) }
-        observeStates(mViewModel.getVisibleDeleteIcon()) { visible -> updateDeleteIcon(visible) }
-        observeStates(mViewModel.getSelectedCount()) { count -> updateEditToolbar(count) }
+        binding.ivFolderSettings.setOnClickListener { openFolderDialog() }
+        binding.tvFolderCreate.setOnClickListener { openCreateFolderDialog() }
+        binding.ccvIconProfile.setOnClickListener { openProfileDialog() }
+        viewModel.bindAllFoldersWithList()
+        viewModel.requestInitResource().observeSuccessResponse {}
+        viewModel.getFolderLiveList().observe(viewLifecycleOwner) {
+            holder -> updateFoldersList(holder)
+        }
+        viewModel.getVisibleDeleteIcon().observe(viewLifecycleOwner) {
+            visible -> updateDeleteIcon(visible)
+        }
+        viewModel.getSelectedCount().observe(viewLifecycleOwner) {
+            count -> updateEditToolbar(count)
+        }
     }
-
 
     override fun onStart() {
         super.onStart()
@@ -57,8 +62,7 @@ class MainFragment : BaseFragment<FragmentMainBinding, LinkViewModel>(), ViewTre
     override fun onWindowFocusChanged(hasFocus: Boolean) {
         if (hasFocus) {
             val clipboardUrl = ClipboardUtils.getUrl(requireContext())
-            if (clipboardUrl != null)
-                openCreateClipboardDialog(clipboardUrl)
+            if (clipboardUrl != null) openCreateClipboardDialog(clipboardUrl)
             unsubscribeWindowFocusChanging()
         }
     }
@@ -77,16 +81,16 @@ class MainFragment : BaseFragment<FragmentMainBinding, LinkViewModel>(), ViewTre
     }
 
     private fun updateDeleteIcon(iconVisible: Boolean) {
-        mBinding.toolbarEdit.menu.setGroupVisible(R.id.groupEditSave, iconVisible)
+        binding.toolbarEdit.menu.setGroupVisible(R.id.groupEditSave, iconVisible)
     }
 
     private fun updateEditToolbar(countSelectedItems: Int) {
         val countName = if (countSelectedItems > 0) " ($countSelectedItems)" else Config.EMPTY
-        mBinding.toolbarEdit.title = resources.getString(R.string.edit, countName)
+        binding.toolbarEdit.title = resources.getString(R.string.edit, countName)
     }
 
     private fun setupLifecycleOwner() {
-        mBinding.lifecycleOwner = this@MainFragment
+        binding.lifecycleOwner = this@MainFragment
     }
 
     private fun setupActionBar() {
@@ -97,33 +101,33 @@ class MainFragment : BaseFragment<FragmentMainBinding, LinkViewModel>(), ViewTre
 
     private fun setupMainToolbar() {
         val appCompatActivity = requireActivity() as? AppCompatActivity ?: return
-        appCompatActivity.setSupportActionBar(mBinding.toolbar)
+        appCompatActivity.setSupportActionBar(binding.toolbar)
         appCompatActivity.supportActionBar?.setDisplayShowTitleEnabled(false)
         appCompatActivity.supportActionBar?.title = Config.EMPTY
         setHasOptionsMenu(true)
     }
 
     private fun setupEditToolbar() {
-        val toolbar = mBinding.toolbarEdit
+        val toolbar = binding.toolbarEdit
         toolbar.title = resources.getString(R.string.edit, Config.EMPTY)
         toolbar.menu.setGroupVisible(R.id.groupEditSave, false)
         toolbar.setNavigationIcon(R.drawable.ic_baseline_close_24)
-        toolbar.setNavigationOnClickListener { mViewModel.disableEditMode() }
+        toolbar.setNavigationOnClickListener { viewModel.disableEditMode() }
         toolbar.inflateMenu(R.menu.menu_edit)
         toolbar.setOnMenuItemClickListener { item ->
             if (item.itemId == R.id.itemEditDelete)
-                mViewModel.deleteSelected()
+                viewModel.deleteSelected()
             true
         }
     }
 
     private fun setupAvatarPhoto() {
-        mViewModel.requestGetUserAvatar().observeSuccessResponse {}
+        viewModel.requestGetUserAvatar().observeSuccessResponse {}
     }
 
     private fun setupLinkViewPages() {
-        val tabLayout = mBinding.tabLayoutFolder
-        val viewPager = mBinding.viewPager
+        val tabLayout = binding.tabLayoutFolder
+        val viewPager = binding.viewPager
         pageAdapter = PageFragmentAdapter(childFragmentManager, lifecycle)
         viewPager.adapter = pageAdapter
         TabLayoutMediator(tabLayout, viewPager) { tab, position ->
@@ -133,8 +137,8 @@ class MainFragment : BaseFragment<FragmentMainBinding, LinkViewModel>(), ViewTre
     }
 
     private fun setupAdViews() {
-        BannerViewExtension.loadAd(mBinding.bannerBottomAd) {
-            mBinding.bannerBottomAd.visibility = View.GONE
+        BannerViewExtension.loadAd(binding.bannerBottomAd) {
+            binding.bannerBottomAd.visibility = View.GONE
         }
     }
 

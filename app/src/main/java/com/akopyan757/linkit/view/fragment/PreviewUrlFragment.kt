@@ -18,7 +18,7 @@ import org.koin.core.parameter.parametersOf
 
 class PreviewUrlFragment: BaseFragment<FragmentPreviewUrlBinding, PreviewUrlViewModel>(), KoinComponent {
 
-    override val mViewModel: PreviewUrlViewModel by viewModel {
+    override val viewModel: PreviewUrlViewModel by viewModel {
         parametersOf(getLinkObservableFromArguments())
     }
 
@@ -33,14 +33,12 @@ class PreviewUrlFragment: BaseFragment<FragmentPreviewUrlBinding, PreviewUrlView
     }
 
     override fun onSetupView(bundle: Bundle?) {
-        mBinding.toolbarPreviewPage.setNavigationOnClickListener { backToMainScreen() }
-        mBinding.wvPreviewPage.webViewClient = createPreviewWebViewClient()
+        binding.toolbarPreviewPage.setNavigationOnClickListener { backToMainScreen() }
+        binding.wvPreviewPage.webViewClient = createPreviewWebViewClient()
     }
 
     fun moveScreenshotToCache() {
-        mViewModel.requestMoveScreenshotToCache().observeSuccessResponse {
-            showToast("Screenshot done")
-        }
+        viewModel.requestMoveScreenshotToCache().observeSuccessResponse {}
     }
 
     private fun createPreviewWebViewClient() = object : WebViewClient() {

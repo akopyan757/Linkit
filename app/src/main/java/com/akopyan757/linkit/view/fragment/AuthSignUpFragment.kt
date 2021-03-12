@@ -15,14 +15,14 @@ import org.koin.core.KoinComponent
 
 class AuthSignUpFragment: BaseFragment<FragmentAuthSignUpBinding, AuthSignUpViewModel>(), KoinComponent {
 
-    override val mViewModel: AuthSignUpViewModel by viewModel()
+    override val viewModel: AuthSignUpViewModel by viewModel()
 
     override fun getLayoutId(): Int = R.layout.fragment_auth_sign_up
     override fun getVariableId(): Int = BR.viewModel
 
     override fun onSetupView(bundle: Bundle?) {
-        mBinding.tvAuthSignInBack.setOnClickListener { backToSignInScreen() }
-        mBinding.btnAuthSignUp.setOnClickListener { signUpRequest() }
+        binding.tvAuthSignInBack.setOnClickListener { backToSignInScreen() }
+        binding.btnAuthSignUp.setOnClickListener { signUpRequest() }
     }
 
     private fun backToSignInScreen() {
@@ -30,8 +30,8 @@ class AuthSignUpFragment: BaseFragment<FragmentAuthSignUpBinding, AuthSignUpView
     }
 
     private fun signUpRequest() {
-        mViewModel.requestSignUp().apply {
-            observeEmptyResponse { mViewModel.setErrorMessage(getString(R.string.error_passwords_match)) }
+        viewModel.requestSignUp().apply {
+            observeEmptyResponse { viewModel.setErrorMessage(getString(R.string.error_passwords_match)) }
             observeLoadingResponse { AndroidUtils.hideKeyboard(requireActivity()) }
             observeSuccessResponse { uid -> openMainScreen(uid) }
             observeErrorResponse { exception ->
