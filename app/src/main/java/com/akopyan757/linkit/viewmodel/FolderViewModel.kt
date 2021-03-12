@@ -45,7 +45,7 @@ class FolderViewModel : BaseViewModel(), KoinComponent {
         }
     )
 
-    fun getReorderFoldersRequest() = requestConvert(
+    fun requestReorderFolders() = requestConvert(
         request = linkRepository.reorderFolders(getFoldersOrderList()),
         onSuccess = { emitAction(ACTION_DISMISS) }
     )

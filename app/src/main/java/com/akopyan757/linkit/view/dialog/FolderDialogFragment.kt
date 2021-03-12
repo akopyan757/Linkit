@@ -37,9 +37,8 @@ class FolderDialogFragment : BaseDialogFragment<DialogFoldersSettingsBinding, Fo
     override fun onSetupView(bundle: Bundle?) {
         setupRecyclerView()
         binding.btnCreateFolder.setOnClickListener { openCreateFolderScreen() }
-        binding.btnFoldersAccept.setOnClickListener {  }
+        binding.btnFoldersAccept.setOnClickListener { acceptFolders() }
         viewModel.bindFoldersList()
-        viewModel.getReorderFoldersRequest().observeSuccessResponse {}
         viewModel.getFolderLiveListForSelect().observeList(recyclerAdapter)
         observeDeleteAcceptState()
     }
@@ -84,7 +83,7 @@ class FolderDialogFragment : BaseDialogFragment<DialogFoldersSettingsBinding, Fo
     }
 
     private fun acceptFolders() {
-        viewModel.saveFolders()
+        viewModel.requestReorderFolders().observeSuccessResponse {}
     }
 
     private fun observeDeleteAcceptState() {

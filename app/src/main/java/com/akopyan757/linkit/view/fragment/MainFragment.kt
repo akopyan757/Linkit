@@ -67,12 +67,6 @@ class MainFragment : BaseFragment<FragmentMainBinding, LinkViewModel>(), ViewTre
         }
     }
 
-    private fun <T> observeStates(liveState: LiveData<T>, onObserve: (T) -> Unit) {
-        liveState.observe(viewLifecycleOwner, { data ->
-            onObserve.invoke(data)
-        })
-    }
-
     private fun updateFoldersList(folderHolder: ListHolder<FolderObservable>) {
         if (folderHolder.strategy is ListChangeStrategy.CustomChanged) {
             pageAdapter.updateFolders(folderHolder.data)

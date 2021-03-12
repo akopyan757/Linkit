@@ -20,7 +20,7 @@ class ProfileUpdatePasswordFragment: BaseFragment<FragmentAuthUpdatePasswordBind
     override fun getVariableId(): Int = BR.viewModel
 
     override fun onSetupView(bundle: Bundle?) {
-        binding.ivUpdatePasswordBack.setOnClickListener { findNavController().popBackStack() }
+        binding.ivUpdatePasswordBack.setOnClickListener { backToProfileDialog() }
         binding.btnUpdatePasswordSend.setOnClickListener { setPasswordToAccount() }
     }
 
