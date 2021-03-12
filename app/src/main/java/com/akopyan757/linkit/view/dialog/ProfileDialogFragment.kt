@@ -21,11 +21,11 @@ class ProfileDialogFragment : BaseDialogFragment<DialogProfileBinding, ProfileVi
     override fun getLayoutId(): Int = R.layout.dialog_profile
     override fun getVariableId(): Int = BR.viewModel
 
-    override fun onSetupView(binding: DialogProfileBinding, bundle: Bundle?) = with(binding) {
-        btnProfileSetupPassword.setOnClickListener { openSetPasswordScreen() }
-        btnProfileChangePassword.setOnClickListener { openUpdatePasswordScreen() }
-        btnProfileVerify.setOnClickListener { requestVerifyEmail() }
-        btnProfileSignOut.setOnClickListener { requestSignOut() }
+    override fun onSetupView(bundle: Bundle?) {
+        mBinding.btnProfileSetupPassword.setOnClickListener { openSetPasswordScreen() }
+        mBinding.btnProfileChangePassword.setOnClickListener { openUpdatePasswordScreen() }
+        mBinding.btnProfileVerify.setOnClickListener { requestVerifyEmail() }
+        mBinding.btnProfileSignOut.setOnClickListener { requestSignOut() }
         requestGetUserData()
         observeEmailVerifyLiveState()
     }

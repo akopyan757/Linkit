@@ -19,7 +19,7 @@ import org.koin.core.parameter.parametersOf
 class PreviewUrlFragment: BaseFragment<FragmentPreviewUrlBinding, PreviewUrlViewModel>(), KoinComponent {
 
     override val mViewModel: PreviewUrlViewModel by viewModel {
-        parametersOf(getLinkObservableFromArgumentsOrNull())
+        parametersOf(getLinkObservableFromArguments())
     }
 
     override fun getLayoutId() = R.layout.fragment_preview_url
@@ -28,22 +28,13 @@ class PreviewUrlFragment: BaseFragment<FragmentPreviewUrlBinding, PreviewUrlView
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         if (isPreviewObservableEmpty()) {
-            findNavController().popBackStack()
+            backToMainScreen()
         }
     }
 
-    override fun onSetupView(binding: FragmentPreviewUrlBinding, bundle: Bundle?) = with(binding) {
-
-        toolbarPreviewPage.setNavigationOnClickListener {
-            findNavController().popBackStack()
-        }
-
-        wvPreviewPage.webViewClient = object: WebViewClient() {
-            override fun onPageFinished(view: WebView, url: String) {
-                AndroidUtils.takeScreenshotFromWebView(view)
-                moveScreenshotToCache()
-            }
-        }
+    override fun onSetupView(bundle: Bundle?) {
+        mBinding.toolbarPreviewPage.setNavigationOnClickListener { backToMainScreen() }
+        mBinding.wvPreviewPage.webViewClient = createPreviewWebViewClient()
     }
 
     fun moveScreenshotToCache() {
@@ -52,7 +43,18 @@ class PreviewUrlFragment: BaseFragment<FragmentPreviewUrlBinding, PreviewUrlView
         }
     }
 
-    private fun getLinkObservableFromArgumentsOrNull(): LinkObservable? {
+    private fun createPreviewWebViewClient() = object : WebViewClient() {
+        override fun onPageFinished(view: WebView, url: String) {
+            AndroidUtils.takeScreenshotFromWebView(view)
+            moveScreenshotToCache()
+        }
+    }
+
+    private fun backToMainScreen() {
+        findNavController().popBackStack()
+    }
+
+    private fun getLinkObservableFromArguments(): LinkObservable? {
         return arguments?.getSerializable(PREVIEW_URL) as? LinkObservable
     }
 

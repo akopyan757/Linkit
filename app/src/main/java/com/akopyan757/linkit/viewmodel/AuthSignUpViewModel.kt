@@ -37,7 +37,7 @@ class AuthSignUpViewModel: BaseViewModel(), KoinComponent {
     val errorVisible: Boolean
         get() = error.isNotEmpty()
 
-    fun getSignUpRequest(): LiveData<ResponseState<String>> {
+    fun requestSignUp(): LiveData<ResponseState<String>> {
         if (password.isNotEmpty() && password != passwordConfirm)
             return emptyLiveRequest()
 

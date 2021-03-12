@@ -18,27 +18,22 @@ class AuthForgotPasswordFragment: BaseFragment<FragmentAuthResetPasswordBinding,
     override fun getLayoutId(): Int = R.layout.fragment_auth_reset_password
     override fun getVariableId(): Int = BR.viewModel
 
-    override fun onSetupView(
-            binding: FragmentAuthResetPasswordBinding,
-            bundle: Bundle?
-    ) = with(binding) {
-        btnAuthForgotPassword.setOnClickListener {
-            resetPasswordRequest()
-        }
+    override fun onSetupView(bundle: Bundle?) {
+        mBinding.btnAuthForgotPassword.setOnClickListener { resetPasswordRequest() }
     }
 
     private fun resetPasswordRequest() {
-        mViewModel.getResetPasswordResponse().apply {
+        mViewModel.requestResetPassword().apply {
             observeLoadingResponse { AndroidUtils.hideKeyboard(requireActivity()) }
             observeSuccessResponse { email ->
                 showToast(getString(R.string.toast_reset_password, email))
-                findNavController().popBackStack()
+                backToSignInScreen()
             }
             observeErrorResponse { exception -> showErrorToast(exception) }
         }
     }
 
-    companion object {
-        const val TAG = "AUTH_SIGN_IN_FRAGMENT"
+    private fun backToSignInScreen() {
+        findNavController().popBackStack()
     }
 }

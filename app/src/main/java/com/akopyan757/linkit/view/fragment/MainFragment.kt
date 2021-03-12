@@ -17,11 +17,9 @@ import com.akopyan757.linkit.common.Config
 import com.akopyan757.linkit.common.clipboard.ClipboardUtils
 import com.akopyan757.linkit.databinding.FragmentMainBinding
 import com.akopyan757.linkit.view.adapter.PageFragmentAdapter
-import com.akopyan757.linkit.view.scope.mainInject
 import com.akopyan757.linkit.viewmodel.LinkViewModel
 import com.akopyan757.linkit.viewmodel.observable.FolderObservable
 import com.google.android.material.tabs.TabLayoutMediator
-import com.google.firebase.auth.FirebaseAuth
 import org.koin.android.viewmodel.ext.android.viewModel
 import org.koin.core.KoinComponent
 
@@ -30,22 +28,19 @@ class MainFragment : BaseFragment<FragmentMainBinding, LinkViewModel>(), ViewTre
 
     override val mViewModel: LinkViewModel by viewModel()
 
-    private val firebaseAuth: FirebaseAuth by mainInject()
     private lateinit var pageAdapter: PageFragmentAdapter
 
     override fun getLayoutId() = R.layout.fragment_main
     override fun getVariableId() = BR.viewModel
 
-    override fun onSetupView(binding: FragmentMainBinding, bundle: Bundle?) = with(binding) {
+    override fun onSetupView(bundle: Bundle?) {
         setupLifecycleOwner()
-        setupMainToolbar()
-        setupEditToolbar()
-        setupAvatarPhoto()
-        setupLinkPagesAdapter()
+        setupActionBar()
+        setupLinkViewPages()
         setupAdViews()
-        ivFolderSettings.setOnClickListener { openFolderDialog() }
-        tvFolderCreate.setOnClickListener { openCreateFolderDialog() }
-        ccvIconProfile.setOnClickListener { openProfileDialog() }
+        mBinding.ivFolderSettings.setOnClickListener { openFolderDialog() }
+        mBinding.tvFolderCreate.setOnClickListener { openCreateFolderDialog() }
+        mBinding.ccvIconProfile.setOnClickListener { openProfileDialog() }
         mViewModel.bindAllFoldersWithList()
         mViewModel.requestInitResource().observeSuccessResponse {}
         observeStates(mViewModel.getFolderLiveList()) { holder -> updateFoldersList(holder) }
@@ -94,6 +89,12 @@ class MainFragment : BaseFragment<FragmentMainBinding, LinkViewModel>(), ViewTre
         mBinding.lifecycleOwner = this@MainFragment
     }
 
+    private fun setupActionBar() {
+        setupMainToolbar()
+        setupEditToolbar()
+        setupAvatarPhoto()
+    }
+
     private fun setupMainToolbar() {
         val appCompatActivity = requireActivity() as? AppCompatActivity ?: return
         appCompatActivity.setSupportActionBar(mBinding.toolbar)
@@ -116,7 +117,11 @@ class MainFragment : BaseFragment<FragmentMainBinding, LinkViewModel>(), ViewTre
         }
     }
 
-    private fun setupLinkPagesAdapter() {
+    private fun setupAvatarPhoto() {
+        mViewModel.requestGetUserAvatar().observeSuccessResponse {}
+    }
+
+    private fun setupLinkViewPages() {
         val tabLayout = mBinding.tabLayoutFolder
         val viewPager = mBinding.viewPager
         pageAdapter = PageFragmentAdapter(childFragmentManager, lifecycle)
@@ -125,12 +130,6 @@ class MainFragment : BaseFragment<FragmentMainBinding, LinkViewModel>(), ViewTre
             tab.customView = pageAdapter.getTabView(tabLayout, position)
         }.attach()
         tabLayout.offsetLeftAndRight(ZERO_OFFSET)
-    }
-
-    private fun setupAvatarPhoto() {
-        val photoUrl = firebaseAuth.currentUser?.photoUrl?.toString()
-        if (photoUrl != null)
-            mViewModel.setProfileUrl(photoUrl)
     }
 
     private fun setupAdViews() {

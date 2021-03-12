@@ -34,10 +34,10 @@ class FolderDialogFragment : BaseDialogFragment<DialogFoldersSettingsBinding, Fo
     override fun getLayoutId() = R.layout.dialog_folders_settings
     override fun getVariableId(): Int = BR.viewModel
 
-    override fun onSetupView(binding: DialogFoldersSettingsBinding, bundle: Bundle?): Unit = with(binding) {
+    override fun onSetupView(bundle: Bundle?) {
         setupRecyclerView()
-        btnCreateFolder.setOnClickListener { openCreateFolderScreen() }
-        btnFoldersAccept.setOnClickListener { mViewModel.saveFolders() }
+        mBinding.btnCreateFolder.setOnClickListener { openCreateFolderScreen() }
+        mBinding.btnFoldersAccept.setOnClickListener { mViewModel.saveFolders() }
         mViewModel.bindFoldersList()
         mViewModel.getRenameFolderRequest().observeSuccessResponse {}
         mViewModel.getReorderFoldersRequest().observeSuccessResponse {}

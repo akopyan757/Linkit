@@ -29,8 +29,7 @@ abstract class BaseDialogFragment<V: ViewDataBinding, T: BaseViewModel> : Dialog
 
     protected open fun onPropertyChanged(propertyId: Int) {}
     protected open fun onAction(action: Int) {}
-    protected open fun onSetupView(binding: V, bundle: Bundle?) {}
-    protected open fun onSetupViewModel(viewModel: T, owner: LifecycleOwner) {}
+    protected open fun onSetupView(bundle: Bundle?) {}
 
     abstract fun getLayoutId(): Int
     abstract fun getVariableId(): Int
@@ -58,8 +57,7 @@ abstract class BaseDialogFragment<V: ViewDataBinding, T: BaseViewModel> : Dialog
             onAction(action)
         })
 
-        onSetupView(mBinding, arguments)
-        onSetupViewModel(mViewModel, viewLifecycleOwner)
+        onSetupView(arguments)
 
         return mBinding.root
     }

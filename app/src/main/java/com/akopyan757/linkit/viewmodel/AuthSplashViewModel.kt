@@ -9,7 +9,7 @@ class AuthSplashViewModel: BaseViewModel(), KoinComponent {
 
     private val authRepository: AuthRepository by inject()
 
-    fun getUserRequest() = requestConvert(
+    fun requestGetUser() = requestConvert(
             request = authRepository.getUser(),
             onSuccess = { firebaseUser -> firebaseUser }
     )

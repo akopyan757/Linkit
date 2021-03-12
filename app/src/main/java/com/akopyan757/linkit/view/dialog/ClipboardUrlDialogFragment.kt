@@ -23,32 +23,46 @@ class ClipboardUrlDialogFragment : BaseDialogFragment<DialogNewUrlBinding, LinkC
     override fun getLayoutId(): Int = R.layout.dialog_new_url
     override fun getVariableId(): Int = BR.viewModel
 
-    override fun onDismiss(dialog: DialogInterface) {
-        super.onDismiss(dialog)
-        findNavController().popBackStack()
-    }
-
-    override fun onSetupView(binding: DialogNewUrlBinding, bundle: Bundle?) = with(binding) {
-
-        btnClipboardUrlAccept.setOnClickListener {
-            mViewModel.requestCreateNewLink()
-        }
-
+    override fun onSetupView(bundle: Bundle?) {
+        mBinding.btnClipboardUrlAccept.setOnClickListener { createNewLink() }
         mViewModel.bindFolderList()
-
-        mViewModel.getFolderNameList().observe(viewLifecycleOwner, { names ->
-            val spinner = mBinding.contentClipboard.spCreateLinkAssignToFolder
-            spinner.adapter = ArrayAdapter(
-                requireContext(), R.layout.item_folder_spinner, R.id.tvFolderSpinner, names
-            )
+        mViewModel.getFolderNameList().observe(viewLifecycleOwner, { folderNames ->
+            updateSpinnerFolderNames(folderNames)
         })
     }
 
+    override fun onDismiss(dialog: DialogInterface) {
+        super.onDismiss(dialog)
+        dismissDialog()
+    }
+
     override fun onAction(action: Int) {
-        if (action == LinkCreateUrlViewModel.ACTION_DISMISS) {
-            findNavController().popBackStack()
-            ClipboardUtils.clear(requireContext())
+        if (action.isDismissAction()) {
+            dismissDialog()
+            clearClipboardData()
         }
+    }
+
+    private fun createNewLink() {
+        mViewModel.requestCreateNewLink().observeSuccessResponse {}
+    }
+
+    private fun updateSpinnerFolderNames(folderNames: List<String>) {
+        val spinner = mBinding.contentClipboard.spCreateLinkAssignToFolder
+        val spinnerAdapter = ArrayAdapter(
+            requireContext(), R.layout.item_folder_spinner, R.id.tvFolderSpinner, folderNames
+        )
+        spinner.adapter = spinnerAdapter
+    }
+
+    private fun Int.isDismissAction() = this == LinkCreateUrlViewModel.ACTION_DISMISS
+
+    private fun dismissDialog() {
+        findNavController().popBackStack()
+    }
+
+    private fun clearClipboardData() {
+        ClipboardUtils.clear(requireContext())
     }
 
     private fun getClipboardUrlFromArguments(): String? {

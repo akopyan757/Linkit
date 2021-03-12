@@ -36,7 +36,7 @@ class ProfileSetPasswordViewModel: BaseViewModel(), KoinComponent {
         get() = error.isNotEmpty()
 
 
-    fun getSetPasswordResponseLive(): LiveData<ResponseState<FirebaseUser>> {
+    fun requestSetPassword(): LiveData<ResponseState<FirebaseUser>> {
         if (password.isNotEmpty() && password != passwordConfirm) {
             return emptyLiveRequest()
         }

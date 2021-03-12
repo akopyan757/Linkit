@@ -36,7 +36,7 @@ class AuthSignInViewModel: BaseViewModel(), KoinComponent {
     private val authService: IAuthorizationService by inject()
     private val authRepository: AuthRepository by inject()
 
-    fun getSignInWithEmailLiveResponse() = requestConvert(
+    fun requestSignInWithEmail() = requestConvert(
         request = authRepository.signInWithEmail(email, password),
         onLoading = { isProgress = true },
         onError = { isProgress = false },
@@ -46,7 +46,7 @@ class AuthSignInViewModel: BaseViewModel(), KoinComponent {
         }
     )
 
-    fun getSignInWithServiceLiveResponse(data: Intent?) = requestConvert(
+    fun requestSignInWithService(data: Intent?) = requestConvert(
         request = authRepository.signInWithData(data),
         onLoading = { isProgress = true },
         onSuccess = { firebaseUser ->

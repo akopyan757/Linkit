@@ -18,24 +18,24 @@ class ProfileSetPasswordFragment: BaseFragment<FragmentAuthSetPasswordBinding, P
     override fun getLayoutId(): Int = R.layout.fragment_auth_set_password
     override fun getVariableId(): Int = BR.viewModel
 
-    override fun onSetupView(binding: FragmentAuthSetPasswordBinding, bundle: Bundle?) = with(binding) {
-        ivSetPasswordBack.setOnClickListener {
-            findNavController().popBackStack()
-        }
-        btnSetPasswordSend.setOnClickListener { setPasswordRequest() }
+    override fun onSetupView(bundle: Bundle?) {
+        mBinding.ivSetPasswordBack.setOnClickListener { backToMainScreen() }
+        mBinding.btnSetPasswordSend.setOnClickListener { setPasswordRequest() }
     }
 
     private fun setPasswordRequest() {
-        mViewModel.getSetPasswordResponseLive().apply {
-            observeEmptyResponse {
-                mViewModel.setErrorMessage(getString(R.string.error_passwords_match))
-            }
+        mViewModel.requestSetPassword().apply {
+            observeEmptyResponse { mViewModel.setErrorMessage(getString(R.string.error_passwords_match)) }
             observeLoadingResponse { AndroidUtils.hideKeyboard(requireActivity()) }
             observeSuccessResponse {
                 showToast(R.string.password_set)
-                findNavController().popBackStack()
+                backToMainScreen()
             }
             observeErrorResponse { showToast(R.string.error) }
         }
+    }
+
+    private fun backToMainScreen() {
+        findNavController().popBackStack()
     }
 }

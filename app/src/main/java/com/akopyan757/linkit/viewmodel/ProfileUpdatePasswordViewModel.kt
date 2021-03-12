@@ -36,9 +36,9 @@ class ProfileUpdatePasswordViewModel: BaseViewModel(), KoinComponent {
     val errorVisible: Boolean
         get() = error.isNotEmpty()
 
-    fun getSetPasswordLiveResponseOrNull(): LiveData<ResponseState<Unit>>? {
+    fun requestSetPassword(): LiveData<ResponseState<Unit>> {
         if (password.isNotEmpty() && password != passwordConfirm) {
-            return null
+            return emptyLiveRequest()
         }
 
         return requestConvert (

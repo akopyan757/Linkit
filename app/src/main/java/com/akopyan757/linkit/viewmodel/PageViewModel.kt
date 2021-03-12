@@ -44,7 +44,7 @@ class PageViewModel(private val folderId: Int): BaseViewModel(), KoinComponent {
     private val linkRepository: LinkRepository by mainInject()
 
     /** Responses */
-    fun getDeleteUrlsLiveResponse() = liveDelete.switchMap { delete ->
+    fun requestDeleteUrls() = liveDelete.switchMap { delete ->
         val ids = if (delete) {
             urlListData.getList()
                     .mapNotNull { it as? LinkObservable }
@@ -62,11 +62,7 @@ class PageViewModel(private val folderId: Int): BaseViewModel(), KoinComponent {
         )
     }
 
-    /**
-     * Public method
-     */
     fun getUrlLiveList() = urlListData
-
     fun isEditMode() = stateEditMode
 
     fun bindUrlList() {

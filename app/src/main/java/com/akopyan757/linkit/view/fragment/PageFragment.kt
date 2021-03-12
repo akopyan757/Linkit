@@ -28,30 +28,22 @@ class PageFragment: BaseFragment<FragmentPageBinding, PageViewModel>(), LinkAdap
         parametersOf(folderObservable?.id)
     }
 
+    private lateinit var recyclerLinksAdapter: LinkUrlAdapter
+    private lateinit var recyclerLayoutManager: RecyclerView.LayoutManager
+
     override fun getVariableId() = BR.viewModel
     override fun getLayoutId() = R.layout.fragment_page
 
-    private val linksAdapter: LinkUrlAdapter by lazy { LinkUrlAdapter(this) }
-
-    override fun onSetupView(binding: FragmentPageBinding, bundle: Bundle?) {
-
-        binding.fragmentWebLinkList.apply {
-            adapter = linksAdapter
-            layoutManager = getLinksListLayoutManager()
-        }
-    }
-
-    override fun onSetupViewModel(viewModel: PageViewModel): Unit = with(viewModel) {
-        bindUrlList()
-        getUrlLiveList().observeList(linksAdapter)
-        getDeleteUrlsLiveResponse().apply {
-            observeSuccessResponse {}
-        }
+    override fun onSetupView(bundle: Bundle?) {
+        updateRecyclerLinks()
+        mViewModel.bindUrlList()
+        mViewModel.getUrlLiveList().observeList(recyclerLinksAdapter)
+        mViewModel.requestDeleteUrls().observeSuccessResponse {}
     }
 
     override fun onShareListener(link: LinkObservable) {
         if (mViewModel.isEditMode().not()) {
-            startActivity(AndroidUtils.createShareIntent(link.url, link.title))
+            openLinkSharing(link)
         }
     }
 
@@ -71,6 +63,13 @@ class PageFragment: BaseFragment<FragmentPageBinding, PageViewModel>(), LinkAdap
         mViewModel.onAdClosed(adObservable)
     }
 
+    private fun updateRecyclerLinks() {
+        recyclerLinksAdapter = LinkUrlAdapter(this)
+        recyclerLayoutManager = getLinksListLayoutManager()
+        mBinding.rvLinks.adapter = recyclerLinksAdapter
+        mBinding.rvLinks.layoutManager = getLinksListLayoutManager()
+    }
+
     private fun getLinksListLayoutManager(): RecyclerView.LayoutManager {
         return if (isLandscapeOrientation())
             GridLayoutManager(requireContext(), 2)
@@ -85,6 +84,10 @@ class PageFragment: BaseFragment<FragmentPageBinding, PageViewModel>(), LinkAdap
     private fun openPreviewScreen(observable: LinkObservable) {
         val bundle = bundleOf(PreviewUrlFragment.PREVIEW_URL to observable)
         findNavController().navigate(R.id.action_mainFragment_to_preview, bundle)
+    }
+
+    private fun openLinkSharing(linkObservable: LinkObservable) {
+        startActivity(AndroidUtils.createShareIntent(linkObservable.url, linkObservable.title))
     }
 
     private fun getFolderObservableFromArguments(): FolderObservable? {

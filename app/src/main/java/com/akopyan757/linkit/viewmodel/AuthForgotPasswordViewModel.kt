@@ -25,7 +25,7 @@ class AuthForgotPasswordViewModel: BaseViewModel(), KoinComponent {
     /** Models */
     private val authRepository: AuthRepository by inject()
 
-    fun getResetPasswordResponse() = requestConvert<String, String>(
+    fun requestResetPassword() = requestConvert(
         request = authRepository.resetPassword(email),
         onLoading = { isProgress = true },
         onSuccess = { email ->

@@ -1,7 +1,6 @@
 package com.akopyan757.linkit.view.dialog
 
 import android.os.Bundle
-import androidx.lifecycle.LifecycleOwner
 import androidx.navigation.fragment.findNavController
 import com.akopyan757.base.view.BaseDialogFragment
 import com.akopyan757.linkit.BR
@@ -17,14 +16,14 @@ class FolderCreateDialogFragment : BaseDialogFragment<DialogNewFolderBinding, Fo
     override fun getLayoutId() = R.layout.dialog_new_folder
     override fun getVariableId(): Int = BR.viewModel
 
-    override fun onSetupView(binding: DialogNewFolderBinding, bundle: Bundle?) {
-        binding.btnCreateLinkAccept.setOnClickListener { onCreateFolder() }
+    override fun onSetupView(bundle: Bundle?) {
+        mBinding.btnCreateLinkAccept.setOnClickListener { createFolder() }
     }
 
-    private fun onCreateFolder() {
+    private fun createFolder() {
         mViewModel.requestCreateFolder().apply {
             observeSuccessResponse { dismissDialog() }
-            observeEmptyResponse { showError() }
+            observeEmptyResponse { showCreateFolderError() }
         }
     }
 
@@ -32,7 +31,7 @@ class FolderCreateDialogFragment : BaseDialogFragment<DialogNewFolderBinding, Fo
         findNavController().popBackStack()
     }
 
-    private fun showError() {
+    private fun showCreateFolderError() {
         mViewModel.setErrorMessage(getString(R.string.notSelected))
     }
 }

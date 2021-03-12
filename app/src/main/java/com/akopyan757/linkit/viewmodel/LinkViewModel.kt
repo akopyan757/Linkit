@@ -1,7 +1,6 @@
 package com.akopyan757.linkit.viewmodel
 
 import androidx.databinding.Bindable
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.map
 import com.akopyan757.base.viewmodel.BaseViewModel
@@ -12,6 +11,7 @@ import com.akopyan757.linkit.common.Config
 import com.akopyan757.linkit.common.Config.KEY_EDIT_DELETE
 import com.akopyan757.linkit.common.Config.KEY_SELECTED_COUNT
 import com.akopyan757.linkit.common.utils.SumLiveData
+import com.akopyan757.linkit.model.repository.AuthRepository
 import com.akopyan757.linkit.model.repository.LinkRepository
 import com.akopyan757.linkit.view.scope.mainInject
 import com.akopyan757.linkit.viewmodel.observable.FolderObservable
@@ -21,6 +21,7 @@ import org.koin.core.qualifier.named
 
 class LinkViewModel : BaseViewModel(), KoinComponent {
 
+    private val authRepository: AuthRepository by inject()
     private val linkRepository: LinkRepository by mainInject()
 
     private val stateHandle: SavedStateHandle by inject(named(Config.HANDLE_URL))
@@ -31,9 +32,7 @@ class LinkViewModel : BaseViewModel(), KoinComponent {
     )
 
     @get:Bindable var isFoldersEmpty: Boolean by DelegatedBindable(false, BR.foldersEmpty)
-
     @get:Bindable var profileIconUrl: String? by DelegatedBindable(null, BR.profileIconUrl)
-
     @get:Bindable var profileIconDefaultRes: Int = R.drawable.ic_user
 
     private var deleteAction: Boolean by SavedStateBindable(stateHandle, KEY_EDIT_DELETE, false)
@@ -70,19 +69,19 @@ class LinkViewModel : BaseViewModel(), KoinComponent {
         onSuccess = {}
     )
 
-    /**
-     * Public methods
-     */
+    fun requestGetUserAvatar() = requestConvert(
+        request = authRepository.getUser(),
+        onSuccess = { firebaseUser ->
+            profileIconUrl = firebaseUser.photoUrl.toString()
+        }
+    )
+
     fun disableEditMode() {
         editMode = false
     }
 
     fun deleteSelected() {
         deleteAction = true
-    }
-
-    fun setProfileUrl(url: String) {
-        profileIconUrl = url
     }
 
     fun getFolderLiveList() = foldersLiveData

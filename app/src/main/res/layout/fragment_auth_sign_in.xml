@@ -116,7 +116,7 @@
             tools:text="Error" />
 
         <TextView
-            android:id="@+id/tvAuthRegistrationButton"
+            android:id="@+id/tvAuthRegistration"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/marginPrimary"
@@ -128,10 +128,10 @@
             app:layout_constraintEnd_toEndOf="@+id/btnAuthSignIn"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="@+id/btnAuthSignIn"
-            app:layout_constraintTop_toBottomOf="@+id/tvAuthForgotPasswordButton" />
+            app:layout_constraintTop_toBottomOf="@+id/tvAuthForgotPassword" />
 
         <TextView
-            android:id="@+id/tvAuthForgotPasswordButton"
+            android:id="@+id/tvAuthForgotPassword"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/marginSecondary"
@@ -139,7 +139,7 @@
             android:text="@string/forgot_password"
             android:textAppearance="@style/Theme.Linkit.TextAppearanceRegular"
             android:textColor="@color/link"
-            app:layout_constraintBottom_toTopOf="@+id/tvAuthRegistrationButton"
+            app:layout_constraintBottom_toTopOf="@+id/tvAuthRegistration"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/btnAuthHuawei"

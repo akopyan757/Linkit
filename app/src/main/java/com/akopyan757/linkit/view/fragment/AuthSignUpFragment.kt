@@ -20,16 +20,18 @@ class AuthSignUpFragment: BaseFragment<FragmentAuthSignUpBinding, AuthSignUpView
     override fun getLayoutId(): Int = R.layout.fragment_auth_sign_up
     override fun getVariableId(): Int = BR.viewModel
 
-    override fun onSetupView(binding: FragmentAuthSignUpBinding, bundle: Bundle?) = with(binding) {
-        tvAuthSignInBackButton.setOnClickListener { findNavController().popBackStack() }
-        btnAuthSignUp.setOnClickListener { signUpRequest() }
+    override fun onSetupView(bundle: Bundle?) {
+        mBinding.tvAuthSignInBack.setOnClickListener { backToSignInScreen() }
+        mBinding.btnAuthSignUp.setOnClickListener { signUpRequest() }
+    }
+
+    private fun backToSignInScreen() {
+        findNavController().popBackStack()
     }
 
     private fun signUpRequest() {
-        mViewModel.getSignUpRequest().apply {
-            observeEmptyResponse {
-                mViewModel.setErrorMessage(getString(R.string.error_passwords_match))
-            }
+        mViewModel.requestSignUp().apply {
+            observeEmptyResponse { mViewModel.setErrorMessage(getString(R.string.error_passwords_match)) }
             observeLoadingResponse { AndroidUtils.hideKeyboard(requireActivity()) }
             observeSuccessResponse { uid -> openMainScreen(uid) }
             observeErrorResponse { exception ->
@@ -48,8 +50,9 @@ class AuthSignUpFragment: BaseFragment<FragmentAuthSignUpBinding, AuthSignUpView
         AlertDialog.Builder(context, R.style.Theme_Linkit_AlertDialog)
             .setTitle(R.string.error)
             .setMessage(message)
-            .setPositiveButton(R.string.ok) { dialogInterface, _ -> dialogInterface?.dismiss() }
-            .create()
+            .setPositiveButton(R.string.ok) { dialogInterface, _ ->
+                dialogInterface?.dismiss()
+            }.create()
             .show()
     }
 

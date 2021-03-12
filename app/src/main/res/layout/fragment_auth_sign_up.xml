@@ -126,7 +126,7 @@
             tools:text="Error" />
 
         <TextView
-            android:id="@+id/tvAuthSignInBackButton"
+            android:id="@+id/tvAuthSignInBack"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/marginPrimary"
