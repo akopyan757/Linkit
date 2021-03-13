@@ -30,9 +30,7 @@ class LinkRepository: BaseRepository(), KoinComponent {
     private val urlLinkDao: UrlLinkDao by mainInject()
     private val folderDao: FolderDao by mainInject()
     private val imageCache: ImageCache by mainInject()
-
     private val htmlParser: HtmlParser by mainInject()
-
     private val storeLinks: StoreLinks by mainInject()
 
     override val coroutineDispatcher: CoroutineDispatcher by inject(named(Config.IO_DISPATCHERS))
