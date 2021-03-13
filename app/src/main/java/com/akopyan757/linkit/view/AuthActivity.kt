@@ -19,8 +19,6 @@ class AuthActivity : AppCompatActivity(), KoinComponent {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_auth)
-
-        getToken()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -30,29 +28,5 @@ class AuthActivity : AppCompatActivity(), KoinComponent {
         childFragments.forEach { fragment ->
             fragment.onActivityResult(requestCode, resultCode, data)
         }
-    }
-
-
-    private fun getToken() {
-        // Create a thread.
-        object : Thread() {
-            override fun run() {
-                try {
-                    val appId = AGConnectServicesConfig.fromContext(this@AuthActivity).getString("client/app_id")
-                    val tokenScope = "HCM"
-                    val token = HmsInstanceId.getInstance(this@AuthActivity).getToken(appId, tokenScope).let {
-                        URLEncoder.encode("Bearer $it", "UTF-8")
-                    }
-
-                    Log.i(TAG, "get token: $token")
-                } catch (e: ApiException) {
-                    Log.e(TAG, "get token failed, $e")
-                }
-            }
-        }.start()
-    }
-
-    companion object {
-        private const val TAG = "AUTH_ACTIVITY"
     }
 }

@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.View
 import android.view.ViewTreeObserver
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.observe
 import androidx.navigation.fragment.findNavController
 import com.akopyan757.base.view.BaseFragment
@@ -120,11 +119,18 @@ class MainFragment : BaseFragment<FragmentMainBinding, LinkViewModel>(), ViewTre
     }
 
     private fun setupLinkViewPages() {
-        val tabLayout = binding.tabLayoutFolder
-        val viewPager = binding.viewPager
+        setupLinkViewPager()
+        setupLinkTabLayout()
+    }
+
+    private fun setupLinkViewPager() {
         pageAdapter = PageFragmentAdapter(childFragmentManager, lifecycle)
-        viewPager.adapter = pageAdapter
-        TabLayoutMediator(tabLayout, viewPager) { tab, position ->
+        binding.viewPager.adapter = pageAdapter
+    }
+
+    private fun setupLinkTabLayout() {
+        val tabLayout = binding.tabLayoutFolder
+        TabLayoutMediator(tabLayout, binding.viewPager) { tab, position ->
             tab.customView = pageAdapter.getTabView(tabLayout, position)
         }.attach()
         tabLayout.offsetLeftAndRight(ZERO_OFFSET)

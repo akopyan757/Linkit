@@ -27,13 +27,17 @@ class LinkUrlAdapter(
             val binding = DataBindingUtil.inflate<ItemLinkBinding>(inflater, viewType, parent, false)
             LinkViewHolder(binding, listener)
         } else {
-            AdViewHolder(inflater.inflate(viewType, parent, false), listener)
+            val view = inflater.inflate(viewType, parent, false)
+            AdViewHolder(view, listener)
         }
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (holder) {
-            is LinkViewHolder -> holder.bind(items[position] as LinkObservable)
+            is LinkViewHolder -> {
+                val observable = getUpdatedObservable(items[position] as LinkObservable)
+                if (observable != null) holder.bind(observable)
+            }
             is AdViewHolder -> holder.bind(items[position] as AdObservable)
         }
     }
@@ -46,27 +50,38 @@ class LinkUrlAdapter(
         }
     }
 
+    private fun getUpdatedObservable(observable: LinkObservable): LinkObservable? {
+        val context = view?.context ?: return null
+        observable.uri = AndroidUtils.getUriFromCache(context, observable.photoFileName)
+        observable.photoVisible = observable.uri != null
+        return observable
+    }
+
     class LinkViewHolder(
             private val binding: ItemLinkBinding,
             private val listener: LinkAdapterListener
     ): RecyclerView.ViewHolder(binding.root) {
 
         fun bind(observable: LinkObservable) {
-            val context = binding.root.context
-
-            observable.apply {
-                uri = AndroidUtils.getUriFromCache(context, observable.photoFileName)
-                photoVisible = uri != null
-            }
-
-            binding.observable = observable
+            val newLinkObservable = getUpdatedObservable(observable)
+            val backgroundColor = getLinkCardBackgroundColor(newLinkObservable.selected)
+            binding.observable = newLinkObservable
             binding.listener = listener
-
-            val colorRes = if (observable.selected) R.color.greyLight else R.color.white
-            val color = ContextCompat.getColor(context, colorRes)
-
-            binding.mcvLinkContent.setCardBackgroundColor(color)
+            binding.mcvLinkContent.setCardBackgroundColor(backgroundColor)
             binding.executePendingBindings()
+        }
+
+        private fun getUpdatedObservable(observable: LinkObservable): LinkObservable {
+            val context = binding.root.context
+            observable.uri = AndroidUtils.getUriFromCache(context, observable.photoFileName)
+            observable.photoVisible = observable.uri != null
+            return observable
+        }
+
+        private fun getLinkCardBackgroundColor(selected: Boolean): Int {
+            val colorRes = if (selected) R.color.greyLight else R.color.white
+            val context = binding.root.context
+            return ContextCompat.getColor(context, colorRes)
         }
     }
 

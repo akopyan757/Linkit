@@ -31,6 +31,12 @@ class FolderAdapter(
     }
 
     override fun onItemMove(fromPosition: Int, toPosition: Int): Boolean {
+        swapItemsByPositions(fromPosition, toPosition)
+        notifyItemMoved(fromPosition, toPosition)
+        return true
+    }
+
+    private fun swapItemsByPositions(fromPosition: Int, toPosition: Int) {
         if (fromPosition < toPosition) {
             (fromPosition until toPosition).forEach { index ->
                 Collections.swap(items, index, index + 1)
@@ -40,22 +46,20 @@ class FolderAdapter(
                 Collections.swap(items, index, index - 1)
             }
         }
-        notifyItemMoved(fromPosition, toPosition)
-        return true
     }
 
     class FolderViewHolder(
             private val binding: ItemFolderBinding,
             private val callback: FolderClickListener
     ): RecyclerView.ViewHolder(binding.root) {
+
         @SuppressLint("ClickableViewAccessibility")
         fun bind(observable: FolderObservable) {
             binding.observable = observable
             binding.listener = callback
             binding.ivFolderDrag.setOnTouchListener { _, motionEvent ->
-                if (motionEvent.action == MotionEvent.ACTION_DOWN) {
+                if (motionEvent.action == MotionEvent.ACTION_DOWN)
                     callback.onStartDrag(this)
-                }
                 false
             }
             binding.executePendingBindings()

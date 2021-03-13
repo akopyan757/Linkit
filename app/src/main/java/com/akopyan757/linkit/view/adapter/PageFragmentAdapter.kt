@@ -17,24 +17,22 @@ class PageFragmentAdapter(
         fragmentManager: FragmentManager, lifecycle: Lifecycle
 ): FragmentStateAdapter(fragmentManager, lifecycle) {
 
-    private var items: List<FolderObservable> = emptyList()
+    private var folderItems: List<FolderObservable> = emptyList()
 
     fun updateFolders(folders: List<FolderObservable>) {
-        items = folders
+        folderItems = folders
         notifyDataSetChanged()
     }
 
-    override fun getItemCount() = items.size
+    override fun getItemCount() = folderItems.size
 
-    override fun createFragment(position: Int) = PageFragment.newInstance(items[position])
-
+    override fun createFragment(position: Int) = PageFragment.newInstance(folderItems[position])
 
     fun getTabView(parent: ViewGroup, position: Int): View {
         val inflater = LayoutInflater.from(parent.context)
         val view = inflater.inflate(R.layout.tab_folder, parent, false)
-        view.tabFolder.text = items[position].name.let { name ->
-            FormatUtils.updateStringFormat(name)
-        }
+        val tabName = folderItems[position].name
+        view.tabFolder.text =  FormatUtils.updateStringFormat(tabName)
         return view
     }
 }
