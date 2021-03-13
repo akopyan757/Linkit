@@ -3,6 +3,7 @@ package com.akopyan757.linkit.model.repository
 import android.content.Intent
 import com.akopyan757.base.model.BaseRepository
 import com.akopyan757.linkit.common.Config
+import com.akopyan757.linkit.model.exception.FirebaseUserNotFound
 import com.akopyan757.linkit.model.firebase.AuthWrapper
 import com.akopyan757.linkit.view.service.IAuthorizationService
 import kotlinx.coroutines.CoroutineDispatcher
@@ -17,42 +18,41 @@ class AuthRepository: BaseRepository(), KoinComponent {
     private val authService: IAuthorizationService by inject()
     private val authWrapper: AuthWrapper by inject()
 
-    fun createUser(email: String, password: String) = callIO {
+    fun createUser(email: String, password: String) = wrapActionIOWithResult {
         authWrapper.createUser(email, password)
     }
 
-    fun signInWithEmail(email: String, password: String) = callIO {
+    fun signInWithEmail(email: String, password: String) = wrapActionIOWithResult {
         authWrapper.signInWithEmail(email, password)
     }
 
-    fun linkPasswordToAccount(password: String) = callIO {
+    fun linkPasswordToAccount(password: String) = wrapActionIOWithResult {
         authWrapper.reauthenticateCustomToken()
         authWrapper.linkEmailToAccount(password)
     }
 
-    fun resetPassword(email: String) = callIO {
+    fun resetPassword(email: String) = wrapActionIO {
         authWrapper.resetPassword(email)
-        return@callIO email
     }
 
-    fun updatePassword(oldPassword: String, newPassword: String) = callIO {
+    fun updatePassword(oldPassword: String, newPassword: String) = wrapActionIO {
         authWrapper.reauthenticateEmail(oldPassword)
         authWrapper.updatePassword(newPassword)
     }
 
-    fun signInWithData(data: Intent?) = callIO {
+    fun signInWithData(data: Intent?) = wrapActionIOWithResult {
         authService.getUserAfterAuthorization(data)
     }
 
-    fun emailVerification() = callIO {
+    fun emailVerification() = wrapActionIOWithResult {
         authWrapper.emailVerification()
     }
 
-    fun getUser() = callIO {
-        authWrapper.getUser() ?: throw Exception("User not found")
+    fun getUser() = wrapActionIOWithResult {
+        authWrapper.getUser() ?: throw FirebaseUserNotFound()
     }
 
-    fun signOut() = callIO {
+    fun signOut() = wrapActionIO {
         authService.signOut()
         authWrapper.firebaseSignOut()
     }

@@ -50,7 +50,6 @@ object DatabaseModule {
                     .also { database ->
                         registerCallback(object : ScopeCallback {
                             override fun onScopeClose(scope: Scope) {
-                                Log.i("Room", "onScopeClose")
                                 database.close()
                             }
                         })

@@ -23,10 +23,6 @@ import org.koin.core.qualifier.named
 
 class LinkRepository: BaseRepository(), KoinComponent {
 
-    companion object {
-        const val TAG = "LINK_REPOSITORY"
-    }
-
     private val urlLinkDao: UrlLinkDao by mainInject()
     private val folderDao: FolderDao by mainInject()
     private val imageCache: ImageCache by mainInject()
@@ -35,19 +31,16 @@ class LinkRepository: BaseRepository(), KoinComponent {
 
     override val coroutineDispatcher: CoroutineDispatcher by inject(named(Config.IO_DISPATCHERS))
 
-    fun initResources() = callIO {
+    fun fetchRemoteData() = wrapActionIO {
         folderDao.initFolderDao()
-        storeLinks.loadFolders().also { list ->
-            folderDao.insertOrUpdate(list)
-        }
-        storeLinks.loadUrls().also { list ->
-            list.forEach { data -> imageCache.saveImages(data) }
-            urlLinkDao.insertOrUpdate(list)
-        }
-        Unit
+        val storeFolders = storeLinks.loadFolders()
+        val storeUrls = storeLinks.loadUrls()
+        folderDao.insertOrUpdate(storeFolders)
+        storeUrls.forEach { data -> imageCache.saveImages(data) }
+        urlLinkDao.insertOrUpdate(storeUrls)
     }
 
-    fun addNewLink(url: String, folderId: Int) = callIO {
+    fun addNewLink(url: String, folderId: Int) = wrapActionIO {
         if (!FormatUtils.isUrl(url))
             throw UrlIsNotValidException()
 
@@ -65,37 +58,35 @@ class LinkRepository: BaseRepository(), KoinComponent {
         }
     }
 
-    fun addNewFolder(name: String) = callIO {
+    fun addNewFolder(name: String) = wrapActionIO {
         val folder = folderDao.addNewFolder(name)
         if (folder != null) {
             storeLinks.addFolder(folder)
-        } else throw FolderExistsException()
+        } else {
+            throw FolderExistsException()
+        }
     }
 
-    fun getUrlLinksByFolder(folderId: Int) = urlLinkDao.getLiveUrls(folderId)
-            .map { list ->
-                list.map { data ->
-                    FormatUtils.extractUrls(data.title).forEach { path ->
-                        data.title = data.title.replace(path, Config.EMPTY)
-                    }
-                    data.addFilePaths()
-                }
-            }
-            .asLiveIO()
+    fun getUrlLinksByFolder(folderId: Int) = urlLinkDao.getLiveUrls(folderId).map { urlList ->
+        urlList.map { urlLinkData ->
+            urlLinkData.updateLinkDataTexts()
+                    .updateLinkDataFilenames()
+        }
+    }.asLiveIO()
 
     fun getAllFolders() = folderDao.getLiveAll().asLiveIO()
 
-    fun deleteUrls(ids: List<Long>) = callIO {
+    fun deleteUrls(ids: List<Long>) = wrapActionIO {
         urlLinkDao.removeByIds(ids)
         storeLinks.deleteUrls(ids)
     }
 
-    fun deleteFolder(folderId: Int) = callIO {
+    fun deleteFolder(folderId: Int) = wrapActionIO {
         folderDao.removeById(folderId)
         storeLinks.deleteFolder(folderId)
     }
 
-    fun renameFolder(folderId: Int, newFolderName: String) = callIO {
+    fun renameFolder(folderId: Int, newFolderName: String) = wrapActionIO {
         folderDao.updateName(folderId, newFolderName)
     }
 
@@ -103,25 +94,38 @@ class LinkRepository: BaseRepository(), KoinComponent {
         urlLinkDao.moveUrlToTop(linkId)
     }
 
-    fun reorderFolders(orders: List<Pair<Int, Int>>) = callIO {
+    fun reorderFolders(orders: List<Pair<Int, Int>>) = wrapActionIO {
         val pairs = folderDao.updateOrders(orders)
         storeLinks.reorderFolders(pairs)
     }
 
-    fun moveScreenshotToImageFolder(linkId: Long) = callIO {
+    fun moveScreenshotToImageFolder(linkId: Long) = wrapActionIO {
         imageCache.moveScreenshot(linkId)
-    }
-
-    /** Private methods **/
-    private fun UrlLinkData.addFilePaths() = apply {
-        logoFileName = imageCache.getLogoName(this)
-        contentFileName = imageCache.getContentName(this)
-        screenshotFileName = imageCache.getScreenshotName(this.id)
     }
 
     private fun createNewUrlDataFromTags(htmlTags: HtmlTags) = UrlLinkData().apply {
         title = htmlTags.getTitle()
         description = htmlTags.getDescription()
         photoUrl = htmlTags.getImage()
+    }
+
+    private fun UrlLinkData.updateLinkDataTexts(): UrlLinkData {
+        title = removeUrlsFromText(title)
+        description = removeUrlsFromText(description)
+        return this
+    }
+
+    private fun UrlLinkData.updateLinkDataFilenames(): UrlLinkData {
+        logoFileName = imageCache.getLogoName(this)
+        contentFileName = imageCache.getContentName(this)
+        screenshotFileName = imageCache.getScreenshotName(this.id)
+        return this
+    }
+
+    private fun removeUrlsFromText(text: String): String {
+        var newText = text
+        val extractedUrls = FormatUtils.extractUrls(text)
+        extractedUrls.forEach { url -> newText = newText.replace(url, Config.EMPTY) }
+        return newText
     }
 }

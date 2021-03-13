@@ -12,7 +12,6 @@ object ViewModelModule {
 
     val module = module {
         single(named(HANDLE_URL)) { SavedStateHandle() }
-
         viewModel { LinkViewModel() }
         viewModel { (url: String) -> LinkCreateUrlViewModel(url) }
         viewModel { FolderViewModel() }

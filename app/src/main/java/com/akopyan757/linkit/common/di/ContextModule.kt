@@ -13,16 +13,8 @@ object ContextModule {
     private const val KEY_SHARED = "SHARED_PREFS"
 
     val it = module {
-        single(named(Config.IO_DISPATCHERS)) {
-            Dispatchers.IO
-        }
-
-        single {
-            androidContext().getSharedPreferences(KEY_SHARED, Context.MODE_PRIVATE)
-        }
-
-        single {
-            TokenCache()
-        }
+        single(named(Config.IO_DISPATCHERS)) { Dispatchers.IO }
+        single { androidContext().getSharedPreferences(KEY_SHARED, Context.MODE_PRIVATE) }
+        single { TokenCache() }
     }
 }

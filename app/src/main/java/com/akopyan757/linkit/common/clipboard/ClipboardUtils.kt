@@ -14,7 +14,6 @@ object ClipboardUtils {
         val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as? ClipboardManager
         val clip = clipboard?.primaryClip ?: return null
         val count = clip.itemCount
-
         return  (0 until count).mapNotNull { index ->
             clip.getItemAt(index)?.text?.toString()
         }.firstOrNull { URLUtil.isValidUrl(it) }

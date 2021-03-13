@@ -41,7 +41,7 @@ class MainFragment : BaseFragment<FragmentMainBinding, LinkViewModel>(), ViewTre
         binding.tvFolderCreate.setOnClickListener { openCreateFolderDialog() }
         binding.ccvIconProfile.setOnClickListener { openProfileDialog() }
         viewModel.bindAllFoldersWithList()
-        viewModel.requestInitResource().observeSuccessResponse {}
+        viewModel.requestFetchRemoteData().observeSuccessResponse {}
         viewModel.getFolderLiveList().observe(viewLifecycleOwner) {
             holder -> updateFoldersList(holder)
         }

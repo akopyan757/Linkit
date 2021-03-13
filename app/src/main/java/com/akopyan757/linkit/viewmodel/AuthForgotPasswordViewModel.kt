@@ -24,9 +24,9 @@ class AuthForgotPasswordViewModel: BaseViewModel(), KoinComponent {
     fun requestResetPassword() = requestConvert(
         request = authRepository.resetPassword(email),
         onLoading = { isProgress = true },
-        onSuccess = { email ->
+        onSuccess = {
             isProgress = false
-            email
+            return@requestConvert email
         },
         onError = { isProgress = false }
     )

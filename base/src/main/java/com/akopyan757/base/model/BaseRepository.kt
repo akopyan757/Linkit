@@ -11,16 +11,25 @@ abstract class BaseRepository {
     abstract val coroutineDispatcher: CoroutineDispatcher
 
     protected fun launchIO(action: suspend () -> Unit) {
-        CoroutineScope(coroutineDispatcher).launch {
+        CoroutineScope(coroutineDispatcher).launch { action.invoke() }
+    }
+
+    protected fun wrapActionIO(
+        action: suspend () -> Unit
+    ) = liveData(coroutineDispatcher) {
+        emit(ApiResponse.Loading)
+        try {
             action.invoke()
+            emit(ApiResponse.Success(Unit))
+        } catch (e: Exception) {
+            emit(ApiResponse.Error(e))
         }
     }
 
-    protected fun <T : Any> callIO(
+    protected fun <T : Any> wrapActionIOWithResult(
         action: suspend () -> T
     ) = liveData(coroutineDispatcher) {
         emit(ApiResponse.Loading)
-
         try {
             val data = action.invoke()
             emit(ApiResponse.Success(data))

@@ -64,8 +64,8 @@ class LinkViewModel : BaseViewModel(), KoinComponent {
         )
     }
 
-    fun requestInitResource() = requestConvert(
-        request = linkRepository.initResources(),
+    fun requestFetchRemoteData() = requestConvert(
+        request = linkRepository.fetchRemoteData(),
         onSuccess = {}
     )
 
