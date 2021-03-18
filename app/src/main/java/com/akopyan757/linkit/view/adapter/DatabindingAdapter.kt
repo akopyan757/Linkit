@@ -1,7 +1,6 @@
 package com.akopyan757.linkit.view.adapter
 
 import android.net.Uri
-import android.util.Log
 import android.view.View
 import android.webkit.WebView
 import android.widget.AdapterView
@@ -14,14 +13,9 @@ import androidx.databinding.BindingAdapter
 import androidx.databinding.InverseBindingAdapter
 import androidx.databinding.InverseBindingListener
 import com.akopyan757.linkit.R
-import com.akopyan757.linkit.common.image.getBitmapFromURL
 import com.google.android.material.textfield.TextInputLayout
 import com.squareup.picasso.Picasso
 import jp.wasabeef.picasso.transformations.RoundedCornersTransformation
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import java.io.IOException
 
 
 object DatabindingAdapter {

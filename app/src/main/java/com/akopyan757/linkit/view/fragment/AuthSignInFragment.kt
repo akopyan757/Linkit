@@ -28,7 +28,7 @@ class AuthSignInFragment: BaseFragment<FragmentAuthSignInBinding, AuthSignInView
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == SERVICE_SIGN_IN_REQUEST_CODE) {
-            signInWithSpecificService(data)
+            handleDataFromSpecificService(data)
         }
     }
 
@@ -44,7 +44,7 @@ class AuthSignInFragment: BaseFragment<FragmentAuthSignInBinding, AuthSignInView
         }
     }
 
-    private fun signInWithSpecificService(data: Intent?) {
+    private fun handleDataFromSpecificService(data: Intent?) {
         viewModel.requestSignInWithService(data).apply {
             observeLoadingResponse { AndroidUtils.hideKeyboard(requireActivity()) }
             observeSuccessResponse { firebaseUid -> openMainScreen(firebaseUid) }

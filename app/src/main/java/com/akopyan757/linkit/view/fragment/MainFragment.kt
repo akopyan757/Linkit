@@ -143,7 +143,7 @@ class MainFragment : BaseFragment<FragmentMainBinding, LinkViewModel>(), ViewTre
     }
 
     private fun subscribeWindowFocusChanging() {
-        view?.viewTreeObserver?.removeOnWindowFocusChangeListener(this)
+        view?.viewTreeObserver?.addOnWindowFocusChangeListener(this)
     }
 
     private fun unsubscribeWindowFocusChanging() {

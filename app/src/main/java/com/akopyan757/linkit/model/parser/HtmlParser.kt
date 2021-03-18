@@ -33,13 +33,7 @@ class HtmlParser {
 
     private fun parseOpenGraphTags(document: Document): OpenGraphHtmlTags {
         val headTag = document.head()
-
-        val ogTagsMap = headTag.getMetaPropertiesContentMap(
-            OpenGraphHtmlTags.TAG_OPEN_GRAPH,
-            OpenGraphHtmlTags.TAG_ARTICLE,
-            OpenGraphHtmlTags.TAG_FACEBOOK
-        )
-
+        val ogTagsMap = headTag.getOgMetaPropertiesContentMap()
         return OpenGraphHtmlTags.fromMap(ogTagsMap)
     }
 
@@ -57,12 +51,14 @@ class HtmlParser {
         return AdditionalHtmlTags(canonical, description, author)
     }
 
-    private fun Element.getMetaPropertiesContentMap(vararg properties: String): Map<String, String> {
+    private fun Element.getOgMetaPropertiesContentMap(): Map<String, String> {
         val fullHashMap = HashMap<String, String>()
-        properties.forEach { property ->
-            val contentMap = getMetaPropertiesContentMap(property)
-            fullHashMap.putAll(contentMap)
-        }
+        val ogTags = getMetaPropertiesContentMap(OpenGraphHtmlTags.TAG_OPEN_GRAPH)
+        val articleTags = getMetaPropertiesContentMap(OpenGraphHtmlTags.TAG_ARTICLE)
+        val fbTags = getMetaPropertiesContentMap(OpenGraphHtmlTags.TAG_FACEBOOK)
+        fullHashMap.putAll(ogTags)
+        fullHashMap.putAll(articleTags)
+        fullHashMap.putAll(fbTags)
         return fullHashMap
     }
 

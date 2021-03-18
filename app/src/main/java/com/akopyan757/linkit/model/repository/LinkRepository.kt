@@ -1,5 +1,6 @@
 package com.akopyan757.linkit.model.repository
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.map
 import com.akopyan757.base.model.BaseRepository
 import com.akopyan757.linkit.common.Config
@@ -15,8 +16,6 @@ import com.akopyan757.linkit.model.parser.tags.HtmlTags
 import com.akopyan757.linkit.model.store.StoreLinks
 import com.akopyan757.linkit.view.scope.mainInject
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
 import org.koin.core.KoinComponent
 import org.koin.core.inject
 import org.koin.core.qualifier.named
@@ -43,19 +42,11 @@ class LinkRepository: BaseRepository(), KoinComponent {
     fun addNewLink(url: String, folderId: Int) = wrapActionIO {
         if (!FormatUtils.isUrl(url))
             throw UrlIsNotValidException()
-
         val data = UrlLinkData.createWithAssignFolder(url, folderId)
         val linkId = urlLinkDao.addNewData(data)
-        data.id = linkId
+        data.updateId(linkId)
         storeLinks.addLink(data)
-
-        CoroutineScope(coroutineDispatcher).launch {
-            val htmlHeadTags = htmlParser.parseHeadTagsFromResource(url)
-            val urlLinkData = createNewUrlDataFromTags(htmlHeadTags)
-            urlLinkDao.insertOrUpdate(urlLinkData)
-            storeLinks.addLink(urlLinkData)
-            imageCache.saveImages(data)
-        }
+        loadExtraDataForUrlData(data)
     }
 
     fun addNewFolder(name: String) = wrapActionIO {
@@ -67,12 +58,11 @@ class LinkRepository: BaseRepository(), KoinComponent {
         }
     }
 
-    fun getUrlLinksByFolder(folderId: Int) = urlLinkDao.getLiveUrls(folderId).map { urlList ->
-        urlList.map { urlLinkData ->
-            urlLinkData.updateLinkDataTexts()
-                    .updateLinkDataFilenames()
-        }
-    }.asLiveIO()
+    fun getUrlLinksByFolder(folderId: Int): LiveData<List<UrlLinkData>> {
+        return urlLinkDao.getLiveUrls(folderId)
+            .map { urlsData -> editUrlDataList(urlsData) }
+            .asLiveIO()
+    }
 
     fun getAllFolders() = folderDao.getLiveAll().asLiveIO()
 
@@ -103,19 +93,37 @@ class LinkRepository: BaseRepository(), KoinComponent {
         imageCache.moveScreenshot(linkId)
     }
 
-    private fun createNewUrlDataFromTags(htmlTags: HtmlTags) = UrlLinkData().apply {
+    private fun loadExtraDataForUrlData(data: UrlLinkData) = launchIO {
+        val htmlHeadTags = htmlParser.parseHeadTagsFromResource(data.url)
+        val urlLinkData = data.fillUrlDataWithHtmlTags(htmlHeadTags)
+                .editFields()
+                .addMediaFilenames()
+        urlLinkDao.insertOrUpdate(urlLinkData)
+        storeLinks.addLink(urlLinkData)
+        imageCache.saveImages(urlLinkData)
+    }
+
+    private fun UrlLinkData.fillUrlDataWithHtmlTags(htmlTags: HtmlTags): UrlLinkData {
         title = htmlTags.getTitle()
         description = htmlTags.getDescription()
         photoUrl = htmlTags.getImage()
+        return this
     }
 
-    private fun UrlLinkData.updateLinkDataTexts(): UrlLinkData {
+    private fun editUrlDataList(urlDataList: List<UrlLinkData>): List<UrlLinkData> {
+        return urlDataList.map { urlData ->
+            urlData.editFields()
+                   .addMediaFilenames()
+        }
+    }
+
+    private fun UrlLinkData.editFields(): UrlLinkData {
         title = removeUrlsFromText(title)
         description = removeUrlsFromText(description)
         return this
     }
 
-    private fun UrlLinkData.updateLinkDataFilenames(): UrlLinkData {
+    private fun UrlLinkData.addMediaFilenames(): UrlLinkData {
         logoFileName = imageCache.getLogoName(this)
         contentFileName = imageCache.getContentName(this)
         screenshotFileName = imageCache.getScreenshotName(this.id)
@@ -125,7 +133,9 @@ class LinkRepository: BaseRepository(), KoinComponent {
     private fun removeUrlsFromText(text: String): String {
         var newText = text
         val extractedUrls = FormatUtils.extractUrls(text)
-        extractedUrls.forEach { url -> newText = newText.replace(url, Config.EMPTY) }
+        extractedUrls.forEach { url ->
+            newText = newText.replace(url, Config.EMPTY)
+        }
         return newText
     }
 }
