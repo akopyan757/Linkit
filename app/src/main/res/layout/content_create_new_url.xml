@@ -50,7 +50,7 @@
             android:popupBackground="@drawable/background_edit_text"
             android:dropDownVerticalOffset="60dp"
             android:background="@drawable/background_spinner"
-            selectedValue="@={viewModel.selectedFolderName}"
+            app:selectedValue="@={viewModel.selectedFolderName}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@+id/tilClipboardUrl"
             app:layout_constraintStart_toStartOf="@+id/tilClipboardUrl"

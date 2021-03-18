@@ -67,7 +67,10 @@ object DatabindingAdapter {
     }
 
     @JvmStatic
-    @BindingAdapter(value = ["selectedValue", "selectedValueAttrChanged"], requireAll = false)
+    @BindingAdapter(
+        value = ["app:selectedValue", "selectedValueAttrChanged"],
+        requireAll = false
+    )
     fun bindSpinnerData(
         pAppCompatSpinner: Spinner,
         newSelectedValue: String,
@@ -91,7 +94,7 @@ object DatabindingAdapter {
     }
 
     @JvmStatic
-    @InverseBindingAdapter(attribute = "selectedValue", event = "selectedValueAttrChanged")
+    @InverseBindingAdapter(attribute = "app:selectedValue", event = "selectedValueAttrChanged")
     fun captureSelectedValue(spinner: Spinner): String {
         return spinner.selectedItem as String
     }
