@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-        <dimen name="marginGiant">40dp</dimen>
+    <dimen name="marginGiant">40dp</dimen>
+    <dimen name="marginBig">24dp</dimen>
     <dimen name="marginPrimary">16dp</dimen>
     <dimen name="marginSecondary">8dp</dimen>
     <dimen name="marginTertiary">4dp</dimen>
@@ -18,8 +19,6 @@
 
     <dimen name="paddingFolderTabItem">12dp</dimen>
     <dimen name="tabLayout_folder_height">40dp</dimen>
-
-    <dimen name="marginBig">24dp</dimen>
 
     <dimen name="itemLinkMinHeight">60dp</dimen>
 
@@ -47,8 +46,8 @@
     <dimen name="addFolderTextSize">18sp</dimen>
     <dimen name="buttonAuthHeight">52dp</dimen>
     <dimen name="profileIconSize">24dp</dimen>
-    <dimen name="profileIconBigSize">64dp</dimen>
-    <dimen name="profileImageRadius">32dp</dimen>
+    <dimen name="profileIconBigSize">88dp</dimen>
+    <dimen name="profileImageRadius">44dp</dimen>
     <dimen name="setPasswordBackIconMargin">24dp</dimen>
     <dimen name="bottomAdLandHeight">50dp</dimen>
     <dimen name="tlFoldersHeight">40dp</dimen>

@@ -125,6 +125,11 @@
         <item name="windowFixedWidthMajor">60%</item>
     </style>
 
+    <style name="Theme.Linkit.ProfileButton" parent="Widget.AppCompat.TextView">
+        <item name="android:textAppearance">@style/Theme.Linkit.TextAppearanceRegular</item>
+        <item name="android:drawableEnd">@drawable/ic_chevron_down</item>
+    </style>
+
     <style name="Theme.Linkit.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="Theme.Linkit.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />

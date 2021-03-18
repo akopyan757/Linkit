@@ -19,15 +19,15 @@
             android:id="@+id/ccvProfileAvatar"
             android:layout_width="@dimen/profileIconBigSize"
             android:layout_height="@dimen/profileIconBigSize"
-            android:layout_marginTop="@dimen/marginSecondary"
+            android:layout_marginTop="@dimen/marginBig"
             app:cardCornerRadius="@dimen/profileImageRadius"
             app:cardElevation="@dimen/elevationSecondary"
-            app:visibility="@{viewModel.profileIconVisible}"
             app:layout_constraintBottom_toTopOf="@+id/tvProfileDisplayName"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintTop_toTopOf="parent"
+            app:visibility="@{viewModel.profileIconVisible}">
 
             <ImageView
                 android:id="@+id/ivProfileAvatar"
@@ -44,7 +44,7 @@
             android:id="@+id/tvProfileDisplayName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/marginSecondary"
+            android:layout_marginTop="@dimen/marginBig"
             android:text="@{viewModel.displayName}"
             android:textAppearance="@style/Theme.Linkit.TextAppearanceTitle"
             app:layout_constraintBottom_toTopOf="@+id/tvProfileEmail"
@@ -69,62 +69,66 @@
             tools:drawableRight="@drawable/ic_check_verify"
             tools:text="email@hosting.ru" />
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnProfileSetupPassword"
-            style="@style/Theme.Linkit.Button"
-            android:layout_width="wrap_content"
+        <TextView
+            android:id="@+id/tvProfileSetupPassword"
+            style="@style/Theme.Linkit.ProfileButton"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/marginPrimary"
-            android:drawableLeft="@drawable/ic_lock"
+            android:layout_marginStart="@dimen/marginBig"
+            android:layout_marginTop="@dimen/marginGiant"
+            android:layout_marginEnd="@dimen/marginBig"
             android:text="@string/setup_password"
-            app:layout_constraintBottom_toTopOf="@+id/btnProfileChangePassword"
+            app:layout_constraintBottom_toTopOf="@+id/tvProfileChangePassword"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tvProfileEmail"
             app:visibility="@{viewModel.setPasswordButtonVisible}" />
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnProfileChangePassword"
-            style="@style/Theme.Linkit.Button"
-            android:layout_width="wrap_content"
+        <TextView
+            android:id="@+id/tvProfileChangePassword"
+            style="@style/Theme.Linkit.ProfileButton"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:drawableLeft="@drawable/ic_lock"
+            android:layout_marginStart="@dimen/marginBig"
+            android:layout_marginTop="@dimen/marginPrimary"
+            android:layout_marginEnd="@dimen/marginBig"
             android:text="@string/change_password"
-            app:visibility="@{viewModel.changePasswordButtonVisible}"
-            app:layout_constraintBottom_toTopOf="@+id/btnProfileVerify"
+            app:layout_constraintBottom_toTopOf="@+id/tvProfileVerify"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/btnProfileSetupPassword" />
+            app:layout_constraintTop_toBottomOf="@+id/tvProfileSetupPassword"
+            app:layout_goneMarginBottom="@dimen/marginGiant"
+            app:layout_goneMarginTop="@dimen/marginGiant"
+            app:visibility="@{viewModel.changePasswordButtonVisible}" />
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnProfileVerify"
-            style="@style/Theme.Linkit.Button"
-            android:layout_width="wrap_content"
+        <TextView
+            android:id="@+id/tvProfileVerify"
+            style="@style/Theme.Linkit.ProfileButton"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:drawableLeft="@drawable/ic_mail"
-            android:text="@string/verify_email"
+            android:layout_marginStart="@dimen/marginBig"
+            android:layout_marginTop="@dimen/marginBig"
+            android:layout_marginEnd="@dimen/marginBig"
+            android:layout_marginBottom="@dimen/marginGiant"
             android:enabled="@{viewModel.verifyButtonEnabled}"
-            app:layout_constraintBottom_toTopOf="@+id/btnProfileSignOut"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/btnProfileChangePassword" />
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnProfileSignOut"
-            style="@style/Theme.Linkit.Button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/marginSecondary"
-            android:drawableLeft="@drawable/ic_log_out"
-            android:text="@string/sign_out"
+            android:text="@string/verify_email"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/btnProfileVerify" />
+            app:layout_constraintTop_toBottomOf="@+id/tvProfileChangePassword"
+            app:layout_goneMarginBottom="@dimen/marginGiant"
+            app:layout_goneMarginTop="@dimen/marginGiant" />
+
+        <ImageView
+            android:id="@+id/ivProfileSignOut"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/marginBig"
+            android:layout_marginEnd="@dimen/marginBig"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_log_out"
+            android:contentDescription="@string/todo" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

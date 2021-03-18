@@ -22,10 +22,10 @@ class ProfileDialogFragment : BaseDialogFragment<DialogProfileBinding, ProfileVi
     override fun getVariableId(): Int = BR.viewModel
 
     override fun onSetupView(bundle: Bundle?) {
-        binding.btnProfileSetupPassword.setOnClickListener { openSetPasswordScreen() }
-        binding.btnProfileChangePassword.setOnClickListener { openUpdatePasswordScreen() }
-        binding.btnProfileVerify.setOnClickListener { requestVerifyEmail() }
-        binding.btnProfileSignOut.setOnClickListener { requestSignOut() }
+        binding.tvProfileSetupPassword.setOnClickListener { openSetPasswordScreen() }
+        binding.tvProfileChangePassword.setOnClickListener { openUpdatePasswordScreen() }
+        binding.tvProfileVerify.setOnClickListener { requestVerifyEmail() }
+        binding.ivProfileSignOut.setOnClickListener { requestSignOut() }
         requestGetUserData()
         observeEmailVerifyLiveState()
     }
@@ -90,10 +90,10 @@ class ProfileDialogFragment : BaseDialogFragment<DialogProfileBinding, ProfileVi
     }
 
     private fun setVisibleVerifyButton() {
-        binding.btnProfileVerify.visibility = View.VISIBLE
+        binding.tvProfileVerify.visibility = View.VISIBLE
     }
 
     private fun resetVisibleVerifyButton() {
-        binding.btnProfileVerify.visibility = View.GONE
+        binding.tvProfileVerify.visibility = View.GONE
     }
 }
