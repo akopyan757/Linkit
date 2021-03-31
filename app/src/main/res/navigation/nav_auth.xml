@@ -11,8 +11,20 @@
         android:label="SplashFragment"
         tools:layout="@layout/fragment_splash">
         <action
-            android:id="@+id/action_splashFragment_to_authSignInFragment"
+            android:id="@+id/action_auth_splash_to_start"
+            app:destination="@id/authStartFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/authStartFragment"
+        android:name="com.akopyan757.linkit.view.fragment.AuthStartFragment"
+        android:label="AuthStartFragment"
+        tools:layout="@layout/fragment_auth_start">
+        <action
+            android:id="@+id/action_auth_start_to_sign_in"
             app:destination="@id/authSignInFragment" />
+        <action
+            android:id="@+id/action_auth_start_to_sign_up"
+            app:destination="@id/authSignUpFragment" />
     </fragment>
     <fragment
         android:id="@+id/authSignInFragment"
@@ -20,10 +32,7 @@
         android:label="AuthSignInFragment"
         tools:layout="@layout/fragment_auth_sign_in">
         <action
-            android:id="@+id/action_authSignInFragment_to_authSignUpFragment"
-            app:destination="@id/authSignUpFragment" />
-        <action
-            android:id="@+id/action_authSignInFragment_to_authForgotPasswordFragment"
+            android:id="@+id/action_auth_sign_in_to_forgot_password"
             app:destination="@id/authForgotPasswordFragment" />
     </fragment>
     <fragment

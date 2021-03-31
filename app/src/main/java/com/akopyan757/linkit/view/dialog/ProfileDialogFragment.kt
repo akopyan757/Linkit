@@ -45,7 +45,7 @@ class ProfileDialogFragment : BaseDialogFragment<DialogProfileBinding, ProfileVi
 
     private fun requestSignOut() {
         viewModel.getSignOutResponseLive().observeSuccessResponse {
-            showAuthorizationScreen()
+            quitAndShowAuthorizationScreen()
         }
     }
 
@@ -61,7 +61,7 @@ class ProfileDialogFragment : BaseDialogFragment<DialogProfileBinding, ProfileVi
         }
     }
 
-    private fun showAuthorizationScreen() {
+    private fun quitAndShowAuthorizationScreen() {
         startActivity(Intent(requireActivity(), AuthActivity::class.java))
         requireActivity().finish()
     }

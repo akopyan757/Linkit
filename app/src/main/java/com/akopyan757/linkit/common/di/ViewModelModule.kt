@@ -19,6 +19,7 @@ object ViewModelModule {
         viewModel { (folderId: Int) -> PageViewModel(folderId) }
         viewModel { AuthSignInViewModel() }
         viewModel { AuthSignUpViewModel() }
+        viewModel { AuthStartViewModel() }
         viewModel { AuthForgotPasswordViewModel() }
         viewModel { AuthSplashViewModel() }
         viewModel { ProfileViewModel() }

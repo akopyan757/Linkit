@@ -27,22 +27,24 @@
         <item name="android:fontFamily">@font/poppins_medium</item>
         <item name="android:textSize">20sp</item>
     </style>
-
-
-    <!-- Deprecated -->
+    
     <style name="Theme.Linkit.Text" parent="TextAppearance.AppCompat">
         <item name="android:textSize">@dimen/textSizePrimary</item>
         <item name="android:textColorLink">@color/link</item>
         <item name="android:gravity">center_vertical|start</item>
+        <item name="fontFamily">@font/poppins</item>
     </style>
 
     <style name="Theme.Linkit.Text.Title">
         <item name="android:textSize">@dimen/textSizeTitle</item>
-        <item name="android:textAllCaps">true</item>
     </style>
 
     <style name="Theme.Linkit.Text.Body1">
         <item name="android:textSize">@dimen/textSizeSecondary</item>
+    </style>
+
+    <style name="Theme.Linkit.Text.Body1.Bold">
+        <item name="fontFamily">@font/poppins_medium</item>
     </style>
 
     <style name="Theme.Linkit.Text.Body2">

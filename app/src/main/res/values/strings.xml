@@ -38,20 +38,20 @@
     <string name="delete_folder_title">Delete Folder</string>
     <string name="delete_folder_description">Are you sure want to delete the folder \'%s\'?</string>
     <string name="cancel">Cancel</string>
-    <string name="authorization">Authorization</string>
+    <string name="authorization">Sign in with email</string>
     <string name="email">Email</string>
     <string name="password">Password</string>
     <string name="old_password">Old password</string>
     <string name="new_password">New password</string>
     <string name="sign_in">Sign In</string>
-    <string name="registration">Registration</string>
+    <string name="registration">Sign up with email</string>
     <string name="set_password">Password setup</string>
     <string name="update_password">Update password</string>
     <string name="confirm_password">Confirm Password</string>
-    <string name="sign_up">Sign Up</string>
+    <string name="sign_up">Sign up with email</string>
     <string name="error_passwords_match">Password do not match</string>
     <string name="reset_password">Reset password</string>
-    <string name="forgot_password">Forgot password</string>
+    <string name="forgot_password">Forgot password?</string>
     <string name="toast_reset_password">A letter has been sent to your email \'%s\' with a link to change your password</string>
     <string name="toast_verify_email">A letter has been sent to your email \'%s\' with a link to verify your account</string>
     <string name="verify_email">Verify email</string>
@@ -68,5 +68,7 @@
         A user with such account is already registered.\n\nTo setup password you need to log in with your \'%s\' and go to profile settings.
     </string>
     <string name="preview">Preview</string>
+    <string name="auth_policy">By signing up, you agree to UnboxMe’s\nTerms of Use and Privacy Policy.</string>
+    <string name="sing_in_button_text">Already have an account?</string>
 
 </resources>

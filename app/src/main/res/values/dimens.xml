@@ -7,7 +7,7 @@
     <dimen name="marginTertiary">4dp</dimen>
     <dimen name="marginQuartiary">2dp</dimen>
 
-    <dimen name="textSizeTitle">18sp</dimen>
+    <dimen name="textSizeTitle">32sp</dimen>
     <dimen name="textSizePrimary">16sp</dimen>
     <dimen name="textSizeSecondary">14sp</dimen>
     <dimen name="textSizeTertiary">12sp</dimen>
@@ -53,4 +53,7 @@
     <dimen name="tlFoldersHeight">40dp</dimen>
     <dimen name="viewPagerUrlsMarginTop">56dp</dimen>
     <dimen name="webViewHeight">400dp</dimen>
+    <dimen name="authStartTitleSize">32sp</dimen>
+
+    <fraction name="authTitleRatio">0.25</fraction>
 </resources>

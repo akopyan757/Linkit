@@ -29,6 +29,6 @@ class AuthSplashFragment: BaseFragment<FragmentSplashBinding, AuthSplashViewMode
     }
 
     private fun openSignInScreen() {
-        findNavController().navigate(R.id.action_splashFragment_to_authSignInFragment)
+        findNavController().navigate(R.id.action_auth_splash_to_start)
     }
 }

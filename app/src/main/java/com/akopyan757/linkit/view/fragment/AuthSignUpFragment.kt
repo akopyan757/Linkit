@@ -21,12 +21,10 @@ class AuthSignUpFragment: BaseFragment<FragmentAuthSignUpBinding, AuthSignUpView
     override fun getVariableId(): Int = BR.viewModel
 
     override fun onSetupView(bundle: Bundle?) {
-        binding.tvAuthSignInBack.setOnClickListener { backToSignInScreen() }
-        binding.btnAuthSignUp.setOnClickListener { signUpRequest() }
-    }
-
-    private fun backToSignInScreen() {
-        findNavController().popBackStack()
+        with (binding) {
+            btnAuthSignUp.setOnClickListener { signUpRequest() }
+            ivAuthSignUpBack.setOnClickListener { backToStartScreen() }
+        }
     }
 
     private fun signUpRequest() {
@@ -56,7 +54,7 @@ class AuthSignUpFragment: BaseFragment<FragmentAuthSignUpBinding, AuthSignUpView
             .show()
     }
 
-    companion object {
-        const val TAG = "AUTH_SIGN_IN_FRAGMENT"
+    private fun backToStartScreen() {
+        findNavController().popBackStack()
     }
 }

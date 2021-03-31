@@ -112,10 +112,12 @@
 
     <style name="Theme.Linkit.Button" parent="TextAppearance.MaterialComponents.Button">
         <item name="backgroundTint">@color/button_background</item>
+        <item name="fontFamily">@font/poppins</item>
         <item name="android:textColor">@color/button_text_size</item>
         <item name="android:textAppearance">@style/Theme.Linkit.TextAppearanceRegular</item>
         <item name="elevation">@dimen/elevationSecondary</item>
-        <item name="cornerRadius">24dp</item>
+        <item name="cornerRadius">16dp</item>
+        <item name="textAllCaps">false</item>
     </style>
 
     <style name="Theme.Linkit.AlertDialog" parent="Theme.AppCompat.Light.Dialog.Alert">

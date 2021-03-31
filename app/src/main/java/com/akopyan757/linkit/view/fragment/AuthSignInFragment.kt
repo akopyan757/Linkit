@@ -1,6 +1,5 @@
 package com.akopyan757.linkit.view.fragment
 
-import android.content.Intent
 import android.os.Bundle
 import androidx.navigation.fragment.findNavController
 import com.akopyan757.base.view.BaseFragment
@@ -20,20 +19,11 @@ class AuthSignInFragment: BaseFragment<FragmentAuthSignInBinding, AuthSignInView
     override fun getVariableId(): Int = BR.viewModel
 
     override fun onSetupView(bundle: Bundle?) {
-        binding.btnAuthHuawei.setOnClickListener { signInWithSpecificService() }
-        binding.btnAuthSignIn.setOnClickListener { signInWithEmailAndPassword() }
-        binding.tvAuthForgotPassword.setOnClickListener { openForgotPasswordScreen() }
-        binding.tvAuthRegistration.setOnClickListener { openSignUpScreen() }
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (requestCode == SERVICE_SIGN_IN_REQUEST_CODE) {
-            handleDataFromSpecificService(data)
+        with(binding) {
+            btnAuthSignIn.setOnClickListener { signInWithEmailAndPassword() }
+            tvAuthForgotPassword.setOnClickListener { openForgotPasswordScreen() }
+            ivAuthSignInBack.setOnClickListener { backToStartScreen() }
         }
-    }
-
-    private fun signInWithSpecificService() {
-        startActivityForResult(viewModel.getSignInIntent(), SERVICE_SIGN_IN_REQUEST_CODE)
     }
 
     private fun signInWithEmailAndPassword() {
@@ -44,20 +34,12 @@ class AuthSignInFragment: BaseFragment<FragmentAuthSignInBinding, AuthSignInView
         }
     }
 
-    private fun handleDataFromSpecificService(data: Intent?) {
-        viewModel.requestSignInWithService(data).apply {
-            observeLoadingResponse { AndroidUtils.hideKeyboard(requireActivity()) }
-            observeSuccessResponse { firebaseUid -> openMainScreen(firebaseUid) }
-            observeErrorResponse { exception -> showErrorToast(exception) }
-        }
-    }
-
     private fun openForgotPasswordScreen() {
-        findNavController().navigate(R.id.action_authSignInFragment_to_authForgotPasswordFragment)
+        findNavController().navigate(R.id.action_auth_sign_in_to_forgot_password)
     }
 
-    private fun openSignUpScreen() {
-        findNavController().navigate(R.id.action_authSignInFragment_to_authSignUpFragment)
+    private fun backToStartScreen() {
+        findNavController().popBackStack()
     }
 
     companion object {

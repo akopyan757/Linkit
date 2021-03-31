@@ -14,19 +14,28 @@
         android:layout_height="match_parent"
         android:background="@color/background">
 
+        <ImageView
+            android:id="@+id/ivAuthSignInBack"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/marginBig"
+            android:contentDescription="@string/todo"
+            app:layout_constraintStart_toStartOf="@+id/tvAuthTitle"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_arrow_back" />
+
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/tilAuthSignInEmail"
             style="@style/Theme.Linkit.TextInputLayout"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/marginGiant"
-            android:layout_marginEnd="@dimen/marginGiant"
+            android:layout_marginStart="@dimen/marginBig"
+            android:layout_marginTop="@dimen/marginPrimary"
+            android:layout_marginEnd="@dimen/marginBig"
             android:nextFocusDown="@id/tilAuthSignInPassword"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.36">
+            app:layout_constraintTop_toBottomOf="@+id/tvAuthTitle">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/tietAuthSignInEmail"
@@ -44,11 +53,9 @@
             style="@style/Theme.Linkit.TextInputLayout.Password"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/marginGiant"
             android:layout_marginTop="@dimen/marginPrimary"
-            android:layout_marginEnd="@dimen/marginGiant"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/tilAuthSignInEmail"
+            app:layout_constraintStart_toStartOf="@+id/tilAuthSignInEmail"
             app:layout_constraintTop_toBottomOf="@+id/tilAuthSignInEmail">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -67,48 +74,35 @@
             style="@style/Theme.Linkit.Button"
             android:layout_width="0dp"
             android:layout_height="@dimen/buttonAuthHeight"
-            android:layout_marginTop="@dimen/marginPrimary"
+            android:layout_marginStart="@dimen/marginBig"
+            android:layout_marginEnd="@dimen/marginBig"
+            android:layout_marginBottom="@dimen/marginBig"
             android:enabled="@{viewModel.buttonSignInEnable}"
             android:text="@string/sign_in"
-            app:layout_constraintEnd_toEndOf="@+id/tilAuthSignInPassword"
-            app:layout_constraintStart_toStartOf="@+id/tilAuthSignInPassword"
-            app:layout_constraintTop_toBottomOf="@+id/tvAuthError" />
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnAuthHuawei"
-            style="@style/Theme.Linkit.Button"
-            android:layout_width="0dp"
-            android:layout_height="@dimen/buttonAuthHeight"
-            android:layout_marginTop="@dimen/marginSecondary"
-            android:drawableLeft="@drawable/ic_login_icon"
-            android:text="@string/buttonText"
-            android:textColor="@color/buttonTextColor"
-            app:backgroundTint="@color/buttonBackgroundColor"
-            app:layout_constraintEnd_toEndOf="@+id/btnAuthSignIn"
-            app:layout_constraintStart_toStartOf="@+id/btnAuthSignIn"
-            app:layout_constraintTop_toBottomOf="@+id/btnAuthSignIn" />
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
 
         <TextView
             android:id="@+id/tvAuthTitle"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="@string/authorization"
-            android:textAppearance="@style/Theme.Linkit.TextAppearanceTitle"
-            app:layout_constraintBottom_toTopOf="@+id/tilAuthSignInEmail"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
+            android:textAppearance="@style/Theme.Linkit.Text.Title"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/tilAuthSignInEmail"
+            app:layout_constraintStart_toStartOf="@+id/tilAuthSignInEmail"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.61" />
+            app:layout_constraintVertical_bias="@fraction/authTitleRatio" />
 
         <TextView
             android:id="@+id/tvAuthError"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/marginSecondary"
-            android:gravity="center"
+            android:layout_marginTop="@dimen/marginPrimary"
             android:text="@{viewModel.error}"
             android:textAppearance="@style/Theme.Linkit.TextAppearanceRegular"
-            android:textColor="@color/design_default_color_error"
+            android:textColor="@color/error"
             app:layout_constraintEnd_toEndOf="@+id/tilAuthSignInPassword"
             app:layout_constraintStart_toStartOf="@+id/tilAuthSignInPassword"
             app:layout_constraintTop_toBottomOf="@+id/tilAuthSignInPassword"
@@ -116,33 +110,16 @@
             tools:text="Error" />
 
         <TextView
-            android:id="@+id/tvAuthRegistration"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/marginPrimary"
-            android:padding="@dimen/marginTertiary"
-            android:text="@string/registration"
-            android:textAppearance="@style/Theme.Linkit.TextAppearanceRegular"
-            android:textColor="@color/link"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@+id/btnAuthSignIn"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="@+id/btnAuthSignIn"
-            app:layout_constraintTop_toBottomOf="@+id/tvAuthForgotPassword" />
-
-        <TextView
             android:id="@+id/tvAuthForgotPassword"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/marginSecondary"
             android:padding="@dimen/marginTertiary"
             android:text="@string/forgot_password"
-            android:textAppearance="@style/Theme.Linkit.TextAppearanceRegular"
-            android:textColor="@color/link"
-            app:layout_constraintBottom_toTopOf="@+id/tvAuthRegistration"
+            android:textAppearance="@style/Theme.Linkit.Text.Body1.Bold"
+            app:layout_constraintBottom_toTopOf="@+id/btnAuthSignIn"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/btnAuthHuawei"
+            app:layout_constraintTop_toBottomOf="@+id/tvAuthError"
             app:layout_constraintVertical_bias="0.82"
             app:layout_constraintVertical_chainStyle="packed" />
 
@@ -151,11 +128,12 @@
             style="?android:attr/progressBarStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:visibility="@{viewModel.progress}"
-            app:layout_constraintBottom_toTopOf="@+id/tilAuthSignInEmail"
+            app:layout_constraintBottom_toTopOf="@+id/tvAuthForgotPassword"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvAuthTitle" />
+            app:layout_constraintTop_toBottomOf="@+id/tilAuthSignInPassword"
+            app:layout_constraintVertical_bias="0.72"
+            app:visibility="@{viewModel.progress}" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
