@@ -24,7 +24,7 @@ class LinkViewModel : BaseViewModel(), KoinComponent {
     @get:Bindable var isFoldersEmpty: Boolean by DB(false, BR.foldersEmpty)
     @get:Bindable var profileIconUrl: String? by DB(null, BR.profileIconUrl)
     @get:Bindable var profileIconDefaultRes: Int = R.drawable.ic_user
-    @get:Bindable val selectedFolderName = MutableLiveData("")
+    @get:Bindable val selectedFolderName = MutableLiveData(FolderData.GENERAL_FOLDER_NAME_TITLE)
 
     private val folderListData = mutableListOf<FolderObservable>()
     private val urlListData = ListLiveData<DiffItemObservable>()
@@ -40,9 +40,6 @@ class LinkViewModel : BaseViewModel(), KoinComponent {
                     } else {
                         FolderObservable(folder.id, folder.name)
                     }
-                }
-                if (selectedFolderName.value.isNullOrEmpty()) {
-                    selectedFolderName.value = folders.first { folder -> folder.isGeneral() }.name
                 }
                 folderListData.addAll(observables)
                 emit(observables)
@@ -71,6 +68,10 @@ class LinkViewModel : BaseViewModel(), KoinComponent {
             profileIconUrl = firebaseUser.photoUrl.toString()
         }
     )
+
+    fun requestMoveLinkToTop(observable: LinkObservable) {
+        linkRepository.moveLinkToTop(observable.id)
+    }
 
     fun closeAdItem(observable: DiffItemObservable) {
         urlListData.deleteItem(observable)

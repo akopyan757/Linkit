@@ -1,7 +1,6 @@
 package com.akopyan757.linkit.view.fragment
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.view.ViewTreeObserver
 import android.widget.ArrayAdapter
@@ -100,13 +99,13 @@ class MainFragment : BaseFragment<FragmentMainBinding, LinkViewModel>(), LinkAda
         }
     }
 
-    override fun onShareListener(observable: LinkObservable) {
-        startActivity(AndroidUtils.createShareIntent(observable.url, observable.title))
+    override fun onShareListener(link: LinkObservable) {
+        startActivity(AndroidUtils.createShareIntent(link.url, link.title))
     }
 
-    override fun onItemListener(observable: LinkObservable) {
-        val bundle = bundleOf(PreviewUrlFragment.PREVIEW_URL to observable)
-        findNavController().navigate(R.id.action_mainFragment_to_preview, bundle)
+    override fun onItemListener(link: LinkObservable) {
+        openPreviewOfItem(link)
+        viewModel.requestMoveLinkToTop(link)
     }
 
     override fun onItemLongClickListener(link: LinkObservable) {
@@ -146,5 +145,10 @@ class MainFragment : BaseFragment<FragmentMainBinding, LinkViewModel>(), LinkAda
 
     private fun openProfileDialog() {
         findNavController().navigate(R.id.action_mainFragment_to_profileDialogFragment)
+    }
+
+    private fun openPreviewOfItem(observable: LinkObservable) {
+        val bundle = bundleOf(PreviewUrlFragment.PREVIEW_URL to observable)
+        findNavController().navigate(R.id.action_mainFragment_to_preview, bundle)
     }
 }
