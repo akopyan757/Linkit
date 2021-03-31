@@ -30,7 +30,7 @@ class LinkCreateUrlViewModel(
         bindLiveList(
             request = linkRepository.getAllFolders(),
             listLiveData = foldersList,
-            onMap = { folders -> folders.map { FolderObservable(it.id, it.name, it.order) } },
+            onMap = { folders -> folders.map { FolderObservable(it.id, it.name) } },
         )
     }
 

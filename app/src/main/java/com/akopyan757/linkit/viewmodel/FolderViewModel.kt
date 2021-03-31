@@ -58,7 +58,7 @@ class FolderViewModel : BaseViewModel(), KoinComponent {
 
     private fun convertFoldersDataToObservables(folders: List<FolderData>): List<FolderObservable> {
         return folders.map { item ->
-            FolderObservable(item.id, item.name, 1)
+            FolderObservable(item.id, item.name)
         }.filter { observable ->
             observable.id != FolderData.GENERAL_FOLDER_ID
         }

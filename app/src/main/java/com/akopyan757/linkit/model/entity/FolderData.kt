@@ -17,6 +17,7 @@ class FolderData(
 
     companion object {
         const val GENERAL_FOLDER_ID = 1
+        const val GENERAL_FOLDER_NAME_TITLE = "All folders"
         private const val GENERAL_FOLDER_NAME = "All"
         private const val GENERAL_FOLDER_ORDER = 0
 

@@ -35,7 +35,11 @@ class LinkViewModel : BaseViewModel(), KoinComponent {
         return linkRepository.getAllFolders().switchMap { folders ->
             liveData(viewModelScope.coroutineContext) {
                 val observables = folders.map { folder ->
-                    FolderObservable(folder.id, folder.name, 1)
+                    if (folder.isGeneral()) {
+                        FolderObservable(folder.id, FolderData.GENERAL_FOLDER_NAME_TITLE)
+                    } else {
+                        FolderObservable(folder.id, folder.name)
+                    }
                 }
                 if (selectedFolderName.value.isNullOrEmpty()) {
                     selectedFolderName.value = folders.first { folder -> folder.isGeneral() }.name

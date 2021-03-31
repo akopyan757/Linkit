@@ -52,9 +52,7 @@ class MainFragment : BaseFragment<FragmentMainBinding, LinkViewModel>(), LinkAda
                     requireContext(), R.layout.item_folder_spinner, R.id.tvFolderSpinner, names
                 )
             }
-            listenLinks().observe(viewLifecycleOwner) { folderId ->
-                Log.i("TAG", "Folder Id = $folderId")
-            }
+            listenLinks().observe(viewLifecycleOwner) {}
             requestFetchRemoteData().observeSuccessResponse {}
             linkListLive().observeList(recyclerLinksAdapter)
         }

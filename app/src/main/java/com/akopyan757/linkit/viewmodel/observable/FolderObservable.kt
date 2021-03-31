@@ -6,6 +6,5 @@ import java.io.Serializable
 
 data class FolderObservable(
     val id: Int,
-    var name: String,
-    val type: Int
+    var name: String
 ): Serializable, DiffItemObservable
