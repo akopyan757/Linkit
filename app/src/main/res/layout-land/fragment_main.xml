@@ -21,8 +21,7 @@
             <androidx.appcompat.widget.Toolbar
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
-                android:layout_height="?android:attr/actionBarSize"
-                app:visibility="@{!viewModel.editMode}">
+                android:layout_height="?android:attr/actionBarSize">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/linearLayout"
@@ -107,12 +106,6 @@
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
             </androidx.appcompat.widget.Toolbar>
-
-            <androidx.appcompat.widget.Toolbar
-                android:id="@+id/toolbarEdit"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:visibility="@{viewModel.editMode}" />
 
         </com.google.android.material.appbar.AppBarLayout>
 

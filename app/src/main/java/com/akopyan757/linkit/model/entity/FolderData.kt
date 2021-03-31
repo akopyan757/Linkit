@@ -13,6 +13,8 @@ class FolderData(
 ) {
     constructor() : this(0, "", 0)
 
+    fun isGeneral() = id == GENERAL_FOLDER_ID
+
     companion object {
         const val GENERAL_FOLDER_ID = 1
         private const val GENERAL_FOLDER_NAME = "All"

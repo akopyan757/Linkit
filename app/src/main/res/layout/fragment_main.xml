@@ -21,8 +21,7 @@
             <androidx.appcompat.widget.Toolbar
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:visibility="@{!viewModel.editMode}">
+                android:layout_height="wrap_content">
 
                 <com.google.android.material.circularreveal.cardview.CircularRevealCardView
                     android:id="@+id/ccvIconProfile"
@@ -52,12 +51,6 @@
 
             </androidx.appcompat.widget.Toolbar>
 
-            <androidx.appcompat.widget.Toolbar
-                android:id="@+id/toolbarEdit"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:visibility="@{viewModel.editMode}" />
-
         </com.google.android.material.appbar.AppBarLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -66,33 +59,26 @@
             android:layout_height="match_parent"
             app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-            <com.google.android.material.tabs.TabLayout
-                android:id="@+id/tabLayoutFolder"
-                style="@style/Theme.Linkit.TabLayout"
-                android:layout_width="wrap_content"
-                android:layout_height="@dimen/tlFoldersHeight"
+            <Spinner
+                android:id="@+id/spinnerSelectedFolder"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/marginSecondary"
                 android:layout_marginTop="@dimen/marginSecondary"
-                android:background="@drawable/shadow_tab_layout"
-                app:visibility="@{!viewModel.foldersEmpty}"
+                android:spinnerMode="dropdown"
+                android:minWidth="150dp"
+                android:elevation="@dimen/marginTertiary"
+                android:prompt="@string/prompt"
+                android:popupBackground="@drawable/background_edit_text"
+                android:dropDownVerticalOffset="60dp"
+                android:background="@drawable/background_spinner"
+                app:selectedValue="@={viewModel.selectedFolderName}"
                 app:layout_constrainedWidth="true"
                 app:layout_constraintEnd_toStartOf="@+id/ivFolderSettings"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintHorizontal_chainStyle="packed"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
-
-            <androidx.viewpager2.widget.ViewPager2
-                android:id="@+id/viewPager"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:layout_marginTop="@dimen/viewPagerUrlsMarginTop"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.0" />
 
             <ImageView
                 android:id="@+id/ivFolderSettings"
@@ -103,31 +89,25 @@
                 android:contentDescription="@string/todo"
                 android:padding="@dimen/marginSecondary"
                 app:visibility="@{!viewModel.foldersEmpty}"
-                app:layout_constraintBottom_toBottomOf="@+id/tabLayoutFolder"
+                app:layout_constraintBottom_toBottomOf="@+id/spinnerSelectedFolder"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintHorizontal_chainStyle="packed"
-                app:layout_constraintStart_toEndOf="@+id/tabLayoutFolder"
-                app:layout_constraintTop_toTopOf="@+id/tabLayoutFolder"
+                app:layout_constraintStart_toEndOf="@+id/spinnerSelectedFolder"
+                app:layout_constraintTop_toTopOf="@+id/spinnerSelectedFolder"
                 app:srcCompat="@drawable/ic_options_24" />
 
-            <TextView
-                android:id="@+id/tvFolderCreate"
-                android:layout_width="wrap_content"
-                android:layout_height="@dimen/tlFoldersHeight"
-                android:layout_marginStart="@dimen/marginSecondary"
-                android:layout_marginTop="@dimen/marginSecondary"
-                android:background="@drawable/shadow_tab_layout"
-                android:drawablePadding="@dimen/marginSecondary"
-                android:gravity="start|center_vertical"
-                android:paddingStart="@dimen/marginSecondary"
-                android:paddingEnd="@dimen/marginSecondary"
-                android:text="@string/add_folder"
-                android:textAppearance="@style/Theme.Linkit.TextAppearanceRegular"
-                app:drawableStartCompat="@drawable/ic_baseline_folder_add_24"
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvLinks"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_marginTop="@dimen/marginPrimary"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:visibility="@{viewModel.foldersEmpty}" />
+                app:layout_constraintTop_toBottomOf="@+id/spinnerSelectedFolder"
+                app:layout_constraintVertical_bias="0.0" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

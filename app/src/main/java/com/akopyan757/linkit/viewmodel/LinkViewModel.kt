@@ -1,67 +1,59 @@
 package com.akopyan757.linkit.viewmodel
 
 import androidx.databinding.Bindable
-import androidx.lifecycle.SavedStateHandle
-import androidx.lifecycle.map
+import androidx.lifecycle.*
 import com.akopyan757.base.viewmodel.BaseViewModel
+import com.akopyan757.base.viewmodel.DiffItemObservable
 import com.akopyan757.base.viewmodel.list.ListLiveData
 import com.akopyan757.linkit.BR
 import com.akopyan757.linkit.R
-import com.akopyan757.linkit.common.Config
-import com.akopyan757.linkit.common.Config.KEY_EDIT_DELETE
-import com.akopyan757.linkit.common.Config.KEY_SELECTED_COUNT
-import com.akopyan757.linkit.common.utils.SumLiveData
+import com.akopyan757.linkit.model.entity.FolderData
 import com.akopyan757.linkit.model.repository.AuthRepository
 import com.akopyan757.linkit.model.repository.LinkRepository
 import com.akopyan757.linkit.view.scope.mainInject
 import com.akopyan757.linkit.viewmodel.observable.FolderObservable
+import com.akopyan757.linkit.viewmodel.observable.LinkObservable
 import org.koin.core.KoinComponent
 import org.koin.core.inject
-import org.koin.core.qualifier.named
 
 class LinkViewModel : BaseViewModel(), KoinComponent {
 
     private val authRepository: AuthRepository by inject()
     private val linkRepository: LinkRepository by mainInject()
 
-    private val stateHandle: SavedStateHandle by inject(named(Config.HANDLE_URL))
-
-    @get:Bindable
-    var editMode: Boolean by SavedStateBindable(
-        stateHandle, Config.KEY_EDIT_MODE_STATE, false, BR.editMode
-    )
-
     @get:Bindable var isFoldersEmpty: Boolean by DB(false, BR.foldersEmpty)
     @get:Bindable var profileIconUrl: String? by DB(null, BR.profileIconUrl)
     @get:Bindable var profileIconDefaultRes: Int = R.drawable.ic_user
+    @get:Bindable val selectedFolderName = MutableLiveData("")
 
-    private var deleteAction: Boolean by SavedStateBindable(stateHandle, KEY_EDIT_DELETE, false)
+    private val folderListData = mutableListOf<FolderObservable>()
+    private val urlListData = ListLiveData<DiffItemObservable>()
 
-    private val selectedCount = SumLiveData()
+    fun linkListLive() = urlListData
 
-    private val deleteUrlsVisible = selectedCount.map { count ->
-        editMode = count > 0
-        count > 0
-    }
-
-    private val foldersLiveData = ListLiveData<FolderObservable>()
-
-    fun bindAllFoldersWithList() {
-        bindLiveList(
-            request = linkRepository.getAllFolders(),
-            listLiveData = foldersLiveData,
-            onStart = { selectedCount.removeAll() },
-            onMap = { list ->
-                list.map { folder ->
-                    val name = KEY_SELECTED_COUNT.format(folder.id)
-                    val source by LiveSavedStateBindable<Int>(stateHandle, name)
-                    selectedCount.addSource(source, name)
+    fun listenFolders(): LiveData<List<FolderObservable>> {
+        return linkRepository.getAllFolders().switchMap { folders ->
+            liveData(viewModelScope.coroutineContext) {
+                val observables = folders.map { folder ->
                     FolderObservable(folder.id, folder.name, 1)
                 }
-            }, onFinished = { list ->
-                isFoldersEmpty = list.count() <= 1
+                if (selectedFolderName.value.isNullOrEmpty()) {
+                    selectedFolderName.value = folders.first { folder -> folder.isGeneral() }.name
+                }
+                folderListData.addAll(observables)
+                emit(observables)
             }
+        }
+    }
+
+    fun listenLinks(): LiveData<Int> = selectedFolderName.map { folderName ->
+        val selectedFolderId = findFolderIdByNameOrDefault(folderName)
+        bindLiveList(
+            request = linkRepository.getUrlLinksByFolder(selectedFolderId),
+            listLiveData = urlListData,
+            onMap = { links -> links.map { link -> LinkObservable.from(link) } }
         )
+        selectedFolderId
     }
 
     fun requestFetchRemoteData() = requestConvert(
@@ -76,17 +68,12 @@ class LinkViewModel : BaseViewModel(), KoinComponent {
         }
     )
 
-    fun disableEditMode() {
-        editMode = false
+    fun closeAdItem(observable: DiffItemObservable) {
+        urlListData.deleteItem(observable)
     }
 
-    fun deleteSelected() {
-        deleteAction = true
+    private fun findFolderIdByNameOrDefault(name: String): Int {
+        return folderListData.firstOrNull { folder -> folder.name == name }?.id
+            ?: FolderData.GENERAL_FOLDER_ID
     }
-
-    fun getFolderLiveList() = foldersLiveData
-
-    fun getVisibleDeleteIcon() = deleteUrlsVisible
-
-    fun getSelectedCount() = selectedCount
 }

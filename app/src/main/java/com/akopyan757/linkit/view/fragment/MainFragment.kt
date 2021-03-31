@@ -1,55 +1,62 @@
 package com.akopyan757.linkit.view.fragment
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.view.ViewTreeObserver
+import android.widget.ArrayAdapter
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.observe
+import androidx.core.os.bundleOf
 import androidx.navigation.fragment.findNavController
 import com.akopyan757.base.view.BaseFragment
-import com.akopyan757.base.viewmodel.list.ListChangeStrategy
-import com.akopyan757.base.viewmodel.list.ListHolder
+import com.akopyan757.base.viewmodel.list.LinearLayoutManagerWrapper
 import com.akopyan757.linkit.BR
 import com.akopyan757.linkit.BannerViewExtension
 import com.akopyan757.linkit.R
 import com.akopyan757.linkit.common.Config
 import com.akopyan757.linkit.common.clipboard.ClipboardUtils
+import com.akopyan757.linkit.common.utils.AndroidUtils
 import com.akopyan757.linkit.databinding.FragmentMainBinding
-import com.akopyan757.linkit.view.adapter.PageFragmentAdapter
+import com.akopyan757.linkit.view.adapter.LinkUrlAdapter
 import com.akopyan757.linkit.viewmodel.LinkViewModel
-import com.akopyan757.linkit.viewmodel.observable.FolderObservable
-import com.google.android.material.tabs.TabLayoutMediator
+import com.akopyan757.linkit.viewmodel.listener.LinkAdapterListener
+import com.akopyan757.linkit.viewmodel.observable.AdObservable
+import com.akopyan757.linkit.viewmodel.observable.LinkObservable
 import org.koin.android.viewmodel.ext.android.viewModel
 import org.koin.core.KoinComponent
 
 
-class MainFragment : BaseFragment<FragmentMainBinding, LinkViewModel>(), ViewTreeObserver.OnWindowFocusChangeListener, KoinComponent {
+class MainFragment : BaseFragment<FragmentMainBinding, LinkViewModel>(), LinkAdapterListener,
+    ViewTreeObserver.OnWindowFocusChangeListener, KoinComponent {
 
     override val viewModel: LinkViewModel by viewModel()
-
-    private lateinit var pageAdapter: PageFragmentAdapter
 
     override fun getLayoutId() = R.layout.fragment_main
     override fun getVariableId() = BR.viewModel
 
+    private lateinit var recyclerLinksAdapter: LinkUrlAdapter
+
     override fun onSetupView(bundle: Bundle?) {
         setupLifecycleOwner()
         setupActionBar()
-        setupLinkViewPages()
+        setupLinkRecyclerView()
         setupAdViews()
         binding.ivFolderSettings.setOnClickListener { openFolderDialog() }
-        binding.tvFolderCreate.setOnClickListener { openCreateFolderDialog() }
+        //binding.tvFolderCreate.setOnClickListener { openCreateFolderDialog() } TODO
         binding.ccvIconProfile.setOnClickListener { openProfileDialog() }
-        viewModel.bindAllFoldersWithList()
-        viewModel.requestFetchRemoteData().observeSuccessResponse {}
-        viewModel.getFolderLiveList().observe(viewLifecycleOwner) {
-            holder -> updateFoldersList(holder)
-        }
-        viewModel.getVisibleDeleteIcon().observe(viewLifecycleOwner) {
-            visible -> updateDeleteIcon(visible)
-        }
-        viewModel.getSelectedCount().observe(viewLifecycleOwner) {
-            count -> updateEditToolbar(count)
+
+        with(viewModel) {
+            listenFolders().observe(viewLifecycleOwner) { folderObservable ->
+                val names = folderObservable.map { observable -> observable.name }
+                binding.spinnerSelectedFolder?.adapter = ArrayAdapter(
+                    requireContext(), R.layout.item_folder_spinner, R.id.tvFolderSpinner, names
+                )
+            }
+            listenLinks().observe(viewLifecycleOwner) { folderId ->
+                Log.i("TAG", "Folder Id = $folderId")
+            }
+            requestFetchRemoteData().observeSuccessResponse {}
+            linkListLive().observeList(recyclerLinksAdapter)
         }
     }
 
@@ -66,29 +73,12 @@ class MainFragment : BaseFragment<FragmentMainBinding, LinkViewModel>(), ViewTre
         }
     }
 
-    private fun updateFoldersList(folderHolder: ListHolder<FolderObservable>) {
-        if (folderHolder.strategy is ListChangeStrategy.CustomChanged) {
-            pageAdapter.updateFolders(folderHolder.data)
-            folderHolder.strategy.after?.invoke()
-        }
-    }
-
-    private fun updateDeleteIcon(iconVisible: Boolean) {
-        binding.toolbarEdit.menu.setGroupVisible(R.id.groupEditSave, iconVisible)
-    }
-
-    private fun updateEditToolbar(countSelectedItems: Int) {
-        val countName = if (countSelectedItems > 0) " ($countSelectedItems)" else Config.EMPTY
-        binding.toolbarEdit.title = resources.getString(R.string.edit, countName)
-    }
-
     private fun setupLifecycleOwner() {
         binding.lifecycleOwner = this@MainFragment
     }
 
     private fun setupActionBar() {
         setupMainToolbar()
-        setupEditToolbar()
         setupAvatarPhoto()
     }
 
@@ -100,40 +90,33 @@ class MainFragment : BaseFragment<FragmentMainBinding, LinkViewModel>(), ViewTre
         setHasOptionsMenu(true)
     }
 
-    private fun setupEditToolbar() {
-        val toolbar = binding.toolbarEdit
-        toolbar.title = resources.getString(R.string.edit, Config.EMPTY)
-        toolbar.menu.setGroupVisible(R.id.groupEditSave, false)
-        toolbar.setNavigationIcon(R.drawable.ic_baseline_close_24)
-        toolbar.setNavigationOnClickListener { viewModel.disableEditMode() }
-        toolbar.inflateMenu(R.menu.menu_edit)
-        toolbar.setOnMenuItemClickListener { item ->
-            if (item.itemId == R.id.itemEditDelete)
-                viewModel.deleteSelected()
-            true
-        }
-    }
-
     private fun setupAvatarPhoto() {
         viewModel.requestGetUserAvatar().observeSuccessResponse {}
     }
 
-    private fun setupLinkViewPages() {
-        setupLinkViewPager()
-        setupLinkTabLayout()
+    private fun setupLinkRecyclerView() {
+        recyclerLinksAdapter = LinkUrlAdapter(this)
+        binding.rvLinks?.apply {
+            adapter = recyclerLinksAdapter
+            layoutManager = LinearLayoutManagerWrapper(requireContext())
+        }
     }
 
-    private fun setupLinkViewPager() {
-        pageAdapter = PageFragmentAdapter(childFragmentManager, lifecycle)
-        binding.viewPager.adapter = pageAdapter
+    override fun onShareListener(observable: LinkObservable) {
+        startActivity(AndroidUtils.createShareIntent(observable.url, observable.title))
     }
 
-    private fun setupLinkTabLayout() {
-        val tabLayout = binding.tabLayoutFolder
-        TabLayoutMediator(tabLayout, binding.viewPager) { tab, position ->
-            tab.customView = pageAdapter.getTabView(tabLayout, position)
-        }.attach()
-        tabLayout.offsetLeftAndRight(ZERO_OFFSET)
+    override fun onItemListener(observable: LinkObservable) {
+        val bundle = bundleOf(PreviewUrlFragment.PREVIEW_URL to observable)
+        findNavController().navigate(R.id.action_mainFragment_to_preview, bundle)
+    }
+
+    override fun onItemLongClickListener(link: LinkObservable) {
+
+    }
+
+    override fun onAdClosed(adObservable: AdObservable) {
+        viewModel.closeAdItem(adObservable)
     }
 
     private fun setupAdViews() {
@@ -165,9 +148,5 @@ class MainFragment : BaseFragment<FragmentMainBinding, LinkViewModel>(), ViewTre
 
     private fun openProfileDialog() {
         findNavController().navigate(R.id.action_mainFragment_to_profileDialogFragment)
-    }
-
-    companion object {
-        private const val ZERO_OFFSET = 0
     }
 }

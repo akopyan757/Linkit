@@ -16,7 +16,6 @@ object ViewModelModule {
         viewModel { (url: String) -> LinkCreateUrlViewModel(url) }
         viewModel { FolderViewModel() }
         viewModel { FolderCreateViewModel() }
-        viewModel { (folderId: Int) -> PageViewModel(folderId) }
         viewModel { AuthSignInViewModel() }
         viewModel { AuthSignUpViewModel() }
         viewModel { AuthStartViewModel() }
