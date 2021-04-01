@@ -10,12 +10,8 @@ import org.koin.dsl.module
 object ModelModule {
 
     val module = module {
-
-        scope(named<MainActivity>()) {
-            scoped { HtmlParser() }
-            scoped { LinkRepository() }
-        }
-
+        single { HtmlParser() }
+        single { LinkRepository() }
         single { AuthRepository() }
     }
 }

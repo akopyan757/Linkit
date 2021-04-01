@@ -6,7 +6,7 @@ import com.akopyan757.linkit.model.entity.UrlLinkData
 import java.io.Serializable
 
 data class LinkObservable(
-    val id: Long,
+    val id: String,
     val url: String,
     val title: String,
     val description: String,
@@ -19,8 +19,7 @@ data class LinkObservable(
 
     companion object {
         fun from(data: UrlLinkData): LinkObservable {
-            val imageFileName = data.contentFileName ?: data.logoFileName ?: data.screenshotFileName
-            return LinkObservable(data.id, data.url, data.title, data.description, imageFileName)
+            return LinkObservable(data.id, data.url, data.title, data.description)
         }
     }
 }

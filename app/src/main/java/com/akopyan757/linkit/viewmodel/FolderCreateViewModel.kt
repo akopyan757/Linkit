@@ -7,12 +7,13 @@ import com.akopyan757.linkit.BR
 import com.akopyan757.linkit.common.Config
 import com.akopyan757.linkit.model.exception.FolderExistsException
 import com.akopyan757.linkit.model.repository.LinkRepository
-import com.akopyan757.linkit.view.scope.mainInject
+
 import org.koin.core.KoinComponent
+import org.koin.core.inject
 
 class FolderCreateViewModel: BaseViewModel(), KoinComponent {
 
-    private val linkRepository: LinkRepository by mainInject()
+    private val linkRepository: LinkRepository by inject()
 
     @get:Bindable var folderName: String by DB("", BR.folderName)
     @get:Bindable var errorName: String by DB("", BR.errorName)
@@ -23,7 +24,7 @@ class FolderCreateViewModel: BaseViewModel(), KoinComponent {
         }
 
         return requestConvert(
-            request = linkRepository.addNewFolder(folderName),
+            request = linkRepository.createFolder(folderName),
             onSuccess = {},
             onError = { exception ->
                 if (exception is FolderExistsException)

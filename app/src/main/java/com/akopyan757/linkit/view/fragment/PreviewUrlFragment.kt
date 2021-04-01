@@ -34,18 +34,6 @@ class PreviewUrlFragment: BaseFragment<FragmentPreviewUrlBinding, PreviewUrlView
 
     override fun onSetupView(bundle: Bundle?) {
         binding.toolbarPreviewPage.setNavigationOnClickListener { backToMainScreen() }
-        binding.wvPreviewPage.webViewClient = createPreviewWebViewClient()
-    }
-
-    fun moveScreenshotToCache() {
-        viewModel.requestMoveScreenshotToCache().observeSuccessResponse {}
-    }
-
-    private fun createPreviewWebViewClient() = object : WebViewClient() {
-        override fun onPageFinished(view: WebView, url: String) {
-            AndroidUtils.takeScreenshotFromWebView(view)
-            moveScreenshotToCache()
-        }
     }
 
     private fun backToMainScreen() {

@@ -1,11 +1,8 @@
 package com.akopyan757.base.viewmodel
 
-import android.util.Log
 import androidx.databinding.PropertyChangeRegistry
 import androidx.lifecycle.*
 import com.akopyan757.base.model.ApiResponse
-import com.akopyan757.base.viewmodel.list.ListLiveData
-import kotlinx.coroutines.launch
 import kotlin.reflect.KProperty
 
 abstract class BaseViewModel: ViewModel(), BaseStateObservable {
@@ -29,29 +26,6 @@ abstract class BaseViewModel: ViewModel(), BaseStateObservable {
 
     override fun getCallback(): PropertyChangeRegistry {
         return mCallbacks
-    }
-
-    fun <T, R : DiffItemObservable> bindLiveList(
-        request: LiveData<List<T>>,
-        listLiveData: ListLiveData<R>,
-        onMap: (List<T>) -> List<R>,
-        onStart: (() -> Unit)? = null,
-        onFinished: ((List<R>) -> Unit)? = null,
-        onError: ((exception: Exception) -> Unit)? = null
-    ) {
-        listLiveData.addSource(request) { data ->
-            viewModelScope.launch {
-                try {
-                    onStart?.invoke()
-                    val observables = onMap.invoke(data)
-                    listLiveData.change(observables) {
-                        onFinished?.invoke(observables)
-                    }
-                } catch (e: Exception) {
-                    onError?.invoke(e)
-                }
-            }
-        }
     }
 
     fun <T> emptyLiveRequest(): LiveData<ResponseState<T>> = liveData {
@@ -83,39 +57,6 @@ abstract class BaseViewModel: ViewModel(), BaseStateObservable {
                 onError?.invoke(response.exception)
                 ResponseState.Error(response.exception)
             }
-        }
-    }
-
-    inner class SavedStateBindable<T>(
-        private val savedStateHandle: SavedStateHandle,
-        private val key: String,
-        private val default: T,
-        private val brTarget: Int? = null
-    ) {
-        operator fun getValue(thisRef: Any?, p: KProperty<*>): T {
-            return savedStateHandle.get(key) ?: default
-        }
-
-        operator fun setValue(thisRef: Any?, p: KProperty<*>, value: T) {
-            Log.i(TAG, "SAVED STATE HANDLE: KEY = $key; VALUE = $value")
-            savedStateHandle.set(key, value)
-            brTarget?.also { notifyPropertyChanged(it) }
-        }
-    }
-
-    inner class LiveSavedStateBindable<T>(
-        private val savedStateHandle: SavedStateHandle,
-        private val key: String,
-        private val brTarget: Int? = null
-    ) {
-        operator fun getValue(thisRef: Any?, p: KProperty<*>): LiveData<T> {
-            val liveData = savedStateHandle.getLiveData<T>(key)
-            return Transformations.map<T, T>(liveData) { value ->
-                brTarget?.let { notifyPropertyChanged(brTarget) }
-                Log.i(TAG, "SAVED STATE HANDLE: LIVE = $value")
-                value
-            }
-
         }
     }
 

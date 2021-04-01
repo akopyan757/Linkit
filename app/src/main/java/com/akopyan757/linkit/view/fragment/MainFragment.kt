@@ -1,6 +1,7 @@
 package com.akopyan757.linkit.view.fragment
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.view.ViewTreeObserver
 import android.widget.ArrayAdapter
@@ -51,8 +52,12 @@ class MainFragment : BaseFragment<FragmentMainBinding, LinkViewModel>(), LinkAda
                     requireContext(), R.layout.item_folder_spinner, R.id.tvFolderSpinner, names
                 )
             }
-            listenLinks().observe(viewLifecycleOwner) {}
-            requestFetchRemoteData().observeSuccessResponse {}
+            listenRemoteData().observe(viewLifecycleOwner) {
+                Log.i("Tag", "listenRemoteData")
+            }
+            listenLinks().observe(viewLifecycleOwner) {
+                Log.i("Tag", "listenLinks")
+            }
             linkListLive().observeList(recyclerLinksAdapter)
         }
     }

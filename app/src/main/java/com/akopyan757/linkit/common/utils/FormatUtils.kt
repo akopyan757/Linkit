@@ -1,6 +1,7 @@
 package com.akopyan757.linkit.common.utils
 
 import android.webkit.URLUtil
+import com.akopyan757.linkit.common.Config
 import java.util.*
 import java.util.regex.Pattern
 import kotlin.math.roundToLong
@@ -54,7 +55,16 @@ object FormatUtils {
         return value.substring(0, 1).toUpperCase(Locale.ROOT) + value.substring(1)
     }
 
-    fun extractUrls(text: String): List<String> {
+    fun highlightWithoutLink(text: String): String {
+        var newText = text
+        val extractedUrls = extractUrls(text)
+        extractedUrls.forEach { url ->
+            newText = newText.replace(url, Config.EMPTY)
+        }
+        return newText
+    }
+
+    private fun extractUrls(text: String): List<String> {
         val containedUrls: MutableList<String> = ArrayList()
         val pattern = Pattern.compile(URL_PATH, Pattern.CASE_INSENSITIVE)
         val urlMatcher = pattern.matcher(text)

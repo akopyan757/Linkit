@@ -38,7 +38,7 @@ class FolderDialogFragment : BaseDialogFragment<DialogFoldersSettingsBinding, Fo
         setupRecyclerView()
         binding.btnCreateFolder.setOnClickListener { openCreateFolderScreen() }
         binding.btnFoldersAccept.setOnClickListener { acceptFolders() }
-        viewModel.bindFoldersList()
+        viewModel.requestListenFolders().observe(viewLifecycleOwner) {}
         viewModel.getFolderLiveListForSelect().observeList(recyclerAdapter)
         observeDeleteAcceptState()
     }
@@ -94,7 +94,7 @@ class FolderDialogFragment : BaseDialogFragment<DialogFoldersSettingsBinding, Fo
         })
     }
 
-    private fun deleteFolder(folderId: Int) {
+    private fun deleteFolder(folderId: String) {
         viewModel.requestDeleteFolder(folderId).observeSuccessResponse {}
     }
 

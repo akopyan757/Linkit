@@ -1,37 +1,41 @@
 package com.akopyan757.linkit.viewmodel
 
 import androidx.databinding.Bindable
+import androidx.lifecycle.LiveData
 import com.akopyan757.base.viewmodel.BaseViewModel
 import com.akopyan757.base.viewmodel.list.ListLiveData
 import com.akopyan757.linkit.BR
 import com.akopyan757.linkit.model.entity.FolderData
 import com.akopyan757.linkit.model.repository.LinkRepository
-import com.akopyan757.linkit.view.scope.mainInject
+
 import com.akopyan757.linkit.viewmodel.observable.FolderObservable
 import org.koin.core.KoinComponent
+import org.koin.core.inject
 
 class FolderViewModel : BaseViewModel(), KoinComponent {
 
-    private val linkRepository: LinkRepository by mainInject()
+    private val linkRepository: LinkRepository by inject()
 
     @get:Bindable var newFolderName: String by DB("", BR.newFolderName)
 
-    private val foldersSelectedLiveData = ListLiveData<FolderObservable>()
+    private val folderList = ListLiveData<FolderObservable>()
 
-    fun bindFoldersList() {
-        bindLiveList(
-            request = linkRepository.getAllFolders(),
-            listLiveData = foldersSelectedLiveData,
-            onMap = { data -> convertFoldersDataToObservables(data) },
-            onFinished = { observables -> if (observables.isEmpty()) emitAction(ACTION_DISMISS) }
+    fun requestListenFolders(): LiveData<Unit> {
+        return linkRepository.listenFolderFromCache().handleLiveList(
+            viewModel = this,
+            onSuccess = { folders ->
+                val observables = folders.map { folder -> folder.toObservable() }
+                val sortedObservables = observables.sortedBy { it.order }
+                folderList.init(sortedObservables)
+            }
         )
     }
 
-    fun requestDeleteFolder(folderId: Int) = requestConvert(
+    fun requestDeleteFolder(folderId: String) = requestConvert(
         request = linkRepository.deleteFolder(folderId),
         onSuccess = {
-            val observable = foldersSelectedLiveData.getList().first { it.id == folderId }
-            foldersSelectedLiveData.deleteItem(observable)
+            val observable = folderList.getList().first { it.id == folderId }
+            folderList.deleteItem(observable)
         }
     )
 
@@ -40,37 +44,31 @@ class FolderViewModel : BaseViewModel(), KoinComponent {
         onSuccess = {
             val folderObservable = findFolderById(observable.id)
             folderObservable.name = newFolderName
-            val indexFolder = foldersSelectedLiveData.getList().indexOf(observable)
-            foldersSelectedLiveData.insertWithChanged(observable, indexFolder)
+            val indexFolder = folderList.getList().indexOf(observable)
+            folderList.insertWithChanged(observable, indexFolder)
         }
     )
 
-    fun requestReorderFolders() = requestConvert(
-        request = linkRepository.reorderFolders(getFoldersOrderList()),
-        onSuccess = { emitAction(ACTION_DISMISS) }
-    )
+    fun requestReorderFolders(): LiveData<ResponseState<Unit>> {
+        val folderIds = folderList.getList().map { folder -> folder.id }
+        return requestConvert(
+            request = linkRepository.reorderFolders(folderIds),
+            onSuccess = { emitAction(ACTION_DISMISS) }
+        )
+    }
 
-    fun getFolderLiveListForSelect() = foldersSelectedLiveData
+    fun getFolderLiveListForSelect() = folderList
 
     fun setEditObservables(observable: List<FolderObservable>) {
-        foldersSelectedLiveData.change(observable)
+        folderList.change(observable)
     }
 
-    private fun convertFoldersDataToObservables(folders: List<FolderData>): List<FolderObservable> {
-        return folders.map { item ->
-            FolderObservable(item.id, item.name)
-        }.filter { observable ->
-            observable.id != FolderData.GENERAL_FOLDER_ID
-        }
+    private fun FolderData.toObservable(): FolderObservable {
+        return FolderObservable(id, name, order)
     }
 
-    private fun getFoldersOrderList(): List<Pair<Int, Int>> {
-        return foldersSelectedLiveData.getList()
-                .mapIndexed { index, observable -> observable.id to index }
-    }
-
-    private fun findFolderById(folderId: Int): FolderObservable {
-        return foldersSelectedLiveData.getList().first { it.id == folderId }
+    private fun findFolderById(folderId: String): FolderObservable {
+        return folderList.getList().first { it.id == folderId }
     }
 
     companion object {

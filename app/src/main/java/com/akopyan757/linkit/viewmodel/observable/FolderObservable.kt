@@ -1,10 +1,22 @@
 package com.akopyan757.linkit.viewmodel.observable
 
 import com.akopyan757.base.viewmodel.DiffItemObservable
+import com.akopyan757.linkit.model.entity.FolderData
 import kotlinx.android.parcel.Parcelize
 import java.io.Serializable
 
 data class FolderObservable(
-    val id: Int,
-    var name: String
-): Serializable, DiffItemObservable
+    val id: String,
+    var name: String,
+    val order: Int
+): Serializable, DiffItemObservable {
+    override fun id() = id
+
+    companion object {
+        fun getDefault(name: String) = FolderObservable(DEF_FOLDER_ID, name, DEF_FOLDER_ORDER)
+        fun fromData(data: FolderData) = FolderObservable(data.id, data.name, data.order)
+
+        const val DEF_FOLDER_ID = "-"
+        private const val DEF_FOLDER_ORDER = 0
+    }
+}

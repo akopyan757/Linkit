@@ -25,10 +25,10 @@ class ClipboardUrlDialogFragment : BaseDialogFragment<DialogNewUrlBinding, LinkC
 
     override fun onSetupView(bundle: Bundle?) {
         binding.btnClipboardUrlAccept.setOnClickListener { createNewLink() }
-        viewModel.bindFolderList()
-        viewModel.getFolderNameList().observe(viewLifecycleOwner, { folderNames ->
-            updateSpinnerFolderNames(folderNames)
-        })
+        viewModel.loadFolder().observeSuccessResponse { folderNames ->
+            val names = folderNames.map { folder -> folder.name }
+            updateSpinnerFolderNames(names)
+        }
     }
 
     override fun onDismiss(dialog: DialogInterface) {

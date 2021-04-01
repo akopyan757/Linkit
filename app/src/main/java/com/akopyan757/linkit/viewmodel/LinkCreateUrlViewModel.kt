@@ -1,50 +1,50 @@
 package com.akopyan757.linkit.viewmodel
 
 import androidx.databinding.Bindable
-import androidx.lifecycle.map
 import com.akopyan757.base.viewmodel.BaseViewModel
-import com.akopyan757.base.viewmodel.list.ListLiveData
 import com.akopyan757.linkit.BR
-import com.akopyan757.linkit.model.entity.FolderData
 import com.akopyan757.linkit.model.repository.LinkRepository
-import com.akopyan757.linkit.view.scope.mainInject
+
 import com.akopyan757.linkit.viewmodel.observable.FolderObservable
 import org.koin.core.KoinComponent
+import org.koin.core.inject
 
 class LinkCreateUrlViewModel(
     @get:Bindable val url: String
 ): BaseViewModel(), KoinComponent {
 
-    companion object {
-        const val ACTION_DISMISS = 121_1
-    }
-
-    private val linkRepository: LinkRepository by mainInject()
+    private val linkRepository: LinkRepository by inject()
 
     @get:Bindable var selectedFolderName: String by DB("", BR.selectedFolderName)
 
-    private var foldersList = ListLiveData<FolderObservable>()
+    private var foldersList: List<FolderObservable> = emptyList()
 
-    /** Responses */
-    fun bindFolderList() {
-        bindLiveList(
-            request = linkRepository.getAllFolders(),
-            listLiveData = foldersList,
-            onMap = { folders -> folders.map { FolderObservable(it.id, it.name) } },
-        )
-    }
+    fun loadFolder() = requestConvert(
+        request = linkRepository.getFoldersFromCache(),
+        onSuccess = { folders ->
+            val observables = mutableListOf<FolderObservable>()
+            observables.add(FolderObservable.getDefault(DEF_FOLDER_NAME))
+            folders.forEach { folder ->
+                observables.add(FolderObservable.fromData(folder))
+            }
+            foldersList = observables
+            observables.toList()
+        }
+    )
 
     fun requestCreateNewLink() = requestConvert(
-        request = linkRepository.addNewLink(url, getSelectedFolderIdOrDefault()),
+        request = linkRepository.createLink(url, getSelectedFolderId()),
         onSuccess = { emitAction(ACTION_DISMISS) },
     )
 
-    fun getFolderNameList() = foldersList.map { holder ->
-        holder.data.map { folder -> folder.name }
+    private fun getSelectedFolderId(): String? {
+        val folder = foldersList.find { folder -> folder.name == selectedFolderName }
+        return folder?.id?.takeUnless { id -> id == FolderObservable.DEF_FOLDER_ID }
     }
 
-    private fun getSelectedFolderIdOrDefault(): Int {
-        val folder = foldersList.getList().find { it.name == selectedFolderName }
-        return folder?.id ?: FolderData.GENERAL_FOLDER_ID
+    companion object {
+        const val ACTION_DISMISS = 121_1
+
+        private const val DEF_FOLDER_NAME = "Not selected"
     }
 }

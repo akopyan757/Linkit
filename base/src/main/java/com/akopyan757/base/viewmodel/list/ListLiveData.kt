@@ -74,12 +74,22 @@ class ListLiveData<T : DiffItemObservable> : MediatorLiveData<ListHolder<T>>() {
 
     fun deleteItem(item: T, after: (() -> Unit)? = null) = synchronized(this) {
         val list = getCopyOfList()
-        if (list.size == 1) {
+        if (list.size == 1 && list.first() == item) {
             clearList()
         } else {
             list.remove(item)
             changeList(list, after)
         }
+    }
+
+    fun deleteItemsBy(
+        predicate: (T) -> Boolean,
+        after: (() -> Unit)? = null
+    ) = synchronized(this) {
+        val list = getCopyOfList()
+        val index = list.indexOfFirst { item -> predicate.invoke(item) }
+        list.removeAt(index)
+        changeList(list, after)
     }
 
     fun change(values: List<T>, after: (() -> Unit)? = null) = synchronized(this) {

@@ -5,8 +5,9 @@ import android.graphics.BitmapFactory
 import android.util.Log
 import com.akopyan757.linkit.common.Config
 import com.akopyan757.linkit.model.entity.UrlLinkData
-import com.akopyan757.linkit.view.scope.mainInject
+
 import org.koin.core.KoinComponent
+import org.koin.core.inject
 import org.koin.core.qualifier.named
 import java.io.File
 import java.io.FileOutputStream
@@ -16,8 +17,8 @@ import java.net.URL
 
 class ImageCache: KoinComponent {
 
-    private val cacheDir: File by mainInject(named(Config.CACHE_DIR))
-    private val imageDir: File by mainInject(named(Config.CACHE_IMAGE_DIR))
+    private val cacheDir: File by inject(named(Config.CACHE_DIR))
+    private val imageDir: File by inject(named(Config.CACHE_IMAGE_DIR))
 
     fun saveImages(data: UrlLinkData) {
         val logoUrl = data.logoUrl

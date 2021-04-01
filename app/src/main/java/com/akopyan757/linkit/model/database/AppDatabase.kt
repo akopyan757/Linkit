@@ -8,8 +8,12 @@ import com.akopyan757.linkit.model.entity.UrlLinkData
 @Database(entities = [
     UrlLinkData::class,
     FolderData::class
-], version = 18)
+], version = 20)
 abstract class AppDatabase: RoomDatabase() {
     abstract fun urlLinkDao(): UrlLinkDao
     abstract fun folderDao(): FolderDao
+
+    companion object {
+        const val DATABASE_NAME = "DATABASE_NAME"
+    }
 }
