@@ -2,6 +2,7 @@ package com.akopyan757.linkit.model.parser.tags
 
 data class AdditionalHtmlTags(
     val canonical: String?,
+    val title: String,
     val metaDescription: String?,
     val metaAuthor: String?
 ) {

@@ -10,4 +10,8 @@ data class HtmlTags(
     fun getTitle() = openGraphHtmlTags.title ?: twitterHtmlTags.title ?: Config.EMPTY
     fun getDescription() = openGraphHtmlTags.description ?: twitterHtmlTags.description ?: Config.EMPTY
     fun getImage() = openGraphHtmlTags.image ?: twitterHtmlTags.image
+
+    enum class Type{
+        OpenGraph, Twitter, Simple
+    }
 }

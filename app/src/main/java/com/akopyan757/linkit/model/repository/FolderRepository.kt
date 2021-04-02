@@ -51,7 +51,7 @@ class FolderRepository: BaseRepository(), KoinComponent {
         return folderDao.getAllLive().asLiveIO()
     }
 
-    fun listenRemoteData(): LiveData<Unit> = liveData {
+    fun listenRemoteData(): LiveData<Unit> = liveData(coroutineDispatcher) {
         remoteDataSource.loadFolders().also { firstData ->
             saveChangesToCache(DataChange.Initialized(firstData))
             emit(Unit)

@@ -1,5 +1,6 @@
 package com.akopyan757.linkit.model.repository
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.liveData
 import androidx.lifecycle.map
@@ -8,9 +9,11 @@ import com.akopyan757.linkit.common.Config
 import com.akopyan757.linkit.common.utils.FormatUtils
 import com.akopyan757.linkit.model.database.UrlLinkDao
 import com.akopyan757.linkit.model.entity.DataChange
+import com.akopyan757.linkit.model.entity.HtmlLinkCard
 import com.akopyan757.linkit.model.entity.UrlLinkData
 import com.akopyan757.linkit.model.exception.UrlIsNotValidException
 import com.akopyan757.linkit.model.parser.HtmlParser
+import com.akopyan757.linkit.model.parser.tags.HtmlTags
 import com.akopyan757.linkit.model.source.RemoteDataSource
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
@@ -65,6 +68,10 @@ class LinkRepository: BaseRepository(), KoinComponent {
         emitSource(liveData)
     }
 
+    fun loadAllCards(resourceUrl: String) = wrapActionIOWithResult {
+        HtmlTags.Type.values().map { type -> loadHtmlCard(resourceUrl, type) }
+    }
+
     private fun saveChangesToCache(urlLinkDataChange: DataChange<UrlLinkData>) {
         when (urlLinkDataChange) {
             is DataChange.Initialized -> urlLinkDao.updateAll(urlLinkDataChange.data)
@@ -76,10 +83,21 @@ class LinkRepository: BaseRepository(), KoinComponent {
     }
 
     private fun loadExtraDataForUrlData(data: UrlLinkData) = launchIO {
-        val htmlHeadTags = htmlParser.parseHeadTagsFromResource(data.url)
-        data.title = FormatUtils.highlightWithoutLink(htmlHeadTags.getTitle())
-        data.description = FormatUtils.highlightWithoutLink(htmlHeadTags.getDescription())
-        data.photoUrl = htmlHeadTags.getImage()
+        val card = loadHtmlCard(data.url, HtmlTags.Type.OpenGraph)
+        data.title = card.title ?: ""
+        data.description = card.description ?: ""
+        data.photoUrl = card.photoUrl
         remoteDataSource.createOrUpdateUrlLink(data)
+    }
+
+    private fun loadHtmlCard(
+        resourceUrl: String,
+        cardType: HtmlTags.Type
+    ): HtmlLinkCard {
+        val tags = htmlParser.parseHeadTagsFromResource(resourceUrl)
+        return HtmlLinkCard.getCard(tags, cardType).apply {
+            title = title?.let { FormatUtils.highlightWithoutLink(it) }
+            description = description?.let { FormatUtils.highlightWithoutLink(it) }
+        }
     }
 }

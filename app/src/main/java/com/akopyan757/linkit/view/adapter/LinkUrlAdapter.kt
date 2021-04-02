@@ -34,10 +34,7 @@ class LinkUrlAdapter(
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (holder) {
-            is LinkViewHolder -> {
-                val observable = getUpdatedObservable(items[position] as LinkObservable)
-                if (observable != null) holder.bind(observable)
-            }
+            is LinkViewHolder -> holder.bind(items[position] as LinkObservable)
             is AdViewHolder -> holder.bind(items[position] as AdObservable)
         }
     }
@@ -50,38 +47,15 @@ class LinkUrlAdapter(
         }
     }
 
-    private fun getUpdatedObservable(observable: LinkObservable): LinkObservable? {
-        val context = view?.context ?: return null
-        observable.uri = AndroidUtils.getUriFromCache(context, observable.photoFileName)
-        observable.photoVisible = observable.uri != null
-        return observable
-    }
-
     class LinkViewHolder(
             private val binding: ItemLinkBinding,
             private val listener: LinkAdapterListener
     ): RecyclerView.ViewHolder(binding.root) {
 
         fun bind(observable: LinkObservable) {
-            val newLinkObservable = getUpdatedObservable(observable)
-            val backgroundColor = getLinkCardBackgroundColor(newLinkObservable.selected)
-            binding.observable = newLinkObservable
+            binding.observable = observable
             binding.listener = listener
-            binding.mcvLinkContent.setCardBackgroundColor(backgroundColor)
             binding.executePendingBindings()
-        }
-
-        private fun getUpdatedObservable(observable: LinkObservable): LinkObservable {
-            val context = binding.root.context
-            observable.uri = AndroidUtils.getUriFromCache(context, observable.photoFileName)
-            observable.photoVisible = observable.uri != null
-            return observable
-        }
-
-        private fun getLinkCardBackgroundColor(selected: Boolean): Int {
-            val colorRes = if (selected) R.color.greyLight else R.color.white
-            val context = binding.root.context
-            return ContextCompat.getColor(context, colorRes)
         }
     }
 

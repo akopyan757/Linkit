@@ -48,7 +48,8 @@ class HtmlParser {
         val canonical = headTag.getLinkRel(AdditionalHtmlTags.TAG_CANONICAL)
         val description = headTag.getMetaNameContent(AdditionalHtmlTags.TAG_META_DESCRIPTION)
         val author = headTag.getMetaNameContent(AdditionalHtmlTags.TAG_META_AUTHOR)
-        return AdditionalHtmlTags(canonical, description, author)
+        val title = document.title()
+        return AdditionalHtmlTags(canonical, title, description, author)
     }
 
     private fun Element.getOgMetaPropertiesContentMap(): Map<String, String> {

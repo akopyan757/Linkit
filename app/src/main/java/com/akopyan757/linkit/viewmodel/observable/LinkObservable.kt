@@ -1,6 +1,5 @@
 package com.akopyan757.linkit.viewmodel.observable
 
-import android.net.Uri
 import com.akopyan757.base.viewmodel.DiffItemObservable
 import com.akopyan757.linkit.model.entity.UrlLinkData
 import java.io.Serializable
@@ -10,16 +9,17 @@ data class LinkObservable(
     val url: String,
     val title: String,
     val description: String,
-    val photoFileName: String? = null,
-    var selected: Boolean = false,
-    var uri: Uri? = null,
-    var photoVisible: Boolean = false
+    val photoUrl: String?,
+    val shareVisible: Boolean = true
 ): DiffItemObservable, Serializable {
+
+    val photoVisible = photoUrl != null
+
     override fun id() = id
 
     companion object {
         fun from(data: UrlLinkData): LinkObservable {
-            return LinkObservable(data.id, data.url, data.title, data.description)
+            return LinkObservable(data.id, data.url, data.title, data.description, data.photoUrl)
         }
     }
 }

@@ -39,23 +39,34 @@
 
         </com.google.android.material.textfield.TextInputLayout>
 
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/vpHtmlCards"
+            android:layout_width="0dp"
+            android:layout_height="350dp"
+            android:layout_marginTop="@dimen/marginPrimary"
+            android:clipToPadding="false"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tilClipboardUrl"
+            tools:layout="@layout/item_link" />
+
         <Spinner
             android:id="@+id/spCreateLinkAssignToFolder"
             android:layout_width="0dp"
-            android:layout_height="56dp"
+            android:layout_height="50dp"
             android:layout_marginTop="@dimen/marginPrimary"
             android:layout_marginBottom="@dimen/marginTertiary"
-            android:spinnerMode="dropdown"
-            android:prompt="@string/prompt"
-            android:popupBackground="@drawable/background_edit_text"
-            android:dropDownVerticalOffset="60dp"
             android:background="@drawable/background_spinner"
-            app:selectedValue="@={viewModel.selectedFolderName}"
+            android:dropDownVerticalOffset="60dp"
+            android:popupBackground="@drawable/background_edit_text"
+            android:prompt="@string/prompt"
+            android:spinnerMode="dropdown"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@+id/tilClipboardUrl"
             app:layout_constraintStart_toStartOf="@+id/tilClipboardUrl"
-            app:layout_constraintTop_toBottomOf="@+id/tilClipboardUrl"
-            tools:text="Folder"/>
+            app:layout_constraintTop_toBottomOf="@+id/vpHtmlCards"
+            app:selectedValue="@={viewModel.selectedFolderName}"
+            tools:text="Not selected" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

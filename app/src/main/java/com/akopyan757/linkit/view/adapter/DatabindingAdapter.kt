@@ -36,12 +36,15 @@ object DatabindingAdapter {
     }
 
     @JvmStatic
-    @BindingAdapter("app:photoUrl", "app:photoUrlDefaultRes")
-    fun ImageView.setUrl(url: String?, @DrawableRes drawableRes: Int) {
+    @BindingAdapter("app:photoUrl", "app:photoUrlDefaultRes", requireAll = false)
+    fun ImageView.setUrl(url: String?, @DrawableRes drawableRes: Int?) {
         Picasso.get()
             .load(url)
-            .error(drawableRes)
-            .placeholder(drawableRes)
+            .apply {
+                if (drawableRes != null) {
+                    error(drawableRes).placeholder(drawableRes)
+                }
+            }
             .into(this)
     }
 
