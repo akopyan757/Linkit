@@ -6,22 +6,21 @@ import com.akopyan757.base.viewmodel.BaseViewModel
 import com.akopyan757.base.viewmodel.list.ListLiveData
 import com.akopyan757.linkit.BR
 import com.akopyan757.linkit.model.entity.FolderData
-import com.akopyan757.linkit.model.repository.LinkRepository
-
+import com.akopyan757.linkit.model.repository.FolderRepository
 import com.akopyan757.linkit.viewmodel.observable.FolderObservable
 import org.koin.core.KoinComponent
 import org.koin.core.inject
 
 class FolderViewModel : BaseViewModel(), KoinComponent {
 
-    private val linkRepository: LinkRepository by inject()
+    private val folderRepository: FolderRepository by inject()
 
     @get:Bindable var newFolderName: String by DB("", BR.newFolderName)
 
     private val folderList = ListLiveData<FolderObservable>()
 
     fun requestListenFolders(): LiveData<Unit> {
-        return linkRepository.listenFolderFromCache().handleLiveList(
+        return folderRepository.listenFolderFromCache().handleLiveList(
             viewModel = this,
             onSuccess = { folders ->
                 val observables = folders.map { folder -> folder.toObservable() }
@@ -32,7 +31,7 @@ class FolderViewModel : BaseViewModel(), KoinComponent {
     }
 
     fun requestDeleteFolder(folderId: String) = requestConvert(
-        request = linkRepository.deleteFolder(folderId),
+        request = folderRepository.deleteFolder(folderId),
         onSuccess = {
             val observable = folderList.getList().first { it.id == folderId }
             folderList.deleteItem(observable)
@@ -40,7 +39,7 @@ class FolderViewModel : BaseViewModel(), KoinComponent {
     )
 
     fun requestRenameFolder(observable: FolderObservable) = requestConvert(
-        request = linkRepository.renameFolder(observable.id, newFolderName),
+        request = folderRepository.renameFolder(observable.id, newFolderName),
         onSuccess = {
             val folderObservable = findFolderById(observable.id)
             folderObservable.name = newFolderName
@@ -52,7 +51,7 @@ class FolderViewModel : BaseViewModel(), KoinComponent {
     fun requestReorderFolders(): LiveData<ResponseState<Unit>> {
         val folderIds = folderList.getList().map { folder -> folder.id }
         return requestConvert(
-            request = linkRepository.reorderFolders(folderIds),
+            request = folderRepository.reorderFolders(folderIds),
             onSuccess = { emitAction(ACTION_DISMISS) }
         )
     }

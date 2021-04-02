@@ -1,16 +1,14 @@
 package com.akopyan757.linkit.viewmodel
 
 import androidx.databinding.Bindable
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.map
-import androidx.lifecycle.switchMap
+import androidx.lifecycle.*
 import com.akopyan757.base.viewmodel.BaseViewModel
 import com.akopyan757.base.viewmodel.DiffItemObservable
 import com.akopyan757.base.viewmodel.list.ListLiveData
 import com.akopyan757.linkit.BR
 import com.akopyan757.linkit.R
 import com.akopyan757.linkit.model.repository.AuthRepository
+import com.akopyan757.linkit.model.repository.FolderRepository
 import com.akopyan757.linkit.model.repository.LinkRepository
 
 import com.akopyan757.linkit.viewmodel.observable.FolderObservable
@@ -22,6 +20,7 @@ class LinkViewModel : BaseViewModel(), KoinComponent {
 
     private val authRepository: AuthRepository by inject()
     private val linkRepository: LinkRepository by inject()
+    private val folderRepository: FolderRepository by inject()
 
     @get:Bindable var isFoldersEmpty: Boolean by DB(false, BR.foldersEmpty)
     @get:Bindable var profileIconUrl: String? by DB(null, BR.profileIconUrl)
@@ -33,10 +32,13 @@ class LinkViewModel : BaseViewModel(), KoinComponent {
 
     fun linkListLive() = urlListData
 
-    fun listenRemoteData() = linkRepository.listenRemoteData()
+    fun listenRemoteData() = MediatorLiveData<Unit>().apply {
+        addSource(linkRepository.listenRemoteData()) { value = Unit }
+        addSource(folderRepository.listenRemoteData()) { value = Unit }
+    }
 
     fun listenFolders(): LiveData<List<FolderObservable>> {
-        return linkRepository.listenFolderFromCache().map { folders ->
+        return folderRepository.listenFolderFromCache().map { folders ->
             val observables = mutableListOf<FolderObservable>()
             observables.add(FolderObservable.getDefault(DEF_FOLDER_NAME))
             folders.forEach { folder ->

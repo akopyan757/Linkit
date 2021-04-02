@@ -24,4 +24,13 @@ interface UrlLinkDao {
 
     @Query("SELECT MAX(_order) FROM url_link_data;")
     fun getMaxOrder(): Int
+
+    @Query("DELETE FROM url_link_data;")
+    fun clear(): Int
+
+    @Transaction
+    fun updateAll(links: List<UrlLinkData>) {
+        clear()
+        links.forEach { link -> insertOrUpdate(link) }
+    }
 }

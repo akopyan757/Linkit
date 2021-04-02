@@ -30,4 +30,10 @@ interface FolderDao {
 
     @Query("DELETE FROM folder_data")
     fun removeAll()
+
+    @Transaction
+    fun updateAll(folders: List<FolderData>) {
+        removeAll()
+        folders.forEach { folder -> insertOrUpdate(folder) }
+    }
 }

@@ -109,7 +109,7 @@ class RemoteDataSource: KoinComponent {
 
     suspend fun setOrderForUrlLink(linkId: String, order: Int) = suspendCoroutine<Unit> { cont ->
         val ref = getUserDocument(cont) ?: return@suspendCoroutine
-        val newData = hashMapOf("_order" to order.toString())
+        val newData = hashMapOf("_order" to order)
         ref.collection(Config.URLS)
             .document(linkId)
             .set(newData, SetOptions.merge())

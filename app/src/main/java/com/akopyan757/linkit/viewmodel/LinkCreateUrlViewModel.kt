@@ -3,6 +3,7 @@ package com.akopyan757.linkit.viewmodel
 import androidx.databinding.Bindable
 import com.akopyan757.base.viewmodel.BaseViewModel
 import com.akopyan757.linkit.BR
+import com.akopyan757.linkit.model.repository.FolderRepository
 import com.akopyan757.linkit.model.repository.LinkRepository
 
 import com.akopyan757.linkit.viewmodel.observable.FolderObservable
@@ -13,6 +14,7 @@ class LinkCreateUrlViewModel(
     @get:Bindable val url: String
 ): BaseViewModel(), KoinComponent {
 
+    private val folderRepository: FolderRepository by inject()
     private val linkRepository: LinkRepository by inject()
 
     @get:Bindable var selectedFolderName: String by DB("", BR.selectedFolderName)
@@ -20,7 +22,7 @@ class LinkCreateUrlViewModel(
     private var foldersList: List<FolderObservable> = emptyList()
 
     fun loadFolder() = requestConvert(
-        request = linkRepository.getFoldersFromCache(),
+        request = folderRepository.getFoldersFromCache(),
         onSuccess = { folders ->
             val observables = mutableListOf<FolderObservable>()
             observables.add(FolderObservable.getDefault(DEF_FOLDER_NAME))
