@@ -69,7 +69,10 @@ class LinkRepository: BaseRepository(), KoinComponent {
     }
 
     fun loadAllCards(resourceUrl: String) = wrapActionIOWithResult {
-        HtmlTags.Type.values().map { type -> loadHtmlCard(resourceUrl, type) }
+        val tags = htmlParser.parseHeadTagsFromResource(resourceUrl)
+        return@wrapActionIOWithResult HtmlTags.Type.values().map { cardType ->
+            HtmlLinkCard.getCard(tags, cardType)
+        }
     }
 
     private fun saveChangesToCache(urlLinkDataChange: DataChange<UrlLinkData>) {
@@ -83,21 +86,11 @@ class LinkRepository: BaseRepository(), KoinComponent {
     }
 
     private fun loadExtraDataForUrlData(data: UrlLinkData) = launchIO {
-        val card = loadHtmlCard(data.url, HtmlTags.Type.OpenGraph)
+        val tags = htmlParser.parseHeadTagsFromResource(data.url)
+        val card = HtmlLinkCard.getCard(tags, HtmlTags.Type.OpenGraph)
         data.title = card.title ?: ""
         data.description = card.description ?: ""
         data.photoUrl = card.photoUrl
         remoteDataSource.createOrUpdateUrlLink(data)
-    }
-
-    private fun loadHtmlCard(
-        resourceUrl: String,
-        cardType: HtmlTags.Type
-    ): HtmlLinkCard {
-        val tags = htmlParser.parseHeadTagsFromResource(resourceUrl)
-        return HtmlLinkCard.getCard(tags, cardType).apply {
-            title = title?.let { FormatUtils.highlightWithoutLink(it) }
-            description = description?.let { FormatUtils.highlightWithoutLink(it) }
-        }
     }
 }

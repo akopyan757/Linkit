@@ -81,17 +81,17 @@ class HtmlParser {
 
     private fun Element.getMetaNameContent(name: String): String? {
         val query = SELECT_NAME.format(name)
-        return select(query).first()?.absUrl(ATTR_CONTENT)
+        return select(query).first()?.attr(ATTR_CONTENT)
     }
 
     private fun Element.getLinkRel(rel: String): String? {
         val query = SELECT_LINK_REL.format(rel)
-        return this.select(query).first()?.absUrl(ATTR_HREF)
+        return this.select(query).first()?.attr(ATTR_HREF)
     }
 
     private fun Element.getAttrProperty() = this.attr(ATTR_PROPERTY)
     private fun Element.getAttrName() = this.attr(ATTR_NAME)
-    private fun Element.getAttrContent() = this.absUrl(ATTR_CONTENT)
+    private fun Element.getAttrContent() = this.attr(ATTR_CONTENT)
 
     companion object {
         private const val SELECT_PROPERTY = "meta[property^=%s]"

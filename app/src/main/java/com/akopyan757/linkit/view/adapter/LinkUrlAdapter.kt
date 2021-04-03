@@ -3,14 +3,13 @@ package com.akopyan757.linkit.view.adapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
+import androidx.constraintlayout.widget.ConstraintSet
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.akopyan757.base.viewmodel.DiffItemObservable
 import com.akopyan757.base.viewmodel.list.UpdatableListAdapter
 import com.akopyan757.linkit.BannerViewExtension
 import com.akopyan757.linkit.R
-import com.akopyan757.linkit.common.utils.AndroidUtils
 import com.akopyan757.linkit.databinding.ItemLinkBinding
 import com.akopyan757.linkit.viewmodel.listener.LinkAdapterListener
 import com.akopyan757.linkit.viewmodel.observable.AdObservable
@@ -40,17 +39,16 @@ class LinkUrlAdapter(
     }
 
     override fun getItemViewType(position: Int): Int {
-        return if (items[position] is LinkObservable) {
-            R.layout.item_link
-        } else {
-            R.layout.layout_item_banner_ads
-        }
+        return if (items[position] is LinkObservable) R.layout.item_link else R.layout.layout_item_banner_ads
+
     }
 
     class LinkViewHolder(
             private val binding: ItemLinkBinding,
             private val listener: LinkAdapterListener
     ): RecyclerView.ViewHolder(binding.root) {
+
+        private var expand: Boolean = false
 
         fun bind(observable: LinkObservable) {
             binding.observable = observable

@@ -16,7 +16,10 @@
         android:id="@+id/mcvLinkContent"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/marginSecondary"
+        android:layout_marginTop="@dimen/marginTertiary"
+        android:layout_marginBottom="@dimen/marginTertiary"
+        android:layout_marginStart="@dimen/marginSecondary"
+        android:layout_marginEnd="@dimen/marginSecondary"
         android:onClick="@{() -> listener.onItemListener(observable)}"
         android:onLongClick="@{() -> listener.onItemLongClickListener(observable)}"
         app:cardCornerRadius="@dimen/cornerRadius"
@@ -29,20 +32,18 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/clLinkContent"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:minHeight="@dimen/itemLinkMinHeight">
+            android:layout_height="match_parent">
 
             <ImageView
                 android:id="@+id/ivLinkPhoto"
-                android:layout_width="@dimen/linkPictureWidth"
-                android:layout_height="@dimen/linkPictureHeight"
-                android:layout_marginStart="@dimen/marginSecondary"
-                android:layout_marginTop="@dimen/marginSecondary"
-                android:layout_marginBottom="@dimen/marginSecondary"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:adjustViewBounds="true"
                 android:background="@drawable/background_image_view_corners"
                 android:contentDescription="@string/todo"
-                android:maxWidth="@dimen/linkPictureWidth"
+                android:maxWidth="@dimen/linkPictureBigWidth"
                 android:maxHeight="@dimen/linkPictureHeight"
+                android:scaleType="centerCrop"
                 app:elevation="@dimen/elevationTertiary"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -56,7 +57,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/marginSecondary"
-                android:layout_marginTop="12dp"
+                android:layout_marginTop="@dimen/marginSecondary"
                 android:ellipsize="end"
                 android:ems="3"
                 android:maxLines="3"
@@ -73,14 +74,13 @@
                 style="@style/Theme.Linkit.ItemUrl"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/marginSecondary"
-                android:layout_marginBottom="@dimen/marginSecondary"
+                android:layout_marginTop="@dimen/marginTertiary"
+                android:layout_marginBottom="@dimen/marginTertiary"
                 android:text="@{observable.url}"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="@+id/tvLinkTitle"
                 app:layout_constraintTop_toBottomOf="@+id/tvLinkTitle"
-                tools:layout_marginTop="@dimen/marginSecondary"
                 tools:text="https://google.com" />
 
             <ImageView
@@ -93,11 +93,13 @@
                 android:contentDescription="@string/todo"
                 android:focusable="true"
                 android:onClick="@{() -> listener.onShareListener(observable)}"
-                android:padding="@dimen/marginSecondary"
+                android:padding="@dimen/marginTertiary"
+                android:paddingTop="@dimen/marginSecondary"
+                android:paddingEnd="@dimen/marginSecondary"
                 android:src="@drawable/ic_url_share"
-                app:visibility="@{observable.shareVisible}"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                app:visibility="@{observable.shareVisible}" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
