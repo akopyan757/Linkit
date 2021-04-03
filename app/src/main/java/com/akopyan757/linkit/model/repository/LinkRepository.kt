@@ -1,6 +1,5 @@
 package com.akopyan757.linkit.model.repository
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.liveData
 import androidx.lifecycle.map
@@ -16,8 +15,6 @@ import com.akopyan757.linkit.model.parser.HtmlParser
 import com.akopyan757.linkit.model.parser.tags.HtmlTags
 import com.akopyan757.linkit.model.source.RemoteDataSource
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import org.koin.core.KoinComponent
 import org.koin.core.inject
@@ -36,7 +33,8 @@ class LinkRepository: BaseRepository(), KoinComponent {
         if (!FormatUtils.isUrl(url))
             throw UrlIsNotValidException()
         val id = UUID.randomUUID().toString()
-        val data = UrlLinkData(id, url, folderId=folderId)
+        val order = urlLinkDao.getMaxOrder().plus(1)
+        val data = UrlLinkData(id, url, folderId=folderId, _order=order)
         remoteDataSource.createOrUpdateUrlLink(data)
         loadExtraDataForUrlData(data)
     }

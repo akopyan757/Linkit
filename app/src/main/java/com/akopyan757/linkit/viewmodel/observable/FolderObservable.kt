@@ -2,7 +2,6 @@ package com.akopyan757.linkit.viewmodel.observable
 
 import com.akopyan757.base.viewmodel.DiffItemObservable
 import com.akopyan757.linkit.model.entity.FolderData
-import kotlinx.android.parcel.Parcelize
 import java.io.Serializable
 
 data class FolderObservable(

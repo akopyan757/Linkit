@@ -23,29 +23,19 @@ class FolderViewModel : BaseViewModel(), KoinComponent {
         return folderRepository.listenFolderFromCache().handleLiveList(
             viewModel = this,
             onSuccess = { folders ->
-                val observables = folders.map { folder -> folder.toObservable() }
+                val observables = folders.map { folder -> FolderObservable.fromData(folder) }
                 val sortedObservables = observables.sortedBy { it.order }
                 folderList.init(sortedObservables)
             }
         )
     }
 
-    fun requestDeleteFolder(folderId: String) = requestConvert(
-        request = folderRepository.deleteFolder(folderId),
-        onSuccess = {
-            val observable = folderList.getList().first { it.id == folderId }
-            folderList.deleteItem(observable)
-        }
+    fun requestDeleteFolder(folderId: String) = requestConvert<Unit, Unit>(
+        request = folderRepository.deleteFolder(folderId)
     )
 
-    fun requestRenameFolder(observable: FolderObservable) = requestConvert(
-        request = folderRepository.renameFolder(observable.id, newFolderName),
-        onSuccess = {
-            val folderObservable = findFolderById(observable.id)
-            folderObservable.name = newFolderName
-            val indexFolder = folderList.getList().indexOf(observable)
-            folderList.insertWithChanged(observable, indexFolder)
-        }
+    fun requestRenameFolder(observable: FolderObservable) = requestConvert<Unit, Unit>(
+        request = folderRepository.renameFolder(observable.id, newFolderName)
     )
 
     fun requestReorderFolders(): LiveData<ResponseState<Unit>> {
@@ -60,14 +50,6 @@ class FolderViewModel : BaseViewModel(), KoinComponent {
 
     fun setEditObservables(observable: List<FolderObservable>) {
         folderList.change(observable)
-    }
-
-    private fun FolderData.toObservable(): FolderObservable {
-        return FolderObservable(id, name, order)
-    }
-
-    private fun findFolderById(folderId: String): FolderObservable {
-        return folderList.getList().first { it.id == folderId }
     }
 
     companion object {

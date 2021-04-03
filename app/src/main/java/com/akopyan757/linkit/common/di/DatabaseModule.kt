@@ -1,7 +1,6 @@
 package com.akopyan757.linkit.common.di
 
 import androidx.room.Room
-import com.akopyan757.linkit.App
 import com.akopyan757.linkit.common.Config
 import com.akopyan757.linkit.common.Config.LINKS
 import com.akopyan757.linkit.common.Config.PATTERNS

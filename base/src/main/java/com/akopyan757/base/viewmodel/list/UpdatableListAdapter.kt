@@ -115,21 +115,19 @@ abstract class UpdatableListAdapter<T : DiffItemObservable> :
     }
 
     fun updateRangeChanged(range: IntRange, after: (() -> Unit)? = null) {
-        backgroundHandler.post {
-            awaitMainThread {
-                with(range) {
-                    notifyItemRangeChanged(start, endInclusive - start + 1)
-                }
-
-                after?.invoke()
+        awaitMainThread {
+            with(range) {
+                notifyItemRangeChanged(start, endInclusive - start + 1)
             }
+
+            after?.invoke()
         }
     }
 
     fun updateRangeInserted(data: List<T>, range: IntRange, after: (() -> Unit)? = null) {
         val list = data.toMutableList()
 
-        Handler(Looper.getMainLooper()).post {
+        awaitMainThread {
             with(range) {
                 items = list
 
