@@ -12,7 +12,7 @@ import com.akopyan757.linkit.model.entity.HtmlLinkCard
 import com.akopyan757.linkit.model.entity.UrlLinkData
 import com.akopyan757.linkit.model.exception.UrlIsNotValidException
 import com.akopyan757.linkit.model.parser.HtmlParser
-import com.akopyan757.linkit.model.parser.tags.HtmlTags
+import com.akopyan757.linkit.model.entity.tags.HtmlTags
 import com.akopyan757.linkit.model.source.RemoteDataSource
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.runBlocking
@@ -43,6 +43,10 @@ class LinkRepository: BaseRepository(), KoinComponent {
         urlLinkDao.getById(urlLinkId) ?: throw Exception("Url link not found")
         val newOrder = urlLinkDao.getMaxOrder().plus(1)
         remoteDataSource.setOrderForUrlLink(urlLinkId, newOrder)
+    }
+
+    fun deleteItem(urlLinkId: String) = wrapActionIO {
+        remoteDataSource.deleteUrlLink(urlLinkId)
     }
 
     fun listenUrlDataFromCache(folderId: String?): LiveData<List<UrlLinkData>> {

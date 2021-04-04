@@ -67,6 +67,10 @@ class LinkViewModel : BaseViewModel(), KoinComponent {
         }
     )
 
+    fun requestDeleteItem(observable: LinkObservable) = requestConvert<Unit, Unit>(
+        request = linkRepository.deleteItem(observable.id)
+    )
+
     fun requestMoveLinkToTop(observable: LinkObservable) {
         linkRepository.moveLinkToTop(observable.id)
     }

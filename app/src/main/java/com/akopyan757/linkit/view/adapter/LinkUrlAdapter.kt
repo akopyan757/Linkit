@@ -39,8 +39,10 @@ class LinkUrlAdapter(
     }
 
     override fun getItemViewType(position: Int): Int {
-        return if (items[position] is LinkObservable) R.layout.item_link else R.layout.layout_item_banner_ads
-
+        return if (items[position] is LinkObservable)
+            R.layout.item_link
+        else
+            R.layout.layout_item_banner_ads
     }
 
     class LinkViewHolder(
@@ -48,7 +50,6 @@ class LinkUrlAdapter(
             private val listener: LinkAdapterListener
     ): RecyclerView.ViewHolder(binding.root) {
 
-        private var expand: Boolean = false
 
         fun bind(observable: LinkObservable) {
             binding.observable = observable

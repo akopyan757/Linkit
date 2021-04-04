@@ -16,7 +16,7 @@ import com.akopyan757.linkit.common.Config
 import com.akopyan757.linkit.databinding.DialogFoldersSettingsBinding
 import com.akopyan757.linkit.view.adapter.FolderAdapter
 import com.akopyan757.linkit.view.callback.ItemTouchHelperAdapter
-import com.akopyan757.linkit.view.callback.ItemTouchHelperCallback
+import com.akopyan757.linkit.view.callback.FolderTouchCallback
 import com.akopyan757.linkit.viewmodel.FolderViewModel
 import com.akopyan757.linkit.viewmodel.listener.FolderClickListener
 import com.akopyan757.linkit.viewmodel.observable.FolderObservable
@@ -78,7 +78,7 @@ class FolderDialogFragment : BaseDialogFragment<DialogFoldersSettingsBinding, Fo
         val folderRecyclerView = binding.rvFolders
         folderRecyclerView.adapter = recyclerAdapter
         folderRecyclerView.layoutManager = recyclerLayoutManager
-        recyclerTouchHelper = ItemTouchHelper(ItemTouchHelperCallback(this))
+        recyclerTouchHelper = ItemTouchHelper(FolderTouchCallback(this))
         recyclerTouchHelper.attachToRecyclerView(folderRecyclerView)
     }
 

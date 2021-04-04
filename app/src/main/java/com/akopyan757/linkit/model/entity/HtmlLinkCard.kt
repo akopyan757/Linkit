@@ -1,6 +1,6 @@
 package com.akopyan757.linkit.model.entity
 
-import com.akopyan757.linkit.model.parser.tags.HtmlTags
+import com.akopyan757.linkit.model.entity.tags.HtmlTags
 
 data class HtmlLinkCard(
     var title: String?,

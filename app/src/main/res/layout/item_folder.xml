@@ -13,88 +13,36 @@
             type="com.akopyan757.linkit.viewmodel.observable.FolderObservable" />
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="48dp"
+        android:layout_marginStart="@dimen/marginSecondary"
+        android:layout_marginTop="@dimen/marginTertiary"
+        android:layout_marginEnd="@dimen/marginSecondary"
+        android:layout_marginBottom="@dimen/marginTertiary"
+        app:cardCornerRadius="@dimen/cornerRadius"
+        app:cardElevation="@dimen/elevationTertiary"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/ivFolderDrag"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
-        <androidx.cardview.widget.CardView
-            android:id="@+id/cardView"
-            android:layout_width="0dp"
-            android:layout_height="56dp"
+        <TextView
+            android:id="@+id/tvFolderName"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical|start"
             android:layout_marginStart="@dimen/marginPrimary"
-            android:layout_marginTop="@dimen/marginTertiary"
             android:layout_marginEnd="@dimen/marginPrimary"
-            android:layout_marginBottom="@dimen/marginTertiary"
-            app:cardCornerRadius="@dimen/cornerRadius"
-            app:cardElevation="@dimen/elevationTertiary"
+            android:text="@{observable.name}"
+            android:textAppearance="@style/Theme.Linkit.TextAppearanceRegular"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/ivFolderDrag"
+            app:layout_constraintEnd_toStartOf="@+id/ivFolderEdit"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <TextView
-                    android:id="@+id/tvFolderName"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/marginPrimary"
-                    android:layout_marginEnd="@dimen/marginPrimary"
-                    android:text="@{observable.name}"
-                    android:textAppearance="@style/Theme.Linkit.TextAppearanceRegular"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/ivFolderEdit"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    tools:text="Folder" />
-
-                <ImageView
-                    android:id="@+id/ivFolderDelete"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="@dimen/marginTertiary"
-                    android:contentDescription="@string/todo"
-                    android:onClick="@{() -> listener.onDeleteFolder(observable)}"
-                    android:padding="@dimen/marginSecondary"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:srcCompat="@drawable/ic_baseline_folder_remove_24" />
-
-                <ImageView
-                    android:id="@+id/ivFolderEdit"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="@dimen/marginTertiary"
-                    android:contentDescription="@string/todo"
-                    android:onClick="@{() -> listener.onEditFolder(observable)}"
-                    android:padding="@dimen/marginSecondary"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/ivFolderDelete"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:srcCompat="@drawable/ic_baseline_edit_24" />
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-        </androidx.cardview.widget.CardView>
-
-        <ImageView
-            android:id="@+id/ivFolderDrag"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/marginSecondary"
-            android:layout_marginEnd="@dimen/marginPrimary"
-            android:layout_marginBottom="@dimen/marginSecondary"
-            android:contentDescription="@string/todo"
-            android:src="@drawable/ic_swap_vertical_24"
-            android:tintMode="src_atop"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:tint="@color/blackOpacity" />
+            tools:text="Folder" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.cardview.widget.CardView>
 
 </layout>

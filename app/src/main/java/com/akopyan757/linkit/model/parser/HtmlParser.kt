@@ -1,10 +1,10 @@
 package com.akopyan757.linkit.model.parser
 
 import com.akopyan757.linkit.common.Config
-import com.akopyan757.linkit.model.parser.tags.AdditionalHtmlTags
-import com.akopyan757.linkit.model.parser.tags.HtmlTags
-import com.akopyan757.linkit.model.parser.tags.OpenGraphHtmlTags
-import com.akopyan757.linkit.model.parser.tags.TwitterHtmlTags
+import com.akopyan757.linkit.model.entity.tags.AdditionalHtmlTags
+import com.akopyan757.linkit.model.entity.tags.HtmlTags
+import com.akopyan757.linkit.model.entity.tags.OpenGraphHtmlTags
+import com.akopyan757.linkit.model.entity.tags.TwitterHtmlTags
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element

@@ -78,7 +78,7 @@
                 android:layout_marginBottom="@dimen/marginTertiary"
                 android:text="@{observable.url}"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/ivLinkEdit"
                 app:layout_constraintStart_toStartOf="@+id/tvLinkTitle"
                 app:layout_constraintTop_toBottomOf="@+id/tvLinkTitle"
                 tools:text="https://google.com" />
@@ -100,6 +100,28 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:visibility="@{observable.shareVisible}" />
+
+            <ImageView
+                android:id="@+id/ivLinkDelete"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/marginTertiary"
+                android:paddingEnd="@dimen/marginSecondary"
+                android:onClick="@{() -> listener.onDeleteListener(observable)}"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/ivLinkShare"
+                app:srcCompat="@drawable/ic_baseline_trash_24" />
+
+            <ImageView
+                android:id="@+id/ivLinkEdit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/marginTertiary"
+                android:onClick="@{() -> listener.onEditListener(observable)}"
+                app:layout_constraintBottom_toBottomOf="@+id/ivLinkDelete"
+                app:layout_constraintEnd_toStartOf="@+id/ivLinkDelete"
+                app:layout_constraintTop_toBottomOf="@+id/ivLinkShare"
+                app:srcCompat="@drawable/ic_baseline_edit_24" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

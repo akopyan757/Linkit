@@ -70,5 +70,7 @@
     <string name="preview">Preview</string>
     <string name="auth_policy">By signing up, you agree to UnboxMe’s\nTerms of Use and Privacy Policy.</string>
     <string name="sing_in_button_text">Already have an account?</string>
+    <string name="dialog_delete_link_title">Delete link</string>
+    <string name="dialog_delete_link_description">Are you sure delete link?</string>
 
 </resources>

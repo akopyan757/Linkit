@@ -1,4 +1,4 @@
-package com.akopyan757.linkit.model.parser.tags
+package com.akopyan757.linkit.model.entity.tags
 
 data class OpenGraphHtmlTags(
     val title: String?,

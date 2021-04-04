@@ -57,7 +57,7 @@ class FolderAdapter(
         fun bind(observable: FolderObservable) {
             binding.observable = observable
             binding.listener = callback
-            binding.ivFolderDrag.setOnTouchListener { _, motionEvent ->
+            binding.cardView.setOnTouchListener { _, motionEvent ->
                 if (motionEvent.action == MotionEvent.ACTION_DOWN)
                     callback.onStartDrag(this)
                 false

@@ -1,5 +1,6 @@
 package com.akopyan757.linkit.view.fragment
 
+import android.app.AlertDialog
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -8,6 +9,7 @@ import android.widget.ArrayAdapter
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.os.bundleOf
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.ItemTouchHelper
 import com.akopyan757.base.view.BaseFragment
 import com.akopyan757.base.viewmodel.list.LinearLayoutManagerWrapper
 import com.akopyan757.linkit.BR
@@ -117,8 +119,33 @@ class MainFragment : BaseFragment<FragmentMainBinding, LinkViewModel>(), LinkAda
 
     }
 
+    override fun onDeleteListener(link: LinkObservable) {
+        showAcceptDeleteAction(link)
+    }
+
+    override fun onEditListener(link: LinkObservable) {
+        // TODO("Not yet implemented")
+    }
+
     override fun onAdClosed(adObservable: AdObservable) {
         viewModel.closeAdItem(adObservable)
+    }
+
+    private fun showAcceptDeleteAction(observable: LinkObservable) {
+        AlertDialog.Builder(context, R.style.Theme_Linkit_AlertDialog)
+            .setTitle(R.string.dialog_delete_link_title)
+            .setMessage(R.string.dialog_delete_link_description)
+            .setPositiveButton(R.string.ok) { dialog, _ ->
+                deleteLink(observable)
+                dialog?.dismiss()
+            }.setNegativeButton(R.string.cancel) { dialog, _ -> dialog?.dismiss() }.create()
+            .show()
+    }
+
+    private fun deleteLink(observable: LinkObservable) {
+        viewModel.requestDeleteItem(observable).observeSuccessResponse {
+            findNavController().popBackStack()
+        }
     }
 
     private fun setupAdViews() {
