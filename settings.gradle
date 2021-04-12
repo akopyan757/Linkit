@@ -1,3 +1,4 @@
+include ':linkit-domain'
 include ':urlparser'
 include ':base'
 include ':app'
