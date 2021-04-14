@@ -1,5 +1,5 @@
+include ':linkit-model'
 include ':linkit-domain'
-include ':urlparser'
 include ':base'
 include ':app'
 rootProject.name = "Linkit"

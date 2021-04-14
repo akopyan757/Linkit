@@ -1,7 +1,7 @@
 package com.akopyan757.linkit.viewmodel.observable
 
 import com.akopyan757.base.viewmodel.DiffItemObservable
-import com.akopyan757.linkit.model.entity.UrlLinkData
+import com.akopyan757.linkit_domain.entity.UrlLinkEntity
 import java.io.Serializable
 
 data class LinkObservable(
@@ -18,7 +18,7 @@ data class LinkObservable(
     override fun id() = id
 
     companion object {
-        fun from(data: UrlLinkData): LinkObservable {
+        fun from(data: UrlLinkEntity): LinkObservable {
             return LinkObservable(data.id, data.url, data.title, data.description, data.photoUrl)
         }
     }

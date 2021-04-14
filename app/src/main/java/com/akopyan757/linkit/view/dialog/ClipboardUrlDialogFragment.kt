@@ -4,7 +4,6 @@ import android.content.DialogInterface
 import android.os.Bundle
 import android.widget.ArrayAdapter
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.RecyclerView
 import com.akopyan757.base.view.BaseDialogFragment
 import com.akopyan757.linkit.BR
 import com.akopyan757.linkit.R
@@ -13,7 +12,6 @@ import com.akopyan757.linkit.common.clipboard.ClipboardUtils
 import com.akopyan757.linkit.databinding.DialogNewUrlBinding
 import com.akopyan757.linkit.view.adapter.LinkCardsUrlAdapter
 import com.akopyan757.linkit.viewmodel.LinkCreateUrlViewModel
-import kotlinx.android.synthetic.main.content_create_new_url.*
 import org.koin.android.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
@@ -30,17 +28,20 @@ class ClipboardUrlDialogFragment : BaseDialogFragment<DialogNewUrlBinding, LinkC
 
     override fun onSetupView(bundle: Bundle?) {
         with(binding) {
-            btnClipboardUrlAccept.setOnClickListener { createNewLink() }
+            btnClipboardUrlAccept.setOnClickListener {
+                this@ClipboardUrlDialogFragment.viewModel.createNewLink()
+            }
             adapter = LinkCardsUrlAdapter()
             contentClipboard.vpHtmlCards.adapter = adapter
         }
         with(viewModel) {
-            loadFolder().observeSuccessResponse { folderNames ->
-                val names = folderNames.map { folder -> folder.name }
-                updateSpinnerFolderNames(names)
+            getFolderLiveList().observe(viewLifecycleOwner) { folderNames ->
+                updateSpinnerFolderNames(folderNames)
             }
-            requestLoadCards().observeSuccessResponse {}
             getCardsList().observeList(adapter)
+
+            startListenFolder()
+            loadHtmlCards()
         }
     }
 
@@ -54,10 +55,6 @@ class ClipboardUrlDialogFragment : BaseDialogFragment<DialogNewUrlBinding, LinkC
             dismissDialog()
             clearClipboardData()
         }
-    }
-
-    private fun createNewLink() {
-        viewModel.requestCreateNewLink().observeSuccessResponse {}
     }
 
     private fun updateSpinnerFolderNames(folderNames: List<String>) {

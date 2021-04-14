@@ -3,10 +3,16 @@ package com.akopyan757.base.viewmodel
 import androidx.databinding.PropertyChangeRegistry
 import androidx.lifecycle.*
 import com.akopyan757.base.model.ApiResponse
+import io.reactivex.disposables.CompositeDisposable
+import org.koin.core.KoinComponent
+import org.koin.core.parameter.ParametersDefinition
+import org.koin.core.parameter.parametersOf
+import org.koin.core.qualifier.Qualifier
 import kotlin.reflect.KProperty
 
 abstract class BaseViewModel: ViewModel(), BaseStateObservable {
 
+    private val compositeDisposable = CompositeDisposable()
     private val mAction = MutableLiveData<Int>()
     private val mCallbacks: PropertyChangeRegistry by lazy { PropertyChangeRegistry() }
 
@@ -24,6 +30,8 @@ abstract class BaseViewModel: ViewModel(), BaseStateObservable {
 
     fun getLiveAction(): LiveData<Int> = mAction
 
+    fun getCompositeDisposable() = compositeDisposable
+
     override fun getCallback(): PropertyChangeRegistry {
         return mCallbacks
     }
@@ -31,6 +39,10 @@ abstract class BaseViewModel: ViewModel(), BaseStateObservable {
     fun <T> emptyLiveRequest(): LiveData<ResponseState<T>> = liveData {
         emit(ResponseState.Empty)
     }
+
+    inline fun <reified T> KoinComponent.injectUseCase(
+        qualifier: Qualifier? = null
+    ): Lazy<T> = getKoin().inject(qualifier) { parametersOf(this@BaseViewModel) }
 
     fun <T, V> requestConvert(
         request: LiveData<ApiResponse<T>>,
@@ -87,6 +99,11 @@ abstract class BaseViewModel: ViewModel(), BaseStateObservable {
             bindingTarget.forEach { notifyPropertyChanged(it) }
             onValueChanged?.invoke(v)
         }
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        compositeDisposable.dispose()
     }
 
     companion object {

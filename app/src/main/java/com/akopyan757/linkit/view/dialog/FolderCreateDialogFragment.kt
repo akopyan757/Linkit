@@ -21,17 +21,16 @@ class FolderCreateDialogFragment : BaseDialogFragment<DialogNewFolderBinding, Fo
     }
 
     private fun createFolder() {
-        viewModel.requestCreateFolder().apply {
-            observeSuccessResponse { dismissDialog() }
-            observeEmptyResponse { showCreateFolderError() }
-        }
+        val errorMessage = getString(R.string.notSelected)
+        viewModel.requestCreateFolder(errorMessage)
+    }
+
+    override fun onAction(action: Int) {
+        if (action == FolderCreateViewModel.ACTION_CLOSE)
+            dismissDialog()
     }
 
     private fun dismissDialog() {
         findNavController().popBackStack()
-    }
-
-    private fun showCreateFolderError() {
-        viewModel.setErrorMessage(getString(R.string.notSelected))
     }
 }

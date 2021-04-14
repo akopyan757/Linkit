@@ -21,7 +21,8 @@ class App: Application() {
             modules(
                 listOf(
                     ContextModule.it, DatabaseModule.module, ModelModule.module,
-                    ViewModelModule.module, ServiceModule.module, NetworkModule.module
+                    ViewModelModule.module, UseCaseModule.module, ServiceModule.module,
+                    NetworkModule.module
                 )
             )
 

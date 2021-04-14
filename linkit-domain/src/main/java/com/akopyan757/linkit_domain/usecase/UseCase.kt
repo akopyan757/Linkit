@@ -12,4 +12,8 @@ abstract class UseCase<T, P: UseCase.Params> {
     protected abstract fun launch(): T
 
     open class Params
+
+    protected fun defaultOnNext(): () -> Unit = {}
+    protected fun defaultOnError(): (Throwable) -> Unit = {}
+    protected fun <V> defaultOnNextWithParams(): (V) -> Unit = {}
 }

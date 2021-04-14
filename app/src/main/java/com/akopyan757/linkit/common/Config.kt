@@ -13,10 +13,6 @@ object Config {
 
     const val HANDLE_URL = "HANDLE_URL"
 
-    const val KEY_EDIT_DELETE = "KEY_EDIT_DELETE"
-    const val KEY_SELECTED_COUNT = "KEY_SELECTED_%s"
-    const val KEY_EDIT_MODE_STATE = "KEY_EDIT_MODE_STATE"
-
     const val KEY_ACCEPT_DELETE = "KEY_ACCEPT_DELETE"
 
     const val IO_DISPATCHERS = "IO"
