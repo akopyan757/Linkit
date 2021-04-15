@@ -3,10 +3,9 @@ package com.akopyan757.linkit.viewmodel
 import androidx.databinding.Bindable
 import com.akopyan757.base.viewmodel.BaseViewModel
 import com.akopyan757.linkit.BR
-import com.akopyan757.linkit.model.exception.FolderExistsException
 import com.akopyan757.linkit_domain.usecase.folder.CreateFolderUseCase
+import com.akopyan757.linkit_model.throwable.FolderExistsException
 import org.koin.core.KoinComponent
-import org.koin.core.inject
 
 class FolderCreateViewModel: BaseViewModel(), KoinComponent {
 
