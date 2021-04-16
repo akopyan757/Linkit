@@ -1,29 +1,28 @@
 package com.akopyan757.linkit.viewmodel
 
 import androidx.databinding.Bindable
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.map
 import com.akopyan757.base.viewmodel.BaseViewModel
 import com.akopyan757.base.viewmodel.DiffItemObservable
 import com.akopyan757.base.viewmodel.list.ListLiveData
 import com.akopyan757.linkit.BR
 import com.akopyan757.linkit.R
-import com.akopyan757.linkit.model.repository.AuthRepository
 import com.akopyan757.linkit.viewmodel.observable.FolderObservable
 import com.akopyan757.linkit.viewmodel.observable.LinkObservable
+import com.akopyan757.linkit_domain.usecase.auth.GetUserUseCase
 import com.akopyan757.linkit_domain.usecase.folder.ListenFolderChangesUseCase
 import com.akopyan757.linkit_domain.usecase.folder.ListenFoldersUseCase
 import com.akopyan757.linkit_domain.usecase.urllink.DeleteUrlLinkUseCase
 import com.akopyan757.linkit_domain.usecase.urllink.ListenUrlLinkChangesUseCase
 import com.akopyan757.linkit_domain.usecase.urllink.ListenUrlLinkUseCase
 import com.akopyan757.linkit_domain.usecase.urllink.MoveTopLinkUseCase
-import io.reactivex.disposables.CompositeDisposable
 import org.koin.core.KoinComponent
-import org.koin.core.inject
-import org.koin.core.parameter.parametersOf
 
 class LinkViewModel : BaseViewModel(), KoinComponent {
 
-    private val authRepository: AuthRepository by inject()
+    private val getUser: GetUserUseCase by injectUseCase()
     private val listenFolder: ListenFoldersUseCase by injectUseCase()
     private val listenUrlLinks: ListenUrlLinkUseCase by injectUseCase()
     private val deleteUrlLink: DeleteUrlLinkUseCase by injectUseCase()
@@ -73,12 +72,11 @@ class LinkViewModel : BaseViewModel(), KoinComponent {
         })
     }
 
-    fun requestGetUserAvatar() = requestConvert(
-        request = authRepository.getUser(),
-        onSuccess = { firebaseUser ->
-            profileIconUrl = firebaseUser.photoUrl.toString()
-        }
-    )
+    fun getUserAvatar() {
+        getUser.execute(onSuccess = { userEntity ->
+            profileIconUrl = userEntity.photoUrl
+        })
+    }
 
     fun deleteUrlLink(observable: LinkObservable) {
         deleteUrlLink.execute(DeleteUrlLinkUseCase.Params(observable.id))

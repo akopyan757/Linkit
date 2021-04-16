@@ -80,7 +80,9 @@ android {
 dependencies {
     api project(':base')
     api project(':linkit-model')
+    api project(':linkit-model-auth')
     api project(':linkit-domain')
+    api project(':linkit-domain-android-ext')
 
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.4.2'
 
@@ -128,13 +130,13 @@ dependencies {
     implementation platform('com.google.firebase:firebase-bom:26.2.0')
     implementation 'com.google.firebase:firebase-auth-ktx'
     implementation 'com.google.android.gms:play-services-auth:19.0.0'
+    googleImplementation 'com.google.android.gms:play-services-ads:19.7.0'
 
     implementation "androidx.lifecycle:lifecycle-reactivestreams-ktx:2.3.1"
 
     huaweiImplementation "com.huawei.hms:ads-lite:13.4.37.300"
     huaweiImplementation 'com.huawei.hms:ads-identifier:3.4.30.307'
 
-    googleImplementation 'com.google.android.gms:play-services-ads:19.7.0'
 
     implementation 'com.huawei.hms:push:5.0.4.302'
 }

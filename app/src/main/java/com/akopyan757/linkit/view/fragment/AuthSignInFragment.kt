@@ -24,14 +24,23 @@ class AuthSignInFragment: BaseFragment<FragmentAuthSignInBinding, AuthSignInView
             tvAuthForgotPassword.setOnClickListener { openForgotPasswordScreen() }
             ivAuthSignInBack.setOnClickListener { backToStartScreen() }
         }
+        with(viewModel) {
+            getThrowableLive().observe(viewLifecycleOwner, { throwable ->
+                showErrorToast(throwable)
+            })
+            openMainScreenByUserUid().observe(viewLifecycleOwner, { userUid ->
+                openMainScreen(userUid)
+            })
+        }
     }
 
     private fun signInWithEmailAndPassword() {
-        viewModel.requestSignInWithEmail().apply {
-            observeLoadingResponse { AndroidUtils.hideKeyboard(requireActivity()) }
-            observeSuccessResponse { firebaseUid -> openMainScreen(firebaseUid) }
-            observeErrorResponse { exception -> showErrorToast(exception) }
-        }
+        hideActivityKeyboard()
+        viewModel.requestSignInWithEmail()
+    }
+
+    private fun hideActivityKeyboard() {
+        AndroidUtils.hideKeyboard(requireActivity())
     }
 
     private fun openForgotPasswordScreen() {

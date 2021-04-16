@@ -1,7 +1,6 @@
 package com.akopyan757.linkit.common.di
 
 import com.akopyan757.linkit.common.Config
-import com.akopyan757.linkit.model.repository.AuthRepository
 import com.akopyan757.linkit_domain.entity.FolderEntity
 import com.akopyan757.linkit_domain.entity.UrlLinkEntity
 import com.akopyan757.linkit_domain.repository.*
@@ -13,7 +12,6 @@ import com.akopyan757.linkit_model.mapper.Mapper
 import com.akopyan757.linkit_model.mapper.UrlLinkMapper
 import com.akopyan757.linkit_model.parser.HtmlParser
 import com.akopyan757.linkit_model.parser.IHtmlParser
-import com.google.firebase.firestore.CollectionReference
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
@@ -23,7 +21,6 @@ object ModelModule {
     private const val MAPPER_FOLDER = "folder"
 
     val module = module {
-        single { AuthRepository() }
 
         single<IHtmlParser> { HtmlParser() }
 

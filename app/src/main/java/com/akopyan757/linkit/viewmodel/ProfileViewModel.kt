@@ -6,27 +6,22 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.akopyan757.base.viewmodel.BaseViewModel
 import com.akopyan757.linkit.BR
-import com.akopyan757.linkit.FirebaseUserExtension
 import com.akopyan757.linkit.R
 import com.akopyan757.linkit.common.Config
-import com.akopyan757.linkit.model.firebase.AuthWrapper
-import com.akopyan757.linkit.model.repository.AuthRepository
-import com.google.firebase.auth.FirebaseUser
+import com.akopyan757.linkit_domain.usecase.auth.EmailVerificationUseCase
+import com.akopyan757.linkit_domain.usecase.auth.GetUserUseCase
+import com.akopyan757.linkit_domain_android_ext.usecase.SignOutUseCase
 import org.koin.core.KoinComponent
-import org.koin.core.inject
 
 class ProfileViewModel : BaseViewModel(), KoinComponent {
 
-    private val authRepository: AuthRepository by inject()
+    private val getUser: GetUserUseCase by injectUseCase()
+    private val emailVerification: EmailVerificationUseCase by injectUseCase()
+    private val signOut: SignOutUseCase by injectUseCase()
 
-    @get:Bindable
-    var displayName: String by DB("", BR.displayName)
-
-    @get:Bindable
-    var email: String by DB("", BR.email)
-
-    @get:Bindable
-    var profileIconUrl: String? by DB(null, BR.profileIconUrl, BR.profileIconVisible)
+    @get:Bindable var displayName: String by DB("", BR.displayName)
+    @get:Bindable var email: String by DB("", BR.email)
+    @get:Bindable var profileIconUrl: String? by DB(null, BR.profileIconUrl, BR.profileIconVisible)
 
     @get:Bindable
     val profileIconVisible: Boolean
@@ -48,32 +43,43 @@ class ProfileViewModel : BaseViewModel(), KoinComponent {
     var linkButtonVisible: Boolean by DB(false, BR.linkButtonVisible)
 
     private val isVerifyEmailState = MutableLiveData<Boolean>()
-
-    fun getUserResponseLive() = requestConvert(
-        request = authRepository.getUser(),
-        onSuccess = { firebaseUser -> updateUiFromFirebaseUser(firebaseUser) }
-    )
-
-    fun getVerifyLiveResponse() = requestConvert(
-        request = authRepository.emailVerification(),
-        onSuccess = { verifyButtonEnabled = false }
-    )
-
-    fun getSignOutResponseLive() = requestConvert(
-        request = authRepository.signOut(),
-        onSuccess = {}
-    )
+    private val verifyEmailToast = MutableLiveData<String>()
 
     fun getEmailVerifyState(): LiveData<Boolean> = isVerifyEmailState
+    fun showSuccessVerifyEmailToast(): LiveData<String> = verifyEmailToast
 
-    private fun updateUiFromFirebaseUser(firebaseUser: FirebaseUser) {
-        displayName = firebaseUser.displayName ?: Config.EMPTY
-        email = firebaseUser.email ?: Config.EMPTY
-        profileIconUrl = firebaseUser.photoUrl.toString()
-        isVerifyEmailState.value = firebaseUser.isEmailVerified
-        verifyButtonEnabled = firebaseUser.isEmailVerified.not()
-        setPasswordButtonVisible = AuthWrapper.existsEmailProvider(firebaseUser).not()
-        changePasswordButtonVisible = AuthWrapper.existsEmailProvider(firebaseUser)
-        linkButtonVisible = FirebaseUserExtension.existServiceProvider(firebaseUser).not()
+    fun getUserRequest() {
+        getUser.execute(
+            onSuccess = { userEntity ->
+                displayName = userEntity.displayName ?: Config.EMPTY
+                email = userEntity.email
+                profileIconUrl = userEntity.photoUrl
+                isVerifyEmailState.value = userEntity.emailVerified
+                verifyButtonEnabled = userEntity.emailVerified.not()
+                setPasswordButtonVisible = userEntity.hasEmailProvider
+                changePasswordButtonVisible = userEntity.hasEmailProvider
+                linkButtonVisible = userEntity.hasEmailProvider.not()
+            },
+            onError = {
+                emitAction(ACTION_DISMISS)
+            }
+        )
+    }
+
+    fun verifyEmail() {
+        emailVerification.execute({
+            verifyButtonEnabled = false
+        })
+    }
+
+    fun signOut() {
+        signOut.execute(onSuccess = {
+            emitAction(ACTION_SHOW_AUTH)
+        })
+    }
+
+    companion object {
+        const val ACTION_DISMISS = 142_1
+        const val ACTION_SHOW_AUTH = 142_2
     }
 }

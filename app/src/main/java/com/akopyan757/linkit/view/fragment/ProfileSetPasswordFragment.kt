@@ -21,18 +21,28 @@ class ProfileSetPasswordFragment: BaseFragment<FragmentAuthSetPasswordBinding, P
     override fun onSetupView(bundle: Bundle?) {
         binding.ivSetPasswordBack.setOnClickListener { backToMainScreen() }
         binding.btnSetPasswordSend.setOnClickListener { setPasswordRequest() }
+
+        with(viewModel) {
+            getErrorResLive().observe(viewLifecycleOwner, { errorMessageRes ->
+                viewModel.setErrorMessage(getString(errorMessageRes))
+            })
+        }
     }
 
     private fun setPasswordRequest() {
-        viewModel.requestSetPassword().apply {
-            observeEmptyResponse { viewModel.setErrorMessage(getString(R.string.error_passwords_match)) }
-            observeLoadingResponse { AndroidUtils.hideKeyboard(requireActivity()) }
-            observeSuccessResponse {
-                showToast(R.string.password_set)
-                backToMainScreen()
-            }
-            observeErrorResponse { showToast(R.string.error) }
+        hideActivityKeyboard()
+        viewModel.setPassword()
+    }
+
+    override fun onAction(action: Int) {
+        if (action == ProfileSetPasswordViewModel.ACTION_LINK_SUCCESS) {
+            showToast(R.string.password_set)
+            backToMainScreen()
         }
+    }
+
+    private fun hideActivityKeyboard() {
+        AndroidUtils.hideKeyboard(requireActivity())
     }
 
     private fun backToMainScreen() {

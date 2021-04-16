@@ -20,17 +20,30 @@ class AuthForgotPasswordFragment: BaseFragment<FragmentAuthResetPasswordBinding,
 
     override fun onSetupView(bundle: Bundle?) {
         binding.btnAuthForgotPassword.setOnClickListener { resetPasswordRequest() }
+
+        viewModel.getThrowableLive().observe(viewLifecycleOwner, { throwable ->
+            showErrorToast(throwable)
+        })
     }
 
     private fun resetPasswordRequest() {
-        viewModel.requestResetPassword().apply {
-            observeLoadingResponse { AndroidUtils.hideKeyboard(requireActivity()) }
-            observeSuccessResponse { email ->
-                showToast(getString(R.string.toast_reset_password, email))
-                backToSignInScreen()
-            }
-            observeErrorResponse { exception -> showErrorToast(exception) }
+        hideActivityKeyboard()
+        viewModel.resetPassword()
+    }
+
+    override fun onAction(action: Int) {
+        if (action == AuthForgotPasswordViewModel.ACTION_RESET_SUCCESS) {
+            showResetErrorToast()
+            backToSignInScreen()
         }
+    }
+
+    private fun hideActivityKeyboard() {
+        AndroidUtils.hideKeyboard(requireActivity())
+    }
+
+    private fun showResetErrorToast() {
+        showToast(getString(R.string.toast_reset_password, viewModel.email))
     }
 
     private fun backToSignInScreen() {

@@ -2,30 +2,46 @@ package com.akopyan757.linkit.viewmodel
 
 import android.content.Intent
 import androidx.databinding.Bindable
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.akopyan757.base.viewmodel.BaseViewModel
 import com.akopyan757.linkit.BR
-import com.akopyan757.linkit.model.repository.AuthRepository
-import com.akopyan757.linkit.view.service.IAuthorizationService
+import com.akopyan757.linkit_domain_android_ext.usecase.GetServiceIntentSignInUseCase
+import com.akopyan757.linkit_domain_android_ext.usecase.GetServiceUserUserCase
 import org.koin.core.KoinComponent
-import org.koin.core.inject
 
 class AuthStartViewModel: BaseViewModel(), KoinComponent {
 
-    private val authRepository: AuthRepository by inject()
-    private val authService: IAuthorizationService by inject()
+    private val getServiceUser: GetServiceUserUserCase by injectUseCase()
+    private val getIntentSignIn: GetServiceIntentSignInUseCase by injectUseCase()
 
     @get:Bindable var isProgress: Boolean by DB(false, BR.progress)
 
-    fun requestSignInWithService(data: Intent?) = requestConvert(
-        request = authRepository.signInWithData(data),
-        onLoading = { isProgress = true },
-        onSuccess = { firebaseUser ->
-            isProgress = false
-            return@requestConvert firebaseUser.uid
-        }, onError = {
-            isProgress = false
-        }
-    )
+    private val signInIntentLive = MutableLiveData<Intent>()
+    private val showMainScreenByUser = MutableLiveData<String>()
 
-    fun getSignInIntent() = authService.getSignInIntent()
+    fun getSignInIntentLive(): LiveData<Intent> {
+        return signInIntentLive
+    }
+
+    fun showMainScreenWithUserLive(): LiveData<String> {
+        return showMainScreenByUser
+    }
+
+    fun getUserFromService(data: Intent?) {
+        isProgress = true
+        getServiceUser.execute(GetServiceUserUserCase.Params(data),
+            onSuccess = { userEntity ->
+                isProgress = false
+                showMainScreenByUser.value = userEntity.uid
+            }, onError = {
+                isProgress = false
+            })
+    }
+
+    fun signInService() {
+        getIntentSignIn.execute(onSuccess = { data ->
+            signInIntentLive.value = data
+        })
+    }
 }

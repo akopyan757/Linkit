@@ -1,16 +1,31 @@
 package com.akopyan757.linkit.viewmodel
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.akopyan757.base.viewmodel.BaseViewModel
-import com.akopyan757.linkit.model.repository.AuthRepository
+import com.akopyan757.linkit_domain.entity.UserEntity
+import com.akopyan757.linkit_domain.usecase.auth.GetUserUseCase
 import org.koin.core.KoinComponent
-import org.koin.core.inject
 
 class AuthSplashViewModel: BaseViewModel(), KoinComponent {
 
-    private val authRepository: AuthRepository by inject()
+    private val getUser: GetUserUseCase by injectUseCase()
 
-    fun requestGetUser() = requestConvert(
-            request = authRepository.getUser(),
-            onSuccess = { firebaseUser -> firebaseUser }
-    )
+    private val successUserLive = MutableLiveData<UserEntity>()
+    private val throwableLive = MutableLiveData<Throwable>()
+
+    fun getSuccessUserLive(): LiveData<UserEntity> {
+        return successUserLive
+    }
+
+    fun getThrowableLive(): LiveData<Throwable> {
+        return throwableLive
+    }
+
+    fun requestGetUser() {
+        getUser.execute(
+            onSuccess = { userEntity -> successUserLive.value = userEntity },
+            onError = { throwable -> throwableLive.value = throwable }
+        )
+    }
 }

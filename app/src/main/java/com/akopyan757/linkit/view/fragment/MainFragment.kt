@@ -73,7 +73,7 @@ class MainFragment : BaseFragment<FragmentMainBinding, LinkViewModel>(), LinkAda
 
     private fun setupActionBar() {
         setupMainToolbar()
-        setupAvatarPhoto()
+        viewModel.getUserAvatar()
     }
 
     private fun setupMainToolbar() {
@@ -82,10 +82,6 @@ class MainFragment : BaseFragment<FragmentMainBinding, LinkViewModel>(), LinkAda
         appCompatActivity.supportActionBar?.setDisplayShowTitleEnabled(false)
         appCompatActivity.supportActionBar?.title = Config.EMPTY
         setHasOptionsMenu(true)
-    }
-
-    private fun setupAvatarPhoto() {
-        viewModel.requestGetUserAvatar().observeSuccessResponse {}
     }
 
     private fun setupLinkRecyclerView() {

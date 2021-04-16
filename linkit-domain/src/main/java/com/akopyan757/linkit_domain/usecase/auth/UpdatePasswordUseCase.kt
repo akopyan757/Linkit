@@ -15,8 +15,9 @@ class UpdatePasswordUseCase(
     schedulerProvider, compositeDisposable
 ) {
 
-    override fun launch() = Completable.fromAction {
-        authDataSource.updatePassword(parameters.oldPassword, parameters.newPassword)
+    override fun launch(): Completable {
+        return authDataSource.reauthenticateEmail(parameters.oldPassword)
+            .andThen(authDataSource.updatePassword(parameters.newPassword))
     }
 
     data class Params(val oldPassword: String, val newPassword: String): UseCase.Params()

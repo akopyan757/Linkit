@@ -25,22 +25,30 @@ class AuthSignUpFragment: BaseFragment<FragmentAuthSignUpBinding, AuthSignUpView
             btnAuthSignUp.setOnClickListener { signUpRequest() }
             ivAuthSignUpBack.setOnClickListener { backToStartScreen() }
         }
-    }
-
-    private fun signUpRequest() {
-        viewModel.requestSignUp().apply {
-            observeEmptyResponse { viewModel.setErrorMessage(getString(R.string.error_passwords_match)) }
-            observeLoadingResponse { AndroidUtils.hideKeyboard(requireActivity()) }
-            observeSuccessResponse { uid -> openMainScreen(uid) }
-            observeErrorResponse { exception ->
-                if (exception.isUserCollision())
+        with(viewModel) {
+            getErrorResLive().observe(viewLifecycleOwner, { errorMessageRes ->
+                viewModel.setErrorMessage(getString(errorMessageRes))
+            })
+            openMainScreenByUserUid().observe(viewLifecycleOwner, { userUid ->
+                openMainScreen(userUid)
+            })
+            getThrowableLive().observe(viewLifecycleOwner, { throwable ->
+                showErrorToast(throwable)
+                if (throwable is FirebaseAuthUserCollisionException) {
                     showUserCollisionErrorDialog()
-                showErrorToast(exception)
-            }
+                }
+            })
         }
     }
 
-    private fun Exception.isUserCollision() = this is FirebaseAuthUserCollisionException
+    private fun signUpRequest() {
+        hideActivityKeyboard()
+        viewModel.signUp()
+    }
+
+    private fun hideActivityKeyboard() {
+        AndroidUtils.hideKeyboard(requireActivity())
+    }
 
     private fun showUserCollisionErrorDialog() {
         val method = getString(R.string.signInMethod)

@@ -1,29 +1,24 @@
 package com.akopyan757.linkit.viewmodel
 
+import androidx.annotation.StringRes
 import androidx.databinding.Bindable
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.akopyan757.base.viewmodel.BaseViewModel
 import com.akopyan757.linkit.BR
-import com.akopyan757.linkit.model.repository.AuthRepository
+import com.akopyan757.linkit.R
+import com.akopyan757.linkit_domain.usecase.auth.UpdatePasswordUseCase
 import org.koin.core.KoinComponent
-import org.koin.core.inject
 
 class ProfileUpdatePasswordViewModel: BaseViewModel(), KoinComponent {
 
-    private val authRepository: AuthRepository by inject()
+    private val updatePassword: UpdatePasswordUseCase by injectUseCase()
 
     /** Databinding properties */
-    @get:Bindable
-    var isProgress: Boolean by DB(false, BR.progress)
-
-    @get:Bindable
-    var oldPassword: String by DB("", BR.oldPassword, BR.buttonSignInEnable)
-
-    @get:Bindable
-    var password: String by DB("", BR.password, BR.buttonSignInEnable)
-
-    @get:Bindable
-    var passwordConfirm: String by DB("", BR.passwordConfirm, BR.buttonSignInEnable)
+    @get:Bindable var isProgress: Boolean by DB(false, BR.progress)
+    @get:Bindable var oldPassword: String by DB("", BR.oldPassword, BR.buttonSignInEnable)
+    @get:Bindable var password: String by DB("", BR.password, BR.buttonSignInEnable)
+    @get:Bindable var passwordConfirm: String by DB("", BR.passwordConfirm, BR.buttonSignInEnable)
 
     @get:Bindable
     val buttonSignInEnable: Boolean
@@ -36,23 +31,39 @@ class ProfileUpdatePasswordViewModel: BaseViewModel(), KoinComponent {
     val errorVisible: Boolean
         get() = error.isNotEmpty()
 
-    fun requestSetPassword(): LiveData<ResponseState<Unit>> {
+    private val errorMessageResLive = MutableLiveData<@StringRes Int>()
+    private val throwableLive = MutableLiveData<Throwable>()
+
+    fun getErrorResLive(): LiveData<Int> {
+        return errorMessageResLive
+    }
+
+    fun getThrowableLive(): LiveData<Throwable> {
+        return throwableLive
+    }
+
+    fun updatePassword() {
         if (password.isNotEmpty() && password != passwordConfirm) {
-            return emptyLiveRequest()
+            errorMessageResLive.value = R.string.error_passwords_match
+            return
         }
 
-        return requestConvert (
-            request = authRepository.updatePassword(oldPassword, password),
-            onLoading = { isProgress = true },
-            onSuccess = { isProgress = false },
-            onError = { exception ->
+        isProgress = true
+        updatePassword.execute(UpdatePasswordUseCase.Params(oldPassword, password),
+            onSuccess = {
                 isProgress = false
-                error = exception.localizedMessage ?: "Error"
+            }, onError = { throwable ->
+                isProgress = false
+                error = throwable.localizedMessage ?: "Error"
             }
         )
     }
 
     fun setErrorMessage(message: String) {
         error = message
+    }
+
+    companion object {
+        const val ACTION_SUCCESS_UPDATE = 213_1
     }
 }

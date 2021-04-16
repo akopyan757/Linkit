@@ -1,15 +1,16 @@
 package com.akopyan757.linkit.viewmodel
 
 import androidx.databinding.Bindable
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.akopyan757.base.viewmodel.BaseViewModel
 import com.akopyan757.linkit.BR
-import com.akopyan757.linkit.model.repository.AuthRepository
+import com.akopyan757.linkit_domain.usecase.auth.SignInWithEmailUserUseCase
 import org.koin.core.KoinComponent
-import org.koin.core.inject
 
 class AuthSignInViewModel: BaseViewModel(), KoinComponent {
 
-    private val authRepository: AuthRepository by inject()
+    private val signInWithEmail: SignInWithEmailUserUseCase by injectUseCase()
 
     @get:Bindable var isProgress: Boolean by DB(false, BR.progress)
     @get:Bindable var email: String by DB("", BR.email, BR.buttonSignInEnable)
@@ -22,14 +23,27 @@ class AuthSignInViewModel: BaseViewModel(), KoinComponent {
     @get:Bindable val errorVisible: Boolean
         get() = error.isNotEmpty()
 
-    fun requestSignInWithEmail() = requestConvert(
-        request = authRepository.signInWithEmail(email, password),
-        onLoading = { isProgress = true },
-        onError = { isProgress = false },
-        onSuccess = { firebaseUser ->
-            isProgress = false
-            firebaseUser.uid
-        }
-    )
+    private val openMainUserUid = MutableLiveData<String>()
+    private val throwableLive = MutableLiveData<Throwable>()
+
+    fun openMainScreenByUserUid(): LiveData<String> {
+        return openMainUserUid
+    }
+
+    fun getThrowableLive(): LiveData<Throwable> {
+        return throwableLive
+    }
+
+    fun requestSignInWithEmail() {
+        isProgress = true
+        signInWithEmail.execute(SignInWithEmailUserUseCase.Params(email, password),
+            onSuccess = { userEntity ->
+                isProgress = false
+                openMainUserUid.value = userEntity.uid
+            }, onError = { throwable ->
+                isProgress = false
+                throwableLive.value = throwable
+            })
+    }
 
 }

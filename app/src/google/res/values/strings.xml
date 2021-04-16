@@ -3,4 +3,5 @@
     <string name="buttonText">Log in with Google</string>
     <string name="buttonLinkText">Link with Google</string>
     <string name="signInMethod">Google</string>
+    <string name="default_web_client_id"></string>
 </resources>

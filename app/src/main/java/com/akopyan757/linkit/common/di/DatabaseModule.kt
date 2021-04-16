@@ -2,11 +2,9 @@ package com.akopyan757.linkit.common.di
 
 import com.akopyan757.linkit.common.Config
 import com.akopyan757.linkit.common.Config.LINKS
-import com.akopyan757.linkit.common.Config.PATTERNS
 import com.akopyan757.linkit.common.Config.USERS
 import com.akopyan757.linkit_model.database.AppDatabase
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.firestore.FirebaseFirestore
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.qualifier.named

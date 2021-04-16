@@ -19,9 +19,7 @@ class SignInWithEmailUserUseCase(
     schedulerProvider, compositeDisposable
 ) {
 
-    override fun launch() = Single.fromCallable {
-        authDataSource.signInWithEmail(parameters.email, parameters.password)
-    }
+    override fun launch() = authDataSource.signInWithEmail(parameters.email, parameters.password)
 
     data class Params(val email: String, val password: String): UseCase.Params()
 }

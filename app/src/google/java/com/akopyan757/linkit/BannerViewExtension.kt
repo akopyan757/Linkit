@@ -10,8 +10,6 @@ import com.google.android.gms.ads.MobileAds
 
 object BannerViewExtension {
 
-    private const val TAG = "BANNER_VIEW_EXT"
-
     fun init(context: Context) {
         MobileAds.initialize(context)
     }

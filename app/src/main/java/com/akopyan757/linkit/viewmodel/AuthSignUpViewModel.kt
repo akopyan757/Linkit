@@ -2,17 +2,18 @@ package com.akopyan757.linkit.viewmodel
 
 import androidx.databinding.Bindable
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.akopyan757.base.viewmodel.BaseViewModel
 import com.akopyan757.linkit.BR
+import com.akopyan757.linkit.R
 import com.akopyan757.linkit.common.Config
-import com.akopyan757.linkit.model.repository.AuthRepository
+import com.akopyan757.linkit_domain.usecase.auth.CreateUserUseCase
 import com.google.firebase.auth.FirebaseAuthUserCollisionException
 import org.koin.core.KoinComponent
-import org.koin.core.inject
 
 class AuthSignUpViewModel: BaseViewModel(), KoinComponent {
 
-    private val authRepository: AuthRepository by inject()
+    private val createUser: CreateUserUseCase by injectUseCase()
 
     @get:Bindable var isProgress: Boolean by DB(false, BR.progress)
     @get:Bindable var email: String by DB("", BR.email, BR.buttonSignInEnable)
@@ -26,24 +27,41 @@ class AuthSignUpViewModel: BaseViewModel(), KoinComponent {
     @get:Bindable val errorVisible: Boolean
         get() = error.isNotEmpty()
 
+    private val errorMessageResLive = MutableLiveData<@androidx.annotation.StringRes Int>()
+    private val throwableLive = MutableLiveData<Throwable>()
+    private val openMainUserUid = MutableLiveData<String>()
 
-    fun requestSignUp(): LiveData<ResponseState<String>> {
-        if (password.isNotEmpty() && password != passwordConfirm)
-            return emptyLiveRequest()
+    fun getErrorResLive(): LiveData<Int> {
+        return errorMessageResLive
+    }
 
-        return requestConvert(
-            request = authRepository.createUser(email, password),
-            onLoading = {
-                isProgress = true
-                error = Config.EMPTY
-            }, onSuccess = { firebaseUser ->
+    fun getThrowableLive(): LiveData<Throwable> {
+        return throwableLive
+    }
+
+    fun openMainScreenByUserUid(): LiveData<String> {
+        return openMainUserUid
+    }
+
+    fun signUp() {
+        if (password.isNotEmpty() && password != passwordConfirm) {
+            errorMessageResLive.value = R.string.error_passwords_match
+            return
+        }
+
+        isProgress = true
+        error = Config.EMPTY
+
+        createUser.execute(CreateUserUseCase.Params(email, password),
+            onSuccess = { firebaseUser ->
                 isProgress = false
-                return@requestConvert firebaseUser.uid
+                openMainUserUid.value = firebaseUser.uid
             },
-            onError = { exception ->
+            onError = { throwable ->
                 isProgress = false
-                if (exception !is FirebaseAuthUserCollisionException) {
-                    error = exception.localizedMessage ?: Config.ERROR
+                throwableLive.value = throwable
+                if (throwable !is FirebaseAuthUserCollisionException) {
+                    error = throwable.localizedMessage ?: Config.ERROR
                 }
             }
         )

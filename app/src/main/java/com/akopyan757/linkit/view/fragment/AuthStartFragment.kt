@@ -2,6 +2,7 @@ package com.akopyan757.linkit.view.fragment
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.navigation.fragment.findNavController
 import com.akopyan757.base.view.BaseFragment
 import com.akopyan757.linkit.BR
@@ -22,26 +23,27 @@ class AuthStartFragment: BaseFragment<FragmentAuthStartBinding, AuthStartViewMod
         with(binding) {
             tvAuthStartSignIn.setOnClickListener { openSignInScreen() }
             btnAuthStartSignUp.setOnClickListener { openSignUpScreen() }
-            btnAuthService.setOnClickListener { signInWithSpecificService() }
+            btnAuthService.setOnClickListener { this@AuthStartFragment.viewModel.signInService() }
+        }
+        with(viewModel) {
+            getSignInIntentLive().observe(viewLifecycleOwner, { data ->
+                startActivityForResult(data, SERVICE_SIGN_IN_REQUEST_CODE)
+            })
+            showMainScreenWithUserLive().observe(viewLifecycleOwner, { userUid ->
+                openMainScreen(userUid)
+            })
         }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == AuthSignInFragment.SERVICE_SIGN_IN_REQUEST_CODE) {
-            handleDataFromSpecificService(data)
+            hideActivityKeyboard()
+            viewModel.getUserFromService(data)
         }
     }
 
-    private fun signInWithSpecificService() {
-        startActivityForResult(viewModel.getSignInIntent(), SERVICE_SIGN_IN_REQUEST_CODE)
-    }
-
-    private fun handleDataFromSpecificService(data: Intent?) {
-        viewModel.requestSignInWithService(data).apply {
-            observeLoadingResponse { AndroidUtils.hideKeyboard(requireActivity()) }
-            observeSuccessResponse { firebaseUid -> openMainScreen(firebaseUid) }
-            observeErrorResponse { exception -> showErrorToast(exception) }
-        }
+    private fun hideActivityKeyboard() {
+        AndroidUtils.hideKeyboard(requireActivity())
     }
 
     private fun openSignUpScreen() {

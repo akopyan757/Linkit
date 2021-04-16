@@ -1,32 +1,26 @@
 package com.akopyan757.linkit.viewmodel
 
+import androidx.annotation.StringRes
 import androidx.databinding.Bindable
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.akopyan757.base.viewmodel.BaseViewModel
 import com.akopyan757.linkit.BR
+import com.akopyan757.linkit.R
 import com.akopyan757.linkit.common.Config
-import com.akopyan757.linkit.model.repository.AuthRepository
-import com.google.firebase.auth.FirebaseUser
+import com.akopyan757.linkit_domain.usecase.auth.LinkPasswordUseCase
 import org.koin.core.KoinComponent
-import org.koin.core.inject
 
 class ProfileSetPasswordViewModel: BaseViewModel(), KoinComponent {
 
-    private val authRepository: AuthRepository by inject()
+    private val linkPassword: LinkPasswordUseCase by injectUseCase()
 
-    /** Databinding properties */
-    @get:Bindable
-    var isProgress: Boolean by DB(false, BR.progress)
-
-    @get:Bindable
-    var password: String by DB("", BR.password, BR.buttonSignInEnable)
+    @get:Bindable var isProgress: Boolean by DB(false, BR.progress)
+    @get:Bindable var password: String by DB("", BR.password, BR.buttonSignInEnable)
+    @get:Bindable var passwordConfirm: String by DB("", BR.passwordConfirm, BR.buttonSignInEnable)
 
     @get:Bindable
-    var passwordConfirm: String by DB("", BR.passwordConfirm, BR.buttonSignInEnable)
-
-    @get:Bindable
-    val buttonSignInEnable: Boolean
-        get() = password.isNotEmpty() && passwordConfirm.isNotEmpty()
+    val buttonSignInEnable: Boolean get() = password.isNotEmpty() && passwordConfirm.isNotEmpty()
 
     @get:Bindable
     var error: String by DB("", BR.error, BR.errorVisible)
@@ -35,18 +29,23 @@ class ProfileSetPasswordViewModel: BaseViewModel(), KoinComponent {
     val errorVisible: Boolean
         get() = error.isNotEmpty()
 
+    private val errorMessageResLive = MutableLiveData<@StringRes Int>()
 
-    fun requestSetPassword(): LiveData<ResponseState<FirebaseUser>> {
+    fun getErrorResLive(): LiveData<Int> {
+        return errorMessageResLive
+    }
+
+    fun setPassword() {
         if (password.isNotEmpty() && password != passwordConfirm) {
-            return emptyLiveRequest()
+            errorMessageResLive.value = R.string.error_passwords_match
+            return
         }
 
-        return requestConvert(
-            request = authRepository.linkPasswordToAccount(password),
-            onLoading = { isProgress = true },
-            onSuccess = { firebaseUser ->
+        isProgress = true
+        linkPassword.execute(LinkPasswordUseCase.Params(password),
+            onSuccess = {
                 isProgress = false
-                return@requestConvert firebaseUser
+                emitAction(ACTION_LINK_SUCCESS)
             },
             onError = { exception ->
                 isProgress = false
@@ -60,6 +59,6 @@ class ProfileSetPasswordViewModel: BaseViewModel(), KoinComponent {
     }
 
     companion object {
-        private const val TAG = "PROFILE_SET_PASSWORD_VM"
+        const val ACTION_LINK_SUCCESS = 132_1
     }
 }

@@ -22,42 +22,34 @@ class ProfileDialogFragment : BaseDialogFragment<DialogProfileBinding, ProfileVi
     override fun getVariableId(): Int = BR.viewModel
 
     override fun onSetupView(bundle: Bundle?) {
-        binding.tvProfileSetupPassword.setOnClickListener { openSetPasswordScreen() }
-        binding.tvProfileChangePassword.setOnClickListener { openUpdatePasswordScreen() }
-        binding.tvProfileVerify.setOnClickListener { requestVerifyEmail() }
-        binding.ivProfileSignOut.setOnClickListener { requestSignOut() }
-        requestGetUserData()
-        observeEmailVerifyLiveState()
-    }
-
-    private fun requestGetUserData() {
-        viewModel.getUserResponseLive().apply {
-            observeSuccessResponse {}
-            observeErrorResponse{ dismiss() }
+        with(binding) {
+            tvProfileSetupPassword.setOnClickListener { openSetPasswordScreen() }
+            tvProfileChangePassword.setOnClickListener { openUpdatePasswordScreen() }
+            tvProfileVerify.setOnClickListener { this@ProfileDialogFragment.viewModel.verifyEmail() }
+            ivProfileSignOut.setOnClickListener { this@ProfileDialogFragment.viewModel.signOut() }
         }
-    }
-
-    private fun requestVerifyEmail() {
-        viewModel.getVerifyLiveResponse().observeSuccessResponse { email ->
-            showToast(getString(R.string.toast_verify_email, email))
-        }
-    }
-
-    private fun requestSignOut() {
-        viewModel.getSignOutResponseLive().observeSuccessResponse {
-            quitAndShowAuthorizationScreen()
-        }
-    }
-
-    private fun observeEmailVerifyLiveState() {
-        viewModel.getEmailVerifyState().observe(viewLifecycleOwner) { isEmailVerify ->
-            if (isEmailVerify) {
-                resetVisibleVerifyButton()
-                setVisibleVerifyIcon()
-            } else {
-                setVisibleVerifyButton()
-                resetVisibleVerifyIcon()
+        with(viewModel) {
+            getUserRequest()
+            getEmailVerifyState().observe(viewLifecycleOwner) { isEmailVerify ->
+                if (isEmailVerify) {
+                    resetVisibleVerifyButton()
+                    setVisibleVerifyIcon()
+                } else {
+                    setVisibleVerifyButton()
+                    resetVisibleVerifyIcon()
+                }
             }
+            showSuccessVerifyEmailToast().observe(viewLifecycleOwner, { email ->
+                showToast(getString(R.string.toast_verify_email, email))
+            })
+        }
+    }
+
+    override fun onAction(action: Int) {
+        if (action == ProfileViewModel.ACTION_DISMISS) {
+            dismiss()
+        } else if (action == ProfileViewModel.ACTION_SHOW_AUTH){
+            quitAndShowAuthorizationScreen()
         }
     }
 

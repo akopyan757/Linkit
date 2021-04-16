@@ -1,3 +1,5 @@
+include ':linkit-model-auth'
+include ':linkit-domain-android-ext'
 include ':linkit-model'
 include ':linkit-domain'
 include ':base'

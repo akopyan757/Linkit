@@ -65,26 +65,6 @@ abstract class BaseDialogFragment<V: ViewDataBinding, T: BaseViewModel> : Dialog
         Toast.makeText(requireContext(), message, Toast.LENGTH_LONG).show()
     }
 
-    fun <T> LiveData<out BaseViewModel.ResponseState<T>>.observeErrorResponse(
-            onAction: (Exception) -> Unit
-    ) = errorResponse(viewLifecycleOwner, onAction)
-
-    fun <T> LiveData<out BaseViewModel.ResponseState<T>>.observeEmptyResponse(
-            onAction: (T) -> Unit
-    ) = successResponse(viewLifecycleOwner, onAction)
-
-    fun <T> LiveData<out BaseViewModel.ResponseState<T>>.observeSuccessResponse(
-            onAction: (T) -> Unit
-    ) = successResponse(viewLifecycleOwner, onAction)
-
-    fun LiveData<out BaseViewModel.ResponseState<Unit>>.observeSuccessResponse(
-            onAction: () -> Unit
-    ) = successEmptyResponse(viewLifecycleOwner, onAction)
-
-    fun <T> LiveData<out BaseViewModel.ResponseState<T>>.observeLoadingResponse(
-            onAction: () -> Unit
-    ) = loadingResponse(viewLifecycleOwner, onAction)
-
     fun <T : DiffItemObservable> LiveData<ListHolder<T>>.observeList(
         adapter: UpdatableListAdapter<T>,
         afterError: (() -> Unit)? = null

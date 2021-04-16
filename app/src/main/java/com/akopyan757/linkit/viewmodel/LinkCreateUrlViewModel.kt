@@ -15,7 +15,6 @@ import com.akopyan757.linkit_domain.usecase.folder.ListenFoldersUseCase
 import com.akopyan757.linkit_domain.usecase.urllink.CreateUrlLinkUseCase
 import com.akopyan757.linkit_domain.usecase.urllink.LoadHtmlCardsUseCase
 import org.koin.core.KoinComponent
-import org.koin.core.inject
 
 class LinkCreateUrlViewModel(
     @get:Bindable val url: String

@@ -1,11 +1,11 @@
 package com.akopyan757.linkit
 
 import android.app.Application
-import android.text.TextUtils
 import android.util.Log
-import com.akopyan757.linkit.common.di.*
-import com.huawei.agconnect.config.AGConnectServicesConfig
-import com.huawei.hms.aaid.HmsInstanceId
+import com.akopyan757.linkit.common.di.DatabaseModule
+import com.akopyan757.linkit.common.di.ModelModule
+import com.akopyan757.linkit.common.di.UseCaseModule
+import com.akopyan757.linkit.common.di.ViewModelModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
 
@@ -17,12 +17,10 @@ class App: Application() {
 
         startKoin {
             androidContext(this@App)
-            // declare modules
             modules(
                 listOf(
-                    ContextModule.it, DatabaseModule.module, ModelModule.module,
-                    ViewModelModule.module, UseCaseModule.module, ServiceModule.module,
-                    NetworkModule.module
+                    DatabaseModule.module, ModelModule.module, ViewModelModule.module,
+                    UseCaseModule.module, ServiceModule.module,
                 )
             )
 

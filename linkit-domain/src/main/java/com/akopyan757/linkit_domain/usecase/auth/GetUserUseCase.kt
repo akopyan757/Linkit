@@ -6,6 +6,7 @@ import com.akopyan757.linkit_domain.usecase.SchedulerProvider
 import com.akopyan757.linkit_domain.usecase.SingleUseCase
 import io.reactivex.Single
 import io.reactivex.disposables.CompositeDisposable
+import java.lang.Exception
 
 class GetUserUseCase(
     private val authDataSource: IAuthDataSource,
@@ -15,7 +16,5 @@ class GetUserUseCase(
     schedulerProvider, compositeDisposable
 ) {
 
-    override fun launch() = Single.fromCallable {
-        authDataSource.getUser()
-    }
+    override fun launch() = authDataSource.getUser()
 }

@@ -51,8 +51,8 @@ abstract class BaseFragment<V: ViewDataBinding, T: BaseViewModel> : Fragment() {
         Toast.makeText(requireContext(), message, Toast.LENGTH_LONG).show()
     }
 
-    fun showErrorToast(exception: Exception) {
-        val message = exception.localizedMessage ?: "Error"
+    fun showErrorToast(throwable: Throwable) {
+        val message = throwable.localizedMessage ?: DEFAULT_ERROR_MESSAGE
         Toast.makeText(requireContext(), message, Toast.LENGTH_LONG).show()
     }
 
@@ -61,28 +61,12 @@ abstract class BaseFragment<V: ViewDataBinding, T: BaseViewModel> : Fragment() {
         dialogFragment.show(activity.supportFragmentManager, tag)
     }
 
-    fun <T> LiveData<out BaseViewModel.ResponseState<T>>.observeErrorResponse(
-        onAction: (Exception) -> Unit
-    ) = errorResponse(viewLifecycleOwner, onAction)
-
-    fun <T> LiveData<out BaseViewModel.ResponseState<T>>.observeSuccessResponse(
-        onAction: (T) -> Unit
-    ) = successResponse(viewLifecycleOwner, onAction)
-
-    fun LiveData<out BaseViewModel.ResponseState<Unit>>.observeSuccessResponse(
-        onAction: () -> Unit
-    ) = successEmptyResponse(viewLifecycleOwner, onAction)
-
-    fun <T> LiveData<out BaseViewModel.ResponseState<T>>.observeLoadingResponse(
-        onAction: () -> Unit
-    ) = loadingResponse(viewLifecycleOwner, onAction)
-
-    fun <T> LiveData<out BaseViewModel.ResponseState<T>>.observeEmptyResponse(
-        onAction: () -> Unit
-    ) = emptyResponse(viewLifecycleOwner, onAction)
-
     fun <T : DiffItemObservable> LiveData<ListHolder<T>>.observeList(
         adapter: UpdatableListAdapter<T>,
         afterError: (() -> Unit)? = null
     ) = this.observeList(viewLifecycleOwner, adapter, afterError)
+
+    companion object {
+        private const val DEFAULT_ERROR_MESSAGE = "Error"
+    }
 }

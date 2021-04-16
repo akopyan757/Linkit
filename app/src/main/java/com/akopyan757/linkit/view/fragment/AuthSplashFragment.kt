@@ -18,14 +18,15 @@ class AuthSplashFragment: BaseFragment<FragmentSplashBinding, AuthSplashViewMode
     override fun getVariableId() = BR.viewModel
 
     override fun onSetupView(bundle: Bundle?) {
-        receiveUserAccount()
-    }
+        viewModel.getSuccessUserLive().observe(viewLifecycleOwner, { userEntity ->
+            openMainScreen(userEntity.uid)
+        })
 
-    private fun receiveUserAccount() {
-        viewModel.requestGetUser().apply {
-            observeSuccessResponse { firebaseUser -> openMainScreen(firebaseUser.uid) }
-            observeErrorResponse { openSignInScreen() }
-        }
+        viewModel.getThrowableLive().observe(viewLifecycleOwner, {
+            openSignInScreen()
+        })
+
+        viewModel.requestGetUser()
     }
 
     private fun openSignInScreen() {

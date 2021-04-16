@@ -19,9 +19,7 @@ class CreateUserUseCase(
     schedulerProvider, compositeDisposable
 ) {
 
-    override fun launch() = Single.fromCallable {
-        authDataSource.createUser(parameters.email, parameters.password)
-    }
+    override fun launch() = authDataSource.createUser(parameters.email, parameters.password)
 
     data class Params(val email: String, val password: String): UseCase.Params()
 }

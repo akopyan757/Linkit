@@ -19,8 +19,9 @@ class LinkPasswordUseCase(
     schedulerProvider, compositeDisposable
 ) {
 
-    override fun launch() = Single.fromCallable {
-        authDataSource.linkPasswordToAccount(parameters.password)
+    override fun launch(): Single<UserEntity> {
+        return authDataSource.reauthenticateCustomToken()
+            .andThen(authDataSource.linkPasswordToAccount(parameters.password))
     }
 
     data class Params(val password: String): UseCase.Params()

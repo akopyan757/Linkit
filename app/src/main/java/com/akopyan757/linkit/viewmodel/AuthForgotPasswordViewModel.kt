@@ -1,15 +1,16 @@
 package com.akopyan757.linkit.viewmodel
 
 import androidx.databinding.Bindable
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.akopyan757.base.viewmodel.BaseViewModel
 import com.akopyan757.linkit.BR
-import com.akopyan757.linkit.model.repository.AuthRepository
+import com.akopyan757.linkit_domain.usecase.auth.ResetPasswordUseCase
 import org.koin.core.KoinComponent
-import org.koin.core.inject
 
 class AuthForgotPasswordViewModel: BaseViewModel(), KoinComponent {
 
-    private val authRepository: AuthRepository by inject()
+    private val resetPassword: ResetPasswordUseCase by injectUseCase()
 
     @get:Bindable var isProgress: Boolean by DB(false, BR.progress)
     @get:Bindable var email: String by DB("", BR.email, BR.buttonSignInEnable)
@@ -21,13 +22,26 @@ class AuthForgotPasswordViewModel: BaseViewModel(), KoinComponent {
     @get:Bindable val errorVisible: Boolean
         get() = error.isNotEmpty()
 
-    fun requestResetPassword() = requestConvert(
-        request = authRepository.resetPassword(email),
-        onLoading = { isProgress = true },
-        onSuccess = {
-            isProgress = false
-            return@requestConvert email
-        },
-        onError = { isProgress = false }
-    )
+    private val throwableLive = MutableLiveData<Throwable>()
+
+    fun getThrowableLive(): LiveData<Throwable> {
+        return throwableLive
+    }
+
+    fun resetPassword() {
+        isProgress = true
+        resetPassword.execute(ResetPasswordUseCase.Params(email),
+            onSuccess = {
+                isProgress = false
+                emitAction(ACTION_RESET_SUCCESS)
+            }, onError = { throwable ->
+                isProgress = false
+                throwableLive.value = throwable
+            }
+        )
+    }
+
+    companion object {
+        const val ACTION_RESET_SUCCESS = 1238
+    }
 }

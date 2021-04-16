@@ -22,23 +22,32 @@ class ProfileUpdatePasswordFragment: BaseFragment<FragmentAuthUpdatePasswordBind
     override fun onSetupView(bundle: Bundle?) {
         binding.ivUpdatePasswordBack.setOnClickListener { backToProfileDialog() }
         binding.btnUpdatePasswordSend.setOnClickListener { setPasswordToAccount() }
+
+        with(viewModel) {
+            getErrorResLive().observe(viewLifecycleOwner, { errorMessageRes ->
+                viewModel.setErrorMessage(getString(errorMessageRes))
+            })
+            getThrowableLive().observe(viewLifecycleOwner, { throwable ->
+                viewModel.setErrorMessage(throwable.localizedMessage ?: Config.ERROR)
+                showToast(R.string.error)
+            })
+        }
     }
 
     private fun setPasswordToAccount() {
-        viewModel.requestSetPassword().apply {
-            observeEmptyResponse {
-                viewModel.setErrorMessage(getString(R.string.error_passwords_match))
-            }
-            observeLoadingResponse { AndroidUtils.hideKeyboard(requireActivity()) }
-            observeSuccessResponse {
-                showToast(R.string.password_updated)
-                backToProfileDialog()
-            }
-            observeErrorResponse { exception ->
-                viewModel.setErrorMessage(exception.localizedMessage ?: Config.ERROR)
-                showToast(R.string.error)
-            }
+        hideActivityKeyboard()
+        viewModel.updatePassword()
+    }
+
+    override fun onAction(action: Int) {
+        if (action == ProfileUpdatePasswordViewModel.ACTION_SUCCESS_UPDATE) {
+            showToast(R.string.password_updated)
+            backToProfileDialog()
         }
+    }
+
+    private fun hideActivityKeyboard() {
+        AndroidUtils.hideKeyboard(requireActivity())
     }
 
     private fun backToProfileDialog() {
