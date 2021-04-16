@@ -10,9 +10,7 @@ class GetUserUseCase(
     private val authDataSource: IAuthDataSource,
     schedulerProvider: SchedulerProvider,
     compositeDisposable: CompositeDisposable
-): SingleUseCase<UserEntity>(
-    schedulerProvider, compositeDisposable
-) {
+): SingleUseCase<UserEntity>(schedulerProvider, compositeDisposable) {
 
     override fun launch() = authDataSource.getUser()
 }

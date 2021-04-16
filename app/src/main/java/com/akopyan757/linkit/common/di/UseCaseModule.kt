@@ -22,76 +22,76 @@ object UseCaseModule {
         single<SchedulerProvider>(named(IO_SCHEDULER)) { AndroidSchedulerProvider() }
         single<SchedulerProvider>(named(MAIN_SCHEDULER)) { AndroidMainSchedulerProvider() }
 
-        single { (viewModel: BaseViewModel) ->
+        factory { (viewModel: BaseViewModel) ->
             SignOutUseCase(get(), get(), get(named(MAIN_SCHEDULER)), viewModel.getCompositeDisposable())
         }
-        single { (viewModel: BaseViewModel) ->
+        factory { (viewModel: BaseViewModel) ->
             GetServiceUserUserCase(get(), get(named(MAIN_SCHEDULER)), viewModel.getCompositeDisposable())
         }
-        single { (viewModel: BaseViewModel) ->
+        factory { (viewModel: BaseViewModel) ->
             GetServiceIntentSignInUseCase(get(), get(named(MAIN_SCHEDULER)), viewModel.getCompositeDisposable())
         }
-        single { (viewModel: BaseViewModel) ->
+        factory { (viewModel: BaseViewModel) ->
             CreateUserUseCase(get(), get(named(IO_SCHEDULER)), viewModel.getCompositeDisposable())
         }
-        single { (viewModel: BaseViewModel) ->
+        factory { (viewModel: BaseViewModel) ->
             EmailVerificationUseCase(get(), get(named(IO_SCHEDULER)), viewModel.getCompositeDisposable())
         }
-        single { (viewModel: BaseViewModel) ->
+        factory { (viewModel: BaseViewModel) ->
             GetUserUseCase(get(), get(named(IO_SCHEDULER)), viewModel.getCompositeDisposable())
         }
-        single { (viewModel: BaseViewModel) ->
+        factory { (viewModel: BaseViewModel) ->
             LinkPasswordUseCase(get(), get(named(IO_SCHEDULER)), viewModel.getCompositeDisposable())
         }
-        single { (viewModel: BaseViewModel) ->
+        factory { (viewModel: BaseViewModel) ->
             ResetPasswordUseCase(get(), get(named(IO_SCHEDULER)), viewModel.getCompositeDisposable())
         }
-        single { (viewModel: BaseViewModel) ->
+        factory { (viewModel: BaseViewModel) ->
             SignInWithEmailUserUseCase(get(), get(named(IO_SCHEDULER)), viewModel.getCompositeDisposable())
         }
-        single { (viewModel: BaseViewModel) ->
+        factory { (viewModel: BaseViewModel) ->
             UpdatePasswordUseCase(get(), get(named(IO_SCHEDULER)), viewModel.getCompositeDisposable())
         }
-        single { (viewModel: BaseViewModel) ->
+        factory { (viewModel: BaseViewModel) ->
             CreateFolderUseCase(get(), get(), get(named(IO_SCHEDULER)), viewModel.getCompositeDisposable())
         }
-        single { (viewModel: BaseViewModel) ->
+        factory { (viewModel: BaseViewModel) ->
             DeleteFolderUseCase(get(), get(named(IO_SCHEDULER)), viewModel.getCompositeDisposable())
         }
-        single { (viewModel: BaseViewModel) ->
+        factory { (viewModel: BaseViewModel) ->
             GetAllFoldersUseCase(get(), get(named(IO_SCHEDULER)), viewModel.getCompositeDisposable())
         }
-        single { (viewModel: BaseViewModel) ->
+        factory { (viewModel: BaseViewModel) ->
             ListenFoldersChangesUseCase(get(), get(), get(named(IO_SCHEDULER)), viewModel.getCompositeDisposable())
         }
-        single { (viewModel: BaseViewModel) ->
+        factory { (viewModel: BaseViewModel) ->
             ListenFolderChangesUseCase(get(), get(named(IO_SCHEDULER)), viewModel.getCompositeDisposable())
         }
-        single { (viewModel: BaseViewModel) ->
+        factory { (viewModel: BaseViewModel) ->
             ListenFoldersUseCase(get(), get(named(IO_SCHEDULER)), viewModel.getCompositeDisposable())
         }
-        single { (viewModel: BaseViewModel) ->
+        factory { (viewModel: BaseViewModel) ->
             RenameFolderUseCase(get(), get(), get(named(IO_SCHEDULER)), viewModel.getCompositeDisposable())
         }
-        single { (viewModel: BaseViewModel) ->
+        factory { (viewModel: BaseViewModel) ->
             ReorderFolderUseCase(get(), get(named(IO_SCHEDULER)), viewModel.getCompositeDisposable())
         }
-        single { (viewModel: BaseViewModel) ->
+        factory { (viewModel: BaseViewModel) ->
             CreateUrlLinkUseCase(get(), get(), get(), get(named(IO_SCHEDULER)), viewModel.getCompositeDisposable())
         }
-        single { (viewModel: BaseViewModel) ->
+        factory { (viewModel: BaseViewModel) ->
             DeleteUrlLinkUseCase(get(), get(named(IO_SCHEDULER)), viewModel.getCompositeDisposable())
         }
-        single { (viewModel: BaseViewModel) ->
+        factory { (viewModel: BaseViewModel) ->
             ListenUrlLinkUseCase(get(), get(named(IO_SCHEDULER)), viewModel.getCompositeDisposable())
         }
-        single { (viewModel: BaseViewModel) ->
+        factory { (viewModel: BaseViewModel) ->
             ListenUrlLinkChangesUseCase(get(), get(), get(named(IO_SCHEDULER)), viewModel.getCompositeDisposable())
         }
-        single { (viewModel: BaseViewModel) ->
+        factory { (viewModel: BaseViewModel) ->
             LoadHtmlCardsUseCase(get(), get(named(IO_SCHEDULER)), viewModel.getCompositeDisposable())
         }
-        single { (viewModel: BaseViewModel) ->
+        factory { (viewModel: BaseViewModel) ->
             MoveTopLinkUseCase(get(), get(), get(named(IO_SCHEDULER)), viewModel.getCompositeDisposable())
         }
     }
