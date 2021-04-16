@@ -1,4 +1,4 @@
-package com.akopyan757.linkit.common
+package com.akopyan757.linkit.common.scheduler
 
 import com.akopyan757.linkit_domain.usecase.SchedulerProvider
 import io.reactivex.Scheduler

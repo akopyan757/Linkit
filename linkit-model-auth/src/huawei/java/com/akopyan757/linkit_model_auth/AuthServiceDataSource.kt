@@ -4,8 +4,8 @@ import android.content.Context
 import android.content.Intent
 import com.akopyan757.linkit_domain.entity.UserEntity
 import com.akopyan757.linkit_domain_android_ext.datasource.IAuthIntentDataSource
-import com.akopyan757.linkit_model_auth.cache.TokenCache
-import com.akopyan757.linkit_model_auth.mapper.Mapper
+import com.akopyan757.linkit_model_auth.cache.ITokenCache
+import com.akopyan757.linkit_model_auth.mapper.MapperDirect
 import com.akopyan757.linkit_model_auth.network.CustomTokenApi
 import com.akopyan757.linkit_model_auth.network.CustomTokenRequest
 import com.akopyan757.linkit_model_auth.throwable.CustomTokenCreateException
@@ -23,8 +23,8 @@ import io.reactivex.Single
 class AuthServiceDataSource(
     private val context: Context,
     private val customTokenApi: CustomTokenApi,
-    private val tokenCache: TokenCache,
-    private val mapper: Mapper<FirebaseUser, UserEntity>
+    private val tokenCache: ITokenCache,
+    private val mapper: MapperDirect<FirebaseUser, UserEntity>
 ): IAuthIntentDataSource {
 
     private val huaweiService: AccountAuthService by lazy {

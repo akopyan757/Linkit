@@ -29,14 +29,6 @@ object AndroidUtils {
         putExtra(Intent.EXTRA_SUBJECT, linkTitle)
     }, null)
 
-    fun getUriFromCache(context: Context, name: String?): Uri? {
-        if (name == null) return null
-        val cacheDir = context.cacheDir ?: return null
-        val file = File(cacheDir, Config.CACHE_IMAGES_FOLDER + "/" + name)
-        val authority = BuildConfig.APPLICATION_ID + Config.PROVIDER_NAME
-        return FileProvider.getUriForFile(context, authority, file)
-    }
-
     fun hideKeyboard(activity: Activity) {
         val imm = activity.getSystemService(Activity.INPUT_METHOD_SERVICE) as? InputMethodManager ?: return
         val view = activity.currentFocus ?: View(activity)

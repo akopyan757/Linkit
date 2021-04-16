@@ -3,15 +3,20 @@ package com.akopyan757.linkit.common.di
 import com.akopyan757.linkit.common.Config
 import com.akopyan757.linkit_domain.entity.FolderEntity
 import com.akopyan757.linkit_domain.entity.UrlLinkEntity
+import com.akopyan757.linkit_domain.entity.UserEntity
 import com.akopyan757.linkit_domain.repository.*
 import com.akopyan757.linkit_model.database.data.FolderData
 import com.akopyan757.linkit_model.database.data.UrlLinkData
 import com.akopyan757.linkit_model.datasource.*
 import com.akopyan757.linkit_model.mapper.FolderMapper
 import com.akopyan757.linkit_model.mapper.Mapper
+import com.akopyan757.linkit_model_auth.mapper.MapperDirect
 import com.akopyan757.linkit_model.mapper.UrlLinkMapper
 import com.akopyan757.linkit_model.parser.HtmlParser
 import com.akopyan757.linkit_model.parser.IHtmlParser
+import com.akopyan757.linkit_model_auth.datasource.AuthFirebaseDataSource
+import com.akopyan757.linkit_model_auth.mapper.UserMapper
+import com.google.firebase.auth.FirebaseUser
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
@@ -19,6 +24,7 @@ object ModelModule {
 
     private const val MAPPER_URL = "url_link"
     private const val MAPPER_FOLDER = "folder"
+    private const val MAPPER_USER = "user"
 
     val module = module {
 
@@ -26,6 +32,7 @@ object ModelModule {
 
         single<Mapper<UrlLinkData, UrlLinkEntity>>(named(MAPPER_URL)) { UrlLinkMapper() }
         single<Mapper<FolderData, FolderEntity>>(named(MAPPER_FOLDER)) { FolderMapper() }
+        single<MapperDirect<FirebaseUser, UserEntity>>(named(MAPPER_USER)) { UserMapper() }
 
         single<IRemoteUrlDataSource> {
             RemoteUrlLinkDataSource(get(named(Config.LINKS)), get())
@@ -44,6 +51,9 @@ object ModelModule {
         }
         single<ILoadHtmlCardsDataSource> {
             LoadHtmlCardsDataSource(get())
+        }
+        single<IAuthDataSource> {
+            AuthFirebaseDataSource(get(), get(named(MAPPER_USER)))
         }
     }
 }

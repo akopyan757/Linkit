@@ -1,4 +1,4 @@
-package com.akopyan757.linkit.common.clipboard
+package com.akopyan757.linkit.common.utils
 
 import android.content.ClipData
 import android.content.ClipboardManager

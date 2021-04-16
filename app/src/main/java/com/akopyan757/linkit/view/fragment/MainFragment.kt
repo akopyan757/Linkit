@@ -14,7 +14,7 @@ import com.akopyan757.linkit.BR
 import com.akopyan757.linkit.BannerViewExtension
 import com.akopyan757.linkit.R
 import com.akopyan757.linkit.common.Config
-import com.akopyan757.linkit.common.clipboard.ClipboardUtils
+import com.akopyan757.linkit.common.utils.ClipboardUtils
 import com.akopyan757.linkit.common.utils.AndroidUtils
 import com.akopyan757.linkit.databinding.FragmentMainBinding
 import com.akopyan757.linkit.view.adapter.LinkUrlAdapter

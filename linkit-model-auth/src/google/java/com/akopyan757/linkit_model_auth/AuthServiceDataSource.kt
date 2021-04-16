@@ -4,8 +4,8 @@ import android.content.Context
 import android.content.Intent
 import com.akopyan757.linkit_domain.entity.UserEntity
 import com.akopyan757.linkit_domain_android_ext.datasource.IAuthIntentDataSource
-import com.akopyan757.linkit_model_auth.mapper.Mapper
 import com.akopyan757.linkit_model_auth.throwable.UserNotFoundException
+import com.akopyan757.linkit_model_auth.mapper.MapperDirect
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
@@ -19,7 +19,7 @@ import io.reactivex.Single
 class AuthServiceDataSource(
     private val context: Context,
     private val defaultWebClientId: String,
-    private val mapper: Mapper<FirebaseUser, UserEntity>
+    private val mapper: MapperDirect<FirebaseUser, UserEntity>
 ): IAuthIntentDataSource {
 
     private val googleSignInOptions: GoogleSignInOptions by lazy {

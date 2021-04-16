@@ -8,7 +8,7 @@ import com.akopyan757.base.view.BaseDialogFragment
 import com.akopyan757.linkit.BR
 import com.akopyan757.linkit.R
 import com.akopyan757.linkit.common.Config
-import com.akopyan757.linkit.common.clipboard.ClipboardUtils
+import com.akopyan757.linkit.common.utils.ClipboardUtils
 import com.akopyan757.linkit.databinding.DialogNewUrlBinding
 import com.akopyan757.linkit.view.adapter.LinkCardsUrlAdapter
 import com.akopyan757.linkit.viewmodel.LinkCreateUrlViewModel

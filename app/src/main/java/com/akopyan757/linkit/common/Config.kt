@@ -14,14 +14,8 @@ object Config {
 
     const val KEY_ACCEPT_DELETE = "KEY_ACCEPT_DELETE"
 
-    const val SCREENSHOT_FILENAME = "screenshot.png"
-    const val SCREENSHOT_QUALITY = 100
-
     const val LINKS = "links"
     const val USERS = "users"
 
     const val KEY_USER_ID = "USER_ID"
-
-    const val CACHE_DIR = "cache_dir"
-    const val CACHE_IMAGE_DIR = "cache_image_dir"
 }

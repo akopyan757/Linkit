@@ -3,7 +3,7 @@ package com.akopyan757.linkit_model_auth.datasource
 import com.akopyan757.linkit_domain.entity.UserEntity
 import com.akopyan757.linkit_domain.repository.IAuthDataSource
 import com.akopyan757.linkit_model_auth.cache.ITokenCache
-import com.akopyan757.linkit_model_auth.mapper.Mapper
+import com.akopyan757.linkit_model_auth.mapper.MapperDirect
 import com.akopyan757.linkit_model_auth.throwable.EmailNotFoundException
 import com.akopyan757.linkit_model_auth.throwable.TokenNotFoundException
 import com.akopyan757.linkit_model_auth.throwable.UserNotFoundException
@@ -15,7 +15,7 @@ import io.reactivex.Single
 
 class AuthFirebaseDataSource(
     private val tokenCache: ITokenCache,
-    private val mapper: Mapper<FirebaseUser, UserEntity>,
+    private val mapper: MapperDirect<FirebaseUser, UserEntity>,
 ): IAuthDataSource {
 
     override fun emailVerification(): Completable = Completable.create { emitter ->

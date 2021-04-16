@@ -7,11 +7,13 @@ import org.koin.dsl.module
 
 object ServiceModule {
 
+    private const val MAPPER_USER = "user"
+
     val module = module {
         single<IAuthIntentDataSource> {
             val context = androidContext()
             val defaultWebClientId = context.resources.getString(R.string.default_web_client_id)
-            AuthServiceDataSource(context, defaultWebClientId, get())
+            AuthServiceDataSource(context, defaultWebClientId, get(named(MAPPER_USER)))
         }
     }
 }

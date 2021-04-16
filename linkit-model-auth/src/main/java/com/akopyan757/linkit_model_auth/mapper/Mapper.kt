@@ -1,5 +1,5 @@
 package com.akopyan757.linkit_model_auth.mapper
 
-interface Mapper<T, P> {
+interface MapperDirect<T, P> {
     fun firstToSecond(data: T): P
 }

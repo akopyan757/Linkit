@@ -6,7 +6,7 @@ import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseUser
 
 
-class UserMapper: Mapper<FirebaseUser, UserEntity> {
+class UserMapper: MapperDirect<FirebaseUser, UserEntity> {
 
     override fun firstToSecond(data: FirebaseUser): UserEntity {
         return UserEntity(
