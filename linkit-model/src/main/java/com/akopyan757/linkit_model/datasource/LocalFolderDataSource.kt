@@ -6,6 +6,7 @@ import com.akopyan757.linkit_model.database.FolderDao
 import com.akopyan757.linkit_model.database.data.FolderData
 import com.akopyan757.linkit_model.mapper.Mapper
 import com.akopyan757.linkit_model.throwable.FolderExistsException
+import io.reactivex.Completable
 import io.reactivex.Observable
 import java.util.*
 
@@ -14,11 +15,15 @@ class LocalFolderDataSource(
     private val mapper: Mapper<FolderData, FolderEntity>
 ): ILocalFolderDataSource {
 
-    override fun createFolder(folderName: String): FolderEntity {
+    override fun createFolderInstance(folderName: String): FolderEntity {
         val existFolder = folderDao.getByName(folderName)
         val folderId = existFolder?.id ?: throw FolderExistsException()
         val order = folderDao.getMaxOrder().plus(ONE)
         return FolderEntity(folderId, folderName, order)
+    }
+
+    override fun insertFolder(folder: FolderEntity) = Completable.fromCallable {
+        folderDao.insertOrUpdate(folder.let(mapper::secondToFirst))
     }
 
     override fun checkExistFolder(folderId: String): Boolean {
@@ -35,7 +40,7 @@ class LocalFolderDataSource(
         }.toObservable()
     }
 
-    override fun updateAllFolders(folders: List<FolderEntity>) {
+    override fun updateAllFolders(folders: List<FolderEntity>) = Completable.fromCallable {
         val entities = folders.map(mapper::secondToFirst)
         folderDao.updateAll(entities)
     }
@@ -43,6 +48,14 @@ class LocalFolderDataSource(
     override fun updateFolder(folder: FolderEntity) {
         val entities = folder.let(mapper::secondToFirst)
         folderDao.insertOrUpdate(entities)
+    }
+
+    override fun updateFolderName(folderId: String, folderName: String) = Completable.fromCallable {
+        folderDao.updateFolderName(folderId, folderName)
+    }
+
+    override fun updateFoldersOrder(folderIds: List<String>) = Completable.fromAction {
+        folderDao.updateFoldersOrder(folderIds)
     }
 
     override fun removeFolderById(folderId: String) {

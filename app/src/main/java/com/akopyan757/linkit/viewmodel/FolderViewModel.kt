@@ -1,24 +1,22 @@
 package com.akopyan757.linkit.viewmodel
 
 import androidx.databinding.Bindable
-import androidx.lifecycle.LiveData
 import com.akopyan757.base.viewmodel.BaseViewModel
 import com.akopyan757.base.viewmodel.list.ListLiveData
 import com.akopyan757.linkit.BR
 import com.akopyan757.linkit.viewmodel.observable.FolderObservable
 import com.akopyan757.linkit_domain.usecase.folder.DeleteFolderUseCase
-import com.akopyan757.linkit_domain.usecase.folder.ListenFoldersUseCase
+import com.akopyan757.linkit_domain.usecase.folder.ListenFoldersChangesUseCase
 import com.akopyan757.linkit_domain.usecase.folder.RenameFolderUseCase
 import com.akopyan757.linkit_domain.usecase.folder.ReorderFolderUseCase
 import org.koin.core.KoinComponent
-import org.koin.core.inject
 
 class FolderViewModel : BaseViewModel(), KoinComponent {
 
     private val reorderFolders: ReorderFolderUseCase by injectUseCase()
-    private val listenFolder: ListenFoldersUseCase by injectUseCase()
     private val deleteFolder: DeleteFolderUseCase by injectUseCase()
     private val renameFolder: RenameFolderUseCase by injectUseCase()
+    private val listenFoldersChanges: ListenFoldersChangesUseCase by injectUseCase()
 
 
     @get:Bindable var newFolderName: String by DB("", BR.newFolderName)
@@ -26,7 +24,7 @@ class FolderViewModel : BaseViewModel(), KoinComponent {
     private val folderList = ListLiveData<FolderObservable>()
 
     fun startListenFolders() {
-        listenFolder.execute(
+        listenFoldersChanges.execute(
             onNext = { folders ->
                 val observables = folders.map { folder -> FolderObservable.fromData(folder) }
                 val sortedObservables = observables.sortedBy { it.order }

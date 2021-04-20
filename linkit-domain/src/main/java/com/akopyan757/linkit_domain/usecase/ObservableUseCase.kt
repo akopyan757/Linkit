@@ -4,7 +4,7 @@ import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 
 abstract class ObservableUseCase<T>(
-    private val schedulerProvider: SchedulerProvider,
+    protected val schedulerProvider: SchedulerProvider,
     private val compositeDisposable: CompositeDisposable
 ): UseCase<Observable<T>, ObservableUseCase.NothingParams>() {
 

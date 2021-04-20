@@ -11,6 +11,9 @@ interface UrlLinkDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertOrUpdate(data: UrlLinkData): Long
 
+    @Query("UPDATE url_link_data SET _order = :order WHERE id == :linkId")
+    fun updateLinkOrder(linkId: String, order: Int)
+
     @Query("SELECT EXISTS(SELECT * FROM url_link_data WHERE id = :linkId LIMIT 1)")
     fun checkExistLink(linkId: String): Boolean
 

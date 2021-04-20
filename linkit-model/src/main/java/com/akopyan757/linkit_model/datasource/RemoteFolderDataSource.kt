@@ -23,19 +23,18 @@ class RemoteFolderDataSource(
         private const val NAME = "name"
     }
 
-    override fun loadFolders() = Single.fromObservable<List<FolderEntity>> { observer ->
+    override fun loadFolders() = Single.create<List<FolderEntity>> { emitter ->
         val ref = getUserDocumentOrNull()
         if (ref == null) {
-            observer.onError(FirebaseUserNotFoundException())
+            emitter.onError(FirebaseUserNotFoundException())
         } else {
             ref.collection(FOLDERS).get()
-                .addOnFailureListener(observer::onError)
+                .addOnFailureListener(emitter::onError)
                 .addOnSuccessListener { query ->
                     val folders = query.documents.mapNotNull { folderDocument ->
                         folderDocument.toObject(FolderEntity::class.java)
                     }
-                    observer.onNext(folders)
-                    observer.onComplete()
+                    emitter.onSuccess(folders)
                 }
         }
     }

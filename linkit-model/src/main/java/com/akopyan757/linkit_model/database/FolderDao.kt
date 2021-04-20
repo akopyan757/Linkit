@@ -32,6 +32,17 @@ interface FolderDao {
     @Query("DELETE FROM folder_data")
     fun removeAll()
 
+    @Query("UPDATE folder_data SET name = :folderName WHERE id = :folderId")
+    fun updateFolderName(folderId: String, folderName: String)
+
+    @Query("UPDATE folder_data SET `order` = :order WHERE id = :folderId")
+    fun updateFolderOrder(folderId: String, order: Int)
+
+    @Transaction
+    fun updateFoldersOrder(folderIds: List<String>) {
+        folderIds.forEachIndexed { index, folderId -> updateFolderOrder(folderId, index + 1) }
+    }
+
     @Transaction
     fun updateAll(folders: List<FolderData>) {
         removeAll()

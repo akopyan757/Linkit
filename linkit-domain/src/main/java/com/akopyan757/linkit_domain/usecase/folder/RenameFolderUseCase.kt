@@ -16,7 +16,7 @@ class RenameFolderUseCase(
     compositeDisposable: CompositeDisposable
 ): CompletableWithParamsUseCase<RenameFolderUseCase.Params>(schedulerProvider, compositeDisposable) {
 
-    override fun launch() = Single.fromCallable {
+    override fun launch(): Completable = Single.fromCallable {
         localDataSource.checkExistFolder(parameters.folderId)
     }.flatMapCompletable { folderExists ->
         if (folderExists) {
@@ -24,7 +24,7 @@ class RenameFolderUseCase(
         } else {
             Completable.error(FolderNotFoundException())
         }
-    }
+    }.andThen(localDataSource.updateFolderName(parameters.folderId, parameters.name))
 
     data class Params(val folderId: String, val name: String): UseCase.Params()
 

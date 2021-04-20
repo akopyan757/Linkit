@@ -1,6 +1,7 @@
 package com.akopyan757.linkit_domain.repository
 
 import com.akopyan757.linkit_domain.entity.UrlLinkEntity
+import io.reactivex.Completable
 import io.reactivex.Observable
 
 interface ILocalUrlDataSource {
@@ -10,7 +11,8 @@ interface ILocalUrlDataSource {
     fun getAllUrlLinks(): List<UrlLinkEntity>
     fun createUrlLinkInstance(url: String, folderId: String?): UrlLinkEntity
     fun getNewOrderValue(): Int
-    fun updateAllUrlLinks(links: List<UrlLinkEntity>)
-    fun updateUrlLink(link: UrlLinkEntity)
+    fun updateAllUrlLinks(links: List<UrlLinkEntity>): Completable
+    fun updateUrlLink(link: UrlLinkEntity): Completable
+    fun updateLinkOrder(linkId: String, order: Int): Completable
     fun removeUrlLinkById(linkId: String)
 }

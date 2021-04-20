@@ -5,6 +5,7 @@ import com.akopyan757.linkit_domain.repository.ILocalUrlDataSource
 import com.akopyan757.linkit_model.database.UrlLinkDao
 import com.akopyan757.linkit_model.database.data.UrlLinkData
 import com.akopyan757.linkit_model.mapper.Mapper
+import io.reactivex.Completable
 import io.reactivex.Observable
 import java.util.*
 
@@ -43,14 +44,18 @@ class LocalUrlDataSource(
         return urlLinkDao.getMaxOrder().plus(ONE)
     }
 
-    override fun updateAllUrlLinks(links: List<UrlLinkEntity>) {
+    override fun updateAllUrlLinks(links: List<UrlLinkEntity>) = Completable.fromCallable {
         val data = links.map(mapper::secondToFirst)
         urlLinkDao.updateAll(data)
     }
 
-    override fun updateUrlLink(link: UrlLinkEntity) {
+    override fun updateUrlLink(link: UrlLinkEntity) = Completable.fromCallable {
         val data = link.let(mapper::secondToFirst)
         urlLinkDao.insertOrUpdate(data)
+    }
+
+    override fun updateLinkOrder(linkId: String, order: Int) = Completable.fromCallable {
+        urlLinkDao.updateLinkOrder(linkId, order)
     }
 
     override fun removeUrlLinkById(linkId: String) {

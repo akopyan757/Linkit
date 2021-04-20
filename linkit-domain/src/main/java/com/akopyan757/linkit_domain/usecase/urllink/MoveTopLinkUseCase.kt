@@ -6,6 +6,7 @@ import com.akopyan757.linkit_domain.usecase.CompletableWithParamsUseCase
 import com.akopyan757.linkit_domain.usecase.SchedulerProvider
 import com.akopyan757.linkit_domain.usecase.UseCase
 import io.reactivex.Completable
+import io.reactivex.Single
 import io.reactivex.disposables.CompositeDisposable
 
 class MoveTopLinkUseCase(
@@ -24,8 +25,10 @@ class MoveTopLinkUseCase(
             }
         }.toSingle {
             localDataSource.getNewOrderValue()
+        }.flatMap { newOrder ->
+            remoteDataSource.setOrderForUrlLink(parameters.linkId, newOrder)
         }.flatMapCompletable { order ->
-            remoteDataSource.setOrderForUrlLink(parameters.linkId, order)
+            localDataSource.updateLinkOrder(parameters.linkId, order)
         }
     }
 

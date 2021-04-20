@@ -21,55 +21,49 @@ class RemoteUrlLinkDataSource(
         private const val ORDER = "order"
     }
 
-    override fun loadUrlLinks() = Single.fromObservable<List<UrlLinkEntity>> { observer ->
+    override fun loadUrlLinks() = Single.create<List<UrlLinkEntity>> { emitter ->
         val ref = getUserDocumentOrNull()
         if (ref == null) {
-            observer.onError(FirebaseUserNotFoundException())
+            emitter.onError(FirebaseUserNotFoundException())
         } else {
             ref.collection(URLS).get()
-                .addOnFailureListener(observer::onError)
+                .addOnFailureListener(emitter::onError)
                 .addOnSuccessListener { query ->
                     val urlLinks = query.documents.mapNotNull { urlLinkDocument ->
                         urlLinkDocument.toObject(UrlLinkEntity::class.java)
                     }
-                    observer.onNext(urlLinks)
-                    observer.onComplete()
+                    emitter.onSuccess(urlLinks)
                 }
         }
     }
 
-    override fun createOrUpdateUrlLink(data: UrlLinkEntity) = Observable.create<UrlLinkEntity> { observer ->
+    override fun createOrUpdateUrlLink(data: UrlLinkEntity) = Single.create<UrlLinkEntity> { emitter ->
         val ref = getUserDocumentOrNull()
         if (ref == null) {
-            observer.onError(FirebaseUserNotFoundException())
+            emitter.onError(FirebaseUserNotFoundException())
         } else {
             ref.collection(URLS)
-                .document(data.id).set(data)
-                .addOnFailureListener(observer::onError)
-                .addOnSuccessListener {
-                    observer.onNext(data)
-                    observer.onComplete()
-                }
+                .document(data.id)
+                .set(data)
+                .addOnFailureListener(emitter::onError)
+                .addOnSuccessListener { emitter.onSuccess(data) }
         }
     }
 
-    override fun deleteUrlLink(linkId: String) = Completable.fromObservable<Unit> { observer ->
+    override fun deleteUrlLink(linkId: String) = Completable.create { emitter ->
         val ref = getUserDocumentOrNull()
         if (ref == null) {
-            observer.onError(FirebaseUserNotFoundException())
+            emitter.onError(FirebaseUserNotFoundException())
         } else {
             ref.collection(URLS)
                 .document(linkId)
                 .delete()
-                .addOnFailureListener(observer::onError)
-                .addOnSuccessListener {
-                    observer.onNext(Unit)
-                    observer.onComplete()
-                }
+                .addOnFailureListener(emitter::onError)
+                .addOnSuccessListener { emitter.onComplete() }
         }
     }
 
-    override fun setOrderForUrlLink(linkId: String, order: Int) = Completable.create { source ->
+    override fun setOrderForUrlLink(linkId: String, order: Int) = Single.create<Int> { source ->
         val ref = getUserDocumentOrNull()
         if (ref == null) {
             source.onError(FirebaseUserNotFoundException())
@@ -79,7 +73,7 @@ class RemoteUrlLinkDataSource(
                 .document(linkId)
                 .set(data, SetOptions.merge())
                 .addOnFailureListener(source::onError)
-                .addOnSuccessListener { source.onComplete() }
+                .addOnSuccessListener { source.onSuccess(order) }
         }
     }
 
@@ -93,7 +87,6 @@ class RemoteUrlLinkDataSource(
                     if (error != null || snapshots == null) {
                         val exception = error ?: ListenChangesException()
                         source.onError(exception)
-                        source.onComplete()
                         return@addSnapshotListener
                     }
                     for (dc in snapshots.documentChanges) {

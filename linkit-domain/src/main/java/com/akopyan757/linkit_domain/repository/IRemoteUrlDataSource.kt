@@ -10,7 +10,7 @@ import io.reactivex.Single
 interface IRemoteUrlDataSource {
     fun loadUrlLinks(): Single<List<UrlLinkEntity>>
     fun listenUrlLinksChanges(): Observable<DataChange<UrlLinkEntity>>
-    fun createOrUpdateUrlLink(data: UrlLinkEntity): Observable<UrlLinkEntity>
+    fun createOrUpdateUrlLink(data: UrlLinkEntity): Single<UrlLinkEntity>
     fun deleteUrlLink(linkId: String): Completable
-    fun setOrderForUrlLink(linkId: String, order: Int): Completable
+    fun setOrderForUrlLink(linkId: String, order: Int): Single<Int>
 }

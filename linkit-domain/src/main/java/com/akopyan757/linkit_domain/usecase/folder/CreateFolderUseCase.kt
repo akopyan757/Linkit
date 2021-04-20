@@ -16,9 +16,11 @@ class CreateFolderUseCase(
 ): CompletableWithParamsUseCase<CreateFolderUseCase.Params>(schedulerProvider, compositeDisposable) {
 
     override fun launch() = Single.fromCallable {
-        localDataSource.createFolder(parameters.name)
+        localDataSource.createFolderInstance(parameters.name)
+    }.flatMap { folderEntity ->
+        remoteDataSource.createOrUpdateFolder(folderEntity).toSingle { folderEntity }
     }.flatMapCompletable { folderEntity ->
-        remoteDataSource.createOrUpdateFolder(folderEntity)
+        localDataSource.insertFolder(folderEntity)
     }
 
     data class Params(val name: String): UseCase.Params()

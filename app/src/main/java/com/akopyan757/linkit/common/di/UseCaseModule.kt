@@ -56,37 +56,28 @@ object UseCaseModule {
             CreateFolderUseCase(get(), get(), get(named(IO_SCHEDULER)), viewModel.getCompositeDisposable())
         }
         factory { (viewModel: BaseViewModel) ->
-            DeleteFolderUseCase(get(), get(named(IO_SCHEDULER)), viewModel.getCompositeDisposable())
-        }
-        factory { (viewModel: BaseViewModel) ->
-            GetAllFoldersUseCase(get(), get(named(IO_SCHEDULER)), viewModel.getCompositeDisposable())
+            DeleteFolderUseCase(get(), get(), get(named(IO_SCHEDULER)), viewModel.getCompositeDisposable())
         }
         factory { (viewModel: BaseViewModel) ->
             ListenFoldersChangesUseCase(get(), get(), get(named(IO_SCHEDULER)), viewModel.getCompositeDisposable())
         }
         factory { (viewModel: BaseViewModel) ->
-            ListenFolderChangesUseCase(get(), get(named(IO_SCHEDULER)), viewModel.getCompositeDisposable())
-        }
-        factory { (viewModel: BaseViewModel) ->
-            ListenFoldersUseCase(get(), get(named(IO_SCHEDULER)), viewModel.getCompositeDisposable())
-        }
-        factory { (viewModel: BaseViewModel) ->
             RenameFolderUseCase(get(), get(), get(named(IO_SCHEDULER)), viewModel.getCompositeDisposable())
         }
         factory { (viewModel: BaseViewModel) ->
-            ReorderFolderUseCase(get(), get(named(IO_SCHEDULER)), viewModel.getCompositeDisposable())
+            ReorderFolderUseCase(get(), get(), get(named(IO_SCHEDULER)), viewModel.getCompositeDisposable())
         }
         factory { (viewModel: BaseViewModel) ->
-            CreateUrlLinkUseCase(get(), get(), get(), get(named(IO_SCHEDULER)), viewModel.getCompositeDisposable())
+            CreateUrlLinkUseCase(get(), get(), get(named(IO_SCHEDULER)), viewModel.getCompositeDisposable())
         }
         factory { (viewModel: BaseViewModel) ->
-            DeleteUrlLinkUseCase(get(), get(named(IO_SCHEDULER)), viewModel.getCompositeDisposable())
+            DeleteUrlLinkUseCase(get(), get(), get(named(IO_SCHEDULER)), viewModel.getCompositeDisposable())
         }
         factory { (viewModel: BaseViewModel) ->
             ListenUrlLinkUseCase(get(), get(named(IO_SCHEDULER)), viewModel.getCompositeDisposable())
         }
         factory { (viewModel: BaseViewModel) ->
-            ListenUrlLinkChangesUseCase(get(), get(), get(named(IO_SCHEDULER)), viewModel.getCompositeDisposable())
+            GetUrlLinkListUseCase(get(), get(), get(named(IO_SCHEDULER)), viewModel.getCompositeDisposable())
         }
         factory { (viewModel: BaseViewModel) ->
             LoadHtmlCardsUseCase(get(), get(named(IO_SCHEDULER)), viewModel.getCompositeDisposable())

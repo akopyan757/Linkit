@@ -49,6 +49,7 @@ class MainFragment : BaseFragment<FragmentMainBinding, LinkViewModel>(), LinkAda
             startListenDataChanges()
             startListenFolders()
             listenSelectedFolder().observe(viewLifecycleOwner) { folderId -> listenLinks(folderId) }
+            listenLinks(null)
             listenFolderNames().observe(viewLifecycleOwner) { names -> updateSpinnerData(names) }
             linkListLive().observeList(recyclerLinksAdapter)
         }

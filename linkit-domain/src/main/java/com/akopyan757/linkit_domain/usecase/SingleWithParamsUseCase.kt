@@ -8,7 +8,11 @@ abstract class SingleWithParamsUseCase<T, P : UseCase.Params>(
     private val compositeDisposable: CompositeDisposable
 ): UseCase<Single<T>, P>() {
 
-    fun execute(params: P, onSuccess: ((T) -> Unit)? = null, onError: ((Throwable) -> Unit)? = null) {
+    fun execute(
+        params: P,
+        onSuccess: ((T) -> Unit)? = null,
+        onError: ((Throwable) -> Unit)? = null
+    ) {
         val disposable = super.execute(params)
             .subscribeOn(schedulerProvider.ioThread)
             .observeOn(schedulerProvider.mainThread)

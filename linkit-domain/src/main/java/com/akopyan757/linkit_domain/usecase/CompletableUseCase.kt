@@ -4,8 +4,8 @@ import io.reactivex.Completable
 import io.reactivex.disposables.CompositeDisposable
 
 abstract class CompletableUseCase(
-    private val schedulerProvider: SchedulerProvider,
-    private val compositeDisposable: CompositeDisposable
+    protected val schedulerProvider: SchedulerProvider,
+    protected val compositeDisposable: CompositeDisposable
 ): UseCase<Completable, CompletableUseCase.NothingParams>() {
 
     fun execute(onSuccess: (() -> Unit)? = null, onError: ((Throwable) -> Unit)? = null) {

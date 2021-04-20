@@ -18,7 +18,9 @@ import com.huawei.hms.support.account.request.AccountAuthParamsHelper
 import com.huawei.hms.support.account.result.AuthAccount
 import com.huawei.hms.support.account.service.AccountAuthService
 import io.reactivex.Completable
+import io.reactivex.Scheduler
 import io.reactivex.Single
+import io.reactivex.schedulers.Schedulers
 
 class AuthServiceDataSource(
     private val context: Context,
@@ -77,6 +79,7 @@ class AuthServiceDataSource(
 
         return customTokenApi.createCustomToken(request)
             .map { response -> response.firebaseToken }
+            .subscribeOn(Schedulers.newThread())
     }
 
 

@@ -11,7 +11,7 @@ import com.akopyan757.linkit.common.Config
 import com.akopyan757.linkit.viewmodel.observable.FolderObservable
 import com.akopyan757.linkit.viewmodel.observable.LinkObservable
 import com.akopyan757.linkit_domain.entity.HtmlLinkCardEntity
-import com.akopyan757.linkit_domain.usecase.folder.ListenFoldersUseCase
+import com.akopyan757.linkit_domain.usecase.folder.ListenFoldersChangesUseCase
 import com.akopyan757.linkit_domain.usecase.urllink.CreateUrlLinkUseCase
 import com.akopyan757.linkit_domain.usecase.urllink.LoadHtmlCardsUseCase
 import org.koin.core.KoinComponent
@@ -21,8 +21,8 @@ class LinkCreateUrlViewModel(
 ): BaseViewModel(), KoinComponent {
 
     private val createLink: CreateUrlLinkUseCase by injectUseCase()
-    private val listenFolder: ListenFoldersUseCase by injectUseCase()
     private val loadCards: LoadHtmlCardsUseCase by injectUseCase()
+    private val listenFolders: ListenFoldersChangesUseCase by injectUseCase()
 
     @get:Bindable var selectedFolderName: String by DB("", BR.selectedFolderName)
 
@@ -36,7 +36,7 @@ class LinkCreateUrlViewModel(
     }
 
     fun startListenFolder() {
-        listenFolder.execute({ folders ->
+        listenFolders.execute({ folders ->
             val observables = mutableListOf<FolderObservable>()
             observables.add(FolderObservable.getDefault(DEF_FOLDER_NAME))
             folders.forEach { folder -> observables.add(FolderObservable.fromData(folder)) }
@@ -52,7 +52,7 @@ class LinkCreateUrlViewModel(
 
     fun createNewLink() {
         val params = CreateUrlLinkUseCase.Params(url, getSelectedFolderId())
-        createLink.execute(params, { emitAction(ACTION_DISMISS) })
+        createLink.execute(params, onSuccess = { emitAction(ACTION_DISMISS) })
     }
 
     private fun getSelectedFolderId(): String? {

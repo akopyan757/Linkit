@@ -5,7 +5,7 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 
 abstract class ObservableWithParamsUseCase<T, P : UseCase.Params>(
-    private val schedulerProvider: SchedulerProvider,
+    protected val schedulerProvider: SchedulerProvider,
     protected val compositeDisposable: CompositeDisposable
 ): UseCase<Observable<T>, P>() {
 

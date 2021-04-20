@@ -24,8 +24,11 @@ class AuthSplashViewModel: BaseViewModel(), KoinComponent {
 
     fun requestGetUser() {
         getUser.execute(
-            onSuccess = { userEntity -> successUserLive.value = userEntity },
-            onError = { throwable -> throwableLive.value = throwable }
+            onSuccess = { userEntity ->
+                successUserLive.postValue(userEntity)
+            }, onError = { throwable ->
+                throwableLive.postValue(throwable)
+            }
         )
     }
 }
