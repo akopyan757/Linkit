@@ -84,6 +84,7 @@
                 android:layout_marginEnd="@dimen/marginSecondary"
                 android:contentDescription="@string/todo"
                 android:padding="@dimen/marginSecondary"
+                android:elevation="@dimen/marginTertiary"
                 app:visibility="@{!viewModel.foldersEmpty}"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
@@ -97,7 +98,9 @@
                 android:id="@+id/rvLinks"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
-                android:layout_marginTop="@dimen/marginPrimary"
+                android:clipToPadding="false"
+                android:paddingTop="@dimen/marginSecondary"
+                android:paddingBottom="@dimen/bottomLinksPadding"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
@@ -106,6 +109,15 @@
                 app:layout_constraintVertical_bias="0.0"
                 tools:itemCount="3"
                 tools:listitem="@layout/item_link" />
+
+            <View
+                android:id="@+id/rvLinksGradient"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/marginSecondary"
+                android:background="@drawable/background_recycler_links"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/rvLinks" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

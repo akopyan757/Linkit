@@ -50,6 +50,7 @@
     <dimen name="profileImageRadius">44dp</dimen>
     <dimen name="setPasswordBackIconMargin">24dp</dimen>
     <dimen name="bottomAdLandHeight">50dp</dimen>
+    <dimen name="bottomLinksPadding">58dp</dimen>
     <dimen name="tlFoldersHeight">40dp</dimen>
     <dimen name="viewPagerUrlsMarginTop">56dp</dimen>
     <dimen name="webViewHeight">400dp</dimen>
