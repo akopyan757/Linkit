@@ -97,6 +97,7 @@ class MainFragment : BaseFragment<FragmentMainBinding, LinkViewModel>(), LinkAda
 
     private fun updateFoldersList(folders: List<FolderObservable>) {
         val inflater = LayoutInflater.from(requireContext())
+        binding.tabLayoutFolder.removeAllTabs()
         folders.forEach { observable ->
             val tab = binding.tabLayoutFolder.newTab()
             val view = inflater.inflate(R.layout.tab_folder, binding.tabLayoutFolder, false)
