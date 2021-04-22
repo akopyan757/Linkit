@@ -10,9 +10,9 @@ import io.reactivex.disposables.CompositeDisposable
 class GetUrlLinkListUseCase(
     private val remoteDataSource: IRemoteUrlDataSource,
     private val localDataSource: ILocalUrlDataSource,
-    schedulerProvider: SchedulerProvider,
+    private val schedulerProvider: SchedulerProvider,
     compositeDisposable: CompositeDisposable
-): CompletableUseCase(schedulerProvider, compositeDisposable) {
+): CompletableUseCase(compositeDisposable) {
 
     override fun launch(): Completable {
         return remoteDataSource.loadUrlLinks()
@@ -20,5 +20,7 @@ class GetUrlLinkListUseCase(
                 localDataSource.updateAllUrlLinks(urlLinkList)
                     .subscribeOn(schedulerProvider.ioThread)
             }
+            .subscribeOn(schedulerProvider.ioThread)
+            .observeOn(schedulerProvider.mainThread)
     }
 }

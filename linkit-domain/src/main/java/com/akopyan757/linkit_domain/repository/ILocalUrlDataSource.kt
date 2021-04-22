@@ -9,10 +9,10 @@ interface ILocalUrlDataSource {
     fun listenUrlLinkFromFolder(folderId: String): Observable<List<UrlLinkEntity>>
     fun checkExistUrlLink(linkId: String): Boolean
     fun getAllUrlLinks(): List<UrlLinkEntity>
-    fun createUrlLinkInstance(url: String, folderId: String?): UrlLinkEntity
+    fun createUrlLinkInstance(url: String): UrlLinkEntity
     fun getNewOrderValue(): Int
     fun updateAllUrlLinks(links: List<UrlLinkEntity>): Completable
     fun updateUrlLink(link: UrlLinkEntity): Completable
     fun updateLinkOrder(linkId: String, order: Int): Completable
-    fun removeUrlLinkById(linkId: String)
+    fun removeUrlLinkById(linkId: String): Completable
 }

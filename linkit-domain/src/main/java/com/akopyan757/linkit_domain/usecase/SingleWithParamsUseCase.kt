@@ -4,7 +4,6 @@ import io.reactivex.Single
 import io.reactivex.disposables.CompositeDisposable
 
 abstract class SingleWithParamsUseCase<T, P : UseCase.Params>(
-    private val schedulerProvider: SchedulerProvider,
     private val compositeDisposable: CompositeDisposable
 ): UseCase<Single<T>, P>() {
 
@@ -14,8 +13,6 @@ abstract class SingleWithParamsUseCase<T, P : UseCase.Params>(
         onError: ((Throwable) -> Unit)? = null
     ) {
         val disposable = super.execute(params)
-            .subscribeOn(schedulerProvider.ioThread)
-            .observeOn(schedulerProvider.mainThread)
             .subscribe(
                 onSuccess ?: defaultOnNextWithParams<T>(),
                 onError ?: defaultOnError()

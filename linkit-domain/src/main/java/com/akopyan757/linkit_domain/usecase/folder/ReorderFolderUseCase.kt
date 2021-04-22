@@ -11,13 +11,18 @@ import io.reactivex.disposables.CompositeDisposable
 class ReorderFolderUseCase(
     private val remoteDataSource: IRemoteFolderDataSource,
     private val localDataSource: ILocalFolderDataSource,
-    schedulerProvider: SchedulerProvider,
+    private val schedulerProvider: SchedulerProvider,
     compositeDisposable: CompositeDisposable
-): CompletableWithParamsUseCase<ReorderFolderUseCase.Params>(schedulerProvider, compositeDisposable) {
+): CompletableWithParamsUseCase<ReorderFolderUseCase.Params>(compositeDisposable) {
 
     override fun launch(): Completable {
         return remoteDataSource.reorderFolders(parameters.folderIds)
-            .andThen(localDataSource.updateFoldersOrder(parameters.folderIds))
+            .andThen(
+                localDataSource.updateFoldersOrder(parameters.folderIds)
+                    .subscribeOn(schedulerProvider.ioThread)
+            )
+            .subscribeOn(schedulerProvider.ioThread)
+            .observeOn(schedulerProvider.mainThread)
     }
 
     data class Params(val folderIds: List<String>): UseCase.Params()

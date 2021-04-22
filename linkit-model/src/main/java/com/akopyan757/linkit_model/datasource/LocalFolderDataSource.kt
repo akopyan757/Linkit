@@ -58,7 +58,7 @@ class LocalFolderDataSource(
         folderDao.updateFoldersOrder(folderIds)
     }
 
-    override fun removeFolderById(folderId: String) {
+    override fun removeFolderById(folderId: String) = Completable.fromCallable {
         folderDao.removeById(folderId)
     }
 

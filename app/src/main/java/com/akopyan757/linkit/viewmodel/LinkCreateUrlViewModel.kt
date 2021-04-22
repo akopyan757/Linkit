@@ -25,11 +25,10 @@ class LinkCreateUrlViewModel(
     private val listenFolders: ListenFoldersChangesUseCase by injectUseCase()
 
     @get:Bindable var selectedFolderName: String by DB("", BR.selectedFolderName)
+    @get:Bindable var linkObservable: LinkObservable? by DB(null, BR.linkObservable, BR.linObservableVisible)
+    @get:Bindable val linObservableVisible: Boolean get() = linkObservable != null
 
     private var foldersList = MutableLiveData<List<FolderObservable>>()
-    private val cardsList = ListLiveData<LinkObservable>()
-
-    fun getCardsList() = cardsList
 
     fun getFolderLiveList(): LiveData<List<String>> {
         return foldersList.map { folders -> folders.map { observable -> observable.name } }
@@ -45,13 +44,17 @@ class LinkCreateUrlViewModel(
     }
 
     fun loadHtmlCards() {
-        loadCards.execute(LoadHtmlCardsUseCase.Params(url), { cards ->
-            cardsList.change(cards.mapIndexed(this::cardToObservable))
+        loadCards.execute(LoadHtmlCardsUseCase.Params(url), { card ->
+            linkObservable = card.let(::cardToObservable)
         })
     }
 
     fun createNewLink() {
-        val params = CreateUrlLinkUseCase.Params(url, getSelectedFolderId())
+        val folderId = getSelectedFolderId()
+        val title = linkObservable?.title ?: EMPTY
+        val description = linkObservable?.description ?: EMPTY
+        val photoUrl = linkObservable?.photoUrl
+        val params = CreateUrlLinkUseCase.Params(url, folderId, title, description, photoUrl)
         createLink.execute(params, onSuccess = { emitAction(ACTION_DISMISS) })
     }
 
@@ -60,17 +63,16 @@ class LinkCreateUrlViewModel(
         return folder?.id?.takeUnless { id -> id == FolderObservable.DEF_FOLDER_ID }
     }
 
-    private fun cardToObservable(index: Int, card: HtmlLinkCardEntity): LinkObservable {
+    private fun cardToObservable(card: HtmlLinkCardEntity): LinkObservable {
         val title = card.title ?: Config.EMPTY
         val description = card.description ?: Config.EMPTY
-        return LinkObservable(
-            index.toString(), url, title, description, card.photoUrl, false
-        )
+        return LinkObservable("", url, title, description, card.photoUrl)
     }
 
     companion object {
         const val ACTION_DISMISS = 121_1
 
         private const val DEF_FOLDER_NAME = "Not selected"
+        private const val EMPTY = ""
     }
 }

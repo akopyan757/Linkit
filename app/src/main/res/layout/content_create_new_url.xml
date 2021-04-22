@@ -39,12 +39,15 @@
 
         </com.google.android.material.textfield.TextInputLayout>
 
-        <androidx.viewpager2.widget.ViewPager2
-            android:id="@+id/vpHtmlCards"
+        <include
+            android:id="@+id/cardPreview"
             android:layout_width="0dp"
-            android:layout_height="350dp"
+            android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/marginPrimary"
             android:clipToPadding="false"
+            layout="@layout/item_link"
+            app:observable="@{viewModel.linkObservable}"
+            app:visibility="@{viewModel.linObservableVisible}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tilClipboardUrl"
@@ -64,7 +67,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@+id/tilClipboardUrl"
             app:layout_constraintStart_toStartOf="@+id/tilClipboardUrl"
-            app:layout_constraintTop_toBottomOf="@+id/vpHtmlCards"
+            app:layout_constraintTop_toBottomOf="@+id/cardPreview"
             app:selectedValue="@={viewModel.selectedFolderName}"
             tools:text="Not selected" />
 

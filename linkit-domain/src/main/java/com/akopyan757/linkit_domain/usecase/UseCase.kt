@@ -1,5 +1,7 @@
 package com.akopyan757.linkit_domain.usecase
 
+import io.reactivex.Completable
+
 abstract class UseCase<T, P: UseCase.Params> {
 
     protected lateinit var parameters: P

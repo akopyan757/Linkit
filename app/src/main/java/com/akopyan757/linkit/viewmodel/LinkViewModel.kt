@@ -32,7 +32,6 @@ class LinkViewModel : BaseViewModel(), KoinComponent {
     @get:Bindable var isFoldersEmpty: Boolean by DB(false, BR.foldersEmpty)
     @get:Bindable var profileIconUrl: String? by DB(null, BR.profileIconUrl)
     @get:Bindable var profileIconDefaultRes: Int = R.drawable.ic_user
-    @get:Bindable val selectedFolderName = MutableLiveData(DEF_FOLDER_NAME)
 
     private var folderList = MutableLiveData<List<FolderObservable>>()
     private val urlListData = ListLiveData<DiffItemObservable>()
@@ -43,41 +42,28 @@ class LinkViewModel : BaseViewModel(), KoinComponent {
         getUrlLinkList.execute()
     }
 
-    fun listenSelectedFolder(): LiveData<String?> {
-        return selectedFolderName.map { folderName -> findFolderIdByName(folderName) }
-    }
-
-    fun listenFolderNames(): LiveData<List<String>> {
-        return folderList.map { folders -> folders.map { observable -> observable.name } }
+    fun listenFolderNames(): LiveData<List<FolderObservable>> {
+        return folderList
     }
 
     fun startListenFolders() {
         listenFolders.execute({ folders ->
-            Log.i("LinkViewModel", "listenFolders: size=${folders.size}")
             val observables = mutableListOf<FolderObservable>()
             observables.add(FolderObservable.getDefault(DEF_FOLDER_NAME))
             folders.forEach { folder ->
                 observables.add(FolderObservable.fromData(folder))
             }
             folderList.value = observables
-        }, onError = {
-            Log.e("LinkViewModel", "listenFolders", it)
         })
-        getUrlLinkList.execute(onSuccess = {
-            Log.i("LinkViewModel", "getUrlLinkList: success")
-        }, onError = { throwable ->
-            Log.e("LinkViewModel", "getUrlLinkList: error", throwable)
-        })
+        getUrlLinkList.execute()
     }
 
-    fun listenLinks(selectedFolderIdOrNull: String?) {
+    fun listenLinksById(folderId: String?) {
+        val id = folderId?.takeUnless { id -> id == FolderObservable.DEF_FOLDER_ID }
         listenUrlLinks.disposeLastExecute()
-        listenUrlLinks.execute(ListenUrlLinkUseCase.Params(selectedFolderIdOrNull), { links ->
+        listenUrlLinks.execute(ListenUrlLinkUseCase.Params(id), { links ->
             val observables = links.map { link -> LinkObservable.from(link) }
-            Log.i("LinkViewModel", "listenUrlLinks: links = ${links.size}")
             urlListData.change(observables)
-        }, onError = { throwable ->
-            Log.i("LinkViewModel", "listenUrlLinks", throwable)
         })
     }
 
@@ -97,15 +83,6 @@ class LinkViewModel : BaseViewModel(), KoinComponent {
 
     fun closeAdItem(observable: DiffItemObservable) {
         urlListData.deleteItem(observable)
-    }
-
-    private fun findFolderIdByName(name: String): String? {
-        val observable = folderList.value?.firstOrNull { folder -> folder.name == name }
-        return observable?.id?.takeUnless { id -> id == FolderObservable.DEF_FOLDER_ID }
-    }
-
-    override fun onCleared() {
-        super.onCleared()
     }
 
     companion object {

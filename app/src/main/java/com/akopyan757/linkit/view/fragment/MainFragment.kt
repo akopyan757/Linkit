@@ -2,11 +2,11 @@ package com.akopyan757.linkit.view.fragment
 
 import android.app.AlertDialog
 import android.os.Bundle
+import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewTreeObserver
-import android.widget.ArrayAdapter
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.os.bundleOf
 import androidx.navigation.fragment.findNavController
 import com.akopyan757.base.view.BaseFragment
 import com.akopyan757.base.viewmodel.list.LinearLayoutManagerWrapper
@@ -14,14 +14,17 @@ import com.akopyan757.linkit.BR
 import com.akopyan757.linkit.BannerViewExtension
 import com.akopyan757.linkit.R
 import com.akopyan757.linkit.common.Config
-import com.akopyan757.linkit.common.utils.ClipboardUtils
 import com.akopyan757.linkit.common.utils.AndroidUtils
+import com.akopyan757.linkit.common.utils.ClipboardUtils
 import com.akopyan757.linkit.databinding.FragmentMainBinding
 import com.akopyan757.linkit.view.adapter.LinkUrlAdapter
 import com.akopyan757.linkit.viewmodel.LinkViewModel
 import com.akopyan757.linkit.viewmodel.listener.LinkAdapterListener
 import com.akopyan757.linkit.viewmodel.observable.AdObservable
+import com.akopyan757.linkit.viewmodel.observable.FolderObservable
 import com.akopyan757.linkit.viewmodel.observable.LinkObservable
+import com.google.android.material.tabs.TabLayout
+import kotlinx.android.synthetic.main.tab_folder.view.*
 import org.koin.android.viewmodel.ext.android.viewModel
 import org.koin.core.KoinComponent
 
@@ -48,9 +51,8 @@ class MainFragment : BaseFragment<FragmentMainBinding, LinkViewModel>(), LinkAda
         with(viewModel) {
             startListenDataChanges()
             startListenFolders()
-            listenSelectedFolder().observe(viewLifecycleOwner) { folderId -> listenLinks(folderId) }
-            listenLinks(null)
-            listenFolderNames().observe(viewLifecycleOwner) { names -> updateSpinnerData(names) }
+            listenLinksById(null)
+            listenFolderNames().observe(viewLifecycleOwner) { names -> updateFoldersList(names) }
             linkListLive().observeList(recyclerLinksAdapter)
         }
     }
@@ -93,10 +95,22 @@ class MainFragment : BaseFragment<FragmentMainBinding, LinkViewModel>(), LinkAda
         }
     }
 
-    private fun updateSpinnerData(folderNames: List<String>) {
-        binding.spinnerSelectedFolder?.adapter = ArrayAdapter(
-            requireContext(), R.layout.item_folder_spinner, R.id.tvFolderSpinner, folderNames
-        )
+    private fun updateFoldersList(folders: List<FolderObservable>) {
+        val inflater = LayoutInflater.from(requireContext())
+        folders.forEach { observable ->
+            val tab = binding.tabLayoutFolder.newTab()
+            val view = inflater.inflate(R.layout.tab_folder, binding.tabLayoutFolder, false)
+            view.tabFolder.text = observable.name
+            tab.customView = view
+            binding.tabLayoutFolder.addTab(tab)
+        }
+        binding.tabLayoutFolder.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+            override fun onTabUnselected(tab: TabLayout.Tab?) {}
+            override fun onTabReselected(tab: TabLayout.Tab?) {}
+            override fun onTabSelected(tab: TabLayout.Tab?) {
+                if (tab != null) viewModel.listenLinksById(folders[tab.position].id)
+            }
+        })
     }
 
     override fun onShareListener(link: LinkObservable) {
@@ -104,7 +118,7 @@ class MainFragment : BaseFragment<FragmentMainBinding, LinkViewModel>(), LinkAda
     }
 
     override fun onItemListener(link: LinkObservable) {
-        openPreviewOfItem(link)
+        startActivity(AndroidUtils.createIntent(link.url))
         viewModel.moveUrlLinkToTop(link)
     }
 
@@ -169,8 +183,4 @@ class MainFragment : BaseFragment<FragmentMainBinding, LinkViewModel>(), LinkAda
         findNavController().navigate(R.id.action_mainFragment_to_profileDialogFragment)
     }
 
-    private fun openPreviewOfItem(observable: LinkObservable) {
-        val bundle = bundleOf(PreviewUrlFragment.PREVIEW_URL to observable)
-        findNavController().navigate(R.id.action_mainFragment_to_preview, bundle)
-    }
 }

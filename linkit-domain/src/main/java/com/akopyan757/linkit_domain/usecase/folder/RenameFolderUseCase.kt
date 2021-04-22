@@ -12,9 +12,9 @@ import io.reactivex.disposables.CompositeDisposable
 class RenameFolderUseCase(
     private val remoteDataSource: IRemoteFolderDataSource,
     private val localDataSource: ILocalFolderDataSource,
-    schedulerProvider: SchedulerProvider,
+    private val schedulerProvider: SchedulerProvider,
     compositeDisposable: CompositeDisposable
-): CompletableWithParamsUseCase<RenameFolderUseCase.Params>(schedulerProvider, compositeDisposable) {
+): CompletableWithParamsUseCase<RenameFolderUseCase.Params>(compositeDisposable) {
 
     override fun launch(): Completable = Single.fromCallable {
         localDataSource.checkExistFolder(parameters.folderId)
@@ -24,7 +24,12 @@ class RenameFolderUseCase(
         } else {
             Completable.error(FolderNotFoundException())
         }
-    }.andThen(localDataSource.updateFolderName(parameters.folderId, parameters.name))
+    }.andThen(
+        localDataSource.updateFolderName(parameters.folderId, parameters.name)
+            .subscribeOn(schedulerProvider.ioThread)
+    )
+    .subscribeOn(schedulerProvider.ioThread)
+    .observeOn(schedulerProvider.mainThread)
 
     data class Params(val folderId: String, val name: String): UseCase.Params()
 

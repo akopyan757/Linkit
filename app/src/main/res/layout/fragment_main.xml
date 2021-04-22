@@ -59,20 +59,16 @@
             android:layout_height="match_parent"
             app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-            <Spinner
-                android:id="@+id/spinnerSelectedFolder"
-                android:layout_width="0dp"
+            <com.google.android.material.tabs.TabLayout
+                android:id="@+id/tabLayoutFolder"
+                style="@style/Theme.Linkit.TabLayout"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/marginSecondary"
                 android:layout_marginTop="@dimen/marginSecondary"
                 android:spinnerMode="dropdown"
-                android:minWidth="150dp"
                 android:elevation="@dimen/marginTertiary"
-                android:prompt="@string/prompt"
-                android:popupBackground="@drawable/background_edit_text"
-                android:dropDownVerticalOffset="60dp"
-                android:background="@drawable/background_spinner"
-                app:selectedValue="@={viewModel.selectedFolderName}"
+                android:background="@drawable/shadow_tab_layout"
                 app:layout_constrainedWidth="true"
                 app:layout_constraintEnd_toStartOf="@+id/ivFolderSettings"
                 app:layout_constraintHorizontal_bias="0.0"
@@ -89,12 +85,12 @@
                 android:contentDescription="@string/todo"
                 android:padding="@dimen/marginSecondary"
                 app:visibility="@{!viewModel.foldersEmpty}"
-                app:layout_constraintBottom_toBottomOf="@+id/spinnerSelectedFolder"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintHorizontal_chainStyle="packed"
-                app:layout_constraintStart_toEndOf="@+id/spinnerSelectedFolder"
-                app:layout_constraintTop_toTopOf="@+id/spinnerSelectedFolder"
+                app:layout_constraintBottom_toBottomOf="@+id/tabLayoutFolder"
+                app:layout_constraintStart_toEndOf="@+id/tabLayoutFolder"
+                app:layout_constraintTop_toTopOf="@+id/tabLayoutFolder"
                 app:srcCompat="@drawable/ic_options_24" />
 
             <androidx.recyclerview.widget.RecyclerView
@@ -106,8 +102,10 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/spinnerSelectedFolder"
-                app:layout_constraintVertical_bias="0.0" />
+                app:layout_constraintTop_toBottomOf="@+id/tabLayoutFolder"
+                app:layout_constraintVertical_bias="0.0"
+                tools:itemCount="3"
+                tools:listitem="@layout/item_link" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

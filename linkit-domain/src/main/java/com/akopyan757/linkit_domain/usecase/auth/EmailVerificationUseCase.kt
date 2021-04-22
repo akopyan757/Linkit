@@ -7,13 +7,13 @@ import io.reactivex.disposables.CompositeDisposable
 
 class EmailVerificationUseCase(
     private val authDataSource: IAuthDataSource,
-    schedulerProvider: SchedulerProvider,
+    private val schedulerProvider: SchedulerProvider,
     compositeDisposable: CompositeDisposable
-): CompletableUseCase(
-    schedulerProvider, compositeDisposable
-) {
+): CompletableUseCase(compositeDisposable) {
 
-    override fun launch() = Completable.fromAction {
-        authDataSource.emailVerification()
+    override fun launch(): Completable {
+        return authDataSource.emailVerification()
+            .subscribeOn(schedulerProvider.ioThread)
+            .observeOn(schedulerProvider.mainThread)
     }
 }

@@ -11,15 +11,18 @@ import io.reactivex.disposables.CompositeDisposable
 class DeleteUrlLinkUseCase(
     private val remoteDataSource: IRemoteUrlDataSource,
     private val localDataSource: ILocalUrlDataSource,
-    schedulerProvider: SchedulerProvider,
+    private val schedulerProvider: SchedulerProvider,
     compositeDisposable: CompositeDisposable
-): CompletableWithParamsUseCase<DeleteUrlLinkUseCase.Params>(schedulerProvider, compositeDisposable) {
+): CompletableWithParamsUseCase<DeleteUrlLinkUseCase.Params>(compositeDisposable) {
 
     override fun launch(): Completable {
         return remoteDataSource.deleteUrlLink(parameters.linkId)
-            .doOnComplete {
+            .andThen(
                 localDataSource.removeUrlLinkById(parameters.linkId)
-            }
+                    .subscribeOn(schedulerProvider.ioThread)
+            )
+            .subscribeOn(schedulerProvider.ioThread)
+            .observeOn(schedulerProvider.mainThread)
     }
 
     data class Params(val linkId: String): UseCase.Params()

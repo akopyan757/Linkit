@@ -9,13 +9,14 @@ import io.reactivex.disposables.CompositeDisposable
 class SignOutUseCase(
     private val authDataSource: IAuthDataSource,
     private val authIntentService: IAuthIntentDataSource,
-    schedulerProvider: SchedulerProvider,
+    private val schedulerProvider: SchedulerProvider,
     compositeDisposable: CompositeDisposable
-): CompletableUseCase(
-    schedulerProvider, compositeDisposable
-) {
+): CompletableUseCase(compositeDisposable) {
 
     override fun launch(): Completable {
-        return authDataSource.signOut().andThen(authIntentService.signOut())
+        return authDataSource.signOut()
+            .andThen(authIntentService.signOut())
+            .subscribeOn(schedulerProvider.ioThread)
+            .observeOn(schedulerProvider.mainThread)
     }
 }

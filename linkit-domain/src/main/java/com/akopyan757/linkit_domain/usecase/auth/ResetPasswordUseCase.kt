@@ -9,14 +9,14 @@ import io.reactivex.disposables.CompositeDisposable
 
 class ResetPasswordUseCase(
     private val authDataSource: IAuthDataSource,
-    schedulerProvider: SchedulerProvider,
+    private val schedulerProvider: SchedulerProvider,
     compositeDisposable: CompositeDisposable
-): CompletableWithParamsUseCase<ResetPasswordUseCase.Params>(
-    schedulerProvider, compositeDisposable
-) {
+): CompletableWithParamsUseCase<ResetPasswordUseCase.Params>(compositeDisposable) {
 
-    override fun launch() = Completable.fromAction {
-        authDataSource.resetPassword(parameters.email)
+    override fun launch(): Completable {
+        return authDataSource.resetPassword(parameters.email)
+            .subscribeOn(schedulerProvider.ioThread)
+            .observeOn(schedulerProvider.mainThread)
     }
 
     data class Params(val email: String): UseCase.Params()

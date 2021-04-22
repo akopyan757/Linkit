@@ -9,12 +9,12 @@ class LoadHtmlCardsDataSource(
     private val htmlParser: IHtmlParser
 ): ILoadHtmlCardsDataSource {
 
-    override fun loadCards(resourceUrl: String): List<HtmlLinkCardEntity> {
+    override fun loadCard(resourceUrl: String): HtmlLinkCardEntity {
         val htmlTags = htmlParser.parseHeadTagsFromResource(resourceUrl)
         return listOf(
             htmlTags.openGraphHtmlTags.toCard(),
             htmlTags.twitterHtmlTags.toCard(),
             htmlTags.additionalHtmlTags.toCard()
-        )
+        ).maxByOrNull { card -> card.rating() } ?: HtmlLinkCardEntity()
     }
 }

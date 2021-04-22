@@ -4,18 +4,14 @@ import io.reactivex.Completable
 import io.reactivex.disposables.CompositeDisposable
 
 abstract class CompletableUseCase(
-    protected val schedulerProvider: SchedulerProvider,
     protected val compositeDisposable: CompositeDisposable
 ): UseCase<Completable, CompletableUseCase.NothingParams>() {
 
     fun execute(onSuccess: (() -> Unit)? = null, onError: ((Throwable) -> Unit)? = null) {
-        val disposable = super.execute(NothingParams)
-            .subscribeOn(schedulerProvider.ioThread)
-            .observeOn(schedulerProvider.mainThread)
-            .subscribe(
-                onSuccess ?: defaultOnNext(),
-                onError ?: defaultOnError()
-            )
+        val disposable = super.execute(NothingParams).subscribe(
+            onSuccess ?: defaultOnNext(),
+            onError ?: defaultOnError()
+        )
 
         compositeDisposable.add(disposable)
     }

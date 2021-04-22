@@ -11,9 +11,9 @@ import io.reactivex.disposables.CompositeDisposable
 class CreateFolderUseCase(
     private val remoteDataSource: IRemoteFolderDataSource,
     private val localDataSource: ILocalFolderDataSource,
-    schedulerProvider: SchedulerProvider,
+    private val schedulerProvider: SchedulerProvider,
     compositeDisposable: CompositeDisposable
-): CompletableWithParamsUseCase<CreateFolderUseCase.Params>(schedulerProvider, compositeDisposable) {
+): CompletableWithParamsUseCase<CreateFolderUseCase.Params>(compositeDisposable) {
 
     override fun launch() = Single.fromCallable {
         localDataSource.createFolderInstance(parameters.name)
@@ -21,7 +21,10 @@ class CreateFolderUseCase(
         remoteDataSource.createOrUpdateFolder(folderEntity).toSingle { folderEntity }
     }.flatMapCompletable { folderEntity ->
         localDataSource.insertFolder(folderEntity)
+            .subscribeOn(schedulerProvider.ioThread)
     }
+    .subscribeOn(schedulerProvider.ioThread)
+    .observeOn(schedulerProvider.mainThread)
 
     data class Params(val name: String): UseCase.Params()
 }

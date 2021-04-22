@@ -9,15 +9,18 @@ import io.reactivex.disposables.CompositeDisposable
 
 class UpdatePasswordUseCase(
     private val authDataSource: IAuthDataSource,
-    schedulerProvider: SchedulerProvider,
+    private val schedulerProvider: SchedulerProvider,
     compositeDisposable: CompositeDisposable
-): CompletableWithParamsUseCase<UpdatePasswordUseCase.Params>(
-    schedulerProvider, compositeDisposable
-) {
+): CompletableWithParamsUseCase<UpdatePasswordUseCase.Params>(compositeDisposable) {
 
     override fun launch(): Completable {
         return authDataSource.reauthenticateEmail(parameters.oldPassword)
-            .andThen(authDataSource.updatePassword(parameters.newPassword))
+            .andThen(
+                authDataSource.updatePassword(parameters.newPassword)
+                    .subscribeOn(schedulerProvider.ioThread)
+            )
+            .subscribeOn(schedulerProvider.ioThread)
+            .observeOn(schedulerProvider.mainThread)
     }
 
     data class Params(val oldPassword: String, val newPassword: String): UseCase.Params()

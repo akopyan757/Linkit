@@ -34,10 +34,10 @@ class LocalUrlDataSource(
         return urlLinkDao.getAll().map(mapper::firstToSecond)
     }
 
-    override fun createUrlLinkInstance(url: String, folderId: String?): UrlLinkEntity {
+    override fun createUrlLinkInstance(url: String): UrlLinkEntity {
         val id = UUID.randomUUID().toString()
         val order = urlLinkDao.getMaxOrder().plus(ONE)
-        return UrlLinkEntity(id, url, EMPTY, EMPTY, NULL, NULL, folderId, order)
+        return UrlLinkEntity(id, url, EMPTY, EMPTY, NULL, NULL, null, order)
     }
 
     override fun getNewOrderValue(): Int {
@@ -58,7 +58,7 @@ class LocalUrlDataSource(
         urlLinkDao.updateLinkOrder(linkId, order)
     }
 
-    override fun removeUrlLinkById(linkId: String) {
+    override fun removeUrlLinkById(linkId: String) = Completable.fromCallable {
         urlLinkDao.removeById(linkId)
     }
 

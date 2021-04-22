@@ -9,8 +9,7 @@ data class LinkObservable(
     val url: String,
     val title: String,
     val description: String,
-    val photoUrl: String?,
-    val shareVisible: Boolean = true
+    val photoUrl: String?
 ): DiffItemObservable, Serializable {
 
     val photoVisible = photoUrl != null

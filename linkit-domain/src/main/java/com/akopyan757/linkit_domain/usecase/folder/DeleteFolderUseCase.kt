@@ -11,13 +11,18 @@ import io.reactivex.disposables.CompositeDisposable
 class DeleteFolderUseCase(
     private val remoteDataSource: IRemoteFolderDataSource,
     private val localDataSource: ILocalFolderDataSource,
-    schedulerProvider: SchedulerProvider,
+    private val schedulerProvider: SchedulerProvider,
     compositeDisposable: CompositeDisposable
-): CompletableWithParamsUseCase<DeleteFolderUseCase.Params>(schedulerProvider, compositeDisposable) {
+): CompletableWithParamsUseCase<DeleteFolderUseCase.Params>(compositeDisposable) {
 
     override fun launch(): Completable {
         return remoteDataSource.deleteFolder(parameters.folderId)
-            .doOnComplete { localDataSource.removeFolderById(parameters.folderId) }
+            .andThen(
+                localDataSource.removeFolderById(parameters.folderId)
+                    .subscribeOn(schedulerProvider.ioThread)
+            )
+            .subscribeOn(schedulerProvider.ioThread)
+            .observeOn(schedulerProvider.mainThread)
     }
 
     data class Params(val folderId: String): UseCase.Params()

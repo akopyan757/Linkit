@@ -10,13 +10,15 @@ import io.reactivex.disposables.CompositeDisposable
 
 class LoadHtmlCardsUseCase(
     private val loadHtmlCardsDataSource: ILoadHtmlCardsDataSource,
-    schedulerProvider: SchedulerProvider,
+    private val schedulerProvider: SchedulerProvider,
     compositeDisposable: CompositeDisposable
-) : SingleWithParamsUseCase<List<HtmlLinkCardEntity>, LoadHtmlCardsUseCase.Params>(schedulerProvider, compositeDisposable) {
+) : SingleWithParamsUseCase<HtmlLinkCardEntity, LoadHtmlCardsUseCase.Params>(compositeDisposable) {
 
     override fun launch() = Single.fromCallable {
-        loadHtmlCardsDataSource.loadCards(parameters.resourceUrl)
+        loadHtmlCardsDataSource.loadCard(parameters.resourceUrl)
     }
+    .subscribeOn(schedulerProvider.ioThread)
+    .observeOn(schedulerProvider.mainThread)
 
     data class Params(val resourceUrl: String): UseCase.Params()
 }

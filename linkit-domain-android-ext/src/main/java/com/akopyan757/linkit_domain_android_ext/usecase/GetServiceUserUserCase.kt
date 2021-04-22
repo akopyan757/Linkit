@@ -10,11 +10,12 @@ import io.reactivex.disposables.CompositeDisposable
 
 class GetServiceUserUserCase(
     private val authIntentService: IAuthIntentDataSource,
-    schedulerProvider: SchedulerProvider,
+    private val schedulerProvider: SchedulerProvider,
     compositeDisposable: CompositeDisposable
-): SingleWithParamsUseCase<UserEntity, GetServiceUserUserCase.Params>(schedulerProvider, compositeDisposable) {
+): SingleWithParamsUseCase<UserEntity, GetServiceUserUserCase.Params>(compositeDisposable) {
 
     override fun launch() = authIntentService.getServiceUser(parameters.data)
+        .observeOn(schedulerProvider.mainThread)
 
     data class Params(val data: Intent?): UseCase.Params()
 }

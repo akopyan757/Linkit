@@ -14,6 +14,6 @@ interface ILocalFolderDataSource {
     fun updateFolder(folder: FolderEntity)
     fun updateFolderName(folderId: String, folderName: String): Completable
     fun updateFoldersOrder(folderIds: List<String>): Completable
-    fun removeFolderById(folderId: String)
+    fun removeFolderById(folderId: String): Completable
     fun listenFolders(): Observable<List<FolderEntity>>
 }

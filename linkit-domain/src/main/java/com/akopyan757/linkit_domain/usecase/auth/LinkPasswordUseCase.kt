@@ -13,15 +13,15 @@ import io.reactivex.disposables.CompositeDisposable
 
 class LinkPasswordUseCase(
     private val authDataSource: IAuthDataSource,
-    schedulerProvider: SchedulerProvider,
+    private val schedulerProvider: SchedulerProvider,
     compositeDisposable: CompositeDisposable
-): SingleWithParamsUseCase<UserEntity, LinkPasswordUseCase.Params>(
-    schedulerProvider, compositeDisposable
-) {
+): SingleWithParamsUseCase<UserEntity, LinkPasswordUseCase.Params>(compositeDisposable) {
 
     override fun launch(): Single<UserEntity> {
         return authDataSource.reauthenticateCustomToken()
             .andThen(authDataSource.linkPasswordToAccount(parameters.password))
+            .subscribeOn(schedulerProvider.ioThread)
+            .observeOn(schedulerProvider.mainThread)
     }
 
     data class Params(val password: String): UseCase.Params()

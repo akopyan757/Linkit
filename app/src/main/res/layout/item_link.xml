@@ -98,8 +98,7 @@
                 android:paddingEnd="@dimen/marginSecondary"
                 android:src="@drawable/ic_url_share"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:visibility="@{observable.shareVisible}" />
+                app:layout_constraintTop_toTopOf="parent" />
 
             <ImageView
                 android:id="@+id/ivLinkDelete"

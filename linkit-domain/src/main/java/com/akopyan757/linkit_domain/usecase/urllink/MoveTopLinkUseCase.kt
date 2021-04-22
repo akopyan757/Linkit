@@ -6,15 +6,14 @@ import com.akopyan757.linkit_domain.usecase.CompletableWithParamsUseCase
 import com.akopyan757.linkit_domain.usecase.SchedulerProvider
 import com.akopyan757.linkit_domain.usecase.UseCase
 import io.reactivex.Completable
-import io.reactivex.Single
 import io.reactivex.disposables.CompositeDisposable
 
 class MoveTopLinkUseCase(
     private val remoteDataSource: IRemoteUrlDataSource,
     private val localDataSource: ILocalUrlDataSource,
-    schedulerProvider: SchedulerProvider,
+    private val schedulerProvider: SchedulerProvider,
     compositeDisposable: CompositeDisposable
-): CompletableWithParamsUseCase<MoveTopLinkUseCase.Params>(schedulerProvider, compositeDisposable) {
+): CompletableWithParamsUseCase<MoveTopLinkUseCase.Params>(compositeDisposable) {
 
     override fun launch(): Completable {
         return Completable.create { emitter ->
@@ -29,7 +28,10 @@ class MoveTopLinkUseCase(
             remoteDataSource.setOrderForUrlLink(parameters.linkId, newOrder)
         }.flatMapCompletable { order ->
             localDataSource.updateLinkOrder(parameters.linkId, order)
+                .subscribeOn(schedulerProvider.ioThread)
         }
+        .subscribeOn(schedulerProvider.ioThread)
+        .observeOn(schedulerProvider.mainThread)
     }
 
     class UrlLinkNotFoundException: Exception("Url link not found")
