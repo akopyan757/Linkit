@@ -4,7 +4,6 @@ import android.util.Log
 import androidx.databinding.Bindable
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.map
 import com.akopyan757.base.viewmodel.BaseViewModel
 import com.akopyan757.base.viewmodel.DiffItemObservable
 import com.akopyan757.base.viewmodel.list.ListLiveData
@@ -74,7 +73,9 @@ class LinkViewModel : BaseViewModel(), KoinComponent {
     }
 
     fun deleteUrlLink(observable: LinkObservable) {
-        deleteUrlLink.execute(DeleteUrlLinkUseCase.Params(observable.id))
+        deleteUrlLink.execute(DeleteUrlLinkUseCase.Params(observable.id), onError = {
+            Log.e("LinkViewModel", "deleteUrlLink", it)
+        })
     }
 
     fun moveUrlLinkToTop(observable: LinkObservable) {
