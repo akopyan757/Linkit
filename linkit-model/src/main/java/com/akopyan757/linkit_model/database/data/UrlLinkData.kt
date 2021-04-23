@@ -1,6 +1,7 @@
 package com.akopyan757.linkit_model.database.data
 
 import androidx.room.ColumnInfo
+import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
@@ -17,4 +18,5 @@ data class UrlLinkData(
     @ColumnInfo(name = "site") var site: String? = null,
     @ColumnInfo(name = "type") var type: String? = null,
     @ColumnInfo(name = "_order") var _order: Int = 0,
+    @Embedded var googleApp: UrlLinkAppData? = null
 )

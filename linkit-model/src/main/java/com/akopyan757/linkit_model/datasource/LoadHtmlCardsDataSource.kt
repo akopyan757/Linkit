@@ -14,9 +14,15 @@ class LoadHtmlCardsDataSource(
         val htmlTags = htmlParser.parseHeadTagsFromResource(resourceUrl)
         Log.i("LoadHtmlCardsDataSource", htmlTags.toString())
         return listOf(
-            htmlTags.twitterHtmlTags.toCard(),
-            htmlTags.openGraphHtmlTags.toCard(),
-            htmlTags.additionalHtmlTags.toCard()
+            htmlTags.twitterHtmlTags.toCard().apply {
+                googleApp = htmlTags.twitterHtmlTags.toAppData()
+            },
+            htmlTags.openGraphHtmlTags.toCard().apply {
+                googleApp = htmlTags.twitterHtmlTags.toAppData()
+            },
+            htmlTags.additionalHtmlTags.toCard().apply {
+                googleApp = htmlTags.twitterHtmlTags.toAppData()
+            }
         ).maxByOrNull { card -> card.rating() } ?: HtmlLinkCardEntity()
     }
 }

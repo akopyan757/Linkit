@@ -12,6 +12,7 @@ import com.akopyan757.linkit.viewmodel.observable.FolderObservable
 import com.akopyan757.linkit.viewmodel.observable.LinkObservable
 import com.akopyan757.linkit_domain.entity.HtmlLinkCardEntity
 import com.akopyan757.linkit_domain.entity.UrlLinkEntity
+import com.akopyan757.linkit_domain.entity.UrlLinkGoogleAppEntity
 import com.akopyan757.linkit_domain.usecase.folder.ListenFoldersChangesUseCase
 import com.akopyan757.linkit_domain.usecase.urllink.CreateUrlLinkUseCase
 import com.akopyan757.linkit_domain.usecase.urllink.LoadHtmlCardsUseCase
@@ -60,12 +61,13 @@ class LinkCreateUrlViewModel(
         val site = htmlLinkCardEntity?.site
         val type = when(htmlLinkCardEntity?.type) {
             "summary_large_image" -> UrlLinkEntity.Type.LARGE_CARD
+            "player" -> UrlLinkEntity.Type.PLAYER
             else -> UrlLinkEntity.Type.DEFAULT
         }
-        Log.i("LinkCreateUrlViewModel", "type=${htmlLinkCardEntity?.type}")
-        Log.i("LinkCreateUrlViewModel", "htmlLinkCardEntity=$type")
-        Log.i("LinkCreateUrlViewModel", "site=$site")
-        val params = CreateUrlLinkUseCase.Params(url, folderId, title, description, site, type, photoUrl)
+        val googleApp = htmlLinkCardEntity?.googleApp?.let { card ->
+            UrlLinkGoogleAppEntity(card.appId, card.appName, card.appName)
+        }
+        val params = CreateUrlLinkUseCase.Params(url, folderId, title, description, site, type, photoUrl, googleApp)
         createLink.execute(params, onSuccess = { emitAction(ACTION_DISMISS) })
     }
 

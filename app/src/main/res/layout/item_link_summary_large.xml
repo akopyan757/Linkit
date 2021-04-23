@@ -34,16 +34,19 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <ImageView
+            <com.google.android.material.imageview.ShapeableImageView
                 android:id="@+id/ivLinkPhoto"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_margin="@dimen/marginSecondary"
+                android:layout_marginTop="12dp"
                 android:adjustViewBounds="true"
-                android:background="@drawable/background_image_view_corners"
                 android:contentDescription="@string/todo"
                 android:scaleType="centerCrop"
+                app:cornerRadius="@{observable.cornerRadius}"
                 app:elevation="@dimen/elevationTertiary"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:photoUrl="@{observable.photoUrl}"
@@ -55,7 +58,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/marginSecondary"
-                android:layout_marginTop="@dimen/marginSecondary"
+                android:layout_marginTop="@dimen/marginTertiary"
                 android:ellipsize="end"
                 android:ems="3"
                 android:maxLines="3"
@@ -65,7 +68,7 @@
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/ivLinkPhoto"
-                app:layout_goneMarginStart="@dimen/marginPrimary"
+                app:layout_goneMarginStart="@dimen/marginSecondary"
                 tools:text="Title" />
 
             <TextView
@@ -78,12 +81,12 @@
                 android:maxLines="3"
                 android:text="@{observable.description}"
                 android:textAppearance="@style/Theme.Linkit.TextAppearanceRegular.Body2.Extra"
-                app:visibility="@{observable.descriptionVisible}"
                 app:layout_constraintEnd_toStartOf="@+id/ivLinkShare"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tvLinkTitle"
-                app:layout_goneMarginStart="@dimen/marginPrimary"
+                app:layout_goneMarginStart="@dimen/marginSecondary"
+                app:visibility="@{observable.descriptionVisible}"
                 tools:text="Description" />
 
             <TextView
@@ -91,12 +94,13 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/marginTertiary"
-                android:text="@{observable.url}"
+                android:text="@{observable.site}"
                 android:textAppearance="@style/Theme.Linkit.TextAppearanceRegular.Body2.Extra"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/ivLinkEdit"
                 app:layout_constraintStart_toStartOf="@+id/tvLinkTitle"
                 app:layout_constraintTop_toBottomOf="@+id/tvLinkDescription"
+                app:layout_constraintVertical_bias="0.0"
                 tools:text="https://google.com" />
 
             <ImageView
@@ -113,17 +117,17 @@
                 android:paddingTop="@dimen/marginSecondary"
                 android:paddingEnd="@dimen/marginSecondary"
                 android:src="@drawable/ic_url_share"
-                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintEnd_toEndOf="@+id/ivLinkPhoto"
                 app:layout_constraintTop_toBottomOf="@+id/ivLinkPhoto" />
 
             <ImageView
                 android:id="@+id/ivLinkDelete"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:onClick="@{() -> listener.onDeleteListener(observable)}"
                 android:padding="@dimen/marginTertiary"
                 android:paddingEnd="@dimen/marginSecondary"
-                android:onClick="@{() -> listener.onDeleteListener(observable)}"
-                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintEnd_toEndOf="@+id/ivLinkShare"
                 app:layout_constraintTop_toBottomOf="@+id/ivLinkShare"
                 app:srcCompat="@drawable/ic_baseline_trash_24" />
 
@@ -134,9 +138,20 @@
                 android:onClick="@{() -> listener.onEditListener(observable)}"
                 android:padding="@dimen/marginTertiary"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintEnd_toEndOf="@+id/ivLinkDelete"
                 app:layout_constraintTop_toBottomOf="@+id/ivLinkDelete"
                 app:srcCompat="@drawable/ic_baseline_edit_24" />
+
+            <ImageView
+                android:id="@+id/imageView"
+                android:layout_width="@dimen/marginGiant"
+                android:layout_height="@dimen/marginGiant"
+                app:layout_constraintBottom_toBottomOf="@+id/ivLinkPhoto"
+                app:layout_constraintEnd_toEndOf="@+id/ivLinkPhoto"
+                app:layout_constraintStart_toStartOf="@+id/ivLinkPhoto"
+                app:layout_constraintTop_toTopOf="@+id/ivLinkPhoto"
+                app:srcCompat="@drawable/ic_player_button"
+                app:visibility="@{observable.player}" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

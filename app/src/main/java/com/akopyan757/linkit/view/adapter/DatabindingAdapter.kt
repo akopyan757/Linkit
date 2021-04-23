@@ -8,13 +8,16 @@ import android.widget.AdapterView.OnItemSelectedListener
 import android.widget.ArrayAdapter
 import android.widget.ImageView
 import android.widget.Spinner
+import androidx.annotation.DimenRes
 import androidx.annotation.DrawableRes
+import androidx.core.content.ContextCompat
 import androidx.databinding.BindingAdapter
 import androidx.databinding.InverseBindingAdapter
 import androidx.databinding.InverseBindingListener
 import com.akopyan757.linkit.R
 import com.google.android.material.textfield.TextInputLayout
 import com.squareup.picasso.Picasso
+import jp.wasabeef.picasso.transformations.CropCircleTransformation
 import jp.wasabeef.picasso.transformations.RoundedCornersTransformation
 
 
@@ -36,10 +39,12 @@ object DatabindingAdapter {
     }
 
     @JvmStatic
-    @BindingAdapter("app:photoUrl", "app:photoUrlDefaultRes", requireAll = false)
-    fun ImageView.setUrl(url: String?, @DrawableRes drawableRes: Int?) {
+    @BindingAdapter("app:photoUrl", "app:photoUrlDefaultRes", "app:cornerRadius", requireAll = false)
+    fun ImageView.setUrl(url: String?, @DrawableRes drawableRes: Int?, @DimenRes cornerRes: Int?) {
+        val cornerRadius = cornerRes?.let { context.resources.getDimensionPixelSize(it) } ?: 0
         Picasso.get()
             .load(url)
+            .transform(RoundedCornersTransformation(cornerRadius, 0))
             .apply {
                 if (drawableRes != null) {
                     error(drawableRes).placeholder(drawableRes)

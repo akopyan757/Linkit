@@ -1,6 +1,7 @@
 package com.akopyan757.linkit_domain.usecase.urllink
 
 import com.akopyan757.linkit_domain.entity.UrlLinkEntity
+import com.akopyan757.linkit_domain.entity.UrlLinkGoogleAppEntity
 import com.akopyan757.linkit_domain.repository.ILocalUrlDataSource
 import com.akopyan757.linkit_domain.repository.IRemoteUrlDataSource
 import com.akopyan757.linkit_domain.usecase.CompletableWithParamsUseCase
@@ -24,7 +25,7 @@ class CreateUrlLinkUseCase(
                 UrlLinkEntity(
                     entity.id, entity.url, parameters.title, parameters.description,
                     parameters.photoUrl, null, parameters.folderId, parameters.site,
-                    parameters.type, entity.order
+                    parameters.type, parameters.googleAppEntity, entity.order
                 )
             }
 
@@ -45,6 +46,7 @@ class CreateUrlLinkUseCase(
         val description: String,
         val site: String?,
         val type: UrlLinkEntity.Type,
-        val photoUrl: String?
+        val photoUrl: String?,
+        val googleAppEntity: UrlLinkGoogleAppEntity?
     ): UseCase.Params()
 }

@@ -72,6 +72,7 @@ class LinkViewModel : BaseViewModel(), KoinComponent {
                 when (link.type) {
                     UrlLinkEntity.Type.DEFAULT -> LinkObservable.from(link)
                     UrlLinkEntity.Type.LARGE_CARD -> LinkLargeObservable.from(link)
+                    UrlLinkEntity.Type.PLAYER -> LinkLargeObservable.from(link)
                 }
             }
             urlListData.change(observables)
