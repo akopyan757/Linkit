@@ -16,16 +16,15 @@
         android:id="@+id/mcvLinkContent"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/marginTertiary"
-        android:layout_marginBottom="@dimen/marginTertiary"
         android:layout_marginStart="@dimen/marginSecondary"
+        android:layout_marginTop="@dimen/marginTertiary"
         android:layout_marginEnd="@dimen/marginSecondary"
+        android:layout_marginBottom="@dimen/marginTertiary"
         android:onClick="@{() -> listener.onItemListener(observable)}"
         android:onLongClick="@{() -> listener.onItemLongClickListener(observable)}"
         app:cardCornerRadius="@dimen/cornerRadius"
         app:cardElevation="@dimen/elevationTertiary"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHeight_min="68dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -37,13 +36,15 @@
             <ImageView
                 android:id="@+id/ivLinkPhoto"
                 android:layout_width="wrap_content"
-                android:layout_height="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/marginSecondary"
                 android:adjustViewBounds="true"
                 android:background="@drawable/background_image_view_corners"
                 android:contentDescription="@string/todo"
                 android:maxWidth="@dimen/linkPictureBigWidth"
                 android:maxHeight="@dimen/linkPictureHeight"
                 android:scaleType="centerCrop"
+                app:cornerRadius="@{observable.cornerRadiusRes}"
                 app:elevation="@dimen/elevationTertiary"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -70,17 +71,33 @@
                 tools:text="Title" />
 
             <TextView
+                android:id="@+id/tvLinkDescription"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/marginSecondary"
+                android:ellipsize="end"
+                android:ems="3"
+                android:maxLines="3"
+                android:text="@{observable.description}"
+                android:textAppearance="@style/Theme.Linkit.TextAppearanceRegular.Body2.Extra"
+                app:layout_constraintEnd_toStartOf="@+id/ivLinkShare"
+                app:layout_constraintStart_toEndOf="@+id/ivLinkPhoto"
+                app:layout_constraintTop_toBottomOf="@+id/tvLinkTitle"
+                app:layout_goneMarginStart="@dimen/marginPrimary"
+                tools:text="Description" />
+
+            <TextView
                 android:id="@+id/tvLinkUrl"
                 style="@style/Theme.Linkit.ItemUrl"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/marginTertiary"
                 android:layout_marginBottom="@dimen/marginTertiary"
                 android:text="@{observable.url}"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/ivLinkEdit"
                 app:layout_constraintStart_toStartOf="@+id/tvLinkTitle"
-                app:layout_constraintTop_toBottomOf="@+id/tvLinkTitle"
+                app:layout_constraintTop_toBottomOf="@+id/tvLinkDescription"
+                app:layout_constraintVertical_bias="0.88"
                 tools:text="https://google.com" />
 
             <ImageView
@@ -104,9 +121,9 @@
                 android:id="@+id/ivLinkDelete"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:onClick="@{() -> listener.onDeleteListener(observable)}"
                 android:padding="@dimen/marginTertiary"
                 android:paddingEnd="@dimen/marginSecondary"
-                android:onClick="@{() -> listener.onDeleteListener(observable)}"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/ivLinkShare"
                 app:srcCompat="@drawable/ic_baseline_trash_24" />
@@ -115,11 +132,11 @@
                 android:id="@+id/ivLinkEdit"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:padding="@dimen/marginTertiary"
                 android:onClick="@{() -> listener.onEditListener(observable)}"
-                app:layout_constraintBottom_toBottomOf="@+id/ivLinkDelete"
-                app:layout_constraintEnd_toStartOf="@+id/ivLinkDelete"
-                app:layout_constraintTop_toBottomOf="@+id/ivLinkShare"
+                android:padding="@dimen/marginTertiary"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="@+id/ivLinkDelete"
+                app:layout_constraintTop_toBottomOf="@+id/ivLinkDelete"
                 app:srcCompat="@drawable/ic_baseline_edit_24" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
