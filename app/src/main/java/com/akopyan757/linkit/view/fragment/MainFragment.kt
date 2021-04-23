@@ -2,7 +2,6 @@ package com.akopyan757.linkit.view.fragment
 
 import android.app.AlertDialog
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewTreeObserver
@@ -21,8 +20,8 @@ import com.akopyan757.linkit.view.adapter.LinkUrlAdapter
 import com.akopyan757.linkit.viewmodel.LinkViewModel
 import com.akopyan757.linkit.viewmodel.listener.LinkAdapterListener
 import com.akopyan757.linkit.viewmodel.observable.AdObservable
+import com.akopyan757.linkit.viewmodel.observable.BaseLinkObservable
 import com.akopyan757.linkit.viewmodel.observable.FolderObservable
-import com.akopyan757.linkit.viewmodel.observable.LinkObservable
 import com.google.android.material.tabs.TabLayout
 import kotlinx.android.synthetic.main.tab_folder.view.*
 import org.koin.android.viewmodel.ext.android.viewModel
@@ -114,24 +113,24 @@ class MainFragment : BaseFragment<FragmentMainBinding, LinkViewModel>(), LinkAda
         })
     }
 
-    override fun onShareListener(link: LinkObservable) {
+    override fun onShareListener(link: BaseLinkObservable) {
         startActivity(AndroidUtils.createShareIntent(link.url, link.title))
     }
 
-    override fun onItemListener(link: LinkObservable) {
+    override fun onItemListener(link: BaseLinkObservable) {
         startActivity(AndroidUtils.createIntent(link.url))
         viewModel.moveUrlLinkToTop(link)
     }
 
-    override fun onItemLongClickListener(link: LinkObservable) {
-
+    override fun onItemLongClickListener(link: BaseLinkObservable) {
+        // TODO("Not yet implemented")
     }
 
-    override fun onDeleteListener(link: LinkObservable) {
+    override fun onDeleteListener(link: BaseLinkObservable) {
         showAcceptDeleteAction(link)
     }
 
-    override fun onEditListener(link: LinkObservable) {
+    override fun onEditListener(link: BaseLinkObservable) {
         // TODO("Not yet implemented")
     }
 
@@ -139,7 +138,7 @@ class MainFragment : BaseFragment<FragmentMainBinding, LinkViewModel>(), LinkAda
         viewModel.closeAdItem(adObservable)
     }
 
-    private fun showAcceptDeleteAction(observable: LinkObservable) {
+    private fun showAcceptDeleteAction(observable: BaseLinkObservable) {
         AlertDialog.Builder(context, R.style.Theme_Linkit_AlertDialog)
             .setTitle(R.string.dialog_delete_link_title)
             .setMessage(R.string.dialog_delete_link_description)

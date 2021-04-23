@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+        <variable
+            name="observable"
+            type="com.akopyan757.linkit.viewmodel.observable.LinkLargeObservable" />
+        <variable
+            name="listener"
+            type="com.akopyan757.linkit.viewmodel.listener.LinkAdapterListener" />
+    </data>
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/mcvLinkContent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/marginTertiary"
+        android:layout_marginBottom="@dimen/marginTertiary"
+        android:layout_marginStart="@dimen/marginSecondary"
+        android:layout_marginEnd="@dimen/marginSecondary"
+        android:onClick="@{() -> listener.onItemListener(observable)}"
+        android:onLongClick="@{() -> listener.onItemLongClickListener(observable)}"
+        app:cardCornerRadius="@dimen/cornerRadius"
+        app:cardElevation="@dimen/elevationTertiary"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHeight_min="68dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/clLinkContent"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:id="@+id/ivLinkPhoto"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:adjustViewBounds="true"
+                android:background="@drawable/background_image_view_corners"
+                android:contentDescription="@string/todo"
+                android:scaleType="centerCrop"
+                app:elevation="@dimen/elevationTertiary"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:photoUrl="@{observable.photoUrl}"
+                app:visibility="@{observable.photoVisible}"
+                tools:src="@drawable/image_analysis" />
+
+            <TextView
+                android:id="@+id/tvLinkTitle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/marginSecondary"
+                android:layout_marginTop="@dimen/marginSecondary"
+                android:ellipsize="end"
+                android:ems="3"
+                android:maxLines="3"
+                android:text="@{observable.title}"
+                android:textAppearance="@style/Theme.Linkit.TextAppearanceRegular.Body1"
+                app:layout_constraintEnd_toStartOf="@+id/ivLinkShare"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/ivLinkPhoto"
+                app:layout_goneMarginStart="@dimen/marginPrimary"
+                tools:text="Title" />
+
+            <TextView
+                android:id="@+id/tvLinkDescription"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/marginSecondary"
+                android:ellipsize="end"
+                android:ems="3"
+                android:maxLines="3"
+                android:text="@{observable.description}"
+                android:textAppearance="@style/Theme.Linkit.TextAppearanceRegular.Body2.Extra"
+                app:visibility="@{observable.descriptionVisible}"
+                app:layout_constraintEnd_toStartOf="@+id/ivLinkShare"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvLinkTitle"
+                app:layout_goneMarginStart="@dimen/marginPrimary"
+                tools:text="Description" />
+
+            <TextView
+                android:id="@+id/tvLinkUrl"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/marginTertiary"
+                android:text="@{observable.url}"
+                android:textAppearance="@style/Theme.Linkit.TextAppearanceRegular.Body2.Extra"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/ivLinkEdit"
+                app:layout_constraintStart_toStartOf="@+id/tvLinkTitle"
+                app:layout_constraintTop_toBottomOf="@+id/tvLinkDescription"
+                tools:text="https://google.com" />
+
+            <ImageView
+                android:id="@+id/ivLinkShare"
+                style="@style/Theme.Linkit.ClickableImageView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:clickable="true"
+                android:contentDescription="@string/todo"
+                android:focusable="true"
+                android:onClick="@{() -> listener.onShareListener(observable)}"
+                android:padding="@dimen/marginTertiary"
+                android:paddingTop="@dimen/marginSecondary"
+                android:paddingEnd="@dimen/marginSecondary"
+                android:src="@drawable/ic_url_share"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/ivLinkPhoto" />
+
+            <ImageView
+                android:id="@+id/ivLinkDelete"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/marginTertiary"
+                android:paddingEnd="@dimen/marginSecondary"
+                android:onClick="@{() -> listener.onDeleteListener(observable)}"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/ivLinkShare"
+                app:srcCompat="@drawable/ic_baseline_trash_24" />
+
+            <ImageView
+                android:id="@+id/ivLinkEdit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="@{() -> listener.onEditListener(observable)}"
+                android:padding="@dimen/marginTertiary"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/ivLinkDelete"
+                app:srcCompat="@drawable/ic_baseline_edit_24" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </com.google.android.material.card.MaterialCardView>
+
+</layout>

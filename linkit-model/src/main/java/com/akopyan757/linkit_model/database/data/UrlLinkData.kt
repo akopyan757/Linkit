@@ -14,5 +14,7 @@ data class UrlLinkData(
     @ColumnInfo(name = "photo_url") var photoUrl: String? = null,
     @ColumnInfo(name = "logo_url") var logoUrl: String? = null,
     @ColumnInfo(name = "folder_id") var folderId: String? = null,
+    @ColumnInfo(name = "site") var site: String? = null,
+    @ColumnInfo(name = "type") var type: String? = null,
     @ColumnInfo(name = "_order") var _order: Int = 0,
 )

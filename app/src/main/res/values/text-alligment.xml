@@ -23,6 +23,10 @@
         <item name="lineHeight">14sp</item>
     </style>
 
+    <style name="Theme.Linkit.TextAppearanceRegular.Body2.Extra">
+        <item name="android:textColor">@color/blackOpacity</item>
+    </style>
+
     <style name="Theme.Linkit.TextAppearanceRegular.Body3">
         <item name="android:textSize">10sp</item>
         <item name="lineHeight">12sp</item>

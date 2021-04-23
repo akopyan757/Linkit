@@ -1,5 +1,6 @@
 package com.akopyan757.linkit_model.datasource
 
+import android.util.Log
 import com.akopyan757.linkit_domain.entity.DataChange
 import com.akopyan757.linkit_domain.entity.UrlLinkEntity
 import com.akopyan757.linkit_domain.repository.IRemoteUrlDataSource
@@ -39,6 +40,7 @@ class RemoteUrlLinkDataSource(
 
     override fun createOrUpdateUrlLink(data: UrlLinkEntity) = Single.create<UrlLinkEntity> { emitter ->
         val ref = getUserDocumentOrNull()
+        Log.i("RemoteUrlLinkDataSource", "createOrUpdateUrlLink = $data")
         if (ref == null) {
             emitter.onError(FirebaseUserNotFoundException())
         } else {

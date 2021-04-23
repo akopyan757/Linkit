@@ -45,6 +45,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/marginPrimary"
             android:clipToPadding="false"
+            android:layout_marginStart="@dimen/marginSecondary"
+            android:layout_marginEnd="@dimen/marginSecondary"
             layout="@layout/item_link"
             app:observable="@{viewModel.linkObservable}"
             app:visibility="@{viewModel.linObservableVisible}"

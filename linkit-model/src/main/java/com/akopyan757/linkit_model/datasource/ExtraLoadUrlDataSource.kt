@@ -13,7 +13,7 @@ class ExtraLoadUrlDataSource(
         val card = htmlTags.openGraphHtmlTags.toCard()
         return UrlLinkEntity(
             entity.id, entity.url, card.title ?: "", card.description ?: "",
-            card.photoUrl, entity.logoUrl, entity.folderId, entity.order
+            card.photoUrl, entity.logoUrl, entity.folderId, entity.site, entity.type, entity.order
         )
     }
 }

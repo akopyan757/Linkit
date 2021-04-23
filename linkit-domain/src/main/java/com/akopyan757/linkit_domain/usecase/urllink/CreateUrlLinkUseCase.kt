@@ -23,7 +23,8 @@ class CreateUrlLinkUseCase(
             localDataSource.createUrlLinkInstance(parameters.url).let { entity ->
                 UrlLinkEntity(
                     entity.id, entity.url, parameters.title, parameters.description,
-                    parameters.photoUrl, null, parameters.folderId, entity.order
+                    parameters.photoUrl, null, parameters.folderId, parameters.site,
+                    parameters.type, entity.order
                 )
             }
 
@@ -42,6 +43,8 @@ class CreateUrlLinkUseCase(
         val folderId: String?,
         val title: String,
         val description: String,
+        val site: String?,
+        val type: UrlLinkEntity.Type,
         val photoUrl: String?
     ): UseCase.Params()
 }

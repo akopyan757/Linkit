@@ -9,8 +9,11 @@ import com.akopyan757.base.viewmodel.DiffItemObservable
 import com.akopyan757.base.viewmodel.list.ListLiveData
 import com.akopyan757.linkit.BR
 import com.akopyan757.linkit.R
+import com.akopyan757.linkit.viewmodel.observable.BaseLinkObservable
 import com.akopyan757.linkit.viewmodel.observable.FolderObservable
+import com.akopyan757.linkit.viewmodel.observable.LinkLargeObservable
 import com.akopyan757.linkit.viewmodel.observable.LinkObservable
+import com.akopyan757.linkit_domain.entity.UrlLinkEntity
 import com.akopyan757.linkit_domain.usecase.auth.GetUserUseCase
 import com.akopyan757.linkit_domain.usecase.folder.ListenFoldersChangesUseCase
 import com.akopyan757.linkit_domain.usecase.urllink.DeleteUrlLinkUseCase
@@ -53,16 +56,27 @@ class LinkViewModel : BaseViewModel(), KoinComponent {
                 observables.add(FolderObservable.fromData(folder))
             }
             folderList.value = observables
+        }, onError = {
+            Log.e("LinkViewModel", "listenFolders", it)
         })
-        getUrlLinkList.execute()
+        getUrlLinkList.execute(onError = {
+            Log.e("LinkViewModel", "getUrlLinkList", it)
+        })
     }
 
     fun listenLinksById(folderId: String?) {
         val id = folderId?.takeUnless { id -> id == FolderObservable.DEF_FOLDER_ID }
         listenUrlLinks.disposeLastExecute()
         listenUrlLinks.execute(ListenUrlLinkUseCase.Params(id), { links ->
-            val observables = links.map { link -> LinkObservable.from(link) }
+            val observables = links.map { link ->
+                when (link.type) {
+                    UrlLinkEntity.Type.DEFAULT -> LinkObservable.from(link)
+                    UrlLinkEntity.Type.LARGE_CARD -> LinkLargeObservable.from(link)
+                }
+            }
             urlListData.change(observables)
+        }, onError = {
+            Log.e("LinkViewModel", "listenLinksById", it)
         })
     }
 
@@ -72,13 +86,13 @@ class LinkViewModel : BaseViewModel(), KoinComponent {
         })
     }
 
-    fun deleteUrlLink(observable: LinkObservable) {
+    fun deleteUrlLink(observable: BaseLinkObservable) {
         deleteUrlLink.execute(DeleteUrlLinkUseCase.Params(observable.id), onError = {
             Log.e("LinkViewModel", "deleteUrlLink", it)
         })
     }
 
-    fun moveUrlLinkToTop(observable: LinkObservable) {
+    fun moveUrlLinkToTop(observable: BaseLinkObservable) {
         moveTopLink.execute(MoveTopLinkUseCase.Params(observable.id))
     }
 
