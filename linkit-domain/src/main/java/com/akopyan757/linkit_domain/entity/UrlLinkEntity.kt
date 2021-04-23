@@ -1,25 +1,24 @@
 package com.akopyan757.linkit_domain.entity
 
 data class UrlLinkEntity(
-    val id: String,
+    var id: String,
     val url: String,
     val title: String,
     val description: String,
     val photoUrl: String?,
-    val logoUrl: String?,
-    val folderId: String?,
+    var folderId: String?,
     val site: String?,
     val type: Type,
-    var googleApp: UrlLinkGoogleAppEntity?,
-    val order: Int
+    val app: UrlLinkAppEntity?,
+    var order: Int
 ) {
     constructor() : this(
-        "", "", "", "", null, null,
+        "", "", "", "", null,
         null, null, Type.DEFAULT, null,0
     )
 
     constructor(id: String, url: String, order: Int) : this(
-        id, url, "", "", null, null,
+        id, url, "", "", null,
         null, null, Type.DEFAULT, null, order
     )
 

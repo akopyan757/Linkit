@@ -1,18 +1,14 @@
 package com.akopyan757.linkit.viewmodel
 
-import android.util.Log
 import androidx.databinding.Bindable
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.map
 import com.akopyan757.base.viewmodel.BaseViewModel
 import com.akopyan757.linkit.BR
-import com.akopyan757.linkit.common.Config
 import com.akopyan757.linkit.viewmodel.observable.FolderObservable
 import com.akopyan757.linkit.viewmodel.observable.LinkObservable
-import com.akopyan757.linkit_domain.entity.HtmlLinkCardEntity
 import com.akopyan757.linkit_domain.entity.UrlLinkEntity
-import com.akopyan757.linkit_domain.entity.UrlLinkGoogleAppEntity
 import com.akopyan757.linkit_domain.usecase.folder.ListenFoldersChangesUseCase
 import com.akopyan757.linkit_domain.usecase.urllink.CreateUrlLinkUseCase
 import com.akopyan757.linkit_domain.usecase.urllink.LoadHtmlCardsUseCase
@@ -30,7 +26,7 @@ class LinkCreateUrlViewModel(
     @get:Bindable var linkObservable: LinkObservable? by DB(null, BR.linkObservable, BR.linObservableVisible)
     @get:Bindable val linObservableVisible: Boolean get() = linkObservable != null
 
-    private var htmlLinkCardEntity: HtmlLinkCardEntity? = null
+    private var urlLinkEntity: UrlLinkEntity? = null
     private var foldersList = MutableLiveData<List<FolderObservable>>()
 
     fun getFolderLiveList(): LiveData<List<String>> {
@@ -48,38 +44,21 @@ class LinkCreateUrlViewModel(
 
     fun loadHtmlCards() {
         loadCards.execute(LoadHtmlCardsUseCase.Params(url), { card ->
-            htmlLinkCardEntity = card
-            linkObservable = card.let(::cardToObservable)
+            urlLinkEntity = card
+            linkObservable = LinkObservable.from(card)
         })
     }
 
     fun createNewLink() {
         val folderId = getSelectedFolderId()
-        val title = linkObservable?.title ?: EMPTY
-        val description = linkObservable?.description ?: EMPTY
-        val photoUrl = linkObservable?.photoUrl
-        val site = htmlLinkCardEntity?.site
-        val type = when(htmlLinkCardEntity?.type) {
-            "summary_large_image" -> UrlLinkEntity.Type.LARGE_CARD
-            "player" -> UrlLinkEntity.Type.PLAYER
-            else -> UrlLinkEntity.Type.DEFAULT
-        }
-        val googleApp = htmlLinkCardEntity?.googleApp?.let { card ->
-            UrlLinkGoogleAppEntity(card.appId, card.appName, card.appName)
-        }
-        val params = CreateUrlLinkUseCase.Params(url, folderId, title, description, site, type, photoUrl, googleApp)
+        val entity = urlLinkEntity ?: return
+        val params = CreateUrlLinkUseCase.Params(folderId, entity)
         createLink.execute(params, onSuccess = { emitAction(ACTION_DISMISS) })
     }
 
     private fun getSelectedFolderId(): String? {
         val folder = foldersList.value?.find { folder -> folder.name == selectedFolderName }
         return folder?.id?.takeUnless { id -> id == FolderObservable.DEF_FOLDER_ID }
-    }
-
-    private fun cardToObservable(card: HtmlLinkCardEntity): LinkObservable {
-        val title = card.title ?: Config.EMPTY
-        val description = card.description ?: Config.EMPTY
-        return LinkObservable("", url, title, description, card.photoUrl)
     }
 
     companion object {

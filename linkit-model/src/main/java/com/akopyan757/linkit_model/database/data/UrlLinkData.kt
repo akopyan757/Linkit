@@ -13,10 +13,9 @@ data class UrlLinkData(
     @ColumnInfo(name = "title") var title: String = "",
     @ColumnInfo(name = "description") var description: String = "",
     @ColumnInfo(name = "photo_url") var photoUrl: String? = null,
-    @ColumnInfo(name = "logo_url") var logoUrl: String? = null,
     @ColumnInfo(name = "folder_id") var folderId: String? = null,
     @ColumnInfo(name = "site") var site: String? = null,
     @ColumnInfo(name = "type") var type: String? = null,
     @ColumnInfo(name = "_order") var _order: Int = 0,
-    @Embedded var googleApp: UrlLinkAppData? = null
+    @Embedded var app: UrlLinkAppData? = null
 )

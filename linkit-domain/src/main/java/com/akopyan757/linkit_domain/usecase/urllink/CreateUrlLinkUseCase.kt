@@ -1,16 +1,15 @@
 package com.akopyan757.linkit_domain.usecase.urllink
 
 import com.akopyan757.linkit_domain.entity.UrlLinkEntity
-import com.akopyan757.linkit_domain.entity.UrlLinkGoogleAppEntity
 import com.akopyan757.linkit_domain.repository.ILocalUrlDataSource
 import com.akopyan757.linkit_domain.repository.IRemoteUrlDataSource
 import com.akopyan757.linkit_domain.usecase.CompletableWithParamsUseCase
 import com.akopyan757.linkit_domain.usecase.SchedulerProvider
-import com.akopyan757.linkit_domain.usecase.SingleWithParamsUseCase
 import com.akopyan757.linkit_domain.usecase.UseCase
 import io.reactivex.Completable
 import io.reactivex.Single
 import io.reactivex.disposables.CompositeDisposable
+import java.util.*
 
 class CreateUrlLinkUseCase(
     private val remoteDataSource: IRemoteUrlDataSource,
@@ -21,14 +20,11 @@ class CreateUrlLinkUseCase(
 
     override fun launch(): Completable {
         return Single.fromCallable {
-            localDataSource.createUrlLinkInstance(parameters.url).let { entity ->
-                UrlLinkEntity(
-                    entity.id, entity.url, parameters.title, parameters.description,
-                    parameters.photoUrl, null, parameters.folderId, parameters.site,
-                    parameters.type, parameters.googleAppEntity, entity.order
-                )
+            parameters.urlLinkEntity.apply {
+                id = UUID.randomUUID().toString()
+                order = localDataSource.getNewOrderValue()
+                folderId = parameters.folderId
             }
-
         }.flatMap { entity ->
             remoteDataSource.createOrUpdateUrlLink(entity)
         }.flatMapCompletable { urlEntity ->
@@ -40,13 +36,7 @@ class CreateUrlLinkUseCase(
     }
 
     data class Params(
-        val url: String,
         val folderId: String?,
-        val title: String,
-        val description: String,
-        val site: String?,
-        val type: UrlLinkEntity.Type,
-        val photoUrl: String?,
-        val googleAppEntity: UrlLinkGoogleAppEntity?
+        val urlLinkEntity: UrlLinkEntity
     ): UseCase.Params()
 }

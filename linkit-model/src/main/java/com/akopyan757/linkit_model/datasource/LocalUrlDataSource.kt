@@ -34,12 +34,6 @@ class LocalUrlDataSource(
         return urlLinkDao.getAll().map(mapper::firstToSecond)
     }
 
-    override fun createUrlLinkInstance(url: String): UrlLinkEntity {
-        val id = UUID.randomUUID().toString()
-        val order = urlLinkDao.getMaxOrder().plus(ONE)
-        return UrlLinkEntity(id, url, order)
-    }
-
     override fun getNewOrderValue(): Int {
         return urlLinkDao.getMaxOrder().plus(ONE)
     }

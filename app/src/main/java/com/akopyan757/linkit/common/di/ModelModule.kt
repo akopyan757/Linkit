@@ -46,9 +46,6 @@ object ModelModule {
         single<ILocalFolderDataSource> {
             LocalFolderDataSource(get(), get(named(MAPPER_FOLDER)))
         }
-        single<IExtraLoadUrlDataSource> {
-            ExtraLoadUrlDataSource(get())
-        }
         single<ILoadHtmlCardsDataSource> {
             LoadHtmlCardsDataSource(get())
         }

@@ -10,7 +10,7 @@ import com.akopyan757.linkit_model.database.data.UrlLinkData
 @Database(entities = [
     UrlLinkData::class,
     FolderData::class
-], version = 22)
+], version = 23)
 public abstract class AppDatabase: RoomDatabase() {
     public abstract fun urlLinkDao(): UrlLinkDao
     public abstract fun folderDao(): FolderDao

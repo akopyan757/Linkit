@@ -1,6 +1,5 @@
 package com.akopyan757.linkit_model.parser.tags
 
-import com.akopyan757.linkit_domain.entity.HtmlLinkCardEntity
 
 data class AdditionalHtmlTags(
     val canonical: String?,
@@ -8,7 +7,11 @@ data class AdditionalHtmlTags(
     val metaDescription: String?,
     val metaAuthor: String?
 ) {
-    fun toCard() = HtmlLinkCardEntity(title, metaDescription, null)
+    fun rating(): Int {
+        return canonical.toOne() + title.toOne() + metaDescription.toOne() + metaAuthor.toOne()
+    }
+
+    private fun String?.toOne() = if (this != null) 1 else 0
 
     companion object {
         const val TAG_CANONICAL = "canonical"

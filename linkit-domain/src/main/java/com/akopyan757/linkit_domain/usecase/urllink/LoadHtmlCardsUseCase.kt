@@ -1,6 +1,6 @@
 package com.akopyan757.linkit_domain.usecase.urllink
 
-import com.akopyan757.linkit_domain.entity.HtmlLinkCardEntity
+import com.akopyan757.linkit_domain.entity.UrlLinkEntity
 import com.akopyan757.linkit_domain.repository.ILoadHtmlCardsDataSource
 import com.akopyan757.linkit_domain.usecase.SchedulerProvider
 import com.akopyan757.linkit_domain.usecase.SingleWithParamsUseCase
@@ -12,7 +12,7 @@ class LoadHtmlCardsUseCase(
     private val loadHtmlCardsDataSource: ILoadHtmlCardsDataSource,
     private val schedulerProvider: SchedulerProvider,
     compositeDisposable: CompositeDisposable
-) : SingleWithParamsUseCase<HtmlLinkCardEntity, LoadHtmlCardsUseCase.Params>(compositeDisposable) {
+) : SingleWithParamsUseCase<UrlLinkEntity, LoadHtmlCardsUseCase.Params>(compositeDisposable) {
 
     override fun launch() = Single.fromCallable {
         loadHtmlCardsDataSource.loadCard(parameters.resourceUrl)

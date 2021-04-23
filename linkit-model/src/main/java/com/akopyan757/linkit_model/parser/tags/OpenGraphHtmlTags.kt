@@ -1,7 +1,5 @@
 package com.akopyan757.linkit_model.parser.tags
 
-import com.akopyan757.linkit_domain.entity.HtmlLinkCardEntity
-
 data class OpenGraphHtmlTags(
     val title: String?,
     val siteName: String?,
@@ -22,7 +20,13 @@ data class OpenGraphHtmlTags(
     val fbAdmins: String?
 ) {
 
-    fun toCard() = HtmlLinkCardEntity(title, description, image)
+    fun rating(): Int {
+        return title.toOne() + siteName.toOne() + description.toOne() + type.toOne() +
+                image.toOne() + articleAuthor.toOne() + articlePublishedTime.toOne() +
+                locale.toOne() + priceAmount.toOne() + priceCurrency.toOne()
+    }
+
+    private fun String?.toOne() = if (this != null) 1 else 0
 
     companion object {
         const val TAG_OPEN_GRAPH = "og:"

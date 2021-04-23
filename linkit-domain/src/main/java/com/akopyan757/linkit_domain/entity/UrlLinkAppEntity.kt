@@ -1,6 +1,6 @@
 package com.akopyan757.linkit_domain.entity
 
-data class UrlLinkGoogleAppEntity(
+data class UrlLinkAppEntity(
     val appId: String?,
     val appName: String?,
     val url: String?

@@ -1,8 +1,5 @@
 package com.akopyan757.linkit_model.parser.tags
 
-import com.akopyan757.linkit_domain.entity.HtmlLinkAppEntity
-import com.akopyan757.linkit_domain.entity.HtmlLinkCardEntity
-
 data class TwitterHtmlTags(
     val title: String?,
     val url: String?,
@@ -18,14 +15,13 @@ data class TwitterHtmlTags(
     val googlePlayAppUrl: String?
 ) {
 
-    fun toCard() = HtmlLinkCardEntity(title, description, image, site, card)
-
-    fun toAppData(): HtmlLinkAppEntity? {
-        val appId = googlePlayAppId ?: return null
-        val appName = googlePlayAppName ?: return null
-        val appUrl = googlePlayAppUrl ?: return null
-        return HtmlLinkAppEntity(appId, appName, appUrl)
+    fun rating(): Int {
+        return title.toOne() + description.toOne() + image.toOne() + creator.toOne() +
+                site.toOne() + card.toOne() + googlePlayAppId.toOne() + googlePlayAppName.toOne() +
+                googlePlayAppUrl.toOne()
     }
+
+    private fun String?.toOne() = if (this != null) 1 else 0
 
     companion object {
         const val TAG_TWITTER = "twitter:"
