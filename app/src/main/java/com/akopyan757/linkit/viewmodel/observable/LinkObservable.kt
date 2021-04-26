@@ -11,6 +11,7 @@ data class LinkObservable(
     override val url: String,
     override val title: String,
     val description: String,
+    val site: String,
     val photoUrl: String?
 ): DiffItemObservable, Serializable, BaseLinkObservable {
 
@@ -21,7 +22,7 @@ data class LinkObservable(
 
     companion object {
         fun from(data: UrlLinkEntity): LinkObservable {
-            return LinkObservable(data.id, data.url, data.title, data.description, data.photoUrl)
+            return LinkObservable(data.id, data.url, data.title, data.description, data.url, data.photoUrl)
         }
     }
 }

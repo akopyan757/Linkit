@@ -16,12 +16,12 @@ data class TwitterHtmlTags(
 ) {
 
     fun rating(): Int {
-        return title.toOne() + description.toOne() + image.toOne() + creator.toOne() +
-                site.toOne() + card.toOne() + googlePlayAppId.toOne() + googlePlayAppName.toOne() +
-                googlePlayAppUrl.toOne()
+        return title.toOne() + description.toOne() + image.toThree() + creator.toOne() +
+                site.toOne() + card.toOne()
     }
 
     private fun String?.toOne() = if (this != null) 1 else 0
+    private fun String?.toThree() = if (this != null) 3 else 0
 
     companion object {
         const val TAG_TWITTER = "twitter:"

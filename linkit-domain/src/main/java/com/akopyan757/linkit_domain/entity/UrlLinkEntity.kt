@@ -25,13 +25,15 @@ data class UrlLinkEntity(
     enum class Type(val value: String) {
         DEFAULT("default"),
         LARGE_CARD("large_card"),
-        PLAYER("player");
+        PLAYER("player"),
+        CARD("card");
 
         companion object {
             fun fromValue(value: String) = when (value) {
                 LARGE_CARD.value -> LARGE_CARD
                 PLAYER.value -> PLAYER
                 DEFAULT.value -> DEFAULT
+                CARD.value -> CARD
                 else -> DEFAULT
             }
         }

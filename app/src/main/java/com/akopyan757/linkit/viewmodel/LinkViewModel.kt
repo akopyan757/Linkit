@@ -71,6 +71,7 @@ class LinkViewModel : BaseViewModel(), KoinComponent {
             val observables = links.map { link ->
                 when (link.type) {
                     UrlLinkEntity.Type.DEFAULT -> LinkObservable.from(link)
+                    UrlLinkEntity.Type.CARD -> LinkObservable.from(link)
                     UrlLinkEntity.Type.LARGE_CARD -> LinkLargeObservable.from(link)
                     UrlLinkEntity.Type.PLAYER -> LinkLargeObservable.from(link)
                 }
