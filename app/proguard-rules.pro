@@ -31,3 +31,4 @@
 
 -keep class com.huawei.openalliance.ad.** { *; }
 -keep class com.huawei.hms.ads.** { *; }
+-keep class com.akopyan757.linkit.viewmodel.observable.** { *; }
