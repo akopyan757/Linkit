@@ -39,18 +39,14 @@ object DatabindingAdapter {
     }
 
     @JvmStatic
-    @BindingAdapter("app:photoUrl", "app:photoUrlDefaultRes", "app:cornerRadius", requireAll = false)
-    fun ImageView.setUrl(url: String?, @DrawableRes drawableRes: Int?, @DimenRes cornerRes: Int?) {
-        val cornerRadius = cornerRes?.let { context.resources.getDimensionPixelSize(it) } ?: 0
-        Picasso.get()
-            .load(url)
-            .transform(RoundedCornersTransformation(cornerRadius, 0))
-            .apply {
-                if (drawableRes != null) {
-                    error(drawableRes).placeholder(drawableRes)
-                }
-            }
-            .into(this)
+    @BindingAdapter("app:photoUrl", "app:photoUrlDefaultRes", requireAll = false)
+    fun ImageView.setUrl(url: String?, @DrawableRes drawableRes: Int?) {
+        var request = Picasso.get().load(url)
+        if (drawableRes != null) {
+            request = request.error(drawableRes)
+                .placeholder(drawableRes)
+        }
+        request.into(this)
     }
 
     @JvmStatic

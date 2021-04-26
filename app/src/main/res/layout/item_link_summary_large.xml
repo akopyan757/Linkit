@@ -43,7 +43,7 @@
                 android:adjustViewBounds="true"
                 android:contentDescription="@string/todo"
                 android:scaleType="centerCrop"
-                app:cornerRadius="@{observable.cornerRadius}"
+                app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.CornerSize"
                 app:elevation="@dimen/elevationTertiary"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
