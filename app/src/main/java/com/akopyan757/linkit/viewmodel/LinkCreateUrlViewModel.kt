@@ -22,7 +22,7 @@ class LinkCreateUrlViewModel(
     private val loadCards: LoadHtmlCardsUseCase by injectUseCase()
     private val listenFolders: ListenFoldersChangesUseCase by injectUseCase()
 
-    @get:Bindable var selectedFolderName: String by DB("", BR.selectedFolderName)
+    @get:Bindable var selectedFolderName: String by DB(DEF_FOLDER_NAME, BR.selectedFolderName)
     @get:Bindable var linkObservable: LinkObservable? by DB(null, BR.linkObservable, BR.linObservableVisible)
     @get:Bindable val linObservableVisible: Boolean get() = linkObservable != null
 
@@ -65,6 +65,5 @@ class LinkCreateUrlViewModel(
         const val ACTION_DISMISS = 121_1
 
         private const val DEF_FOLDER_NAME = "Not selected"
-        private const val EMPTY = ""
     }
 }
