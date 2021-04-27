@@ -36,6 +36,11 @@ interface UrlLinkDao {
     fun removeAll()
 
     @Transaction
+    fun removeByIds(ids: List<String>) {
+        ids.forEach { id -> removeById(id) }
+    }
+
+    @Transaction
     fun updateAll(links: List<UrlLinkData>) {
         removeAll()
         links.forEach { link -> insertOrUpdate(link) }

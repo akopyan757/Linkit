@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.databinding.Bindable
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.map
 import com.akopyan757.base.viewmodel.BaseViewModel
 import com.akopyan757.base.viewmodel.DiffItemObservable
 import com.akopyan757.base.viewmodel.list.ListLiveData
@@ -35,6 +36,7 @@ class LinkViewModel : BaseViewModel(), KoinComponent {
     @get:Bindable var profileIconUrl: String? by DB(null, BR.profileIconUrl)
     @get:Bindable var profileIconDefaultRes: Int = R.drawable.ic_user
 
+    private val editMode = MutableLiveData(false)
     private var folderList = MutableLiveData<List<FolderObservable>>()
     private val urlListData = ListLiveData<DiffItemObservable>()
 
@@ -47,6 +49,11 @@ class LinkViewModel : BaseViewModel(), KoinComponent {
     fun listenFolderNames(): LiveData<List<FolderObservable>> {
         return folderList
     }
+
+    fun listenEditMode(): LiveData<Boolean> = editMode
+    fun getEditModeState(): Boolean = editMode.value ?: false
+
+    fun listenNotEditMode(): LiveData<Boolean> = editMode.map { value -> value.not() }
 
     fun startListenFolders() {
         listenFolders.execute({ folders ->
@@ -82,14 +89,36 @@ class LinkViewModel : BaseViewModel(), KoinComponent {
         })
     }
 
+    fun onEditLinkItem(observable: BaseLinkObservable) {
+        editMode.value = true
+        observable.toggleCheck()
+        urlListData.changeItem(observable) {
+            urlListData.getList().all { link ->
+                if (link is BaseLinkObservable) link.checked.not() else true
+            }.also { uncheckedAll ->
+                editMode.value = uncheckedAll.not()
+            }
+        }
+    }
+
+    fun closeEditMode() {
+        val uncheckedObservables = urlListData.getList().map { observable ->
+            if (observable is BaseLinkObservable) observable.resetCheck(); observable
+        }
+        urlListData.change(uncheckedObservables) {
+            editMode.value = false
+        }
+    }
+
     fun getUserAvatar() {
         getUser.execute(onSuccess = { userEntity ->
             profileIconUrl = userEntity.photoUrl
         })
     }
 
-    fun deleteUrlLink(observable: BaseLinkObservable) {
-        deleteUrlLink.execute(DeleteUrlLinkUseCase.Params(observable.id), onError = {
+    fun deleteUrlLinks() {
+        val linkIds = getCheckedLinksIds()
+        deleteUrlLink.execute(DeleteUrlLinkUseCase.Params(linkIds), onError = {
             Log.e("LinkViewModel", "deleteUrlLink", it)
         })
     }
@@ -100,6 +129,20 @@ class LinkViewModel : BaseViewModel(), KoinComponent {
 
     fun closeAdItem(observable: DiffItemObservable) {
         urlListData.deleteItem(observable)
+    }
+
+    fun getCheckedLinksCount(): Int {
+        return getCheckedLinksIds().size
+    }
+    
+    private fun getCheckedLinksIds(): List<String> {
+        return urlListData.getList().mapNotNull { observable ->
+            if (observable is BaseLinkObservable && observable.checked) {
+                observable.id
+            } else {
+                null
+            }
+        }
     }
 
     companion object {

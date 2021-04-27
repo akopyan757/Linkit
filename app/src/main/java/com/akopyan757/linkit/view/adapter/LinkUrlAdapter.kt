@@ -64,6 +64,7 @@ class LinkUrlAdapter(
         fun bind(observable: LinkObservable) {
             binding.observable = observable
             binding.listener = listener
+            binding.checked = observable.checked
             binding.executePendingBindings()
         }
     }
@@ -76,6 +77,7 @@ class LinkUrlAdapter(
         fun bind(observable: LinkLargeObservable) {
             binding.observable = observable
             binding.listener = listener
+            binding.checked = observable.checked
             binding.executePendingBindings()
         }
     }

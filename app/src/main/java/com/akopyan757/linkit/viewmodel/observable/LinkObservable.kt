@@ -1,8 +1,5 @@
 package com.akopyan757.linkit.viewmodel.observable
 
-import androidx.annotation.DimenRes
-import com.akopyan757.base.viewmodel.DiffItemObservable
-import com.akopyan757.linkit.R
 import com.akopyan757.linkit_domain.entity.UrlLinkEntity
 import java.io.Serializable
 
@@ -13,12 +10,19 @@ data class LinkObservable(
     val description: String,
     val site: String,
     val photoUrl: String?
-): DiffItemObservable, Serializable, BaseLinkObservable {
+): Serializable, BaseLinkObservable {
 
     val photoVisible = photoUrl != null
-    @DimenRes val cornerRadiusRes = R.dimen.marginSecondary
 
-    override fun id() = id
+    override var checked: Boolean = false
+
+    override fun resetCheck() {
+        checked = false
+    }
+
+    override fun toggleCheck() {
+        checked = checked.not()
+    }
 
     companion object {
         fun from(data: UrlLinkEntity): LinkObservable {

@@ -13,6 +13,7 @@ import io.reactivex.Observable
 import io.reactivex.Single
 
 class RemoteUrlLinkDataSource(
+    private val firestore: FirebaseFirestore,
     private val reference: CollectionReference,
     private val firebaseAuth: FirebaseAuth
 ): IRemoteUrlDataSource {
@@ -52,16 +53,20 @@ class RemoteUrlLinkDataSource(
         }
     }
 
-    override fun deleteUrlLink(linkId: String) = Completable.create { emitter ->
+    override fun deleteUrlLinks(linkIds: List<String>) = Completable.create { emitter ->
         val ref = getUserDocumentOrNull()
         if (ref == null) {
             emitter.onError(FirebaseUserNotFoundException())
         } else {
-            ref.collection(URLS)
-                .document(linkId)
-                .delete()
-                .addOnFailureListener(emitter::onError)
-                .addOnSuccessListener { emitter.onComplete() }
+            firestore.runTransaction { transaction ->
+                val collection = ref.collection(URLS)
+                linkIds.forEach { linkId ->
+                    val document = collection.document(linkId)
+                    transaction.delete(document)
+                }
+            }
+            .addOnFailureListener(emitter::onError)
+            .addOnSuccessListener { emitter.onComplete() }
         }
     }
 

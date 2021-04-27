@@ -8,7 +8,5 @@ interface LinkAdapterListener {
     fun onShareListener(link: BaseLinkObservable)
     fun onItemListener(link: BaseLinkObservable)
     fun onItemLongClickListener(link: BaseLinkObservable)
-    fun onDeleteListener(link: BaseLinkObservable)
-    fun onEditListener(link: BaseLinkObservable)
     fun onAdClosed(adObservable: AdObservable)
 }

@@ -7,7 +7,6 @@ import com.akopyan757.linkit_model.database.data.UrlLinkData
 import com.akopyan757.linkit_model.mapper.Mapper
 import io.reactivex.Completable
 import io.reactivex.Observable
-import java.util.*
 
 class LocalUrlDataSource(
     private val urlLinkDao: UrlLinkDao,
@@ -52,8 +51,8 @@ class LocalUrlDataSource(
         urlLinkDao.updateLinkOrder(linkId, order)
     }
 
-    override fun removeUrlLinkById(linkId: String) = Completable.fromCallable {
-        urlLinkDao.removeById(linkId)
+    override fun removeUrlLinkByIds(linkIds: List<String>) = Completable.fromCallable {
+        urlLinkDao.removeByIds(linkIds)
     }
 
     companion object {

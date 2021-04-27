@@ -3,6 +3,7 @@ package com.akopyan757.base.viewmodel.list
 import android.os.Handler
 import android.os.HandlerThread
 import android.os.Looper
+import android.util.Log
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.akopyan757.base.viewmodel.DiffItemObservable
@@ -82,46 +83,23 @@ abstract class UpdatableListAdapter<T : DiffItemObservable> :
     }
 
     fun updateCustomChanged(data: List<T>, after: (() -> Unit)? = null) {
-        val list = data.toList()
-
-        backgroundHandler.post {
-            items.apply {
-                if (isNotEmpty()) return@apply
-
-                addAll(list)
-
-                awaitMainThread {
-                    notifyDataSetChanged()
-                    view?.scheduleLayoutAnimation()
-                    after?.invoke()
-                }
-
-                return@post
-            }
-
-            val callback = DefaultDiffCallback(items, list)
-            val result = DiffUtil.calculateDiff(callback)
-
-            items.apply {
-                clear()
-                addAll(list)
-            }
-
-            awaitMainThread {
-                result.dispatchUpdatesTo(this@UpdatableListAdapter)
-                after?.invoke()
-            }
-        }
+        val callback = DefaultDiffCallback(items, data)
+        val result = DiffUtil.calculateDiff(callback)
+        items.clear()
+        items.addAll(data)
+        result.dispatchUpdatesTo(this@UpdatableListAdapter)
+        notifyDataSetChanged()
+        after?.invoke()
     }
 
-    fun updateRangeChanged(range: IntRange, after: (() -> Unit)? = null) {
-        awaitMainThread {
-            with(range) {
-                notifyItemRangeChanged(start, endInclusive - start + 1)
-            }
+    fun updateRangeChanged(data: List<T>, range: IntRange, after: (() -> Unit)? = null) {
+        items = data.toMutableList()
 
-            after?.invoke()
+        with(range) {
+            notifyItemRangeChanged(start, endInclusive - start + 1)
         }
+
+        after?.invoke()
     }
 
     fun updateRangeInserted(data: List<T>, range: IntRange, after: (() -> Unit)? = null) {

@@ -11,6 +11,6 @@ interface IRemoteUrlDataSource {
     fun loadUrlLinks(): Single<List<UrlLinkEntity>>
     fun listenUrlLinksChanges(): Observable<DataChange<UrlLinkEntity>>
     fun createOrUpdateUrlLink(data: UrlLinkEntity): Single<UrlLinkEntity>
-    fun deleteUrlLink(linkId: String): Completable
+    fun deleteUrlLinks(linkIds: List<String>): Completable
     fun setOrderForUrlLink(linkId: String, order: Int): Single<Int>
 }

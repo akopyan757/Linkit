@@ -1,7 +1,13 @@
 package com.akopyan757.linkit.viewmodel.observable
 
-interface BaseLinkObservable {
+import com.akopyan757.base.viewmodel.DiffItemObservable
+
+interface BaseLinkObservable: DiffItemObservable {
     val id: String
     val url: String
     val title: String
+    var checked: Boolean
+    fun resetCheck()
+    fun toggleCheck()
+    override fun id() = id
 }

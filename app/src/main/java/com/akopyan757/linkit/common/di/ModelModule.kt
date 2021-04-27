@@ -35,7 +35,7 @@ object ModelModule {
         single<MapperDirect<FirebaseUser, UserEntity>>(named(MAPPER_USER)) { UserMapper() }
 
         single<IRemoteUrlDataSource> {
-            RemoteUrlLinkDataSource(get(named(Config.LINKS)), get())
+            RemoteUrlLinkDataSource(get(), get(named(Config.LINKS)), get())
         }
         single<IRemoteFolderDataSource> {
             RemoteFolderDataSource(get(named(Config.LINKS)), get(), get())

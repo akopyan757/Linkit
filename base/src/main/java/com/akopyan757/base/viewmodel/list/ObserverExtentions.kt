@@ -1,5 +1,6 @@
 package com.akopyan757.base.viewmodel.list
 
+import android.util.Log
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import com.akopyan757.base.viewmodel.DiffItemObservable
@@ -22,7 +23,7 @@ fun <T : DiffItemObservable> LiveData<ListHolder<T>>.observeList(
                 }
 
                 is ListChangeStrategy.RangeChanged -> {
-                    adapter.updateRangeChanged(strategy.range, strategy.after)
+                    adapter.updateRangeChanged(data, strategy.range, strategy.after)
                 }
 
                 is ListChangeStrategy.RangeInserted -> {

@@ -8,6 +8,9 @@
             name="observable"
             type="com.akopyan757.linkit.viewmodel.observable.LinkLargeObservable" />
         <variable
+            name="checked"
+            type="java.lang.Boolean" />
+        <variable
             name="listener"
             type="com.akopyan757.linkit.viewmodel.listener.LinkAdapterListener" />
     </data>
@@ -76,12 +79,13 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/marginSecondary"
+                android:layout_marginEnd="@dimen/marginSecondary"
                 android:ellipsize="end"
                 android:ems="3"
                 android:maxLines="3"
                 android:text="@{observable.description}"
                 android:textAppearance="@style/Theme.Linkit.TextAppearanceRegular.Body2.Extra"
-                app:layout_constraintEnd_toStartOf="@+id/ivLinkShare"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tvLinkTitle"
@@ -93,11 +97,12 @@
                 android:id="@+id/tvLinkUrl"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/marginSecondary"
                 android:layout_marginBottom="@dimen/marginTertiary"
                 android:text="@{observable.site}"
                 android:textAppearance="@style/Theme.Linkit.TextAppearanceRegular.Body2.Extra"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/ivLinkEdit"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="@+id/tvLinkTitle"
                 app:layout_constraintTop_toBottomOf="@+id/tvLinkDescription"
                 app:layout_constraintVertical_bias="0.0"
@@ -121,28 +126,6 @@
                 app:layout_constraintTop_toBottomOf="@+id/ivLinkPhoto" />
 
             <ImageView
-                android:id="@+id/ivLinkDelete"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:onClick="@{() -> listener.onDeleteListener(observable)}"
-                android:padding="@dimen/marginTertiary"
-                android:paddingEnd="@dimen/marginSecondary"
-                app:layout_constraintEnd_toEndOf="@+id/ivLinkShare"
-                app:layout_constraintTop_toBottomOf="@+id/ivLinkShare"
-                app:srcCompat="@drawable/ic_baseline_trash_24" />
-
-            <ImageView
-                android:id="@+id/ivLinkEdit"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:onClick="@{() -> listener.onEditListener(observable)}"
-                android:padding="@dimen/marginTertiary"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="@+id/ivLinkDelete"
-                app:layout_constraintTop_toBottomOf="@+id/ivLinkDelete"
-                app:srcCompat="@drawable/ic_baseline_edit_24" />
-
-            <ImageView
                 android:id="@+id/imageView"
                 android:layout_width="@dimen/marginGiant"
                 android:layout_height="@dimen/marginGiant"
@@ -152,6 +135,18 @@
                 app:layout_constraintTop_toTopOf="@+id/ivLinkPhoto"
                 app:srcCompat="@drawable/ic_player_button"
                 app:visibility="@{observable.player}" />
+
+            <ImageView
+                android:id="@+id/ivLinkChecked"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/marginTertiary"
+                android:layout_marginTop="@dimen/marginTertiary"
+                app:visibility="@{checked}"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:contentDescription="@string/todo"
+                app:srcCompat="@drawable/ic_link_checked" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

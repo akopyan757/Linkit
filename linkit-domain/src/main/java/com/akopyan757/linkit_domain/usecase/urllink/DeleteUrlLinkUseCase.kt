@@ -16,14 +16,14 @@ class DeleteUrlLinkUseCase(
 ): CompletableWithParamsUseCase<DeleteUrlLinkUseCase.Params>(compositeDisposable) {
 
     override fun launch(): Completable {
-        return remoteDataSource.deleteUrlLink(parameters.linkId)
+        return remoteDataSource.deleteUrlLinks(parameters.linkIds)
             .andThen(
-                localDataSource.removeUrlLinkById(parameters.linkId)
+                localDataSource.removeUrlLinkByIds(parameters.linkIds)
                     .subscribeOn(schedulerProvider.ioThread)
             )
             .subscribeOn(schedulerProvider.ioThread)
             .observeOn(schedulerProvider.mainThread)
     }
 
-    data class Params(val linkId: String): UseCase.Params()
+    data class Params(val linkIds: List<String>): UseCase.Params()
 }

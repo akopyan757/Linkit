@@ -13,5 +13,5 @@ interface ILocalUrlDataSource {
     fun updateAllUrlLinks(links: List<UrlLinkEntity>): Completable
     fun updateUrlLink(link: UrlLinkEntity): Completable
     fun updateLinkOrder(linkId: String, order: Int): Completable
-    fun removeUrlLinkById(linkId: String): Completable
+    fun removeUrlLinkByIds(linkId: List<String>): Completable
 }

@@ -21,7 +21,8 @@
             <androidx.appcompat.widget.Toolbar
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                app:visibility="@{viewModel.listenNotEditMode()}">
 
                 <com.google.android.material.circularreveal.cardview.CircularRevealCardView
                     android:id="@+id/ccvIconProfile"
@@ -51,7 +52,14 @@
 
             </androidx.appcompat.widget.Toolbar>
 
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbarEdit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:visibility="@{viewModel.listenEditMode()}" />
+
         </com.google.android.material.appbar.AppBarLayout>
+
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/constraintLayout"

@@ -44,7 +44,6 @@ class MainFragment : BaseFragment<FragmentMainBinding, LinkViewModel>(), LinkAda
         setupLinkRecyclerView()
         setupAdViews()
         binding.ivFolderSettings.setOnClickListener { openFolderDialog() }
-        //binding.tvFolderCreate.setOnClickListener { openCreateFolderDialog() } TODO
         binding.ccvIconProfile.setOnClickListener { openProfileDialog() }
 
         with(viewModel) {
@@ -75,6 +74,7 @@ class MainFragment : BaseFragment<FragmentMainBinding, LinkViewModel>(), LinkAda
 
     private fun setupActionBar() {
         setupMainToolbar()
+        setupEditToolbar()
         viewModel.getUserAvatar()
     }
 
@@ -84,6 +84,21 @@ class MainFragment : BaseFragment<FragmentMainBinding, LinkViewModel>(), LinkAda
         appCompatActivity.supportActionBar?.setDisplayShowTitleEnabled(false)
         appCompatActivity.supportActionBar?.title = Config.EMPTY
         setHasOptionsMenu(true)
+    }
+
+    private fun setupEditToolbar() {
+        binding.toolbarEdit?.apply {
+            setNavigationIcon(R.drawable.ic_baseline_close_24)
+            setNavigationOnClickListener { viewModel.closeEditMode() }
+            inflateMenu(R.menu.menu_edit)
+            setOnMenuItemClickListener { menuItem ->
+                when (menuItem.itemId) {
+                    R.id.itemAssignFolder -> { true }
+                    R.id.itemEditDelete -> { showAcceptDeleteAction(); true }
+                    else -> super.onOptionsItemSelected(menuItem)
+                }
+            }
+        }
     }
 
     private fun setupLinkRecyclerView() {
@@ -118,32 +133,29 @@ class MainFragment : BaseFragment<FragmentMainBinding, LinkViewModel>(), LinkAda
     }
 
     override fun onItemListener(link: BaseLinkObservable) {
-        startActivity(AndroidUtils.createIntent(link.url))
-        viewModel.moveUrlLinkToTop(link)
+        if (viewModel.getEditModeState()) {
+            viewModel.onEditLinkItem(link)
+        } else {
+            startActivity(AndroidUtils.createIntent(link.url))
+            viewModel.moveUrlLinkToTop(link)
+        }
     }
 
     override fun onItemLongClickListener(link: BaseLinkObservable) {
-        // TODO("Not yet implemented")
-    }
-
-    override fun onDeleteListener(link: BaseLinkObservable) {
-        showAcceptDeleteAction(link)
-    }
-
-    override fun onEditListener(link: BaseLinkObservable) {
-        // TODO("Not yet implemented")
+        viewModel.onEditLinkItem(link)
     }
 
     override fun onAdClosed(adObservable: AdObservable) {
         viewModel.closeAdItem(adObservable)
     }
 
-    private fun showAcceptDeleteAction(observable: BaseLinkObservable) {
+    private fun showAcceptDeleteAction() {
+        val count = viewModel.getCheckedLinksCount()
         AlertDialog.Builder(context, R.style.Theme_Linkit_AlertDialog)
-            .setTitle(R.string.dialog_delete_link_title)
-            .setMessage(R.string.dialog_delete_link_description)
+            .setTitle(resources.getQuantityString(R.plurals.dialog_delete_link_title, count))
+            .setMessage(resources.getQuantityString(R.plurals.dialog_delete_link_description, count, count))
             .setPositiveButton(R.string.ok) { dialog, _ ->
-                viewModel.deleteUrlLink(observable)
+                viewModel.deleteUrlLinks()
                 dialog?.dismiss()
             }
             .setNegativeButton(R.string.cancel) { dialog, _ -> dialog?.dismiss() }

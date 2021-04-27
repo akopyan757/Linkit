@@ -2,12 +2,16 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <group android:id="@+id/groupEditSave">
-        <item
-            android:id="@+id/itemEditDelete"
-            android:title="@string/delete"
-            android:icon="@drawable/ic_baseline_trash_24"
-            app:showAsAction="ifRoom"/>
-    </group>
+    <item
+        android:id="@+id/itemAssignFolder"
+        android:title="@string/assign_to_folder"
+        android:icon="@drawable/ic_mail_forward"
+        app:showAsAction="ifRoom"/>
+
+    <item
+        android:id="@+id/itemEditDelete"
+        android:title="@string/delete"
+        android:icon="@drawable/ic_baseline_trash_24"
+        app:showAsAction="ifRoom"/>
 
 </menu>

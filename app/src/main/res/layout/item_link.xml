@@ -8,6 +8,9 @@
             name="observable"
             type="com.akopyan757.linkit.viewmodel.observable.LinkObservable" />
         <variable
+            name="checked"
+            type="java.lang.Boolean" />
+        <variable
             name="listener"
             type="com.akopyan757.linkit.viewmodel.listener.LinkAdapterListener" />
     </data>
@@ -38,18 +41,20 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/marginSecondary"
+                android:layout_marginStart="16dp"
                 android:adjustViewBounds="true"
                 android:background="@drawable/background_image_view_corners"
                 android:contentDescription="@string/todo"
                 android:maxWidth="@dimen/linkPictureBigWidth"
                 android:maxHeight="@dimen/linkPictureHeight"
                 android:scaleType="centerCrop"
-                app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.CornerSize"
                 app:elevation="@dimen/elevationTertiary"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.5"
                 app:photoUrl="@{observable.photoUrl}"
+                app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.CornerSize"
                 app:visibility="@{observable.photoVisible}"
                 tools:src="@drawable/image_analysis" />
 
@@ -67,7 +72,7 @@
                 app:layout_constraintEnd_toStartOf="@+id/ivLinkShare"
                 app:layout_constraintStart_toEndOf="@+id/ivLinkPhoto"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_goneMarginStart="@dimen/marginPrimary"
+                app:layout_goneMarginStart="@dimen/marginSecondary"
                 tools:text="Title" />
 
             <TextView
@@ -75,12 +80,13 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/marginSecondary"
+                android:layout_marginEnd="@dimen/marginSecondary"
                 android:ellipsize="end"
                 android:ems="3"
-                android:maxLines="3"
+                android:maxLines="4"
                 android:text="@{observable.description}"
                 android:textAppearance="@style/Theme.Linkit.TextAppearanceRegular.Body2.Extra"
-                app:layout_constraintEnd_toStartOf="@+id/ivLinkShare"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/ivLinkPhoto"
                 app:layout_constraintTop_toBottomOf="@+id/tvLinkTitle"
                 app:layout_goneMarginStart="@dimen/marginPrimary"
@@ -91,11 +97,12 @@
                 style="@style/Theme.Linkit.ItemUrl"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/marginSecondary"
                 android:layout_marginBottom="@dimen/marginTertiary"
                 android:text="@{observable.site}"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/ivLinkEdit"
-                app:layout_constraintStart_toStartOf="@+id/tvLinkTitle"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/tvLinkDescription"
                 app:layout_constraintTop_toBottomOf="@+id/tvLinkDescription"
                 app:layout_constraintVertical_bias="0.88"
                 tools:text="https://google.com" />
@@ -118,26 +125,16 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <ImageView
-                android:id="@+id/ivLinkDelete"
+                android:id="@+id/ivLinkChecked"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:onClick="@{() -> listener.onDeleteListener(observable)}"
-                android:padding="@dimen/marginTertiary"
-                android:paddingEnd="@dimen/marginSecondary"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/ivLinkShare"
-                app:srcCompat="@drawable/ic_baseline_trash_24" />
-
-            <ImageView
-                android:id="@+id/ivLinkEdit"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:onClick="@{() -> listener.onEditListener(observable)}"
-                android:padding="@dimen/marginTertiary"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="@+id/ivLinkDelete"
-                app:layout_constraintTop_toBottomOf="@+id/ivLinkDelete"
-                app:srcCompat="@drawable/ic_baseline_edit_24" />
+                android:layout_marginStart="@dimen/marginTertiary"
+                android:layout_marginTop="@dimen/marginTertiary"
+                app:visibility="@{checked}"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:contentDescription="@string/todo"
+                app:srcCompat="@drawable/ic_link_checked" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
