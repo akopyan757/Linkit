@@ -22,6 +22,7 @@ import com.akopyan757.linkit.viewmodel.listener.LinkAdapterListener
 import com.akopyan757.linkit.viewmodel.observable.AdObservable
 import com.akopyan757.linkit.viewmodel.observable.BaseLinkObservable
 import com.akopyan757.linkit.viewmodel.observable.FolderObservable
+import com.akopyan757.linkit.viewmodel.observable.LinkLargeObservable
 import com.google.android.material.tabs.TabLayout
 import kotlinx.android.synthetic.main.tab_folder.view.*
 import org.koin.android.viewmodel.ext.android.viewModel
@@ -143,6 +144,10 @@ class MainFragment : BaseFragment<FragmentMainBinding, LinkViewModel>(), LinkAda
 
     override fun onItemLongClickListener(link: BaseLinkObservable) {
         viewModel.onEditLinkItem(link)
+    }
+
+    override fun onChangeCollapsedListener(linkObservable: LinkLargeObservable) {
+        viewModel.changeUrlLinkCardCollapsedState(linkObservable)
     }
 
     override fun onAdClosed(adObservable: AdObservable) {

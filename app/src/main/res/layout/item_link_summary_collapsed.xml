@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+        <variable
+            name="observable"
+            type="com.akopyan757.linkit.viewmodel.observable.LinkLargeObservable" />
+        <variable
+            name="checked"
+            type="java.lang.Boolean" />
+        <variable
+            name="listener"
+            type="com.akopyan757.linkit.viewmodel.listener.LinkAdapterListener" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/clLinkContent"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/ivLinkPhoto"
+            android:layout_width="@dimen/linkPictureBigWidth"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/marginSecondary"
+            android:layout_marginTop="@dimen/marginSecondary"
+            android:adjustViewBounds="true"
+            android:contentDescription="@string/todo"
+            android:scaleType="centerCrop"
+            app:elevation="@dimen/elevationTertiary"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0"
+            app:photoUrl="@{observable.photoUrl}"
+            app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.CornerSize"
+            app:visibility="@{observable.photoVisible}"
+            tools:src="@drawable/image_analysis" />
+
+        <TextView
+            android:id="@+id/tvLinkTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/marginSecondary"
+            android:layout_marginTop="@dimen/marginSecondary"
+            android:ellipsize="end"
+            android:ems="3"
+            android:maxLines="3"
+            android:text="@{observable.title}"
+            android:textAppearance="@style/Theme.Linkit.TextAppearanceRegular.Body1"
+            app:layout_constraintEnd_toStartOf="@+id/ivLinkShare"
+            app:layout_constraintStart_toEndOf="@+id/ivLinkPhoto"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="Title" />
+
+        <TextView
+            android:id="@+id/tvLinkDescription"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/marginTertiary"
+            android:ellipsize="end"
+            android:ems="3"
+            android:maxLines="2"
+            android:text="@{observable.description}"
+            android:textAppearance="@style/Theme.Linkit.TextAppearanceRegular.Body2.Extra"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@+id/tvLinkTitle"
+            app:layout_constraintTop_toBottomOf="@+id/tvLinkTitle"
+            app:layout_goneMarginStart="@dimen/marginSecondary"
+            app:visibility="@{observable.descriptionVisible}"
+            tools:text="Description" />
+
+        <TextView
+            android:id="@+id/tvLinkUrl"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/marginTertiary"
+            android:text="@{observable.site}"
+            android:textAppearance="@style/Theme.Linkit.TextAppearanceRegular.Body2.Extra"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/tvLinkDescription"
+            app:layout_constraintStart_toStartOf="@+id/tvLinkDescription"
+            app:layout_constraintTop_toBottomOf="@+id/tvLinkDescription"
+            app:layout_constraintVertical_bias="1.0"
+            tools:text="https://google.com" />
+
+        <ImageView
+            android:id="@+id/ivLinkShare"
+            style="@style/Theme.Linkit.ClickableImageView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:clickable="true"
+            android:contentDescription="@string/todo"
+            android:focusable="true"
+            android:onClick="@{() -> listener.onShareListener(observable)}"
+            android:padding="@dimen/marginTertiary"
+            android:paddingTop="@dimen/marginSecondary"
+            android:paddingEnd="@dimen/marginSecondary"
+            android:src="@drawable/ic_url_share"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/ivLinkPlayer"
+            android:layout_width="@dimen/playButtonCollapsedIconSize"
+            android:layout_height="@dimen/playButtonCollapsedIconSize"
+            app:layout_constraintBottom_toBottomOf="@+id/ivLinkPhoto"
+            app:layout_constraintEnd_toEndOf="@+id/ivLinkPhoto"
+            app:layout_constraintStart_toStartOf="@+id/ivLinkPhoto"
+            app:layout_constraintTop_toTopOf="@+id/ivLinkPhoto"
+            app:visibility="@{observable.player}"
+            app:srcCompat="@drawable/ic_player_button" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

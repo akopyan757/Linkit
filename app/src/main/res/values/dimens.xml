@@ -29,7 +29,7 @@
     <dimen name="linkPictureMinHeight">36dp</dimen>
     <dimen name="linkPictureWidth">68dp</dimen>
     <dimen name="linkPictureHeight">68dp</dimen>
-    <dimen name="linkPictureBigWidth">130dp</dimen>
+    <dimen name="linkPictureBigWidth">120dp</dimen>
     <dimen name="linkPictureBigHeight">80dp</dimen>
     <dimen name="linkIconMinWidth">32dp</dimen>
     <dimen name="linkIconMinHeight">32dp</dimen>
@@ -46,6 +46,7 @@
     <dimen name="addFolderTextSize">18sp</dimen>
     <dimen name="buttonAuthHeight">52dp</dimen>
     <dimen name="profileIconSize">24dp</dimen>
+    <dimen name="playButtonCollapsedIconSize">24dp</dimen>
     <dimen name="profileIconBigSize">88dp</dimen>
     <dimen name="profileImageRadius">44dp</dimen>
     <dimen name="setPasswordBackIconMargin">24dp</dimen>

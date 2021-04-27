@@ -102,6 +102,11 @@ class LinkViewModel : BaseViewModel(), KoinComponent {
         }
     }
 
+    fun changeUrlLinkCardCollapsedState(observable: LinkLargeObservable) {
+        observable.toggleCollapsed()
+        urlListData.changeItem(observable)
+    }
+
     fun closeEditMode() {
         val uncheckedObservables = urlListData.getList().map { observable ->
             if (observable is BaseLinkObservable) observable.resetCheck(); observable
