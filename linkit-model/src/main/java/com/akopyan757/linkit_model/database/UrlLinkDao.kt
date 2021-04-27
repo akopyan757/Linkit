@@ -14,6 +14,9 @@ interface UrlLinkDao {
     @Query("UPDATE url_link_data SET _order = :order WHERE id == :linkId")
     fun updateLinkOrder(linkId: String, order: Int)
 
+    @Query("UPDATE url_link_data SET folder_id = :folderId WHERE id = :linkId")
+    fun updateLinkFolder(linkId: String, folderId: String)
+
     @Query("SELECT EXISTS(SELECT * FROM url_link_data WHERE id = :linkId LIMIT 1)")
     fun checkExistLink(linkId: String): Boolean
 
@@ -34,6 +37,11 @@ interface UrlLinkDao {
 
     @Query("DELETE FROM url_link_data;")
     fun removeAll()
+
+    @Transaction
+    fun updateAssignFolderForLinks(linkIds: List<String>, folderId: String) {
+        linkIds.forEach { linkId -> updateLinkFolder(linkId, folderId) }
+    }
 
     @Transaction
     fun removeByIds(ids: List<String>) {

@@ -17,10 +17,7 @@ import com.akopyan757.linkit.viewmodel.observable.LinkObservable
 import com.akopyan757.linkit_domain.entity.UrlLinkEntity
 import com.akopyan757.linkit_domain.usecase.auth.GetUserUseCase
 import com.akopyan757.linkit_domain.usecase.folder.ListenFoldersChangesUseCase
-import com.akopyan757.linkit_domain.usecase.urllink.DeleteUrlLinkUseCase
-import com.akopyan757.linkit_domain.usecase.urllink.GetUrlLinkListUseCase
-import com.akopyan757.linkit_domain.usecase.urllink.ListenUrlLinkUseCase
-import com.akopyan757.linkit_domain.usecase.urllink.MoveTopLinkUseCase
+import com.akopyan757.linkit_domain.usecase.urllink.*
 import org.koin.core.KoinComponent
 
 class LinkViewModel : BaseViewModel(), KoinComponent {
@@ -31,6 +28,7 @@ class LinkViewModel : BaseViewModel(), KoinComponent {
     private val moveTopLink: MoveTopLinkUseCase by injectUseCase()
     private val listenFolders: ListenFoldersChangesUseCase by injectUseCase()
     private val getUrlLinkList: GetUrlLinkListUseCase by injectUseCase()
+    private val updateAssignUrlLink: UpdateAssignUrlLinkUseCase by injectUseCase()
 
     @get:Bindable var isFoldersEmpty: Boolean by DB(false, BR.foldersEmpty)
     @get:Bindable var profileIconUrl: String? by DB(null, BR.profileIconUrl)
@@ -46,8 +44,11 @@ class LinkViewModel : BaseViewModel(), KoinComponent {
         getUrlLinkList.execute()
     }
 
-    fun listenFolderNames(): LiveData<List<FolderObservable>> {
-        return folderList
+    fun listenFolderNames(): LiveData<List<FolderObservable>> = folderList
+    fun getFolderObservableList(): List<FolderObservable> {
+        return folderList.value?.mapNotNull { observable ->
+            if (observable.name != DEF_FOLDER_NAME) observable else null
+        } ?: emptyList()
     }
 
     fun listenEditMode(): LiveData<Boolean> = editMode
@@ -121,6 +122,16 @@ class LinkViewModel : BaseViewModel(), KoinComponent {
         deleteUrlLink.execute(DeleteUrlLinkUseCase.Params(linkIds), onError = {
             Log.e("LinkViewModel", "deleteUrlLink", it)
         })
+    }
+
+    fun assignLinksToFolder(folderId: String) {
+        val linkIds = getCheckedLinksIds()
+        updateAssignUrlLink.execute(UpdateAssignUrlLinkUseCase.Params(folderId, linkIds),
+            onSuccess = {
+                Log.i("LinkViewMode", "assignLinksToFolder success")
+            }, onError = { throwable ->
+                Log.e("LinkViewMode", "assignLinksToFolder", throwable)
+            })
     }
 
     fun moveUrlLinkToTop(observable: BaseLinkObservable) {

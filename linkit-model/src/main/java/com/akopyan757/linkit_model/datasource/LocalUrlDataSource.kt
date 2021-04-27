@@ -23,6 +23,10 @@ class LocalUrlDataSource(
         }.toObservable()
     }
 
+    override fun assignLinksToFolder(folderId: String, links: List<String>) = Completable.fromCallable {
+        urlLinkDao.updateAssignFolderForLinks(links, folderId)
+    }
+
     override fun listenUrlLinkFromFolder(folderId: String): Observable<List<UrlLinkEntity>> {
         return urlLinkDao.getByFolderLive(folderId).map { urlLinkList ->
             urlLinkList.map(mapper::firstToSecond)
@@ -57,8 +61,6 @@ class LocalUrlDataSource(
 
     companion object {
         private const val ONE = 1
-        private const val EMPTY = ""
-        private val NULL = null
     }
 
 }

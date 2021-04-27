@@ -124,6 +124,7 @@
         <item name="android:windowIsTranslucent">true</item>
         <item name="android:windowBackground">@android:color/transparent</item>
         <item name="android:background">@drawable/background_dialog</item>
+        <item name="android:listChoiceIndicatorSingle">@drawable/ic_choice_button</item>
         <item name="windowFixedWidthMajor">60%</item>
     </style>
 

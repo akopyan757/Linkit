@@ -1,6 +1,5 @@
 package com.akopyan757.linkit_model.datasource
 
-import android.util.Log
 import com.akopyan757.linkit_domain.entity.DataChange
 import com.akopyan757.linkit_domain.entity.UrlLinkEntity
 import com.akopyan757.linkit_domain.repository.IRemoteUrlDataSource
@@ -13,7 +12,7 @@ import io.reactivex.Observable
 import io.reactivex.Single
 
 class RemoteUrlLinkDataSource(
-    private val firestore: FirebaseFirestore,
+    private val fireStore: FirebaseFirestore,
     private val reference: CollectionReference,
     private val firebaseAuth: FirebaseAuth
 ): IRemoteUrlDataSource {
@@ -21,6 +20,7 @@ class RemoteUrlLinkDataSource(
     companion object {
         private const val URLS = "urls"
         private const val ORDER = "order"
+        private const val FOLDER_ID = "folderId"
     }
 
     override fun loadUrlLinks() = Single.create<List<UrlLinkEntity>> { emitter ->
@@ -41,7 +41,6 @@ class RemoteUrlLinkDataSource(
 
     override fun createOrUpdateUrlLink(data: UrlLinkEntity) = Single.create<UrlLinkEntity> { emitter ->
         val ref = getUserDocumentOrNull()
-        Log.i("RemoteUrlLinkDataSource", "createOrUpdateUrlLink = $data")
         if (ref == null) {
             emitter.onError(FirebaseUserNotFoundException())
         } else {
@@ -58,7 +57,7 @@ class RemoteUrlLinkDataSource(
         if (ref == null) {
             emitter.onError(FirebaseUserNotFoundException())
         } else {
-            firestore.runTransaction { transaction ->
+            fireStore.runTransaction { transaction ->
                 val collection = ref.collection(URLS)
                 linkIds.forEach { linkId ->
                     val document = collection.document(linkId)
@@ -106,6 +105,23 @@ class RemoteUrlLinkDataSource(
                         source.onNext(dataChange)
                     }
                 }
+        }
+    }
+
+    override fun assignLinksToFolder(folderId: String, links: List<String>) = Completable.create { emitter ->
+        val ref = getUserDocumentOrNull()
+        if (ref == null) {
+            emitter.onError(FirebaseUserNotFoundException())
+        } else {
+            fireStore.runTransaction { transition ->
+                val collection = ref.collection(URLS)
+                links.forEach { linkId ->
+                    val document = collection.document(linkId)
+                    transition.update(document, FOLDER_ID, folderId)
+                }
+            }
+            .addOnFailureListener(emitter::onError)
+            .addOnSuccessListener { emitter.onComplete() }
         }
     }
 

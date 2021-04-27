@@ -93,7 +93,7 @@ class MainFragment : BaseFragment<FragmentMainBinding, LinkViewModel>(), LinkAda
             inflateMenu(R.menu.menu_edit)
             setOnMenuItemClickListener { menuItem ->
                 when (menuItem.itemId) {
-                    R.id.itemAssignFolder -> { true }
+                    R.id.itemAssignFolder -> { showFolderChoiceForAssignLinks(); true }
                     R.id.itemEditDelete -> { showAcceptDeleteAction(); true }
                     else -> super.onOptionsItemSelected(menuItem)
                 }
@@ -163,6 +163,21 @@ class MainFragment : BaseFragment<FragmentMainBinding, LinkViewModel>(), LinkAda
             .show()
     }
 
+    private fun showFolderChoiceForAssignLinks() {
+        val folders = viewModel.getFolderObservableList()
+        val names = folders.map { observable -> observable.name }.toTypedArray()
+        var selectedFolder: FolderObservable = folders.firstOrNull() ?: return
+        AlertDialog.Builder(context, R.style.Theme_Linkit_AlertDialog)
+            .setTitle(R.string.assign_to_folder)
+            .setSingleChoiceItems(names, ZERO) { _, which -> selectedFolder = folders[which] }
+            .setPositiveButton(R.string.accept) { dialog, _ ->
+                viewModel.assignLinksToFolder(selectedFolder.id)
+                dialog?.dismiss()
+            }
+            .setNegativeButton(R.string.cancel) {  dialog, _ -> dialog?.dismiss() }
+            .create()
+            .show()
+    }
 
     private fun setupAdViews() {
         BannerViewExtension.loadAd(binding.bannerBottomAd) {
@@ -195,4 +210,7 @@ class MainFragment : BaseFragment<FragmentMainBinding, LinkViewModel>(), LinkAda
         findNavController().navigate(R.id.action_mainFragment_to_profileDialogFragment)
     }
 
+    companion object {
+        private const val ZERO = 0
+    }
 }

@@ -74,6 +74,9 @@ object UseCaseModule {
             DeleteUrlLinkUseCase(get(), get(), get(named(IO_SCHEDULER)), viewModel.getCompositeDisposable())
         }
         factory { (viewModel: BaseViewModel) ->
+            UpdateAssignUrlLinkUseCase(get(), get(), get(named(IO_SCHEDULER)), viewModel.getCompositeDisposable())
+        }
+        factory { (viewModel: BaseViewModel) ->
             ListenUrlLinkUseCase(get(), get(named(IO_SCHEDULER)), viewModel.getCompositeDisposable())
         }
         factory { (viewModel: BaseViewModel) ->
