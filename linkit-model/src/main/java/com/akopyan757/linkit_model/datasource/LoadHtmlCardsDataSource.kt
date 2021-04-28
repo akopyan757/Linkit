@@ -1,6 +1,5 @@
 package com.akopyan757.linkit_model.datasource
 
-import android.util.Log
 import com.akopyan757.linkit_domain.entity.UrlLinkAppEntity
 import com.akopyan757.linkit_domain.entity.UrlLinkEntity
 import com.akopyan757.linkit_domain.repository.ILoadHtmlCardsDataSource
@@ -33,7 +32,7 @@ class LoadHtmlCardsDataSource(
             val description = tags.description ?: EMPTY_STRING
             UrlLinkEntity(
                 EMPTY_STRING, resourceUrl, title, description, tags.image, null, tags.site,
-                type, appEntity, 0
+                type, appEntity, 0, false
             )
         } else if (openGraphRating > additionalRating) {
             val tags = htmlTags.openGraphHtmlTags

@@ -10,16 +10,17 @@ data class UrlLinkEntity(
     val site: String?,
     val type: Type,
     val app: UrlLinkAppEntity?,
-    var order: Int
+    var order: Int,
+    var collapsed: Boolean = false
 ) {
     constructor() : this(
         "", "", "", "", null,
-        null, null, Type.DEFAULT, null,0
+        null, null, Type.DEFAULT, null,0, false
     )
 
     constructor(id: String, url: String, order: Int) : this(
         id, url, "", "", null,
-        null, null, Type.DEFAULT, null, order
+        null, null, Type.DEFAULT, null, order, false
     )
 
     enum class Type(val value: String) {

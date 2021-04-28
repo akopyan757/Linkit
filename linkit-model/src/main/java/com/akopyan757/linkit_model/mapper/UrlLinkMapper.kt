@@ -12,7 +12,7 @@ class UrlLinkMapper: Mapper<UrlLinkData, UrlLinkEntity> {
         val app = data.app?.let { app -> UrlLinkAppEntity(app.appId, app.appName, app.url) }
         return UrlLinkEntity(
             data.id, data.url, data.title, data.description, data.photoUrl,
-            data.folderId, data.site, type, app, data._order
+            data.folderId, data.site, type, app, data._order, data.collapsed
         )
     }
 
@@ -21,7 +21,7 @@ class UrlLinkMapper: Mapper<UrlLinkData, UrlLinkEntity> {
         val app = data.app?.let { app -> UrlLinkAppData(app.appId, app.appName, app.url) }
         return UrlLinkData(
             data.id, data.url, data.title, data.description, data.photoUrl,
-            data.folderId, data.site, type, data.order, app
+            data.folderId, data.site, type, data.order, data.collapsed, app
         )
     }
 }

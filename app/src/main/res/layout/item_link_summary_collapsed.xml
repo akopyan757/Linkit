@@ -47,8 +47,6 @@
             android:layout_marginStart="@dimen/marginSecondary"
             android:layout_marginTop="@dimen/marginSecondary"
             android:ellipsize="end"
-            android:ems="3"
-            android:maxLines="3"
             android:text="@{observable.title}"
             android:textAppearance="@style/Theme.Linkit.TextAppearanceRegular.Body1"
             app:layout_constraintEnd_toStartOf="@+id/ivLinkShare"
@@ -78,14 +76,15 @@
             android:id="@+id/tvLinkUrl"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/marginSecondary"
             android:layout_marginBottom="@dimen/marginTertiary"
             android:text="@{observable.site}"
             android:textAppearance="@style/Theme.Linkit.TextAppearanceRegular.Body2.Extra"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@+id/tvLinkDescription"
-            app:layout_constraintStart_toStartOf="@+id/tvLinkDescription"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/tvLinkTitle"
             app:layout_constraintTop_toBottomOf="@+id/tvLinkDescription"
-            app:layout_constraintVertical_bias="1.0"
+            app:layout_constraintVertical_bias="0.0"
             tools:text="https://google.com" />
 
         <ImageView

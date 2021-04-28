@@ -8,6 +8,7 @@ interface ILocalUrlDataSource {
     fun listenUrlLink(): Observable<List<UrlLinkEntity>>
     fun listenUrlLinkFromFolder(folderId: String): Observable<List<UrlLinkEntity>>
     fun assignLinksToFolder(folderId: String, links: List<String>): Completable
+    fun changeUrlCollapse(linkId: String, collapse: Boolean): Completable
     fun checkExistUrlLink(linkId: String): Boolean
     fun getAllUrlLinks(): List<UrlLinkEntity>
     fun getNewOrderValue(): Int

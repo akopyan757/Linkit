@@ -27,6 +27,10 @@ class LocalUrlDataSource(
         urlLinkDao.updateAssignFolderForLinks(links, folderId)
     }
 
+    override fun changeUrlCollapse(linkId: String, collapse: Boolean) = Completable.fromCallable {
+        urlLinkDao.updateLinkCollapse(linkId, collapse)
+    }
+
     override fun listenUrlLinkFromFolder(folderId: String): Observable<List<UrlLinkEntity>> {
         return urlLinkDao.getByFolderLive(folderId).map { urlLinkList ->
             urlLinkList.map(mapper::firstToSecond)

@@ -17,6 +17,9 @@ interface UrlLinkDao {
     @Query("UPDATE url_link_data SET folder_id = :folderId WHERE id = :linkId")
     fun updateLinkFolder(linkId: String, folderId: String)
 
+    @Query("UPDATE url_link_data SET collapsed = :collapsed WHERE id = :linkId")
+    fun updateLinkCollapse(linkId: String, collapsed: Boolean)
+
     @Query("SELECT EXISTS(SELECT * FROM url_link_data WHERE id = :linkId LIMIT 1)")
     fun checkExistLink(linkId: String): Boolean
 

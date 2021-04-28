@@ -15,6 +15,7 @@ import com.akopyan757.linkit.viewmodel.observable.FolderObservable
 import com.akopyan757.linkit.viewmodel.observable.LinkLargeObservable
 import com.akopyan757.linkit.viewmodel.observable.LinkObservable
 import com.akopyan757.linkit_domain.entity.UrlLinkEntity
+import com.akopyan757.linkit_domain.usecase.ChangeCollapseLinkUseCase
 import com.akopyan757.linkit_domain.usecase.auth.GetUserUseCase
 import com.akopyan757.linkit_domain.usecase.folder.ListenFoldersChangesUseCase
 import com.akopyan757.linkit_domain.usecase.urllink.*
@@ -29,6 +30,7 @@ class LinkViewModel : BaseViewModel(), KoinComponent {
     private val listenFolders: ListenFoldersChangesUseCase by injectUseCase()
     private val getUrlLinkList: GetUrlLinkListUseCase by injectUseCase()
     private val updateAssignUrlLink: UpdateAssignUrlLinkUseCase by injectUseCase()
+    private val changeCollapseLink: ChangeCollapseLinkUseCase by injectUseCase()
 
     @get:Bindable var isFoldersEmpty: Boolean by DB(false, BR.foldersEmpty)
     @get:Bindable var profileIconUrl: String? by DB(null, BR.profileIconUrl)
@@ -104,7 +106,12 @@ class LinkViewModel : BaseViewModel(), KoinComponent {
 
     fun changeUrlLinkCardCollapsedState(observable: LinkLargeObservable) {
         observable.toggleCollapsed()
-        urlListData.changeItem(observable)
+        changeCollapseLink.execute(ChangeCollapseLinkUseCase.Params(observable.id, observable.isCollapsed()), {
+            Log.i("LinkViewModel", "changeCollapseLink: success: ${observable.isCollapsed()}")
+            urlListData.changeItem(observable)
+        }) { throwable ->
+            Log.i("LinkViewModel", "changeCollapseLink: error", throwable)
+        }
     }
 
     fun closeEditMode() {

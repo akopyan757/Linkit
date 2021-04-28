@@ -40,7 +40,9 @@ data class LinkLargeObservable(
             return LinkLargeObservable(
                 data.id, data.url, data.title, data.description, data.site ?: "",
                 data.photoUrl, isPlayer
-            )
+            ).apply {
+                collapsed = data.collapsed
+            }
         }
     }
 }

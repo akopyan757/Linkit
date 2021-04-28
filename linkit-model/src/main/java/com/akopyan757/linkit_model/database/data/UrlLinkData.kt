@@ -17,5 +17,6 @@ data class UrlLinkData(
     @ColumnInfo(name = "site") var site: String? = null,
     @ColumnInfo(name = "type") var type: String? = null,
     @ColumnInfo(name = "_order") var _order: Int = 0,
+    @ColumnInfo(name = "collapsed") var collapsed: Boolean = false,
     @Embedded var app: UrlLinkAppData? = null
 )
