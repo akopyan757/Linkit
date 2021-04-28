@@ -18,7 +18,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/clLinkContent"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content">
 
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/ivLinkPhoto"
@@ -26,6 +26,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/marginSecondary"
             android:layout_marginTop="@dimen/marginSecondary"
+            android:layout_marginBottom="@dimen/marginSecondary"
             android:adjustViewBounds="true"
             android:contentDescription="@string/todo"
             android:scaleType="centerCrop"
@@ -108,12 +109,13 @@
             android:id="@+id/ivLinkPlayer"
             android:layout_width="@dimen/playButtonCollapsedIconSize"
             android:layout_height="@dimen/playButtonCollapsedIconSize"
+            android:contentDescription="@string/todo"
             app:layout_constraintBottom_toBottomOf="@+id/ivLinkPhoto"
             app:layout_constraintEnd_toEndOf="@+id/ivLinkPhoto"
             app:layout_constraintStart_toStartOf="@+id/ivLinkPhoto"
             app:layout_constraintTop_toTopOf="@+id/ivLinkPhoto"
-            app:visibility="@{observable.player}"
-            app:srcCompat="@drawable/ic_player_button" />
+            app:srcCompat="@drawable/ic_player_button"
+            app:visibility="@{observable.player}" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

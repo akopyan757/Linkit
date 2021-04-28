@@ -106,21 +106,21 @@ class LinkUrlAdapter(
         fun bind(observable: LinkLargeObservable) {
             val autoTransition = AutoTransition().apply { duration = 600 }
             TransitionManager.beginDelayedTransition(fullBinding.clLinkContent, autoTransition)
-            fullBinding.observable = observable
-            fullBinding.listener = listener
-            fullBinding.checked = observable.checked
-            fullBinding.executePendingBindings()
             if (observable.isCollapsed()) {
                 collapsedBinding.observable = observable
                 collapsedBinding.listener = listener
                 collapsedBinding.checked = observable.checked
-                collapsedBinding.executePendingBindings()
                 collapsedSet.applyTo(fullBinding.clLinkContent)
+                collapsedBinding.executePendingBindings()
                 fullBinding.ivLinkExpand.setImageResource(R.drawable.ic_arrow_down)
             } else {
                 fullBinding.ivLinkExpand.setImageResource(R.drawable.ic_arrow_up)
                 expandedSet.applyTo(fullBinding.clLinkContent)
             }
+            fullBinding.observable = observable
+            fullBinding.listener = listener
+            fullBinding.checked = observable.checked
+            fullBinding.executePendingBindings()
         }
     }
 
