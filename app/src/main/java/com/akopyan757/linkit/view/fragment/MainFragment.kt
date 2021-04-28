@@ -204,7 +204,7 @@ class MainFragment : BaseFragment<FragmentMainBinding, LinkViewModel>(), LinkAda
 
     private fun openCreateClipboardDialog(url: String) {
         val bundle = Bundle().apply { putString(Config.CLIP_URL_LABEL, url) }
-        findNavController().navigate(R.id.clipboardUrlDialogFragment, bundle)
+        findNavController().navigate(R.id.action_mainF_to_clipboardUrlDF, bundle)
     }
 
     private fun openFolderDialog() {
