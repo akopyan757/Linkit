@@ -14,8 +14,9 @@ data class LinkLargeObservable(
     override val app: LinkAppObservable?
 ): Serializable, BaseLinkObservable {
 
-    val photoVisible = photoUrl != null
-    val descriptionVisible: Boolean = description.isNotEmpty()
+    val photoVisible: Boolean get() = photoUrl.isNullOrEmpty().not()
+    val descriptionVisible: Boolean get() =  description.isNotEmpty()
+    val titleVisible: Boolean get() = title.isNotEmpty()
     override var checked: Boolean = false
     private var collapsed: Boolean = false
 
@@ -36,7 +37,7 @@ data class LinkLargeObservable(
     companion object {
         fun from(data: UrlLinkEntity): LinkLargeObservable {
             val isPlayer = data.type == UrlLinkEntity.Type.PLAYER
-            val site = data.site ?: ""
+            val site = data.site ?: data.url
             val app = data.app?.let { app -> LinkAppObservable.from(app) }
             return LinkLargeObservable(
                 data.id, data.url, data.title, data.description, site, data.photoUrl, isPlayer, app

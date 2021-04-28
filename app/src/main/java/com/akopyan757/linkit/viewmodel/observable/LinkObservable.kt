@@ -14,6 +14,7 @@ data class LinkObservable(
 ): Serializable, BaseLinkObservable {
 
     val photoVisible = photoUrl != null
+    val titleVisible = title.isNotEmpty()
 
     override var checked: Boolean = false
 

@@ -47,14 +47,16 @@
             android:layout_marginStart="@dimen/marginSecondary"
             android:layout_marginTop="@dimen/marginSecondary"
             android:ellipsize="end"
-            android:text="@{observable.title}"
-            android:maxLines="3"
             android:ems="3"
+            android:maxLines="3"
+            android:text="@{observable.title}"
             android:textAppearance="@style/Theme.Linkit.TextAppearanceRegular.Body1"
+            app:visibility="@{observable.titleVisible}"
             app:layout_constraintEnd_toStartOf="@+id/ivLinkShare"
             app:layout_constraintStart_toEndOf="@+id/ivLinkPhoto"
             app:layout_constraintTop_toTopOf="parent"
-            tools:text="Title" />
+            tools:text="Title"
+            tools:visibility="gone" />
 
         <TextView
             android:id="@+id/tvLinkDescription"
@@ -71,21 +73,25 @@
             app:layout_constraintTop_toBottomOf="@+id/tvLinkTitle"
             app:layout_goneMarginStart="@dimen/marginSecondary"
             app:visibility="@{observable.descriptionVisible}"
-            tools:text="Description" />
+            tools:text="Description"
+            tools:visibility="gone" />
 
         <TextView
             android:id="@+id/tvLinkUrl"
+            style="@style/Theme.Linkit.ItemUrl"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/marginSecondary"
+            android:layout_marginStart="@dimen/marginSecondary"
             android:layout_marginBottom="@dimen/marginTertiary"
             android:text="@{observable.site}"
             android:textAppearance="@style/Theme.Linkit.TextAppearanceRegular.Body2.Extra"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="@+id/tvLinkTitle"
+            app:layout_constraintEnd_toStartOf="@+id/ivLinkShare"
+            app:layout_constraintStart_toEndOf="@id/ivLinkPhoto"
             app:layout_constraintTop_toBottomOf="@+id/tvLinkDescription"
             app:layout_constraintVertical_bias="0.0"
+            app:layout_goneMarginStart="@dimen/marginSecondary"
+            app:layout_goneMarginTop="@dimen/marginTertiary"
             tools:text="https://google.com" />
 
         <ImageView

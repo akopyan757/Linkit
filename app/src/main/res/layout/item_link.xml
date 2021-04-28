@@ -69,6 +69,7 @@
                 android:maxLines="3"
                 android:text="@{observable.title}"
                 android:textAppearance="@style/Theme.Linkit.TextAppearanceRegular.Body1"
+                app:visibility="@{observable.titleVisible}"
                 app:layout_constraintEnd_toStartOf="@+id/ivLinkShare"
                 app:layout_constraintStart_toEndOf="@+id/ivLinkPhoto"
                 app:layout_constraintTop_toTopOf="parent"

@@ -1,5 +1,6 @@
 package com.akopyan757.linkit_model.datasource
 
+import android.util.Log
 import com.akopyan757.linkit_domain.entity.UrlLinkAppEntity
 import com.akopyan757.linkit_domain.entity.UrlLinkEntity
 import com.akopyan757.linkit_domain.repository.ILoadHtmlCardsDataSource
@@ -12,6 +13,7 @@ class LoadHtmlCardsDataSource(
 
     override fun loadCard(resourceUrl: String): UrlLinkEntity {
         val htmlTags = htmlParser.parseHeadTagsFromResource(resourceUrl)
+        Log.i("LoadHtmlCardsDataSource","url=$resourceUrl;\ntags=$htmlTags")
         val appEntity = UrlLinkAppEntity(
             htmlTags.twitterHtmlTags.googlePlayAppId,
             htmlTags.twitterHtmlTags.googlePlayAppName,
