@@ -3,7 +3,7 @@ package com.akopyan757.linkit.common.di
 import com.akopyan757.base.viewmodel.BaseViewModel
 import com.akopyan757.linkit.common.scheduler.AndroidMainSchedulerProvider
 import com.akopyan757.linkit.common.scheduler.AndroidSchedulerProvider
-import com.akopyan757.linkit_domain.usecase.ChangeCollapseLinkUseCase
+import com.akopyan757.linkit_domain.usecase.urllink.ChangeCollapseLinkUseCase
 import com.akopyan757.linkit_domain.usecase.SchedulerProvider
 import com.akopyan757.linkit_domain.usecase.auth.*
 import com.akopyan757.linkit_domain.usecase.folder.*
@@ -90,7 +90,7 @@ object UseCaseModule {
             MoveTopLinkUseCase(get(), get(), get(named(IO_SCHEDULER)), viewModel.getCompositeDisposable())
         }
         factory { (viewModel: BaseViewModel) ->
-            ChangeCollapseLinkUseCase(get(), get(named(IO_SCHEDULER)), viewModel.getCompositeDisposable())
+            ChangeCollapseLinkUseCase(get(), get(), get(named(IO_SCHEDULER)), viewModel.getCompositeDisposable())
         }
     }
 }

@@ -21,6 +21,7 @@ class RemoteUrlLinkDataSource(
         private const val URLS = "urls"
         private const val ORDER = "order"
         private const val FOLDER_ID = "folderId"
+        private const val COLLAPSED = "collapsed"
     }
 
     override fun loadUrlLinks() = Single.create<List<UrlLinkEntity>> { emitter ->
@@ -105,6 +106,19 @@ class RemoteUrlLinkDataSource(
                         source.onNext(dataChange)
                     }
                 }
+        }
+    }
+
+    override fun changeUrlCollapse(linkId: String, collapse: Boolean) = Completable.create { emitter ->
+        val ref = getUserDocumentOrNull()
+        if (ref == null) {
+            emitter.onError(FirebaseUserNotFoundException())
+        } else {
+            ref.collection(URLS)
+                .document(linkId)
+                .update(COLLAPSED, collapse)
+            .addOnFailureListener(emitter::onError)
+            .addOnSuccessListener { emitter.onComplete() }
         }
     }
 

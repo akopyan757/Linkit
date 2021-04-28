@@ -15,7 +15,7 @@ import com.akopyan757.linkit.viewmodel.observable.FolderObservable
 import com.akopyan757.linkit.viewmodel.observable.LinkLargeObservable
 import com.akopyan757.linkit.viewmodel.observable.LinkObservable
 import com.akopyan757.linkit_domain.entity.UrlLinkEntity
-import com.akopyan757.linkit_domain.usecase.ChangeCollapseLinkUseCase
+import com.akopyan757.linkit_domain.usecase.urllink.ChangeCollapseLinkUseCase
 import com.akopyan757.linkit_domain.usecase.auth.GetUserUseCase
 import com.akopyan757.linkit_domain.usecase.folder.ListenFoldersChangesUseCase
 import com.akopyan757.linkit_domain.usecase.urllink.*
@@ -108,7 +108,7 @@ class LinkViewModel : BaseViewModel(), KoinComponent {
         observable.toggleCollapsed()
         changeCollapseLink.execute(ChangeCollapseLinkUseCase.Params(observable.id, observable.isCollapsed()), {
             Log.i("LinkViewModel", "changeCollapseLink: success: ${observable.isCollapsed()}")
-            urlListData.changeItem(observable)
+            //urlListData.changeItem(observable)
         }) { throwable ->
             Log.i("LinkViewModel", "changeCollapseLink: error", throwable)
         }
