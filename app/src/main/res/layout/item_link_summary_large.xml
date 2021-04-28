@@ -55,6 +55,18 @@
                 app:visibility="@{observable.photoVisible}"
                 tools:src="@drawable/image_analysis" />
 
+            <ImageView
+                android:id="@+id/ivLinkPlayer"
+                android:layout_width="@dimen/marginGiant"
+                android:layout_height="@dimen/marginGiant"
+                android:contentDescription="@string/todo"
+                app:layout_constraintBottom_toBottomOf="@+id/ivLinkPhoto"
+                app:layout_constraintEnd_toEndOf="@+id/ivLinkPhoto"
+                app:layout_constraintStart_toStartOf="@+id/ivLinkPhoto"
+                app:layout_constraintTop_toTopOf="@+id/ivLinkPhoto"
+                app:srcCompat="@drawable/ic_player_button"
+                app:visibility="@{observable.player}" />
+
             <TextView
                 android:id="@+id/tvLinkTitle"
                 android:layout_width="0dp"
@@ -76,7 +88,7 @@
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
                 android:ems="3"
-                android:maxLines="7"
+                android:maxLines="3"
                 android:text="@{observable.description}"
                 android:textAppearance="@style/Theme.Linkit.TextAppearanceRegular.Body2.Extra"
                 app:layout_constraintEnd_toEndOf="@+id/tvLinkTitle"
@@ -121,16 +133,18 @@
                 app:layout_constraintTop_toBottomOf="@+id/ivLinkPhoto" />
 
             <ImageView
-                android:id="@+id/ivLinkPlayer"
-                android:layout_width="@dimen/marginGiant"
-                android:layout_height="@dimen/marginGiant"
-                app:layout_constraintBottom_toBottomOf="@+id/ivLinkPhoto"
-                app:layout_constraintEnd_toEndOf="@+id/ivLinkPhoto"
-                app:layout_constraintStart_toStartOf="@+id/ivLinkPhoto"
-                app:layout_constraintTop_toTopOf="@+id/ivLinkPhoto"
-                app:srcCompat="@drawable/ic_player_button"
-                app:visibility="@{observable.player}"
-                android:contentDescription="@string/todo" />
+                android:id="@+id/ivLinkApp"
+                style="@style/Theme.Linkit.ClickableImageView"
+                android:layout_width="29dp"
+                android:layout_height="39dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:clickable="true"
+                android:contentDescription="@string/todo"
+                android:focusable="true"
+                android:onClick="@{() -> listener.onItemAppOpenListener(observable.app)}"
+                app:layout_constraintEnd_toEndOf="@+id/ivLinkShare"
+                app:layout_constraintTop_toBottomOf="@+id/ivLinkShare"
+                tools:srcCompat="@drawable/ic_baseline_add_circle_outline_24" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

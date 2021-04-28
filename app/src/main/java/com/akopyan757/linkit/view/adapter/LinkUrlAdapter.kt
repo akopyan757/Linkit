@@ -2,7 +2,6 @@ package com.akopyan757.linkit.view.adapter
 
 import android.transition.AutoTransition
 import android.transition.TransitionManager
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -106,11 +105,15 @@ class LinkUrlAdapter(
         fun bind(observable: LinkLargeObservable) {
             val autoTransition = AutoTransition().apply { duration = 600 }
             TransitionManager.beginDelayedTransition(fullBinding.clLinkContent, autoTransition)
+            val drawable = observable.app?.let { appObservable ->
+                fullBinding.root.context.packageManager.getApplicationIcon(appObservable.appId)
+            }
             if (observable.isCollapsed()) {
                 collapsedBinding.observable = observable
                 collapsedBinding.listener = listener
                 collapsedBinding.checked = observable.checked
                 collapsedSet.applyTo(fullBinding.clLinkContent)
+                collapsedBinding.ivLinkApp.setImageDrawable(drawable)
                 collapsedBinding.executePendingBindings()
                 fullBinding.ivLinkExpand.setImageResource(R.drawable.ic_arrow_down)
             } else {
@@ -120,7 +123,12 @@ class LinkUrlAdapter(
             fullBinding.observable = observable
             fullBinding.listener = listener
             fullBinding.checked = observable.checked
+            fullBinding.ivLinkApp.setImageDrawable(drawable)
             fullBinding.executePendingBindings()
+        }
+
+        companion object {
+            private const val MAX_LINES = 3
         }
     }
 

@@ -48,6 +48,8 @@
             android:layout_marginTop="@dimen/marginSecondary"
             android:ellipsize="end"
             android:text="@{observable.title}"
+            android:maxLines="3"
+            android:ems="3"
             android:textAppearance="@style/Theme.Linkit.TextAppearanceRegular.Body1"
             app:layout_constraintEnd_toStartOf="@+id/ivLinkShare"
             app:layout_constraintStart_toEndOf="@+id/ivLinkPhoto"
@@ -58,13 +60,12 @@
             android:id="@+id/tvLinkDescription"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/marginTertiary"
             android:ellipsize="end"
             android:ems="3"
             android:maxLines="2"
             android:text="@{observable.description}"
             android:textAppearance="@style/Theme.Linkit.TextAppearanceRegular.Body2.Extra"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/ivLinkShare"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="@+id/tvLinkTitle"
             app:layout_constraintTop_toBottomOf="@+id/tvLinkTitle"
@@ -103,6 +104,20 @@
             android:src="@drawable/ic_url_share"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/ivLinkApp"
+            style="@style/Theme.Linkit.ClickableImageView"
+            android:layout_width="@dimen/linkIconMinWidth"
+            android:layout_height="@dimen/linkIconMinHeight"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:clickable="true"
+            android:contentDescription="@string/todo"
+            android:focusable="true"
+            android:onClick="@{() -> listener.onItemAppOpenListener(observable.app)}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/ivLinkShare"
+            tools:srcCompat="@drawable/ic_baseline_add_circle_outline_24" />
 
         <ImageView
             android:id="@+id/ivLinkPlayer"

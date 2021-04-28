@@ -1,6 +1,7 @@
 package com.akopyan757.linkit.view.fragment
 
 import android.app.AlertDialog
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -19,10 +20,7 @@ import com.akopyan757.linkit.databinding.FragmentMainBinding
 import com.akopyan757.linkit.view.adapter.LinkUrlAdapter
 import com.akopyan757.linkit.viewmodel.LinkViewModel
 import com.akopyan757.linkit.viewmodel.listener.LinkAdapterListener
-import com.akopyan757.linkit.viewmodel.observable.AdObservable
-import com.akopyan757.linkit.viewmodel.observable.BaseLinkObservable
-import com.akopyan757.linkit.viewmodel.observable.FolderObservable
-import com.akopyan757.linkit.viewmodel.observable.LinkLargeObservable
+import com.akopyan757.linkit.viewmodel.observable.*
 import com.google.android.material.tabs.TabLayout
 import kotlinx.android.synthetic.main.tab_folder.view.*
 import org.koin.android.viewmodel.ext.android.viewModel
@@ -140,6 +138,12 @@ class MainFragment : BaseFragment<FragmentMainBinding, LinkViewModel>(), LinkAda
             startActivity(AndroidUtils.createIntent(link.url))
             viewModel.moveUrlLinkToTop(link)
         }
+    }
+
+    override fun onItemAppOpenListener(app: LinkAppObservable) {
+        val launchIntent = context?.packageManager?.getLaunchIntentForPackage(app.appId) ?: return
+        launchIntent.data = Uri.parse(app.url)
+        startActivity(launchIntent)
     }
 
     override fun onItemLongClickListener(link: BaseLinkObservable) {

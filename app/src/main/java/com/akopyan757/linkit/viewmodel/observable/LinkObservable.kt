@@ -9,7 +9,8 @@ data class LinkObservable(
     override val title: String,
     val description: String,
     val site: String,
-    val photoUrl: String?
+    val photoUrl: String?,
+    override val app: LinkAppObservable?
 ): Serializable, BaseLinkObservable {
 
     val photoVisible = photoUrl != null
@@ -26,7 +27,8 @@ data class LinkObservable(
 
     companion object {
         fun from(data: UrlLinkEntity): LinkObservable {
-            return LinkObservable(data.id, data.url, data.title, data.description, data.url, data.photoUrl)
+            val app = data.app?.let { app -> LinkAppObservable.from(app) }
+            return LinkObservable(data.id, data.url, data.title, data.description, data.url, data.photoUrl, app)
         }
     }
 }

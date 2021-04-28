@@ -7,6 +7,7 @@ interface BaseLinkObservable: DiffItemObservable {
     val url: String
     val title: String
     var checked: Boolean
+    val app: LinkAppObservable?
     fun resetCheck()
     fun toggleCheck()
     override fun id() = id
