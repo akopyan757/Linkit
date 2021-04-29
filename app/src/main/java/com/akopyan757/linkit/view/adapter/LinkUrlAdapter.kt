@@ -2,6 +2,7 @@ package com.akopyan757.linkit.view.adapter
 
 import android.transition.AutoTransition
 import android.transition.TransitionManager
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -124,11 +125,8 @@ class LinkUrlAdapter(
             fullBinding.listener = listener
             fullBinding.checked = observable.checked
             fullBinding.ivLinkApp.setImageDrawable(drawable)
+            fullBinding.ivLinkApp.visibility = if (drawable != null) View.VISIBLE else View.GONE
             fullBinding.executePendingBindings()
-        }
-
-        companion object {
-            private const val MAX_LINES = 3
         }
     }
 

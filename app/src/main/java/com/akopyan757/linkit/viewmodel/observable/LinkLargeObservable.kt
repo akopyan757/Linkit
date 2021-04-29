@@ -14,9 +14,12 @@ data class LinkLargeObservable(
     override val app: LinkAppObservable?
 ): Serializable, BaseLinkObservable {
 
-    val photoVisible: Boolean get() = photoUrl.isNullOrEmpty().not()
+    val photoVisible: Boolean get() = photoUrl.takeUnless { it == "/blocks/meta/i/og-image.png" }.isNullOrEmpty().not()
     val descriptionVisible: Boolean get() =  description.isNotEmpty()
     val titleVisible: Boolean get() = title.isNotEmpty()
+    val urlMaxLines: Int
+        get() = if (photoVisible || descriptionVisible || titleVisible) 1 else 3
+
     override var checked: Boolean = false
     private var collapsed: Boolean = false
 

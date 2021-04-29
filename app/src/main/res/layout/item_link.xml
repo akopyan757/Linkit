@@ -23,6 +23,7 @@
         android:layout_marginTop="@dimen/marginTertiary"
         android:layout_marginEnd="@dimen/marginSecondary"
         android:layout_marginBottom="@dimen/marginTertiary"
+        android:minHeight="@dimen/linkMinHeight"
         android:onClick="@{() -> listener.onItemListener(observable)}"
         android:onLongClick="@{() -> listener.onItemLongClickListener(observable)}"
         app:cardCornerRadius="@dimen/cornerRadius"
@@ -69,11 +70,11 @@
                 android:maxLines="3"
                 android:text="@{observable.title}"
                 android:textAppearance="@style/Theme.Linkit.TextAppearanceRegular.Body1"
-                app:visibility="@{observable.titleVisible}"
                 app:layout_constraintEnd_toStartOf="@+id/ivLinkShare"
                 app:layout_constraintStart_toEndOf="@+id/ivLinkPhoto"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_goneMarginStart="@dimen/marginSecondary"
+                app:visibility="@{observable.titleVisible}"
                 tools:text="Title" />
 
             <TextView
@@ -101,6 +102,7 @@
                 android:layout_marginEnd="@dimen/marginSecondary"
                 android:layout_marginBottom="@dimen/marginTertiary"
                 android:text="@{observable.site}"
+                android:maxLines="@{observable.urlMaxLines}"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="@+id/tvLinkDescription"
@@ -131,11 +133,11 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/marginTertiary"
                 android:layout_marginTop="@dimen/marginTertiary"
-                app:visibility="@{checked}"
+                android:contentDescription="@string/todo"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                android:contentDescription="@string/todo"
-                app:srcCompat="@drawable/ic_link_checked" />
+                app:srcCompat="@drawable/ic_link_checked"
+                app:visibility="@{checked}" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

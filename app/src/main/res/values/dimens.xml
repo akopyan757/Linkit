@@ -38,6 +38,7 @@
     <dimen name="dialogMaxHeight">400dp</dimen>
     <dimen name="dialogCreateMinWidth">250dp</dimen>
     <dimen name="linkMinWidth">100dp</dimen>
+    <dimen name="linkMinHeight">60dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="tabPaddingHorizontally">12dp</dimen>
     <dimen name="itemGuidelineBegin">84dp</dimen>
