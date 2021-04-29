@@ -33,7 +33,8 @@ class LinkViewModel : BaseViewModel(), KoinComponent {
     @get:Bindable var profileIconUrl: String? by DB(null, BR.profileIconUrl)
     @get:Bindable var profileIconDefaultRes: Int = R.drawable.ic_user
 
-    private val editMode = MutableLiveData(false)
+    private val editCheckedCount = MutableLiveData(0)
+    private val editMode = editCheckedCount.map { value -> value != 0 }
     private var folderList = MutableLiveData<List<FolderObservable>>()
     private val urlListData = ListLiveData<DiffItemObservable>()
 
@@ -50,6 +51,7 @@ class LinkViewModel : BaseViewModel(), KoinComponent {
         } ?: emptyList()
     }
 
+    fun listenCheckedItems(): LiveData<String> = editCheckedCount.map { value -> value.toString() }
     fun listenEditMode(): LiveData<Boolean> = editMode
     fun getEditModeState(): Boolean = editMode.value ?: false
 
@@ -94,7 +96,7 @@ class LinkViewModel : BaseViewModel(), KoinComponent {
     }
 
     fun onEditLinkItem(observable: BaseLinkObservable) {
-        editMode.value = true
+        resetEditMode()
         observable.toggleCheck()
         urlListData.changeItem(observable) {
             changeEditMode()
@@ -116,7 +118,7 @@ class LinkViewModel : BaseViewModel(), KoinComponent {
             if (observable is BaseLinkObservable) observable.resetCheck(); observable
         }
         urlListData.change(uncheckedObservables) {
-            editMode.value = false
+            resetEditMode()
         }
     }
 
@@ -162,11 +164,14 @@ class LinkViewModel : BaseViewModel(), KoinComponent {
         return getCheckedLinksIds().size
     }
 
+    private fun resetEditMode() {
+        editCheckedCount.value = 0
+    }
+
     private fun changeEditMode() {
-        val isAllUnchecked = urlListData.getList().all { link ->
-            if (link is BaseLinkObservable) link.checked.not() else true
+        editCheckedCount.value = urlListData.getList().count { link ->
+            if (link is BaseLinkObservable) link.checked else false
         }
-        editMode.value = isAllUnchecked.not()
     }
     
     private fun getCheckedLinksIds(): List<String> {
