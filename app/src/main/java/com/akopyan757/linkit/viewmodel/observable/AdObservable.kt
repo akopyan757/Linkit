@@ -4,4 +4,6 @@ import com.akopyan757.base.viewmodel.DiffItemObservable
 
 data class AdObservable(
     val value: Int
-): DiffItemObservable
+): DiffItemObservable {
+    override fun id() = value
+}

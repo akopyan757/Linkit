@@ -10,10 +10,7 @@ import com.akopyan757.base.viewmodel.DiffItemObservable
 import com.akopyan757.base.viewmodel.list.ListLiveData
 import com.akopyan757.linkit.BR
 import com.akopyan757.linkit.R
-import com.akopyan757.linkit.viewmodel.observable.BaseLinkObservable
-import com.akopyan757.linkit.viewmodel.observable.FolderObservable
-import com.akopyan757.linkit.viewmodel.observable.LinkLargeObservable
-import com.akopyan757.linkit.viewmodel.observable.LinkObservable
+import com.akopyan757.linkit.viewmodel.observable.*
 import com.akopyan757.linkit_domain.entity.UrlLinkEntity
 import com.akopyan757.linkit_domain.usecase.urllink.ChangeCollapseLinkUseCase
 import com.akopyan757.linkit_domain.usecase.auth.GetUserUseCase
@@ -78,13 +75,17 @@ class LinkViewModel : BaseViewModel(), KoinComponent {
         val id = folderId?.takeUnless { id -> id == FolderObservable.DEF_FOLDER_ID }
         listenUrlLinks.disposeLastExecute()
         listenUrlLinks.execute(ListenUrlLinkUseCase.Params(id), { links ->
-            val observables = links.map { link ->
+            val observables: MutableList<DiffItemObservable> = links.map { link ->
                 when (link.type) {
                     UrlLinkEntity.Type.DEFAULT -> LinkObservable.from(link)
                     UrlLinkEntity.Type.CARD -> LinkObservable.from(link)
                     UrlLinkEntity.Type.LARGE_CARD -> LinkLargeObservable.from(link)
                     UrlLinkEntity.Type.PLAYER -> LinkLargeObservable.from(link)
                 }
+            }.toMutableList()
+            (0 until observables.size / REPEAT_AD).forEach { adIndex ->
+                val index = adIndex * REPEAT_AD + REPEAT_AD - 1
+                observables.add(index, AdObservable(adIndex + 1))
             }
             urlListData.change(observables)
         }, onError = {
@@ -96,11 +97,7 @@ class LinkViewModel : BaseViewModel(), KoinComponent {
         editMode.value = true
         observable.toggleCheck()
         urlListData.changeItem(observable) {
-            urlListData.getList().all { link ->
-                if (link is BaseLinkObservable) link.checked.not() else true
-            }.also { uncheckedAll ->
-                editMode.value = uncheckedAll.not()
-            }
+            changeEditMode()
         }
     }
 
@@ -164,6 +161,13 @@ class LinkViewModel : BaseViewModel(), KoinComponent {
     fun getCheckedLinksCount(): Int {
         return getCheckedLinksIds().size
     }
+
+    private fun changeEditMode() {
+        val isAllUnchecked = urlListData.getList().all { link ->
+            if (link is BaseLinkObservable) link.checked.not() else true
+        }
+        editMode.value = isAllUnchecked.not()
+    }
     
     private fun getCheckedLinksIds(): List<String> {
         return urlListData.getList().mapNotNull { observable ->
@@ -177,5 +181,6 @@ class LinkViewModel : BaseViewModel(), KoinComponent {
 
     companion object {
         private const val DEF_FOLDER_NAME = "All folders"
+        private const val REPEAT_AD = 7
     }
 }
