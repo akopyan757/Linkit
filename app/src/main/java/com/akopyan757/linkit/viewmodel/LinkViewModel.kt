@@ -140,14 +140,21 @@ class LinkViewModel : BaseViewModel(), KoinComponent {
         val linkIds = getCheckedLinksIds()
         updateAssignUrlLink.execute(UpdateAssignUrlLinkUseCase.Params(folderId, linkIds),
             onSuccess = {
-                Log.i("LinkViewMode", "assignLinksToFolder success")
+                Log.i("LinkViewModel", "assignLinksToFolder success")
             }, onError = { throwable ->
-                Log.e("LinkViewMode", "assignLinksToFolder", throwable)
+                Log.e("LinkViewModel", "assignLinksToFolder", throwable)
             })
     }
 
     fun moveUrlLinkToTop(observable: BaseLinkObservable) {
-        moveTopLink.execute(MoveTopLinkUseCase.Params(observable.id))
+        moveTopLink.execute(MoveTopLinkUseCase.Params(observable.id),
+            onSuccess = {
+                Log.i("LinkViewModel", "moveTopLink: success")
+            },
+            onError = { throwable ->
+                Log.e("LinkViewModel", "moveTopLink: error", throwable)
+            }
+        )
     }
 
     fun closeAdItem(observable: DiffItemObservable) {
