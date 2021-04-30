@@ -3,10 +3,12 @@ package com.akopyan757.linkit.view.fragment
 import android.app.AlertDialog
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewTreeObserver
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.findFragment
 import androidx.navigation.fragment.findNavController
 import com.akopyan757.base.view.BaseFragment
 import com.akopyan757.base.viewmodel.list.LinearLayoutManagerWrapper
@@ -18,9 +20,11 @@ import com.akopyan757.linkit.common.utils.AndroidUtils
 import com.akopyan757.linkit.common.utils.ClipboardUtils
 import com.akopyan757.linkit.databinding.FragmentMainBinding
 import com.akopyan757.linkit.view.adapter.LinkUrlAdapter
+import com.akopyan757.linkit.view.dialog.ClipboardUrlDialogFragment
 import com.akopyan757.linkit.viewmodel.LinkViewModel
 import com.akopyan757.linkit.viewmodel.listener.LinkAdapterListener
 import com.akopyan757.linkit.viewmodel.observable.*
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.tabs.TabLayout
 import kotlinx.android.synthetic.main.tab_folder.view.*
 import org.koin.android.viewmodel.ext.android.viewModel
@@ -109,22 +113,27 @@ class MainFragment : BaseFragment<FragmentMainBinding, LinkViewModel>(), LinkAda
     }
 
     private fun updateFoldersList(folders: List<FolderObservable>) {
-        val inflater = LayoutInflater.from(requireContext())
-        binding.tabLayoutFolder.removeAllTabs()
+        val tabLayout = binding.tabLayoutFolder
+        tabLayout.removeAllTabs()
         folders.forEach { observable ->
-            val tab = binding.tabLayoutFolder.newTab()
-            val view = inflater.inflate(R.layout.tab_folder, binding.tabLayoutFolder, false)
-            view.tabFolder.text = observable.name
-            tab.customView = view
-            binding.tabLayoutFolder.addTab(tab)
+            tabLayout.addTab(tabLayout.createTab(observable))
         }
-        binding.tabLayoutFolder.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+        tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabUnselected(tab: TabLayout.Tab?) {}
             override fun onTabReselected(tab: TabLayout.Tab?) {}
             override fun onTabSelected(tab: TabLayout.Tab?) {
                 if (tab != null) viewModel.listenLinksById(folders[tab.position].id)
             }
         })
+    }
+
+    private fun TabLayout.createTab(observable: FolderObservable): TabLayout.Tab {
+        val tab = newTab()
+        val inflater = LayoutInflater.from(requireContext())
+        val view = inflater.inflate(R.layout.tab_folder, this, false)
+        view.tabFolder.text = observable.name
+        tab.customView = view
+        return tab
     }
 
     override fun onShareListener(link: BaseLinkObservable) {

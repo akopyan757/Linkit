@@ -20,6 +20,7 @@ class ProfileDialogFragment : BaseDialogFragment<DialogProfileBinding, ProfileVi
 
     override fun getLayoutId(): Int = R.layout.dialog_profile
     override fun getVariableId(): Int = BR.viewModel
+    override fun getStyleId() = R.style.CustomBottomSheetDialogTheme
 
     override fun onSetupView(bundle: Bundle?) {
         with(binding) {

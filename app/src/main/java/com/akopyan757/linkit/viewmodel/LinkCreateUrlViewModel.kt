@@ -22,15 +22,19 @@ class LinkCreateUrlViewModel(
     private val loadCards: LoadHtmlCardsUseCase by injectUseCase()
     private val listenFolders: ListenFoldersChangesUseCase by injectUseCase()
 
-    @get:Bindable var selectedFolderName = MutableLiveData(DEF_FOLDER_NAME)
     @get:Bindable var linkObservable: LinkObservable? by DB(null, BR.linkObservable, BR.linObservableVisible)
     @get:Bindable val linObservableVisible: Boolean get() = linkObservable != null
 
+    private var selectedFolder: FolderObservable? = null
     private var urlLinkEntity: UrlLinkEntity? = null
     private var foldersList = MutableLiveData<List<FolderObservable>>()
 
-    fun getFolderLiveList(): LiveData<List<String>> {
-        return foldersList.map { folders -> folders.map { observable -> observable.name } }
+    fun setSelectedFolderObservable(observable: FolderObservable) {
+        selectedFolder = observable
+    }
+
+    fun getFolderLiveList(): LiveData<List<FolderObservable>> {
+        return foldersList
     }
 
     fun startListenFolder() {
@@ -57,9 +61,7 @@ class LinkCreateUrlViewModel(
     }
 
     private fun getSelectedFolderId(): String? {
-        val name = selectedFolderName.value ?: return null
-        val folder = foldersList.value?.find { folder -> folder.name == name }
-        return folder?.id?.takeUnless { id -> id == FolderObservable.DEF_FOLDER_ID }
+        return selectedFolder?.id?.takeUnless { id -> id == FolderObservable.DEF_FOLDER_ID }
     }
 
     companion object {

@@ -128,6 +128,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/rvLinks" />
 
+
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <include
@@ -136,6 +137,15 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom" />
+
+        <androidx.fragment.app.FragmentContainerView
+            android:id="@+id/fragmentClipboard"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:tag="clipboard"
+            android:elevation="@dimen/elevationSecondary"
+            app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
+            app:behavior_hideable="true" />
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 

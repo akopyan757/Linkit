@@ -9,17 +9,18 @@ import android.view.ViewGroup
 import android.view.Window
 import android.widget.Toast
 import androidx.annotation.StringRes
+import androidx.annotation.StyleRes
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
-import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.LiveData
 import com.akopyan757.base.viewmodel.BaseViewModel
 import com.akopyan757.base.viewmodel.DiffItemObservable
 import com.akopyan757.base.viewmodel.list.ListHolder
 import com.akopyan757.base.viewmodel.list.UpdatableListAdapter
 import com.akopyan757.base.viewmodel.list.observeList
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
-abstract class BaseDialogFragment<V: ViewDataBinding, T: BaseViewModel> : DialogFragment() {
+abstract class BaseDialogFragment<V: ViewDataBinding, T: BaseViewModel> : BottomSheetDialogFragment() {
 
     protected abstract val viewModel: T
     protected lateinit var binding: V
@@ -28,6 +29,16 @@ abstract class BaseDialogFragment<V: ViewDataBinding, T: BaseViewModel> : Dialog
     protected open fun onSetupView(bundle: Bundle?) {}
     abstract fun getLayoutId(): Int
     abstract fun getVariableId(): Int
+    @StyleRes open fun getStyleId(): Int? = null
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        val styleId = getStyleId()
+        if (styleId != null) {
+            setStyle(STYLE_NORMAL, styleId)
+            setTransparentDialogBackground()
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -36,7 +47,7 @@ abstract class BaseDialogFragment<V: ViewDataBinding, T: BaseViewModel> : Dialog
     ): View? {
         binding = DataBindingUtil.inflate(inflater, getLayoutId(), container, false)
         binding.setVariable(getVariableId(), viewModel)
-        setTransparentDialogBackground()
+
         observeActions()
         onSetupView(arguments)
         return binding.root

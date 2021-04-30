@@ -59,23 +59,21 @@ object DatabindingAdapter {
         } else null
         var request = Picasso.get()
             .load(imageUrl)
-        if (squareResSize != null) {
-            val size = resources.getDimensionPixelSize(squareResSize)
-            request = request
-                .transform(object : Transformation {
-                    override fun transform(source: Bitmap?): Bitmap? {
-                        val bitmap = source ?: return null
-                        val aspectRatio = bitmap.height.toFloat() / source.width.toFloat()
-                        return if (abs(aspectRatio - 1.0) < 0.05) {
-                            val result = Bitmap.createScaledBitmap(bitmap, size, size, false)
-                            if (result != bitmap) bitmap.recycle()
-                            result
-                        } else bitmap
-                    }
 
-                    override fun key(): String = "cropPosterTransformation$size"
-                })
-        }
+        val size = (this.context.resources.displayMetrics.density * 50f).toInt()
+        request = request.transform(object : Transformation {
+            override fun transform(source: Bitmap?): Bitmap? {
+                val bitmap = source ?: return null
+                val aspectRatio = bitmap.height.toFloat() / source.width.toFloat()
+                return if (abs(aspectRatio - 1.0) < 0.05) {
+                    val result = Bitmap.createScaledBitmap(bitmap, size, size, false)
+                    if (result != bitmap) bitmap.recycle()
+                    result
+                } else bitmap
+            }
+
+            override fun key(): String = "cropPosterTransformation$size"
+        })
         if (drawableRes != null) {
             request = request
                 .error(drawableRes)

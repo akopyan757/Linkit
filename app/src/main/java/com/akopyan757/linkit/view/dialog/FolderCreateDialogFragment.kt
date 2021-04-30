@@ -15,6 +15,7 @@ class FolderCreateDialogFragment : BaseDialogFragment<DialogNewFolderBinding, Fo
 
     override fun getLayoutId() = R.layout.dialog_new_folder
     override fun getVariableId(): Int = BR.viewModel
+    override fun getStyleId() = R.style.CustomBottomSheetDialogTheme
 
     override fun onSetupView(bundle: Bundle?) {
         binding.btnCreateLinkAccept.setOnClickListener { createFolder() }

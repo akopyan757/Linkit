@@ -14,64 +14,62 @@
         android:layout_height="wrap_content"
         android:minWidth="@dimen/dialogMinWidth">
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/tilClipboardUrl"
+        <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/etClipboardUrl"
+            style="@style/Theme.Linkit.EditText.ReadOnly"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/marginSecondary"
+            android:layout_marginTop="@dimen/marginSecondary"
+            android:layout_marginEnd="@dimen/marginSecondary"
+            android:elevation="@dimen/elevationPrimary"
+            android:background="@drawable/shadow_tab_layout"
+            android:paddingStart="@dimen/marginSecondary"
+            android:paddingTop="@dimen/marginTertiary"
+            android:paddingBottom="@dimen/marginTertiary"
+            android:ellipsize="end"
+            android:ems="3"
+            android:hint="@string/url"
+            android:maxLines="5"
+            android:text="@{viewModel.url}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+        <include
+            android:id="@+id/cardPreview"
+            layout="@layout/item_link"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/marginSecondary"
             android:layout_marginTop="@dimen/marginSecondary"
             android:layout_marginEnd="@dimen/marginSecondary"
-            style="@style/Theme.Linkit.TextInputLayout"
+            android:layout_marginBottom="24dp"
+            android:clipToPadding="false"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/tietClipboardUrl"
-                style="@style/Theme.Linkit.EditText.ReadOnly"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:ellipsize="end"
-                android:ems="3"
-                android:hint="@string/url"
-                android:maxLines="5"
-                android:text="@{viewModel.url}" />
-
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <include
-            android:id="@+id/cardPreview"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/marginPrimary"
-            android:clipToPadding="false"
-            android:layout_marginStart="@dimen/marginSecondary"
-            android:layout_marginEnd="@dimen/marginSecondary"
-            layout="@layout/item_link"
+            app:layout_constraintTop_toBottomOf="@+id/cardTabLayoutFolder"
             app:observable="@{viewModel.linkObservable}"
             app:visibility="@{viewModel.linObservableVisible}"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tilClipboardUrl"
             tools:layout="@layout/item_link" />
 
-        <Spinner
-            android:id="@+id/spCreateLinkAssignToFolder"
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/cardTabLayoutFolder"
+            style="@style/Theme.Linkit.TabLayout"
             android:layout_width="0dp"
-            android:layout_height="50dp"
-            android:layout_marginTop="@dimen/marginPrimary"
-            android:layout_marginBottom="@dimen/marginTertiary"
-            android:background="@drawable/background_spinner"
-            android:dropDownVerticalOffset="60dp"
-            android:popupBackground="@drawable/background_edit_text"
-            android:prompt="@string/prompt"
+            android:layout_height="@dimen/tabLayout_folder_height"
+            android:layout_marginStart="@dimen/marginSecondary"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="@dimen/marginSecondary"
+            android:background="@drawable/shadow_tab_layout"
+            android:elevation="@dimen/marginTertiary"
             android:spinnerMode="dropdown"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@+id/tilClipboardUrl"
-            app:layout_constraintStart_toStartOf="@+id/tilClipboardUrl"
-            app:layout_constraintTop_toBottomOf="@+id/cardPreview"
-            app:selectedValue="@={viewModel.selectedFolderName}"
-            tools:text="Not selected" />
+            app:layout_constrainedWidth="true"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/etClipboardUrl" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -33,6 +33,7 @@ class FolderDialogFragment : BaseDialogFragment<DialogFoldersSettingsBinding, Fo
 
     override fun getLayoutId() = R.layout.dialog_folders_settings
     override fun getVariableId(): Int = BR.viewModel
+    override fun getStyleId() = R.style.CustomBottomSheetDialogTheme
 
     override fun onSetupView(bundle: Bundle?) {
         setupRecyclerView()

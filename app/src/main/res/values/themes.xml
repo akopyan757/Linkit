@@ -68,7 +68,7 @@
         <item name="boxCornerRadiusTopEnd">@dimen/cornerRadius</item>
         <item name="boxCornerRadiusBottomStart">@dimen/cornerRadius</item>
         <item name="boxCornerRadiusBottomEnd">@dimen/cornerRadius</item>
-        <item name="boxBackgroundColor">@color/white</item>
+        <item name="boxBackgroundColor">@color/backgroundTransparent</item>
         <item name="boxStrokeWidth">0dp</item>
         <item name="boxStrokeWidthFocused">0dp</item>
         <item name="android:textCursorDrawable">@null</item>
@@ -138,6 +138,14 @@
 
     <style name="ShapeAppearanceOverlay.App.CornerSize" parent="">
         <item name="cornerSize">10%</item>
+    </style>
+
+    <style name="CustomBottomSheetDialogTheme" parent="Theme.Design.Light.BottomSheetDialog">
+        <item name="bottomSheetStyle">@style/CustomBottomSheetStyle</item>
+    </style>
+
+    <style name="CustomBottomSheetStyle" parent="Widget.Design.BottomSheet.Modal">
+        <item name="android:background">@android:color/transparent</item>
     </style>
 
 </resources>
