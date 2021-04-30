@@ -1,8 +1,6 @@
 package com.akopyan757.linkit.view.adapter
 
-import android.net.Uri
-import android.util.Log
-import java.net.URL
+import android.graphics.Bitmap
 import android.view.View
 import android.webkit.WebView
 import android.widget.AdapterView
@@ -10,15 +8,17 @@ import android.widget.AdapterView.OnItemSelectedListener
 import android.widget.ArrayAdapter
 import android.widget.ImageView
 import android.widget.Spinner
+import androidx.annotation.DimenRes
 import androidx.annotation.DrawableRes
 import androidx.databinding.BindingAdapter
 import androidx.databinding.InverseBindingAdapter
 import androidx.databinding.InverseBindingListener
-import com.akopyan757.linkit.R
 import com.google.android.material.textfield.TextInputLayout
 import com.squareup.picasso.Picasso
-import jp.wasabeef.picasso.transformations.RoundedCornersTransformation
+import com.squareup.picasso.Transformation
 import java.net.URI
+import java.net.URL
+import kotlin.math.abs
 
 
 object DatabindingAdapter {
@@ -39,8 +39,19 @@ object DatabindingAdapter {
     }
 
     @JvmStatic
-    @BindingAdapter("app:photoUrl", "app:photoBaseUrl", "app:photoUrlDefaultRes", requireAll = false)
-    fun ImageView.setUrl(photoUrl: String?, baseUrl: String?, @DrawableRes drawableRes: Int?) {
+    @BindingAdapter(
+        "app:photoUrl",
+        "app:photoBaseUrl",
+        "app:photoUrlDefaultRes",
+        "app:squareSize",
+        requireAll = false
+    )
+    fun ImageView.setUrl(
+        photoUrl: String?,
+        baseUrl: String?,
+        @DrawableRes drawableRes: Int?,
+        @DimenRes squareResSize: Int?,
+    ) {
         val imageUrl = if (photoUrl != null) {
             if (URI(photoUrl).isAbsolute) photoUrl else {
                 URL(baseUrl).let { it.protocol + "://" + it.host + photoUrl }
@@ -48,20 +59,29 @@ object DatabindingAdapter {
         } else null
         var request = Picasso.get()
             .load(imageUrl)
+        if (squareResSize != null) {
+            val size = resources.getDimensionPixelSize(squareResSize)
+            request = request
+                .transform(object : Transformation {
+                    override fun transform(source: Bitmap?): Bitmap? {
+                        val bitmap = source ?: return null
+                        val aspectRatio = bitmap.height.toFloat() / source.width.toFloat()
+                        return if (abs(aspectRatio - 1.0) < 0.05) {
+                            val result = Bitmap.createScaledBitmap(bitmap, size, size, false)
+                            if (result != bitmap) bitmap.recycle()
+                            result
+                        } else bitmap
+                    }
+
+                    override fun key(): String = "cropPosterTransformation$size"
+                })
+        }
         if (drawableRes != null) {
-            request = request.error(drawableRes)
+            request = request
+                .error(drawableRes)
                 .placeholder(drawableRes)
         }
         request.into(this)
-    }
-
-    @JvmStatic
-    @BindingAdapter("app:uri")
-    fun ImageView.setUri(uri: Uri?) {
-        val radius = context.resources.getDimensionPixelOffset(R.dimen.tabPaddingHorizontally)
-        val size = context.resources.getDimensionPixelOffset(R.dimen.linkPictureWidth)
-        Picasso.get().load(uri).centerCrop().resize(size, size)
-                .transform(RoundedCornersTransformation(radius, 0)).into(this)
     }
 
     @JvmStatic

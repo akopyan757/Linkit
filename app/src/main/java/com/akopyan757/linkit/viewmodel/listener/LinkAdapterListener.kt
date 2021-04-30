@@ -7,6 +7,5 @@ interface LinkAdapterListener {
     fun onItemListener(link: BaseLinkObservable)
     fun onItemAppOpenListener(app: LinkAppObservable)
     fun onItemLongClickListener(link: BaseLinkObservable)
-    fun onChangeCollapsedListener(linkObservable: LinkLargeObservable)
     fun onAdClosed(adObservable: AdObservable)
 }

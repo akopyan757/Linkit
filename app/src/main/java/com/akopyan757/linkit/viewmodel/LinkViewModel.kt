@@ -12,7 +12,6 @@ import com.akopyan757.linkit.BR
 import com.akopyan757.linkit.R
 import com.akopyan757.linkit.viewmodel.observable.*
 import com.akopyan757.linkit_domain.entity.UrlLinkEntity
-import com.akopyan757.linkit_domain.usecase.urllink.ChangeCollapseLinkUseCase
 import com.akopyan757.linkit_domain.usecase.auth.GetUserUseCase
 import com.akopyan757.linkit_domain.usecase.folder.ListenFoldersChangesUseCase
 import com.akopyan757.linkit_domain.usecase.urllink.*
@@ -27,7 +26,6 @@ class LinkViewModel : BaseViewModel(), KoinComponent {
     private val listenFolders: ListenFoldersChangesUseCase by injectUseCase()
     private val getUrlLinkList: GetUrlLinkListUseCase by injectUseCase()
     private val updateAssignUrlLink: UpdateAssignUrlLinkUseCase by injectUseCase()
-    private val changeCollapseLink: ChangeCollapseLinkUseCase by injectUseCase()
 
     @get:Bindable var isFoldersEmpty: Boolean by DB(false, BR.foldersEmpty)
     @get:Bindable var profileIconUrl: String? by DB(null, BR.profileIconUrl)
@@ -77,14 +75,7 @@ class LinkViewModel : BaseViewModel(), KoinComponent {
         val id = folderId?.takeUnless { id -> id == FolderObservable.DEF_FOLDER_ID }
         listenUrlLinks.disposeLastExecute()
         listenUrlLinks.execute(ListenUrlLinkUseCase.Params(id), { links ->
-            val observables: MutableList<DiffItemObservable> = links.map { link ->
-                when (link.type) {
-                    UrlLinkEntity.Type.DEFAULT -> LinkObservable.from(link)
-                    UrlLinkEntity.Type.CARD -> LinkObservable.from(link)
-                    UrlLinkEntity.Type.LARGE_CARD -> LinkLargeObservable.from(link)
-                    UrlLinkEntity.Type.PLAYER -> LinkLargeObservable.from(link)
-                }
-            }.toMutableList()
+            val observables = links.map(LinkObservable::from).toMutableList<DiffItemObservable>()
             (0 until observables.size / REPEAT_AD).forEach { adIndex ->
                 val index = adIndex * REPEAT_AD + REPEAT_AD - 1
                 observables.add(index, AdObservable(adIndex + 1))
@@ -100,16 +91,6 @@ class LinkViewModel : BaseViewModel(), KoinComponent {
         observable.toggleCheck()
         urlListData.changeItem(observable) {
             changeEditMode()
-        }
-    }
-
-    fun changeUrlLinkCardCollapsedState(observable: LinkLargeObservable) {
-        observable.toggleCollapsed()
-        changeCollapseLink.execute(ChangeCollapseLinkUseCase.Params(observable.id, observable.isCollapsed()), {
-            Log.i("LinkViewModel", "changeCollapseLink: success: ${observable.isCollapsed()}")
-            //urlListData.changeItem(observable)
-        }) { throwable ->
-            Log.i("LinkViewModel", "changeCollapseLink: error", throwable)
         }
     }
 
@@ -176,11 +157,7 @@ class LinkViewModel : BaseViewModel(), KoinComponent {
     
     private fun getCheckedLinksIds(): List<String> {
         return urlListData.getList().mapNotNull { observable ->
-            if (observable is BaseLinkObservable && observable.checked) {
-                observable.id
-            } else {
-                null
-            }
+            if (observable is BaseLinkObservable && observable.checked) observable.id else null
         }
     }
 

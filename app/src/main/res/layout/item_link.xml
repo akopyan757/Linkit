@@ -23,32 +23,30 @@
         android:layout_marginTop="@dimen/marginTertiary"
         android:layout_marginEnd="@dimen/marginSecondary"
         android:layout_marginBottom="@dimen/marginTertiary"
-        android:minHeight="@dimen/linkMinHeight"
         android:onClick="@{() -> listener.onItemListener(observable)}"
         android:onLongClick="@{() -> listener.onItemLongClickListener(observable)}"
         app:cardCornerRadius="@dimen/cornerRadius"
-        app:cardElevation="@dimen/elevationTertiary"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:cardElevation="@dimen/elevationTertiary">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/clLinkContent"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:minHeight="@dimen/linkMinHeight"
+            tools:layout_height="wrap_content">
 
             <com.google.android.material.imageview.ShapeableImageView
                 android:id="@+id/ivLinkPhoto"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/marginSecondary"
-                android:layout_marginStart="@dimen/marginPrimary"
+                android:layout_marginStart="@dimen/marginSecondary"
+                android:layout_marginTop="@dimen/marginSecondary"
+                android:layout_marginBottom="@dimen/marginSecondary"
+                android:maxWidth="@dimen/linkPictureBigSize"
+                android:maxHeight="@dimen/linkPictureBigSize"
                 android:adjustViewBounds="true"
-                android:background="@drawable/background_image_view_corners"
                 android:contentDescription="@string/todo"
-                android:maxWidth="@dimen/linkPictureBigWidth"
-                android:maxHeight="@dimen/linkPictureMaxHeight"
-                android:scaleType="centerCrop"
+                android:scaleType="fitCenter"
                 app:elevation="@dimen/elevationTertiary"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -58,6 +56,7 @@
                 app:photoBaseUrl="@{observable.url}"
                 app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.CornerSize"
                 app:visibility="@{observable.photoVisible}"
+                app:squareSize="@{observable.smallPictureSizeRes}"
                 tools:src="@drawable/image_analysis" />
 
             <TextView
@@ -74,7 +73,6 @@
                 app:layout_constraintEnd_toStartOf="@+id/ivLinkShare"
                 app:layout_constraintStart_toEndOf="@+id/ivLinkPhoto"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_goneMarginStart="@dimen/marginPrimary"
                 app:visibility="@{observable.titleVisible}"
                 tools:text="Title" />
 
@@ -82,19 +80,18 @@
                 android:id="@+id/tvLinkDescription"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/marginSecondary"
-                android:layout_marginEnd="@dimen/marginSecondary"
                 android:ellipsize="end"
                 android:ems="3"
-                android:maxLines="3"
+                android:maxLines="4"
                 android:text="@{observable.description}"
                 android:textAppearance="@style/Theme.Linkit.TextAppearanceRegular.Body2.Extra"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/ivLinkPhoto"
+                app:layout_constraintEnd_toStartOf="@+id/ivLinkShare"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="@+id/tvLinkTitle"
                 app:layout_constraintTop_toBottomOf="@+id/tvLinkTitle"
-                app:layout_goneMarginStart="@dimen/marginPrimary"
-                tools:text="Description"
-                tools:visibility="gone" />
+                app:layout_goneMarginStart="@dimen/marginSecondary"
+                app:visibility="@{observable.descriptionVisible}"
+                tools:text="Description" />
 
             <TextView
                 android:id="@+id/tvLinkUrl"
@@ -102,17 +99,19 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/marginSecondary"
-                android:layout_marginEnd="@dimen/marginSecondary"
                 android:layout_marginBottom="@dimen/marginTertiary"
-                android:paddingBottom="@dimen/marginTertiary"
-                android:maxLines="@{observable.urlMaxLines}"
                 android:text="@{observable.site}"
-                app:layout_goneMarginStart="@dimen/marginPrimary"
+                android:textAppearance="@style/Theme.Linkit.TextAppearanceRegular.Body2.Extra"
+                android:maxLines="@{observable.urlMaxLines}"
+                android:paddingBottom="@dimen/marginTertiary"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/ivLinkPhoto"
+                app:layout_constraintEnd_toStartOf="@+id/ivLinkShare"
+                app:layout_constraintStart_toEndOf="@id/ivLinkPhoto"
                 app:layout_constraintTop_toBottomOf="@+id/tvLinkDescription"
-                app:layout_constraintVertical_bias="0.0"
+                app:layout_constraintVertical_bias="0.5"
+                app:layout_goneMarginStart="@dimen/marginSecondary"
+                app:layout_goneMarginTop="@dimen/marginTertiary"
+                tools:layout_goneMarginTop="@dimen/marginTertiary"
                 tools:text="https://google.com" />
 
             <ImageView
@@ -133,18 +132,44 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <ImageView
-                android:id="@+id/ivLinkChecked"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/marginTertiary"
-                android:layout_marginTop="@dimen/marginTertiary"
+                android:id="@+id/ivLinkApp"
+                style="@style/Theme.Linkit.ClickableImageView"
+                android:layout_width="@dimen/linkIconMinWidth"
+                android:layout_height="@dimen/linkIconMinHeight"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:clickable="true"
                 android:contentDescription="@string/todo"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/ic_link_checked"
-                app:visibility="@{checked}" />
+                android:focusable="true"
+                android:onClick="@{() -> listener.onItemAppOpenListener(observable.app)}"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/ivLinkShare"
+                tools:srcCompat="@drawable/ic_baseline_add_circle_outline_24" />
+
+            <ImageView
+                android:id="@+id/ivLinkPlayer"
+                android:layout_width="@dimen/playButtonCollapsedIconSize"
+                android:layout_height="@dimen/playButtonCollapsedIconSize"
+                android:contentDescription="@string/todo"
+                app:layout_constraintBottom_toBottomOf="@+id/ivLinkPhoto"
+                app:layout_constraintEnd_toEndOf="@+id/ivLinkPhoto"
+                app:layout_constraintStart_toStartOf="@+id/ivLinkPhoto"
+                app:layout_constraintTop_toTopOf="@+id/ivLinkPhoto"
+                app:srcCompat="@drawable/ic_player_button"
+                app:visibility="@{observable.player}" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <ImageView
+            android:id="@+id/ivLinkChecked"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/marginTertiary"
+            android:layout_marginTop="@dimen/marginTertiary"
+            android:contentDescription="@string/todo"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_link_checked"
+            app:visibility="@{checked}" />
 
     </com.google.android.material.card.MaterialCardView>
 

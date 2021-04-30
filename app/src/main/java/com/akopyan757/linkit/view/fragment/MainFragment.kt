@@ -150,10 +150,6 @@ class MainFragment : BaseFragment<FragmentMainBinding, LinkViewModel>(), LinkAda
         viewModel.onEditLinkItem(link)
     }
 
-    override fun onChangeCollapsedListener(linkObservable: LinkLargeObservable) {
-        viewModel.changeUrlLinkCardCollapsedState(linkObservable)
-    }
-
     override fun onAdClosed(adObservable: AdObservable) {
         viewModel.closeAdItem(adObservable)
     }

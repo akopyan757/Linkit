@@ -2,11 +2,9 @@ package com.akopyan757.linkit.view.adapter
 
 import android.transition.AutoTransition
 import android.transition.TransitionManager
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.constraintlayout.widget.ConstraintSet
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.akopyan757.base.viewmodel.DiffItemObservable
@@ -14,11 +12,8 @@ import com.akopyan757.base.viewmodel.list.UpdatableListAdapter
 import com.akopyan757.linkit.BannerViewExtension
 import com.akopyan757.linkit.R
 import com.akopyan757.linkit.databinding.ItemLinkBinding
-import com.akopyan757.linkit.databinding.ItemLinkSummaryCollapsedBinding
-import com.akopyan757.linkit.databinding.ItemLinkSummaryLargeBinding
 import com.akopyan757.linkit.viewmodel.listener.LinkAdapterListener
 import com.akopyan757.linkit.viewmodel.observable.AdObservable
-import com.akopyan757.linkit.viewmodel.observable.LinkLargeObservable
 import com.akopyan757.linkit.viewmodel.observable.LinkObservable
 
 
@@ -31,31 +26,13 @@ class LinkUrlAdapter(
         return when (viewType) {
             R.layout.item_link -> {
                 val binding = DataBindingUtil.inflate<ItemLinkBinding>(
-                    inflater,
-                    viewType,
-                    parent,
-                    false
+                    inflater, viewType, parent, false
                 )
                 LinkViewHolder(binding, listener)
             }
-            R.layout.item_link_summary_large -> {
-                val fullBinding = DataBindingUtil.inflate<ItemLinkSummaryLargeBinding>(
-                    inflater,
-                    viewType,
-                    parent,
-                    false
-                )
-                val collapsedBinding = DataBindingUtil.inflate<ItemLinkSummaryCollapsedBinding>(
-                    inflater,
-                    R.layout.item_link_summary_collapsed,
-                    parent,
-                    false
-                )
-                LinkLargeViewHolder(fullBinding, collapsedBinding, listener)
-            }
+
             else -> {
-                val view = inflater.inflate(viewType, parent, false)
-                AdViewHolder(view, listener)
+                AdViewHolder(inflater.inflate(viewType, parent, false), listener)
             }
         }
     }
@@ -63,7 +40,6 @@ class LinkUrlAdapter(
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (holder) {
             is LinkViewHolder -> holder.bind(items[position] as LinkObservable)
-            is LinkLargeViewHolder -> holder.bind(items[position] as LinkLargeObservable)
             is AdViewHolder -> holder.bind(items[position] as AdObservable)
         }
     }
@@ -71,7 +47,7 @@ class LinkUrlAdapter(
     override fun getItemViewType(position: Int): Int {
         return when {
             items[position] is LinkObservable -> R.layout.item_link
-            items[position] is LinkLargeObservable -> R.layout.item_link_summary_large
+            items[position] is LinkObservable -> R.layout.item_link
             else -> R.layout.layout_item_banner_ads
         }
     }
@@ -82,51 +58,17 @@ class LinkUrlAdapter(
     ): RecyclerView.ViewHolder(binding.root) {
 
         fun bind(observable: LinkObservable) {
+            val autoTransition = AutoTransition().apply { duration = 600 }
+            TransitionManager.beginDelayedTransition(binding.clLinkContent, autoTransition)
+            val drawable = observable.app?.let { appObservable ->
+                binding.root.context.packageManager.getApplicationIcon(appObservable.appId)
+            }
             binding.observable = observable
             binding.listener = listener
             binding.checked = observable.checked
+            binding.ivLinkApp.setImageDrawable(drawable)
+            binding.ivLinkApp.visibility = if (drawable != null) View.VISIBLE else View.GONE
             binding.executePendingBindings()
-        }
-    }
-
-    class LinkLargeViewHolder(
-        private val fullBinding: ItemLinkSummaryLargeBinding,
-        private val collapsedBinding: ItemLinkSummaryCollapsedBinding,
-        private val listener: LinkAdapterListener
-    ): RecyclerView.ViewHolder(fullBinding.root) {
-
-        private val expandedSet: ConstraintSet = ConstraintSet()
-        private val collapsedSet: ConstraintSet = ConstraintSet()
-
-        init {
-            expandedSet.clone(fullBinding.clLinkContent)
-            collapsedSet.clone(collapsedBinding.clLinkContent)
-        }
-
-        fun bind(observable: LinkLargeObservable) {
-            val autoTransition = AutoTransition().apply { duration = 600 }
-            TransitionManager.beginDelayedTransition(fullBinding.clLinkContent, autoTransition)
-            val drawable = observable.app?.let { appObservable ->
-                fullBinding.root.context.packageManager.getApplicationIcon(appObservable.appId)
-            }
-            if (observable.isCollapsed()) {
-                collapsedBinding.observable = observable
-                collapsedBinding.listener = listener
-                collapsedBinding.checked = observable.checked
-                collapsedSet.applyTo(fullBinding.clLinkContent)
-                collapsedBinding.ivLinkApp.setImageDrawable(drawable)
-                collapsedBinding.executePendingBindings()
-                fullBinding.ivLinkExpand.setImageResource(R.drawable.ic_arrow_down)
-            } else {
-                fullBinding.ivLinkExpand.setImageResource(R.drawable.ic_arrow_up)
-                expandedSet.applyTo(fullBinding.clLinkContent)
-            }
-            fullBinding.observable = observable
-            fullBinding.listener = listener
-            fullBinding.checked = observable.checked
-            fullBinding.ivLinkApp.setImageDrawable(drawable)
-            fullBinding.ivLinkApp.visibility = if (drawable != null) View.VISIBLE else View.GONE
-            fullBinding.executePendingBindings()
         }
     }
 
