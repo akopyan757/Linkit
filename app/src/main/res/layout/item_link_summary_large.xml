@@ -23,7 +23,6 @@
         android:layout_marginTop="@dimen/marginTertiary"
         android:layout_marginEnd="@dimen/marginSecondary"
         android:layout_marginBottom="@dimen/marginTertiary"
-        android:minHeight="@dimen/linkMinHeight"
         android:onClick="@{() -> listener.onItemListener(observable)}"
         android:onLongClick="@{() -> listener.onItemLongClickListener(observable)}"
         app:cardCornerRadius="@dimen/cornerRadius"
@@ -50,6 +49,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:photoUrl="@{observable.photoUrl}"
+                app:photoBaseUrl="@{observable.url}"
                 app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.CornerSize"
                 app:visibility="@{observable.photoVisible}"
                 tools:src="@drawable/image_analysis" />
@@ -110,6 +110,7 @@
                 android:text="@{observable.site}"
                 android:textAppearance="@style/Theme.Linkit.TextAppearanceRegular.Body2.Extra"
                 android:maxLines="@{observable.urlMaxLines}"
+                android:paddingBottom="@dimen/marginTertiary"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="@+id/tvLinkDescription"
                 app:layout_constraintEnd_toStartOf="@+id/ivLinkShare"

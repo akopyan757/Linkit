@@ -16,7 +16,7 @@ data class LinkObservable(
     val photoVisible = photoUrl != null
     val titleVisible = title.isNotEmpty()
     val urlMaxLines: Int
-        get() = if (photoVisible || description.isNotEmpty() || titleVisible) 1 else 3
+        get() = if (photoVisible || description.isNotEmpty() || titleVisible) 2 else 3
 
     override var checked: Boolean = false
 

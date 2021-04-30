@@ -42,12 +42,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/marginSecondary"
-                android:layout_marginStart="16dp"
+                android:layout_marginStart="@dimen/marginPrimary"
                 android:adjustViewBounds="true"
                 android:background="@drawable/background_image_view_corners"
                 android:contentDescription="@string/todo"
                 android:maxWidth="@dimen/linkPictureBigWidth"
-                android:maxHeight="@dimen/linkPictureHeight"
+                android:maxHeight="@dimen/linkPictureMaxHeight"
                 android:scaleType="centerCrop"
                 app:elevation="@dimen/elevationTertiary"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -55,6 +55,7 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_bias="0.0"
                 app:photoUrl="@{observable.photoUrl}"
+                app:photoBaseUrl="@{observable.url}"
                 app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.CornerSize"
                 app:visibility="@{observable.photoVisible}"
                 tools:src="@drawable/image_analysis" />
@@ -73,7 +74,7 @@
                 app:layout_constraintEnd_toStartOf="@+id/ivLinkShare"
                 app:layout_constraintStart_toEndOf="@+id/ivLinkPhoto"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_goneMarginStart="@dimen/marginSecondary"
+                app:layout_goneMarginStart="@dimen/marginPrimary"
                 app:visibility="@{observable.titleVisible}"
                 tools:text="Title" />
 
@@ -92,22 +93,26 @@
                 app:layout_constraintStart_toEndOf="@+id/ivLinkPhoto"
                 app:layout_constraintTop_toBottomOf="@+id/tvLinkTitle"
                 app:layout_goneMarginStart="@dimen/marginPrimary"
-                tools:text="Description" />
+                tools:text="Description"
+                tools:visibility="gone" />
 
             <TextView
                 android:id="@+id/tvLinkUrl"
                 style="@style/Theme.Linkit.ItemUrl"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/marginSecondary"
                 android:layout_marginEnd="@dimen/marginSecondary"
                 android:layout_marginBottom="@dimen/marginTertiary"
-                android:text="@{observable.site}"
+                android:paddingBottom="@dimen/marginTertiary"
                 android:maxLines="@{observable.urlMaxLines}"
+                android:text="@{observable.site}"
+                app:layout_goneMarginStart="@dimen/marginPrimary"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="@+id/tvLinkDescription"
+                app:layout_constraintStart_toEndOf="@+id/ivLinkPhoto"
                 app:layout_constraintTop_toBottomOf="@+id/tvLinkDescription"
-                app:layout_constraintVertical_bias="0.88"
+                app:layout_constraintVertical_bias="0.0"
                 tools:text="https://google.com" />
 
             <ImageView

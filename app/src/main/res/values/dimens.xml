@@ -28,9 +28,9 @@
     <dimen name="linkPictureMinWidth">36dp</dimen>
     <dimen name="linkPictureMinHeight">36dp</dimen>
     <dimen name="linkPictureWidth">68dp</dimen>
-    <dimen name="linkPictureHeight">68dp</dimen>
+    <dimen name="linkPictureMaxHeight">80dp</dimen>
     <dimen name="linkPictureBigWidth">120dp</dimen>
-    <dimen name="linkPictureBigHeight">80dp</dimen>
+    <dimen name="linkPictureBigHeight">120dp</dimen>
     <dimen name="linkIconMinWidth">32dp</dimen>
     <dimen name="linkIconMinHeight">32dp</dimen>
     <dimen name="createUrlFolderTitleMarginStart">12dp</dimen>
@@ -38,7 +38,7 @@
     <dimen name="dialogMaxHeight">400dp</dimen>
     <dimen name="dialogCreateMinWidth">250dp</dimen>
     <dimen name="linkMinWidth">100dp</dimen>
-    <dimen name="linkMinHeight">60dp</dimen>
+    <dimen name="linkMinHeight">50dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="tabPaddingHorizontally">12dp</dimen>
     <dimen name="itemGuidelineBegin">84dp</dimen>

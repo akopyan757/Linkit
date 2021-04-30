@@ -1,6 +1,8 @@
 package com.akopyan757.linkit.view.adapter
 
 import android.net.Uri
+import android.util.Log
+import java.net.URL
 import android.view.View
 import android.webkit.WebView
 import android.widget.AdapterView
@@ -8,17 +10,15 @@ import android.widget.AdapterView.OnItemSelectedListener
 import android.widget.ArrayAdapter
 import android.widget.ImageView
 import android.widget.Spinner
-import androidx.annotation.DimenRes
 import androidx.annotation.DrawableRes
-import androidx.core.content.ContextCompat
 import androidx.databinding.BindingAdapter
 import androidx.databinding.InverseBindingAdapter
 import androidx.databinding.InverseBindingListener
 import com.akopyan757.linkit.R
 import com.google.android.material.textfield.TextInputLayout
 import com.squareup.picasso.Picasso
-import jp.wasabeef.picasso.transformations.CropCircleTransformation
 import jp.wasabeef.picasso.transformations.RoundedCornersTransformation
+import java.net.URI
 
 
 object DatabindingAdapter {
@@ -39,9 +39,15 @@ object DatabindingAdapter {
     }
 
     @JvmStatic
-    @BindingAdapter("app:photoUrl", "app:photoUrlDefaultRes", requireAll = false)
-    fun ImageView.setUrl(url: String?, @DrawableRes drawableRes: Int?) {
-        var request = Picasso.get().load(url)
+    @BindingAdapter("app:photoUrl", "app:photoBaseUrl", "app:photoUrlDefaultRes", requireAll = false)
+    fun ImageView.setUrl(photoUrl: String?, baseUrl: String?, @DrawableRes drawableRes: Int?) {
+        val imageUrl = if (photoUrl != null) {
+            if (URI(photoUrl).isAbsolute) photoUrl else {
+                URL(baseUrl).let { it.protocol + "://" + it.host + photoUrl }
+            }
+        } else null
+        var request = Picasso.get()
+            .load(imageUrl)
         if (drawableRes != null) {
             request = request.error(drawableRes)
                 .placeholder(drawableRes)
@@ -83,7 +89,7 @@ object DatabindingAdapter {
         pAppCompatSpinner.onItemSelectedListener = object : OnItemSelectedListener {
             override fun onItemSelected(
                 parent: AdapterView<*>?,
-                view: View,
+                view: View?,
                 position: Int,
                 id: Long
             ) {
