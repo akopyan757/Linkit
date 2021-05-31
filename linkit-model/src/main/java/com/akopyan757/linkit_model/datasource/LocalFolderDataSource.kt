@@ -17,7 +17,11 @@ class LocalFolderDataSource(
 
     override fun createFolderInstance(folderName: String): FolderEntity {
         val existFolder = folderDao.getByName(folderName)
-        val folderId = existFolder?.id ?: throw FolderExistsException()
+        val folderId = if (existFolder?.id != null) {
+            throw FolderExistsException()
+        } else {
+            UUID.randomUUID().toString()
+        }
         val order = folderDao.getMaxOrder().plus(ONE)
         return FolderEntity(folderId, folderName, order)
     }
