@@ -17,16 +17,9 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 object ServiceModule {
 
-    private const val KEY_SHARED = "SHARED_PREFS"
     private const val MAPPER_USER = "user"
 
     val module = module {
-
-        single<SharedPreferences> {
-            androidContext().getSharedPreferences(KEY_SHARED, Context.MODE_PRIVATE)
-        }
-
-        single<ITokenCache> { TokenCache(get()) }
 
         single {
             Retrofit.Builder()
