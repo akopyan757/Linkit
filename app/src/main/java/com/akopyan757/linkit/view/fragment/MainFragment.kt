@@ -3,12 +3,10 @@ package com.akopyan757.linkit.view.fragment
 import android.app.AlertDialog
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewTreeObserver
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.findFragment
 import androidx.navigation.fragment.findNavController
 import com.akopyan757.base.view.BaseFragment
 import com.akopyan757.base.viewmodel.list.LinearLayoutManagerWrapper
@@ -20,11 +18,12 @@ import com.akopyan757.linkit.common.utils.AndroidUtils
 import com.akopyan757.linkit.common.utils.ClipboardUtils
 import com.akopyan757.linkit.databinding.FragmentMainBinding
 import com.akopyan757.linkit.view.adapter.LinkUrlAdapter
-import com.akopyan757.linkit.view.dialog.ClipboardUrlDialogFragment
 import com.akopyan757.linkit.viewmodel.LinkViewModel
 import com.akopyan757.linkit.viewmodel.listener.LinkAdapterListener
-import com.akopyan757.linkit.viewmodel.observable.*
-import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.akopyan757.linkit.viewmodel.observable.AdObservable
+import com.akopyan757.linkit.viewmodel.observable.BaseLinkObservable
+import com.akopyan757.linkit.viewmodel.observable.FolderObservable
+import com.akopyan757.linkit.viewmodel.observable.LinkAppObservable
 import com.google.android.material.tabs.TabLayout
 import kotlinx.android.synthetic.main.tab_folder.view.*
 import org.koin.android.viewmodel.ext.android.viewModel
@@ -40,6 +39,7 @@ class MainFragment : BaseFragment<FragmentMainBinding, LinkViewModel>(), LinkAda
     override fun getVariableId() = BR.viewModel
 
     private lateinit var recyclerLinksAdapter: LinkUrlAdapter
+    private var tabLayoutListener: TabLayout.OnTabSelectedListener? = null
 
     override fun onSetupView(bundle: Bundle?) {
         setupLifecycleOwner()
@@ -115,16 +115,17 @@ class MainFragment : BaseFragment<FragmentMainBinding, LinkViewModel>(), LinkAda
     private fun updateFoldersList(folders: List<FolderObservable>) {
         val tabLayout = binding.tabLayoutFolder
         tabLayout.removeAllTabs()
-        folders.forEach { observable ->
-            tabLayout.addTab(tabLayout.createTab(observable))
-        }
-        tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+        folders.forEach { observable -> tabLayout.addTab(tabLayout.createTab(observable)) }
+        tabLayoutListener?.also { listener -> tabLayout.removeOnTabSelectedListener(listener) }
+        val listener = object : TabLayout.OnTabSelectedListener {
             override fun onTabUnselected(tab: TabLayout.Tab?) {}
             override fun onTabReselected(tab: TabLayout.Tab?) {}
             override fun onTabSelected(tab: TabLayout.Tab?) {
                 if (tab != null) viewModel.listenLinksById(folders[tab.position].id)
             }
-        })
+        }
+        tabLayout.addOnTabSelectedListener(listener)
+        tabLayoutListener = listener
     }
 
     private fun TabLayout.createTab(observable: FolderObservable): TabLayout.Tab {
