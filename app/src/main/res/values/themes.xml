@@ -33,13 +33,12 @@
         <item name="background">@drawable/shadow_tab_layout</item>
         <item name="tabIndicator">@null</item>
         <item name="tabMode">scrollable</item>
-        <item name="tabMinWidth">0dp</item>
         <item name="tabGravity">fill</item>
         <item name="tabRippleColor">@null</item>
-        <item name="tabPaddingStart">@dimen/marginTertiary</item>
-        <item name="tabPaddingEnd">@dimen/marginTertiary</item>
-        <item name="tabPaddingTop">@dimen/marginTertiary</item>
-        <item name="tabPaddingBottom">@dimen/marginTertiary</item>
+        <item name="tabPaddingStart">@dimen/zero</item>
+        <item name="tabPaddingEnd">@dimen/zero</item>
+        <item name="tabPaddingTop">@dimen/zero</item>
+        <item name="tabPaddingBottom">@dimen/zero</item>
         <item name="android:tabStripEnabled">false</item>
     </style>
 

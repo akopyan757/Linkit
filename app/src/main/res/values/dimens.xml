@@ -17,6 +17,8 @@
     <dimen name="elevationSecondary">4dp</dimen>
     <dimen name="elevationTertiary">2dp</dimen>
 
+    <dimen name="zero">0dp</dimen>
+
     <dimen name="paddingFolderTabItem">12dp</dimen>
     <dimen name="tabLayout_folder_height">40dp</dimen>
 

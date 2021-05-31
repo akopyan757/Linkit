@@ -1,10 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TextView
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    style="@style/Theme.Linkit.TabItem"
-    android:id="@+id/tabFolder"
     android:layout_width="wrap_content"
-    android:layout_height="match_parent"
-    tools:layout_height="wrap_content"
-    tools:text="Folder" />
+    android:layout_height="@dimen/tabLayout_folder_height">
+
+    <TextView
+        android:id="@+id/tabFolder"
+        style="@style/Theme.Linkit.TabItem"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_margin="@dimen/marginTertiary"
+        tools:text="Folder" />
+
+</FrameLayout>
