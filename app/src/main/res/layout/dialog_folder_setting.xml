@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@color/transparent"
+    android:orientation="vertical">
+
+    <include
+        android:id="@+id/imageCard"
+        layout="@layout/tab_folder"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/marginSecondary" />
+
+    <LinearLayout
+        android:layout_width="128dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="@dimen/marginTertiary"
+        android:background="@drawable/background_dialog_small">
+
+        <TextView
+            android:layout_width="120dp"
+            android:layout_height="wrap_content"
+            android:text="@string/rename"
+            android:layout_weight="1"
+            android:padding="@dimen/marginTertiary"
+            android:textAppearance="@style/Theme.Linkit.Text"
+            android:drawablePadding="@dimen/marginSecondary"
+            app:drawableStartCompat="@drawable/ic_baseline_edit_24" />
+
+        <TextView
+            android:layout_width="120dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/delete"
+            android:padding="@dimen/marginTertiary"
+            android:textAppearance="@style/Theme.Linkit.Text"
+            android:drawablePadding="@dimen/marginSecondary"
+            app:drawableStartCompat="@drawable/ic_baseline_trash_24" />
+
+    </LinearLayout>
+
+</LinearLayout>

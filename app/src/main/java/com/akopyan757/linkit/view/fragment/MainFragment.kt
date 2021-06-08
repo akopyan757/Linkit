@@ -1,11 +1,12 @@
 package com.akopyan757.linkit.view.fragment
 
 import android.app.AlertDialog
+import android.graphics.*
+import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewTreeObserver
+import android.view.*
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.fragment.findNavController
 import com.akopyan757.base.view.BaseFragment
@@ -133,6 +134,8 @@ class MainFragment : BaseFragment<FragmentMainBinding, LinkViewModel>(), LinkAda
         val inflater = LayoutInflater.from(requireContext())
         val view = inflater.inflate(R.layout.tab_folder, this, false)
         view.tabFolder.text = observable.name
+        view.setOnLongClickListener { _view -> showFolderSetting(_view, observable); false }
+        view.setOnClickListener { tab.select() }
         tab.customView = view
         return tab
     }
@@ -194,6 +197,33 @@ class MainFragment : BaseFragment<FragmentMainBinding, LinkViewModel>(), LinkAda
             .show()
     }
 
+    private fun showFolderSetting(tabView: View, observable: FolderObservable) {
+        val tabPosition = intArrayOf(0, 0)
+        tabView.getLocationOnScreen(tabPosition)
+        val (left, top) = tabPosition
+        val layoutInflater = LayoutInflater.from(context)
+        val view = layoutInflater.inflate(R.layout.dialog_folder_setting, null, false)
+        view.findViewById<ViewGroup>(R.id.imageCard).findViewById<TextView>(R.id.tabFolder).apply {
+            isSelected = true
+            text = observable.name
+        }
+        val dialog = AlertDialog.Builder(context, R.style.Theme_Linkit_AlertDialog_Small)
+            .setView(view)
+            .create()
+        dialog.window?.apply {
+            attributes.x = left
+            attributes.y = top - getStatusBarHeight()
+            attributes.gravity = Gravity.TOP or Gravity.START
+            setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        }
+        dialog.show()
+    }
+
+    private fun getStatusBarHeight(): Int {
+        val resourceId = resources.getIdentifier(IDENTIFIER_NAME, IDENTIFIER_DEF_TYPE, IDENTIFIER_DEF_PACKAGE)
+        return if (resourceId > 0) resources.getDimensionPixelSize(resourceId) else ZERO
+    }
+
     private fun setupAdViews() {
         BannerViewExtension.loadAd(binding.bannerBottomAd) {
             binding.bannerBottomAd.visibility = View.GONE
@@ -227,5 +257,8 @@ class MainFragment : BaseFragment<FragmentMainBinding, LinkViewModel>(), LinkAda
 
     companion object {
         private const val ZERO = 0
+        private const val IDENTIFIER_NAME = "status_bar_height"
+        private const val IDENTIFIER_DEF_TYPE = "dimen"
+        private const val IDENTIFIER_DEF_PACKAGE = "android"
     }
 }
