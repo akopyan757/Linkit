@@ -1,48 +1,37 @@
 package com.akopyan757.linkit.view.dialog
 
-import android.app.AlertDialog
-import android.app.Dialog
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
-import androidx.fragment.app.DialogFragment
+import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
 import com.akopyan757.linkit.R
 import com.akopyan757.linkit.common.Config
 import com.akopyan757.linkit.viewmodel.observable.FolderObservable
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import kotlinx.android.synthetic.main.dialog_folder_delete.view.*
 
-class FolderDeleteDialogFragment: DialogFragment() {
+class FolderDeleteDialogFragment: BottomSheetDialogFragment() {
 
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val folderObservable = getFolderObservableFromArguments()
-                ?: return super.onCreateDialog(savedInstanceState)
-        val dialogView = createDialogViewFromFolder(folderObservable)
-        return createCustomDialog(dialogView)
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setStyle(STYLE_NORMAL, R.style.CustomBottomSheetDialogTheme)
     }
 
-    private fun createCustomDialog(view: View): Dialog {
-        return AlertDialog.Builder(requireContext(), R.style.Theme_Linkit_AlertDialog)
-                .setView(view)
-                .create()
-    }
-
-    private fun createDialogViewFromFolder(folder: FolderObservable): View {
-        val dialogView = View.inflate(context, R.layout.dialog_folder_delete, null)
-        val dialogDescription = getString(R.string.delete_folder_description, folder.name)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        val folderObservable = getFolderObservableFromArguments() ?: return null
+        val dialogView = View.inflate(context, R.layout.dialog_folder_delete, container)
+        val dialogDescription = getString(R.string.delete_folder_description, folderObservable.name)
         dialogView.tvFolderDeleteDescription.text = dialogDescription
-        dialogView.btnFolderDeleteAccept.setOnClickListener { acceptFolder(folder) }
+        dialogView.btnFolderDeleteAccept.setOnClickListener { acceptFolder(folderObservable) }
         dialogView.btnFolderDeleteCancel.setOnClickListener { dismiss() }
         return dialogView
     }
 
     private fun acceptFolder(folder: FolderObservable) {
-        emitEventDeleteFolder(folder)
-        dismiss()
-    }
-
-    private fun emitEventDeleteFolder(folder: FolderObservable) {
         val savedStateHandle = findNavController().previousBackStackEntry?.savedStateHandle
         savedStateHandle?.set(Config.KEY_ACCEPT_DELETE, folder)
+        findNavController().popBackStack()
     }
 
     private fun getFolderObservableFromArguments(): FolderObservable? {

@@ -106,7 +106,11 @@ class LinkViewModel : BaseViewModel(), KoinComponent {
     }
 
     fun deleteFolder(folderId: String) {
-        deleteFolder.execute(DeleteFolderUseCase.Params(folderId))
+        deleteFolder.execute(DeleteFolderUseCase.Params(folderId), {
+            Log.i("LinkViewModel", "Delete Folder: Success: folderId = $folderId")
+        }, { throwable ->
+            Log.e("LinkViewModel", "Delete Folder: Error: folderId = $folderId", throwable)
+        })
     }
 
     fun getUserAvatar() {
