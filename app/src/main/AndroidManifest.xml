@@ -19,7 +19,7 @@
         <activity
             android:name=".view.AuthActivity"
             android:windowSoftInputMode="adjustResize"
-            android:screenOrientation="portrait">
+            android:screenOrientation="fullSensor">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -30,9 +30,9 @@
             android:name="org.apache.http.legacy"
             android:required="false" />
 
-        <activity android:name=".view.MainActivity">
-
-        </activity>
+        <activity
+            android:name=".view.MainActivity"
+            android:windowSoftInputMode="adjustResize" />
 
         <provider
             android:name="androidx.core.content.FileProvider"

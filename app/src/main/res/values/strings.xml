@@ -71,6 +71,8 @@
     <string name="auth_policy">By signing up, you agree to UnboxMe’s\nTerms of Use and Privacy Policy.</string>
     <string name="sing_in_button_text">Already have an account?</string>
     <string name="rename">Rename</string>
+    <string name="rename_folder">Rename folder</string>
+    <string name="reorder">Reorder</string>
     <plurals name="dialog_delete_link_title">
         <item quantity="one">Delete link</item>
         <item quantity="other">Delete links</item>

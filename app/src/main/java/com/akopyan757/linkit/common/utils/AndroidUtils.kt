@@ -6,10 +6,7 @@ import android.content.Intent
 import android.net.Uri
 import android.view.View
 import android.view.inputmethod.InputMethodManager
-import androidx.core.content.FileProvider
-import com.akopyan757.linkit.BuildConfig
 import com.akopyan757.linkit.common.Config
-import java.io.File
 
 
 object AndroidUtils {
@@ -33,5 +30,12 @@ object AndroidUtils {
         val imm = activity.getSystemService(Activity.INPUT_METHOD_SERVICE) as? InputMethodManager ?: return
         val view = activity.currentFocus ?: View(activity)
         imm.hideSoftInputFromWindow(view.windowToken, 0)
+    }
+
+    fun showKeyboard(activity: Activity) {
+        val inputMethodManager = activity.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        inputMethodManager.toggleSoftInputFromWindow(
+            activity.currentFocus?.windowToken, InputMethodManager.SHOW_FORCED, 0
+        )
     }
 }

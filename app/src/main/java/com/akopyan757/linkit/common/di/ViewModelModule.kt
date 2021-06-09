@@ -3,6 +3,7 @@ package com.akopyan757.linkit.common.di
 import androidx.lifecycle.SavedStateHandle
 import com.akopyan757.linkit.common.Config.HANDLE_URL
 import com.akopyan757.linkit.viewmodel.*
+import com.akopyan757.linkit.viewmodel.observable.FolderObservable
 import com.akopyan757.linkit.viewmodel.observable.LinkObservable
 import io.reactivex.disposables.CompositeDisposable
 import org.koin.android.viewmodel.dsl.viewModel
@@ -28,6 +29,7 @@ object ViewModelModule {
         viewModel { ProfileViewModel() }
         viewModel { ProfileSetPasswordViewModel() }
         viewModel { ProfileUpdatePasswordViewModel() }
+        viewModel { (observable: FolderObservable) -> FolderRenameViewModel(observable) }
         viewModel { (observable: LinkObservable) -> PreviewUrlViewModel(observable) }
     }
 }

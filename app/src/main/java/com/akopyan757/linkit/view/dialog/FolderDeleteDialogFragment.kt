@@ -46,7 +46,7 @@ class FolderDeleteDialogFragment: DialogFragment() {
     }
 
     private fun getFolderObservableFromArguments(): FolderObservable? {
-        return arguments?.getSerializable(FOLDER_DATA) as FolderObservable
+        return arguments?.getSerializable(FOLDER_DATA) as? FolderObservable
     }
 
     companion object {

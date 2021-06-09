@@ -13,6 +13,7 @@ import com.akopyan757.linkit.R
 import com.akopyan757.linkit.viewmodel.observable.*
 import com.akopyan757.linkit_domain.entity.UrlLinkEntity
 import com.akopyan757.linkit_domain.usecase.auth.GetUserUseCase
+import com.akopyan757.linkit_domain.usecase.folder.DeleteFolderUseCase
 import com.akopyan757.linkit_domain.usecase.folder.ListenFoldersChangesUseCase
 import com.akopyan757.linkit_domain.usecase.urllink.*
 import org.koin.core.KoinComponent
@@ -22,6 +23,7 @@ class LinkViewModel : BaseViewModel(), KoinComponent {
     private val getUser: GetUserUseCase by injectUseCase()
     private val listenUrlLinks: ListenUrlLinkUseCase by injectUseCase()
     private val deleteUrlLink: DeleteUrlLinkUseCase by injectUseCase()
+    private val deleteFolder: DeleteFolderUseCase by injectUseCase()
     private val moveTopLink: MoveTopLinkUseCase by injectUseCase()
     private val listenFolders: ListenFoldersChangesUseCase by injectUseCase()
     private val getUrlLinkList: GetUrlLinkListUseCase by injectUseCase()
@@ -101,6 +103,10 @@ class LinkViewModel : BaseViewModel(), KoinComponent {
         urlListData.change(uncheckedObservables) {
             resetEditMode()
         }
+    }
+
+    fun deleteFolder(folderId: String) {
+        deleteFolder.execute(DeleteFolderUseCase.Params(folderId))
     }
 
     fun getUserAvatar() {

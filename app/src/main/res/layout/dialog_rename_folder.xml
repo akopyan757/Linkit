@@ -6,7 +6,7 @@
     <data>
         <variable
             name="viewModel"
-            type="com.akopyan757.linkit.viewmodel.FolderCreateViewModel" />
+            type="com.akopyan757.linkit.viewmodel.FolderRenameViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -21,7 +21,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/marginPrimary"
             android:layout_marginTop="@dimen/marginPrimary"
-            android:text="@string/new_folder"
+            android:text="@string/rename_folder"
             android:textAppearance="@style/Theme.Linkit.TextAppearanceRegular.H1"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -39,7 +39,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/btnCreateLinkAccept">
+            app:layout_constraintTop_toBottomOf="@+id/btnRenameLinkAccept">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/tietCreateLinkName"
@@ -48,19 +48,25 @@
                 android:layout_height="wrap_content"
                 android:hint="@string/name"
                 android:maxLength="15"
-                android:text="@={viewModel.folderName}" />
+                android:focusableInTouchMode="true"
+                android:text="@={viewModel.folderName}">
+
+            </com.google.android.material.textfield.TextInputEditText>
 
         </com.google.android.material.textfield.TextInputLayout>
 
         <Button
-            android:id="@+id/btnCreateLinkAccept"
+            android:id="@+id/btnRenameLinkAccept"
             style="@style/Theme.Linkit.Button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/marginPrimary"
             android:layout_marginTop="@dimen/marginSecondary"
-            android:layout_marginEnd="16dp"
-            android:text="@string/create"
+            android:layout_marginEnd="@dimen/marginPrimary"
+            android:text="@string/accept"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toEndOf="@+id/tvCreateLinkTitle"
             app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

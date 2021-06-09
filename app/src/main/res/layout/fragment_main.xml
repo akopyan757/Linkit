@@ -61,7 +61,6 @@
 
         </com.google.android.material.appbar.AppBarLayout>
 
-
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/constraintLayout"
             android:layout_width="match_parent"
@@ -75,33 +74,16 @@
                 android:layout_height="@dimen/tabLayout_folder_height"
                 android:layout_marginStart="@dimen/marginSecondary"
                 android:layout_marginTop="@dimen/marginSecondary"
-                android:spinnerMode="dropdown"
-                android:elevation="@dimen/marginTertiary"
+                android:layout_marginEnd="@dimen/marginSecondary"
                 android:background="@drawable/shadow_tab_layout"
+                android:elevation="@dimen/marginTertiary"
+                android:spinnerMode="dropdown"
                 app:layout_constrainedWidth="true"
-                app:layout_constraintEnd_toStartOf="@+id/ivFolderSettings"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintHorizontal_chainStyle="packed"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
-
-            <ImageView
-                android:id="@+id/ivFolderSettings"
-                android:layout_width="@dimen/linkIconMinWidth"
-                android:layout_height="@dimen/linkIconMinHeight"
-                android:layout_marginStart="@dimen/marginSecondary"
-                android:layout_marginEnd="@dimen/marginSecondary"
-                android:contentDescription="@string/todo"
-                android:padding="@dimen/marginSecondary"
-                android:elevation="@dimen/marginTertiary"
-                app:visibility="@{!viewModel.foldersEmpty}"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintHorizontal_chainStyle="packed"
-                app:layout_constraintBottom_toBottomOf="@+id/tabLayoutFolder"
-                app:layout_constraintStart_toEndOf="@+id/tabLayoutFolder"
-                app:layout_constraintTop_toTopOf="@+id/tabLayoutFolder"
-                app:srcCompat="@drawable/ic_options_24" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rvLinks"

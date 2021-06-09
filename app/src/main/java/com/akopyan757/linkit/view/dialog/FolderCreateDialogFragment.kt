@@ -5,6 +5,7 @@ import androidx.navigation.fragment.findNavController
 import com.akopyan757.base.view.BaseDialogFragment
 import com.akopyan757.linkit.BR
 import com.akopyan757.linkit.R
+import com.akopyan757.linkit.common.utils.AndroidUtils
 import com.akopyan757.linkit.databinding.DialogNewFolderBinding
 import com.akopyan757.linkit.viewmodel.FolderCreateViewModel
 import org.koin.android.viewmodel.ext.android.viewModel
@@ -19,6 +20,13 @@ class FolderCreateDialogFragment : BaseDialogFragment<DialogNewFolderBinding, Fo
 
     override fun onSetupView(bundle: Bundle?) {
         binding.btnCreateLinkAccept.setOnClickListener { createFolder() }
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        if (binding.tietCreateLinkName.requestFocus()) {
+            AndroidUtils.showKeyboard(requireActivity())
+        }
     }
 
     private fun createFolder() {

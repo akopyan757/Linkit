@@ -33,7 +33,7 @@
         <item name="background">@drawable/shadow_tab_layout</item>
         <item name="tabIndicator">@null</item>
         <item name="tabMode">scrollable</item>
-        <item name="tabGravity">fill</item>
+        <item name="tabGravity">center</item>
         <item name="tabRippleColor">@null</item>
         <item name="tabPaddingStart">@dimen/zero</item>
         <item name="tabPaddingEnd">@dimen/zero</item>
@@ -118,15 +118,16 @@
         <item name="textAllCaps">false</item>
     </style>
 
-    <style name="Theme.Linkit.AlertDialog" parent="Theme.AppCompat.Light.Dialog">
+    <style name="Theme.Linkit.AlertDialog" parent="Theme.AppCompat.Light.Dialog.Alert">
         <item name="android:windowIsTranslucent">true</item>
         <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowSoftInputMode">adjustResize</item>
         <item name="android:background">@drawable/background_dialog</item>
         <item name="android:listChoiceIndicatorSingle">@drawable/ic_choice_button</item>
-        <item name="windowFixedWidthMajor">60%</item>
+        <item name="windowMinWidthMajor">70%</item>
     </style>
 
-    <style name="Theme.Linkit.AlertDialog.Small">
+    <style name="Theme.Linkit.AlertDialog.Small" parent="Theme.AppCompat.Light.Dialog">
         <item name="windowMinWidthMajor">0%</item>
         <item name="windowMinWidthMinor">0%</item>
         <item name="android:background">@color/transparent</item>
@@ -149,6 +150,8 @@
 
     <style name="CustomBottomSheetDialogTheme" parent="Theme.Design.Light.BottomSheetDialog">
         <item name="bottomSheetStyle">@style/CustomBottomSheetStyle</item>
+        <item name="android:windowIsFloating">false</item>
+        <item name="android:windowSoftInputMode">adjustResize|stateVisible</item>
     </style>
 
     <style name="CustomBottomSheetStyle" parent="Widget.Design.BottomSheet.Modal">

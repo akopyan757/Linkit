@@ -18,17 +18,39 @@
                 app:argType="string" />
         </action>
         <action
-            android:id="@+id/action_mainFragment_to_folderFragment"
-            app:destination="@id/folderFragment" />
-        <action
             android:id="@+id/action_mainFragment_to_profileDialogFragment"
             app:destination="@id/profileDialogFragment" />
+        <action
+            android:id="@+id/action_mainFragment_to_folderCreateDialogFragment"
+            app:destination="@id/folderCreateDialogFragment" />
+        <action
+            android:id="@+id/action_mainFragment_to_folderDeleteDialogFragment"
+            app:destination="@id/folderDeleteDialogFragment" />
+        <action
+            android:id="@+id/action_mainFragment_to_deleteFolder"
+            app:destination="@id/folderDeleteDialogFragment">
+            <argument
+                app:argType="com.akopyan757.linkit.viewmodel.observable.FolderObservable"
+                android:name="FOLDER_DATA" />
+        </action>
+        <action
+            android:id="@+id/action_mainFragment_to_folderRenameDialogFragment"
+            app:destination="@id/folderRenameDialogFragment">
+            <argument
+                app:argType="com.akopyan757.linkit.viewmodel.observable.FolderObservable"
+                android:name="FOLDER_DATA" />
+        </action>
     </fragment>
     <dialog
         android:id="@+id/folderCreateDialogFragment"
         android:name="com.akopyan757.linkit.view.dialog.FolderCreateDialogFragment"
         android:label="CreateFolderDialogFragment"
         tools:layout="@layout/dialog_new_folder"/>
+    <dialog
+        android:id="@+id/folderRenameDialogFragment"
+        android:name="com.akopyan757.linkit.view.dialog.FolderRenameDialogFragment"
+        android:label="FolderRenameDialogFragment"
+        tools:layout="@layout/dialog_rename_folder"/>
     <dialog
         android:id="@+id/folderDeleteDialogFragment"
         android:name="com.akopyan757.linkit.view.dialog.FolderDeleteDialogFragment"
@@ -39,22 +61,6 @@
         android:name="com.akopyan757.linkit.view.dialog.ClipboardUrlDialogFragment"
         android:label="ClipboardUrlDialogFragment"
         tools:layout="@layout/dialog_new_url"/>
-    <dialog
-        android:id="@+id/folderFragment"
-        android:name="com.akopyan757.linkit.view.dialog.FolderDialogFragment"
-        android:label="FolderFragment"
-        tools:layout="@layout/dialog_folders_settings" >
-        <action
-            android:id="@+id/action_folderFragment_to_create"
-            app:destination="@id/folderCreateDialogFragment" />
-        <action
-            android:id="@+id/action_folderFragment_to_delete"
-            app:destination="@id/folderDeleteDialogFragment">
-            <argument
-                app:argType="com.akopyan757.linkit.viewmodel.observable.FolderObservable"
-                android:name="FOLDER_DATA" />
-        </action>
-    </dialog>
     <dialog
         android:id="@+id/profileDialogFragment"
         android:name="com.akopyan757.linkit.view.dialog.ProfileDialogFragment"

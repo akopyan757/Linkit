@@ -6,8 +6,9 @@ import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Bundle
 import android.view.*
-import android.widget.TextView
+import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.os.bundleOf
 import androidx.navigation.fragment.findNavController
 import com.akopyan757.base.view.BaseFragment
 import com.akopyan757.base.viewmodel.list.LinearLayoutManagerWrapper
@@ -19,6 +20,8 @@ import com.akopyan757.linkit.common.utils.AndroidUtils
 import com.akopyan757.linkit.common.utils.ClipboardUtils
 import com.akopyan757.linkit.databinding.FragmentMainBinding
 import com.akopyan757.linkit.view.adapter.LinkUrlAdapter
+import com.akopyan757.linkit.view.dialog.FolderDeleteDialogFragment
+import com.akopyan757.linkit.view.dialog.FolderRenameDialogFragment
 import com.akopyan757.linkit.viewmodel.LinkViewModel
 import com.akopyan757.linkit.viewmodel.listener.LinkAdapterListener
 import com.akopyan757.linkit.viewmodel.observable.AdObservable
@@ -26,6 +29,7 @@ import com.akopyan757.linkit.viewmodel.observable.BaseLinkObservable
 import com.akopyan757.linkit.viewmodel.observable.FolderObservable
 import com.akopyan757.linkit.viewmodel.observable.LinkAppObservable
 import com.google.android.material.tabs.TabLayout
+import kotlinx.android.synthetic.main.dialog_folder_setting.view.*
 import kotlinx.android.synthetic.main.tab_folder.view.*
 import org.koin.android.viewmodel.ext.android.viewModel
 import org.koin.core.KoinComponent
@@ -47,7 +51,7 @@ class MainFragment : BaseFragment<FragmentMainBinding, LinkViewModel>(), LinkAda
         setupActionBar()
         setupLinkRecyclerView()
         setupAdViews()
-        binding.ivFolderSettings.setOnClickListener { openFolderDialog() }
+        observeDeleteAcceptState()
         binding.ccvIconProfile.setOnClickListener { openProfileDialog() }
 
         with(viewModel) {
@@ -117,16 +121,31 @@ class MainFragment : BaseFragment<FragmentMainBinding, LinkViewModel>(), LinkAda
         val tabLayout = binding.tabLayoutFolder
         tabLayout.removeAllTabs()
         folders.forEach { observable -> tabLayout.addTab(tabLayout.createTab(observable)) }
+        tabLayout.addTab(tabLayout.createAddFolderTab())
         tabLayoutListener?.also { listener -> tabLayout.removeOnTabSelectedListener(listener) }
         val listener = object : TabLayout.OnTabSelectedListener {
             override fun onTabUnselected(tab: TabLayout.Tab?) {}
             override fun onTabReselected(tab: TabLayout.Tab?) {}
             override fun onTabSelected(tab: TabLayout.Tab?) {
-                if (tab != null) viewModel.listenLinksById(folders[tab.position].id)
+                if (tab == null) return
+                if (tab.tag is Int && tab.tag == R.drawable.ic_baseline_add_black_24) {
+                    openCreateFolderDialog()
+                } else {
+                    viewModel.listenLinksById(folders[tab.position].id)
+                }
             }
         }
         tabLayout.addOnTabSelectedListener(listener)
         tabLayoutListener = listener
+    }
+
+    private fun TabLayout.createAddFolderTab(): TabLayout.Tab {
+        val tab = newTab()
+        val addFolderView = ImageView(context)
+        addFolderView.setImageResource(R.drawable.ic_baseline_add_black_24)
+        tab.tag = R.drawable.ic_baseline_add_black_24
+        tab.customView = addFolderView
+        return tab
     }
 
     private fun TabLayout.createTab(observable: FolderObservable): TabLayout.Tab {
@@ -198,17 +217,17 @@ class MainFragment : BaseFragment<FragmentMainBinding, LinkViewModel>(), LinkAda
     }
 
     private fun showFolderSetting(tabView: View, observable: FolderObservable) {
-        val tabPosition = intArrayOf(0, 0)
+        if (observable.id == FolderObservable.DEF_FOLDER_ID) {
+            return
+        }
+
+        val tabPosition = intArrayOf(ZERO, ZERO)
         tabView.getLocationOnScreen(tabPosition)
         val (left, top) = tabPosition
         val layoutInflater = LayoutInflater.from(context)
-        val view = layoutInflater.inflate(R.layout.dialog_folder_setting, null, false)
-        view.findViewById<ViewGroup>(R.id.imageCard).findViewById<TextView>(R.id.tabFolder).apply {
-            isSelected = true
-            text = observable.name
-        }
+        val dialogView = layoutInflater.inflate(R.layout.dialog_folder_setting, null, false)
         val dialog = AlertDialog.Builder(context, R.style.Theme_Linkit_AlertDialog_Small)
-            .setView(view)
+            .setView(dialogView)
             .create()
         dialog.window?.apply {
             attributes.x = left
@@ -216,12 +235,25 @@ class MainFragment : BaseFragment<FragmentMainBinding, LinkViewModel>(), LinkAda
             attributes.gravity = Gravity.TOP or Gravity.START
             setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         }
+        dialogView.imageCard.tabFolder.apply {
+            isSelected = true
+            text = observable.name
+        }
+        dialogView.tvFolderRename.setOnClickListener {
+            val bundle = bundleOf(FolderRenameDialogFragment.OBSERVABLE to observable)
+            findNavController().navigate(R.id.action_mainFragment_to_folderRenameDialogFragment, bundle)
+            dialog.dismiss()
+        }
+        dialogView.tvFolderDelete.setOnClickListener {
+            openDeleteFolderDialog(observable)
+            dialog.dismiss()
+        }
         dialog.show()
     }
 
     private fun getStatusBarHeight(): Int {
         val resourceId = resources.getIdentifier(IDENTIFIER_NAME, IDENTIFIER_DEF_TYPE, IDENTIFIER_DEF_PACKAGE)
-        return if (resourceId > 0) resources.getDimensionPixelSize(resourceId) else ZERO
+        return if (resourceId > ZERO) resources.getDimensionPixelSize(resourceId) else ZERO
     }
 
     private fun setupAdViews() {
@@ -238,13 +270,23 @@ class MainFragment : BaseFragment<FragmentMainBinding, LinkViewModel>(), LinkAda
         view?.viewTreeObserver?.removeOnWindowFocusChangeListener(this)
     }
 
+
+    private fun observeDeleteAcceptState() {
+        val savedStateHandle = findNavController().currentBackStackEntry?.savedStateHandle
+        val liveData = savedStateHandle?.getLiveData<FolderObservable>(Config.KEY_ACCEPT_DELETE)
+        liveData?.observe(viewLifecycleOwner, { folderObservable ->
+            viewModel.deleteFolder(folderObservable.id)
+        })
+    }
+
     private fun openCreateClipboardDialog(url: String) {
         val bundle = Bundle().apply { putString(Config.CLIP_URL_LABEL, url) }
         findNavController().navigate(R.id.action_mainF_to_clipboardUrlDF, bundle)
     }
 
-    private fun openFolderDialog() {
-        findNavController().navigate(R.id.action_mainFragment_to_folderFragment)
+    private fun openDeleteFolderDialog(observable: FolderObservable) {
+        val bundle = bundleOf(FolderDeleteDialogFragment.FOLDER_DATA to observable)
+        findNavController().navigate(R.id.action_mainFragment_to_deleteFolder, bundle)
     }
 
     private fun openCreateFolderDialog() {
