@@ -5,3 +5,4 @@ include ':linkit-domain'
 include ':base'
 include ':app'
 rootProject.name = "Linkit"
+include ':linkit-app'
