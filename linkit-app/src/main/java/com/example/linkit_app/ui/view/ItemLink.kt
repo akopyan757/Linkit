@@ -7,6 +7,7 @@ import androidx.compose.material.Card
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
@@ -14,12 +15,13 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.linkit_app.R
+import com.example.linkit_app.ui.link.LinkItem
 import com.example.linkit_app.ui.theme.BlackOpacity
 import com.example.linkit_app.ui.theme.Link
 import com.example.linkit_app.ui.theme.LinkitTheme
 
 @Composable
-fun ItemLink() {
+fun ItemLinkLayout(item: LinkItem, checked: Boolean) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -47,20 +49,22 @@ fun ItemLink() {
                 .weight(0.7f)
                 .padding(start = 8.dp)) {
                 Text(
-                    text = "Title",
+                    text = item.title,
                     modifier = Modifier.fillMaxWidth(),
                     style = MaterialTheme.typography.body1,
                     maxLines = 3
                 )
+                if (item.description.isNotEmpty()) {
+                    Text(
+                        text = item.description,
+                        modifier = Modifier.fillMaxWidth(),
+                        style = MaterialTheme.typography.body2,
+                        color = BlackOpacity,
+                        maxLines = 4
+                    )
+                }
                 Text(
-                    text = "Description",
-                    modifier = Modifier.fillMaxWidth(),
-                    style = MaterialTheme.typography.body2,
-                    color = BlackOpacity,
-                    maxLines = 4
-                )
-                Text(
-                    text = "https://google.com",
+                    text = item.site,
                     modifier = Modifier.fillMaxWidth(),
                     style = MaterialTheme.typography.body2,
                     color = Link,
@@ -77,6 +81,14 @@ fun ItemLink() {
 
             )
         }
+
+        if (checked) {
+            Image(
+                painter = painterResource(id = R.drawable.ic_link_checked),
+                contentDescription = "Selected",
+                modifier = Modifier.padding(4.dp).wrapContentWidth(Alignment.Start)
+            )
+        }
     }
 }
 
@@ -84,6 +96,15 @@ fun ItemLink() {
 @Composable
 fun ItemLinkPreview() {
     LinkitTheme {
-        ItemLink()
+        ItemLinkLayout(
+            LinkItem(
+                title = "Title",
+                description = "Description",
+                site = "Youtube",
+                url = "https://google.com/",
+                isPlayer = true
+            ),
+            checked = true
+        )
     }
 }
