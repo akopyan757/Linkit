@@ -36,18 +36,34 @@ fun ItemLinkLayout(item: LinkItem, checked: Boolean) {
                 .padding(8.dp)
                 .defaultMinSize(minHeight = 50.dp)
         ) {
-            Image(
-                painter = rememberCoilPainter(
-                    request = item.photoUrl,
-                    previewPlaceholder = R.drawable.image_analysis
-                ),
-                contentDescription = "Image",
-                contentScale = ContentScale.FillWidth,
+
+            Box(
                 modifier = Modifier
                     .weight(0.3f)
                     .clip(RoundedCornerShape(8.dp))
                     .wrapContentHeight()
-            )
+            ) {
+
+                Image(
+                    painter = rememberCoilPainter(
+                        request = item.photoUrl,
+                        previewPlaceholder = R.drawable.image_analysis
+                    ),
+                    contentDescription = "Image",
+                    contentScale = ContentScale.FillWidth,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .wrapContentHeight()
+                )
+
+                if (item.isPlayer) {
+                    Image(
+                        painter = painterResource(id = R.drawable.ic_player_button),
+                        contentDescription = "Player",
+                        modifier = Modifier.width(32.dp).height(32.dp).align(Alignment.Center)
+                    )
+                }
+            }
 
             Column(modifier = Modifier
                 .weight(0.7f)
