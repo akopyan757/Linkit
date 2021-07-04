@@ -19,6 +19,7 @@ import com.example.linkit_app.ui.link.LinkItem
 import com.example.linkit_app.ui.theme.BlackOpacity
 import com.example.linkit_app.ui.theme.Link
 import com.example.linkit_app.ui.theme.LinkitTheme
+import com.google.accompanist.coil.rememberCoilPainter
 
 @Composable
 fun ItemLinkLayout(item: LinkItem, checked: Boolean) {
@@ -36,7 +37,10 @@ fun ItemLinkLayout(item: LinkItem, checked: Boolean) {
                 .defaultMinSize(minHeight = 50.dp)
         ) {
             Image(
-                painter = painterResource(id = R.drawable.image_analysis),
+                painter = rememberCoilPainter(
+                    request = item.photoUrl,
+                    previewPlaceholder = R.drawable.image_analysis
+                ),
                 contentDescription = "Image",
                 contentScale = ContentScale.FillWidth,
                 modifier = Modifier
@@ -86,7 +90,9 @@ fun ItemLinkLayout(item: LinkItem, checked: Boolean) {
             Image(
                 painter = painterResource(id = R.drawable.ic_link_checked),
                 contentDescription = "Selected",
-                modifier = Modifier.padding(4.dp).wrapContentWidth(Alignment.Start)
+                modifier = Modifier
+                    .padding(4.dp)
+                    .wrapContentWidth(Alignment.Start)
             )
         }
     }
@@ -102,6 +108,7 @@ fun ItemLinkPreview() {
                 description = "Description",
                 site = "Youtube",
                 url = "https://google.com/",
+                photoUrl = "https://i.ytimg.com/vi/YadRW3eM2sg/maxresdefault.jpg",
                 isPlayer = true
             ),
             checked = true
