@@ -1,4 +1,4 @@
-package com.example.linkit_app.ui.button
+package com.example.linkit_app.ui.common
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
