@@ -1,4 +1,4 @@
-package com.example.linkit_app.ui.textinput
+package com.example.linkit_app.ui.common
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
