@@ -1,4 +1,4 @@
-package com.example.linkit_app.ui.view
+package com.example.linkit_app.ui.link
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
