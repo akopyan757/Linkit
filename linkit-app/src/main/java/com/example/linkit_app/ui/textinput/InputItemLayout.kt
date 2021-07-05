@@ -1,9 +1,6 @@
 package com.example.linkit_app.ui.textinput
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.*
@@ -19,14 +16,12 @@ fun InputItemLayout(
     setTextChanged: (String) -> Unit,
     hint: String,
     error: String,
-    errorState: Boolean
+    errorState: Boolean,
+    modifier: Modifier
 ) {
 
     Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .wrapContentHeight()
-            .padding(16.dp)
+        modifier = modifier
     ) {
         TextField(
             value = value,
@@ -83,7 +78,11 @@ fun InputItemLayoutPreview() {
             },
             hint = "Hint",
             error = error.value,
-            errorState = errorState.value
+            errorState = errorState.value,
+            modifier = Modifier
+                .fillMaxWidth()
+                .wrapContentHeight()
+                .padding(24.dp)
         )
     }
 }

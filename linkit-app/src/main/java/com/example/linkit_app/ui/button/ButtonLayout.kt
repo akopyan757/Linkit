@@ -1,11 +1,13 @@
 package com.example.linkit_app.ui.button
 
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.*
+import androidx.compose.material.Button
+import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -16,7 +18,8 @@ import com.example.linkit_app.ui.theme.*
 fun ButtonLayout(
     text: String,
     enabled: Boolean,
-    onClick: () -> Unit
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit,
 ) {
     Button(
         onClick = onClick,
@@ -31,7 +34,7 @@ fun ButtonLayout(
             backgroundColor = Secondary,
             disabledBackgroundColor = Disabled
         ),
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .height(52.dp)
     ) {
@@ -47,13 +50,10 @@ fun ButtonLayout(
 @Composable
 fun ButtonLayoutPreview() {
     LinkitTheme {
-        Box(
-            modifier = Modifier.fillMaxWidth().padding(24.dp)
-        ) {
-            ButtonLayout(
-                text = "Button",
-                enabled = true
-            ) {}
-        }
+        ButtonLayout(
+            text = "Button",
+            enabled = true,
+            Modifier.padding(24.dp)
+        ) {}
     }
 }

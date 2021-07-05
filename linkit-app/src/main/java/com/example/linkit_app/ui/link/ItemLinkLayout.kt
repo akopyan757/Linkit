@@ -21,11 +21,13 @@ import com.example.linkit_app.ui.theme.LinkitTheme
 import com.google.accompanist.coil.rememberCoilPainter
 
 @Composable
-fun ItemLinkLayout(item: ItemLinkData, checked: Boolean) {
+fun ItemLinkLayout(
+    item: ItemLinkData,
+    checked: Boolean,
+    modifier: Modifier = Modifier
+) {
     Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(8.dp, 4.dp, 8.dp, 4.dp),
+        modifier = modifier,
         elevation = 2.dp,
         shape = RoundedCornerShape(16.dp)
     ) {
@@ -126,7 +128,8 @@ fun ItemLinkLayoutPreview() {
                 photoUrl = "https://i.ytimg.com/vi/YadRW3eM2sg/maxresdefault.jpg",
                 isPlayer = true
             ),
-            checked = true
+            checked = true,
+            modifier = Modifier.fillMaxWidth().padding(16.dp)
         )
     }
 }
