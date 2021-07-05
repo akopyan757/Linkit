@@ -14,7 +14,13 @@ import androidx.compose.ui.unit.dp
 import com.example.linkit_app.ui.theme.*
 
 @Composable
-fun InputItemLayout(item: InputItem) {
+fun InputItemLayout(
+    value: String,
+    setTextChanged: (String) -> Unit,
+    hint: String,
+    error: String,
+    errorState: Boolean
+) {
 
     Column(
         modifier = Modifier
@@ -23,9 +29,9 @@ fun InputItemLayout(item: InputItem) {
             .padding(16.dp)
     ) {
         TextField(
-            value = item.value,
-            onValueChange = item.setTextChanged,
-            label = { Text(text = item.hint) },
+            value = value,
+            onValueChange = setTextChanged,
+            label = { Text(text = hint) },
             maxLines = 1,
             shape = RoundedCornerShape(16.dp),
             colors = TextFieldDefaults.textFieldColors(
@@ -45,12 +51,12 @@ fun InputItemLayout(item: InputItem) {
             modifier = Modifier
                 .fillMaxWidth()
                 .wrapContentHeight(),
-            isError = item.errorState
+            isError = errorState
         )
 
-        if (item.error.isNotEmpty()) {
+        if (error.isNotEmpty()) {
             Text(
-                text = item.error,
+                text = error,
                 style = MaterialTheme.typography.overline,
                 color = Error,
                 modifier = Modifier
@@ -69,17 +75,15 @@ fun InputItemLayoutPreview() {
         val error = remember { mutableStateOf("") }
         val errorState = remember { mutableStateOf(false) }
         InputItemLayout(
-            InputItem(
-                value = text.value,
-                setTextChanged = { value ->
-                    text.value = value
-                    error.value = if (value.isEmpty()) "Error" else ""
-                    errorState.value = value.isEmpty()
-                },
-                hint = "Hint",
-                error = error.value,
-                errorState = errorState.value
-            )
+            value = text.value,
+            setTextChanged = { value ->
+                text.value = value
+                error.value = if (value.isEmpty()) "Error" else ""
+                errorState.value = value.isEmpty()
+            },
+            hint = "Hint",
+            error = error.value,
+            errorState = errorState.value
         )
     }
 }
