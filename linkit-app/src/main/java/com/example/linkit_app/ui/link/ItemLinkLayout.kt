@@ -15,14 +15,13 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.linkit_app.R
-import com.example.linkit_app.ui.link.LinkItem
 import com.example.linkit_app.ui.theme.BlackOpacity
 import com.example.linkit_app.ui.theme.Link
 import com.example.linkit_app.ui.theme.LinkitTheme
 import com.google.accompanist.coil.rememberCoilPainter
 
 @Composable
-fun ItemLinkLayout(item: LinkItem, checked: Boolean) {
+fun ItemLinkLayout(item: ItemLinkData, checked: Boolean) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -116,10 +115,10 @@ fun ItemLinkLayout(item: LinkItem, checked: Boolean) {
 
 @Preview
 @Composable
-fun ItemLinkPreview() {
+fun ItemLinkLayoutPreview() {
     LinkitTheme {
         ItemLinkLayout(
-            LinkItem(
+            ItemLinkData(
                 title = "Title",
                 description = "Description",
                 site = "Youtube",
