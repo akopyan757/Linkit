@@ -15,7 +15,7 @@ fun InputItemLayout(
     value: String,
     setTextChanged: (String) -> Unit,
     hint: String,
-    error: String,
+    error: String = "",
     errorState: Boolean,
     modifier: Modifier
 ) {
@@ -37,7 +37,7 @@ fun InputItemLayout(
                 errorCursorColor = Black,
                 errorLabelColor = Error,
                 errorLeadingIconColor = Error,
-                errorIndicatorColor = Error,
+                errorIndicatorColor = Color.Transparent,
                 placeholderColor = Color.Transparent,
                 focusedIndicatorColor = Color.Transparent,
                 unfocusedIndicatorColor = Color.Transparent,
