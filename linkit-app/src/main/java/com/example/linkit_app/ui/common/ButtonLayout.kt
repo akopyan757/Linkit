@@ -57,3 +57,16 @@ fun ButtonLayoutPreview() {
         ) {}
     }
 }
+
+
+@Preview
+@Composable
+fun ButtonLayoutDisabledPreview() {
+    LinkitTheme {
+        ButtonLayout(
+            text = "Button Disabled",
+            enabled = false,
+            Modifier.padding(24.dp)
+        ) {}
+    }
+}
