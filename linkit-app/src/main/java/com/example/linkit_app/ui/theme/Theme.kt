@@ -5,14 +5,21 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.darkColors
 import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
 
 private val LightColorPalette = lightColors(
-    primary = White,
-    primaryVariant = Background,
-    onPrimary = Black,
+    primary = Primary,
+    primaryVariant = PrimaryVariant,
     secondary = Secondary,
     secondaryVariant = Disabled,
-    onSecondary = Black
+    surface = Surface,
+    error = Error,
+    background = Background,
+    onPrimary = Color.White,
+    onSecondary = Color.White,
+    onSurface = Color.Black,
+    onBackground = Color.White,
+    onError = Color.White
 )
 
 @Composable

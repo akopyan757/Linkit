@@ -8,31 +8,20 @@ import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
+import com.example.linkit_app.ui.layout.AuthSignUpLayout
 import com.example.linkit_app.ui.theme.LinkitTheme
+import com.example.linkit_app.ui.theme.White
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
+            val systemUiController = rememberSystemUiController()
+            systemUiController.setStatusBarColor(White, true)
             LinkitTheme {
-                // A surface container using the 'background' color from the theme
-                Surface(color = MaterialTheme.colors.background) {
-                    Greeting("Android")
-                }
+                AuthSignUpLayout()
             }
         }
-    }
-}
-
-@Composable
-fun Greeting(name: String) {
-    Text(text = "Hello $name!")
-}
-
-@Preview(showBackground = true)
-@Composable
-fun DefaultPreview() {
-    LinkitTheme {
-        Greeting("Android")
     }
 }

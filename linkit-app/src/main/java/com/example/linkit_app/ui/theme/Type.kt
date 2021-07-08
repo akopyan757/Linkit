@@ -14,6 +14,12 @@ val PoppinsFamily = FontFamily(
 )
 
 val Typography = Typography(
+    h1 = TextStyle(
+        fontFamily = PoppinsFamily,
+        fontWeight = FontWeight.Normal,
+        fontSize = 32.sp,
+        lineHeight = 40.sp
+    ),
     body1 = TextStyle(
         fontFamily = PoppinsFamily,
         fontWeight = FontWeight.Normal,

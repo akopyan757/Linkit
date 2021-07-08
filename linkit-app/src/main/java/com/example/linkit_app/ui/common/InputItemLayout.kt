@@ -30,15 +30,10 @@ fun InputItemLayout(
             maxLines = 1,
             shape = RoundedCornerShape(16.dp),
             colors = TextFieldDefaults.textFieldColors(
-                backgroundColor = BackgroundTransparent,
-                focusedLabelColor = Disabled,
-                unfocusedLabelColor = Disabled,
-                cursorColor = Black,
-                errorCursorColor = Black,
-                errorLabelColor = Error,
-                errorLeadingIconColor = Error,
+                backgroundColor = Surface,
+                //focusedLabelColor = Disabled,
+                //unfocusedLabelColor = Disabled,
                 errorIndicatorColor = Color.Transparent,
-                placeholderColor = Color.Transparent,
                 focusedIndicatorColor = Color.Transparent,
                 unfocusedIndicatorColor = Color.Transparent,
                 disabledIndicatorColor = Color.Transparent
@@ -62,13 +57,38 @@ fun InputItemLayout(
     }
 }
 
-@Preview
 @Composable
+@Preview(showBackground = true)
 fun InputItemLayoutPreview() {
     LinkitTheme {
         val text = remember { mutableStateOf("Hello!") }
         val error = remember { mutableStateOf("") }
         val errorState = remember { mutableStateOf(false) }
+        InputItemLayout(
+            value = text.value,
+            setTextChanged = { value ->
+                text.value = value
+                error.value = if (value.isEmpty()) "Error" else ""
+                errorState.value = value.isEmpty()
+            },
+            hint = "Hint",
+            error = error.value,
+            errorState = errorState.value,
+            modifier = Modifier
+                .fillMaxWidth()
+                .wrapContentHeight()
+                .padding(24.dp)
+        )
+    }
+}
+
+@Composable
+@Preview(showBackground = true)
+fun InputItemErrorLayoutPreview() {
+    LinkitTheme {
+        val text = remember { mutableStateOf("Hello!") }
+        val error = remember { mutableStateOf("Error") }
+        val errorState = remember { mutableStateOf(true) }
         InputItemLayout(
             value = text.value,
             setTextChanged = { value ->

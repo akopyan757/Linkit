@@ -24,19 +24,7 @@ fun ButtonLayout(
     Button(
         onClick = onClick,
         enabled = enabled,
-        shape = RoundedCornerShape(16.dp),
-        elevation = ButtonDefaults.elevation(
-            defaultElevation = 4.dp,
-            pressedElevation = 2.dp,
-            disabledElevation = 2.dp
-        ),
-        colors = ButtonDefaults.buttonColors(
-            backgroundColor = Secondary,
-            disabledBackgroundColor = Disabled
-        ),
-        modifier = modifier
-            .fillMaxWidth()
-            .height(52.dp)
+        modifier = modifier.fillMaxWidth().height(52.dp)
     ) {
         Text(
             text = text,
@@ -46,7 +34,7 @@ fun ButtonLayout(
     }
 }
 
-@Preview
+@Preview(showBackground = true)
 @Composable
 fun ButtonLayoutPreview() {
     LinkitTheme {
@@ -59,7 +47,7 @@ fun ButtonLayoutPreview() {
 }
 
 
-@Preview
+@Preview(showBackground = true)
 @Composable
 fun ButtonLayoutDisabledPreview() {
     LinkitTheme {
