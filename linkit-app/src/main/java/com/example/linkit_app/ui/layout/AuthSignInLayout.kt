@@ -1,7 +1,6 @@
 package com.example.linkit_app.ui.layout
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.MaterialTheme
@@ -15,7 +14,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.linkit_app.R
 import com.example.linkit_app.ui.common.ButtonLayout
-import com.example.linkit_app.ui.common.InputItemLayout
+import com.example.linkit_app.ui.common.EmailInputItemLayout
+import com.example.linkit_app.ui.common.PasswordInputItemLayout
 import com.example.linkit_app.ui.theme.LinkitTheme
 import com.example.linkit_app.ui.theme.White
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
@@ -34,7 +34,7 @@ fun AuthSignInLayout() {
         var errorMessage by remember { mutableStateOf("") }
         var errorState by remember { mutableStateOf(false) }
         var buttonEnabled by remember { mutableStateOf(false) }
-        var progressVisible by remember { mutableStateOf(true) }
+        var progressVisible by remember { mutableStateOf(false) }
 
         Image(
             painter = painterResource(id = R.drawable.ic_arrow_back),
@@ -54,7 +54,7 @@ fun AuthSignInLayout() {
                 .weight(1f)
         )
 
-        InputItemLayout(
+        EmailInputItemLayout(
             value = email,
             setTextChanged = {
                 email = it
@@ -66,7 +66,7 @@ fun AuthSignInLayout() {
             modifier = Modifier.padding(top = 16.dp)
         )
 
-        InputItemLayout(
+        PasswordInputItemLayout(
             value = password,
             setTextChanged = {
                 password = it
@@ -112,6 +112,7 @@ fun AuthSignInLayout() {
         ) {
             errorMessage = ""
             errorState = false
+            progressVisible = !progressVisible
         }
     }
 }
