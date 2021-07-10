@@ -2,15 +2,17 @@ package com.example.linkit_app.ui.common
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.outlined.Email
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
@@ -25,6 +27,7 @@ fun InputItemLayout(
     hint: String,
     error: String = "",
     errorState: Boolean,
+    keyboardActions: KeyboardActions = KeyboardActions(),
     keyboardOptions: KeyboardOptions = KeyboardOptions(),
     visualTransformation: VisualTransformation = VisualTransformation.None,
     trailingIcon: @Composable () -> Unit = {},
@@ -42,6 +45,7 @@ fun InputItemLayout(
             shape = RoundedCornerShape(16.dp),
             visualTransformation = visualTransformation,
             trailingIcon = trailingIcon,
+            keyboardActions = keyboardActions,
             keyboardOptions = keyboardOptions,
             colors = TextFieldDefaults.textFieldColors(
                 backgroundColor = Surface,
@@ -79,6 +83,7 @@ fun EmailInputItemLayout(
     hint: String,
     error: String = "",
     errorState: Boolean,
+    keyboardActions: KeyboardActions = KeyboardActions(),
     modifier: Modifier
 ) {
     InputItemLayout(
@@ -87,6 +92,11 @@ fun EmailInputItemLayout(
         hint = hint,
         error = error,
         errorState = errorState,
+        keyboardActions = keyboardActions,
+        keyboardOptions = KeyboardOptions(
+            keyboardType = KeyboardType.Email,
+            imeAction = ImeAction.Next
+        ),
         trailingIcon = {
             Icon(
                 imageVector = Icons.Outlined.Email,
@@ -104,6 +114,7 @@ fun PasswordInputItemLayout(
     hint: String,
     error: String = "",
     errorState: Boolean,
+    keyboardActions: KeyboardActions = KeyboardActions(),
     modifier: Modifier
 ) {
     var passwordVisibility by remember { mutableStateOf(false) }
@@ -113,6 +124,11 @@ fun PasswordInputItemLayout(
         hint = hint,
         error = error,
         errorState = errorState,
+        keyboardActions = keyboardActions,
+        keyboardOptions = KeyboardOptions(
+            keyboardType = KeyboardType.Password,
+            imeAction = ImeAction.Next
+        ),
         visualTransformation = if (passwordVisibility) VisualTransformation.None else PasswordVisualTransformation(),
         trailingIcon = {
             val image = if (passwordVisibility) R.drawable.ic_password_eye else R.drawable.ic_password_eye_off

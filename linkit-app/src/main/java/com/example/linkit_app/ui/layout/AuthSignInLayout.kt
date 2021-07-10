@@ -2,12 +2,15 @@ package com.example.linkit_app.ui.layout
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusDirection
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -36,6 +39,8 @@ fun AuthSignInLayout() {
         var buttonEnabled by remember { mutableStateOf(false) }
         var progressVisible by remember { mutableStateOf(false) }
 
+        val focusManager = LocalFocusManager.current
+
         Image(
             painter = painterResource(id = R.drawable.ic_arrow_back),
             contentDescription = "Home",
@@ -61,7 +66,11 @@ fun AuthSignInLayout() {
                 errorState = false
                 errorMessage = ""
                 buttonEnabled = email.isNotEmpty() && password.isNotEmpty()
-            }, hint = "Email",
+            },
+            hint = "Email",
+            keyboardActions = KeyboardActions(onNext = {
+                focusManager.moveFocus(FocusDirection.Down)
+            }),
             errorState = errorState,
             modifier = Modifier.padding(top = 16.dp)
         )
@@ -74,6 +83,9 @@ fun AuthSignInLayout() {
                 errorMessage = ""
                 buttonEnabled = email.isNotEmpty() && password.isNotEmpty()
             },
+            keyboardActions = KeyboardActions(onNext = {
+                focusManager.moveFocus(FocusDirection.Down)
+            }),
             hint = "Password",
             error = errorMessage,
             errorState = errorState,
