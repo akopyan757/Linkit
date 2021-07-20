@@ -1,30 +1,27 @@
-package com.example.linkit_app.ui.layout
+package com.example.linkit_app.ui.authSignIn
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.FocusDirection
-import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.linkit_app.R
 import com.example.linkit_app.ui.common.ButtonLayout
-import com.example.linkit_app.ui.common.EmailInputItemLayout
-import com.example.linkit_app.ui.common.PasswordInputItemLayout
+import com.example.linkit_app.ui.theme.Error
 import com.example.linkit_app.ui.theme.LinkitTheme
 import com.example.linkit_app.ui.theme.White
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 @Composable
-fun AuthSignInLayout() {
+fun AuthSignInLayout(viewModel: AuthSignInViewModel = AuthSignInViewModel()) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -32,14 +29,10 @@ fun AuthSignInLayout() {
             .padding(24.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        var email by remember { mutableStateOf("") }
-        var password by remember { mutableStateOf("") }
-        var errorMessage by remember { mutableStateOf("") }
-        var errorState by remember { mutableStateOf(false) }
-        var buttonEnabled by remember { mutableStateOf(false) }
-        var progressVisible by remember { mutableStateOf(false) }
-
-        val focusManager = LocalFocusManager.current
+        val params by viewModel.params.observeAsState()
+        val buttonEnabled by viewModel.buttonEnabled.observeAsState(false)
+        val progressVisible by viewModel.progressVisibility.observeAsState(false)
+        val errorMessage by viewModel.errorMessage.observeAsState("")
 
         Image(
             painter = painterResource(id = R.drawable.ic_arrow_back),
@@ -59,37 +52,16 @@ fun AuthSignInLayout() {
                 .weight(1f)
         )
 
-        EmailInputItemLayout(
-            value = email,
-            setTextChanged = {
-                email = it
-                errorState = false
-                errorMessage = ""
-                buttonEnabled = email.isNotEmpty() && password.isNotEmpty()
-            },
-            hint = "Email",
-            keyboardActions = KeyboardActions(onNext = {
-                focusManager.moveFocus(FocusDirection.Down)
-            }),
-            errorState = errorState,
-            modifier = Modifier.padding(top = 16.dp)
-        )
+        params?.getInputItems()?.forEach { inputItem ->
+            Spacer(modifier = Modifier.height(16.dp))
+            inputItem.getInputLayout()
+        }
 
-        PasswordInputItemLayout(
-            value = password,
-            setTextChanged = {
-                password = it
-                errorState = false
-                errorMessage = ""
-                buttonEnabled = email.isNotEmpty() && password.isNotEmpty()
-            },
-            keyboardActions = KeyboardActions(onNext = {
-                focusManager.moveFocus(FocusDirection.Down)
-            }),
-            hint = "Password",
-            error = errorMessage,
-            errorState = errorState,
-            modifier = Modifier.padding(top = 16.dp)
+        Text(
+            text = errorMessage,
+            style = MaterialTheme.typography.overline,
+            color = Error,
+            modifier = Modifier.fillMaxWidth().padding(top = 8.dp, start = 16.dp)
         )
 
         if (progressVisible) {
@@ -122,9 +94,7 @@ fun AuthSignInLayout() {
                 .fillMaxWidth()
                 .wrapContentHeight(Alignment.Bottom)
         ) {
-            errorMessage = ""
-            errorState = false
-            progressVisible = !progressVisible
+            viewModel.onSignInClicked()
         }
     }
 }
