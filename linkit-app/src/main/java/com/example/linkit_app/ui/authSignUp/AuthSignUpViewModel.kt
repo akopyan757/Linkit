@@ -2,9 +2,10 @@ package com.example.linkit_app.ui.authSignUp
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.linkit_app.ui.common.inputitem.BaseCheckOption
+import com.example.linkit_app.ui.common.inputitem.checkOptions.BaseCheckOption
 import com.example.linkit_app.ui.common.inputitem.EmailInputItem
 import com.example.linkit_app.ui.common.inputitem.PasswordInputItem
+import com.example.linkit_app.ui.common.inputitem.checkOptions.PasswordEqualsCheckOption
 
 class AuthSignUpViewModel : ViewModel() {
 
@@ -25,7 +26,7 @@ class AuthSignUpViewModel : ViewModel() {
 
     private fun initInputData() {
         val data = AuthSignUpParamsData()
-        data.email = EmailInputItem().apply {
+        data.email = EmailInputItem(INPUT_TYPE_EMAIL).apply {
             label = "Email"
             onTextChanged = {
                 updateButtonEnableState()
@@ -38,7 +39,7 @@ class AuthSignUpViewModel : ViewModel() {
                 })
             }
         }
-        data.password = PasswordInputItem().apply {
+        data.password = PasswordInputItem(INPUT_TYPE_PASSWORD).apply {
             label = "Password"
             onTextChanged = {
                 updateButtonEnableState()
@@ -55,7 +56,7 @@ class AuthSignUpViewModel : ViewModel() {
                 })
             }
         }
-        data.passwordConfirm = PasswordInputItem().apply {
+        data.passwordConfirm = PasswordInputItem(INPUT_TYPE_PASSWORD_CONFIRM).apply {
             label = "Confirm password"
             onTextChanged = {
                 updateButtonEnableState()
@@ -69,6 +70,10 @@ class AuthSignUpViewModel : ViewModel() {
                 add(BaseCheckOption().apply {
                     minLength = 8
                     error = "Confirm password cannot be less than $minLength characters"
+                })
+                add(PasswordEqualsCheckOption().apply {
+                    equalsItemId = INPUT_TYPE_PASSWORD
+                    error = "Password mismatch"
                 })
             }
         }
@@ -88,5 +93,11 @@ class AuthSignUpViewModel : ViewModel() {
             errorMessage.postValue(message)
             params.value?.setErrorState(true)
         }
+    }
+
+    companion object {
+        private const val INPUT_TYPE_EMAIL = "INPUT_TYPE_EMAIL"
+        private const val INPUT_TYPE_PASSWORD = "INPUT_TYPE_PASSWORD"
+        private const val INPUT_TYPE_PASSWORD_CONFIRM = "INPUT_TYPE_PASSWORD_CONFIRM"
     }
 }

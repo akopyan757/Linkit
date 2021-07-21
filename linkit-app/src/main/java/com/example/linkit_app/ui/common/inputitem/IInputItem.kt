@@ -22,12 +22,13 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.example.linkit_app.ui.common.inputitem.checkOptions.BaseCheckOption
 import com.example.linkit_app.ui.theme.Black
 import com.example.linkit_app.ui.theme.Error
 import com.example.linkit_app.ui.theme.Grey
 import com.example.linkit_app.ui.theme.Surface
 
-open class IInputItem {
+open class IInputItem(private val id: String) {
 
     var label: String = ""
     var maxLines = 1
@@ -49,13 +50,14 @@ open class IInputItem {
     fun getErrorState(): LiveData<Boolean> = error
     fun getInputItemValue() = text.value ?: ""
 
+    open fun getInputItemId() = id
+
     @Composable protected open fun getVisualTransformation() = VisualTransformation.None
     @Composable protected open fun GetTrailingIcon() {}
 
-    open fun getErrorCheckOptions(delayCheck: Boolean): List<BaseCheckOption> {
+    open fun getErrorCheckOptions(inputItems: List<IInputItem>, delayCheck: Boolean): List<BaseCheckOption> {
         return checkOptions.filter { checkOption ->
-            if (!checkOption.isOk(this, delayCheck)) {
-                Log.i("getErrorCheckOptions", "checkOption = $checkOption")
+            if (!checkOption.isOk(this, inputItems, delayCheck)) {
                 !checkOption.mandatory || !delayCheck
             } else false
         }

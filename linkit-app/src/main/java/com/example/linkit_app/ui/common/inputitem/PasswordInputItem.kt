@@ -4,7 +4,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -14,9 +15,8 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.MutableLiveData
 import com.example.linkit_app.R
-import com.example.linkit_app.ui.common.inputitem.IInputItem
 
-class PasswordInputItem: IInputItem() {
+class PasswordInputItem(id: String): IInputItem(id) {
 
     override val keyboardType: KeyboardType = KeyboardType.Password
 

@@ -1,5 +1,6 @@
-package com.example.linkit_app.ui.common.inputitem
+package com.example.linkit_app.ui.common.inputitem.checkOptions
 
+import com.example.linkit_app.ui.common.inputitem.IInputItem
 import java.io.Serializable
 import java.util.regex.Pattern
 
@@ -18,7 +19,7 @@ open class BaseCheckOption : Serializable {
      * @param delayCheck - если true, то производим проверку с учетом возможности ввести значение,
      * которое приведет к корректности проверки (актуально для проверки по регулярному выражению)
      */
-    open fun isOk(currentInputItem: IInputItem, delayCheck: Boolean): Boolean {
+    open fun isOk(currentInputItem: IInputItem, inputItems: List<IInputItem>, delayCheck: Boolean): Boolean {
         val value = currentInputItem.getInputItemValue()
         if (mandatory && value.isBlank()) {
             return false

@@ -7,8 +7,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.text.input.KeyboardType
+import com.example.linkit_app.ui.common.inputitem.checkOptions.BaseCheckOption
 
-class EmailInputItem: IInputItem() {
+class EmailInputItem(id: String): IInputItem(id) {
 
     override val keyboardType: KeyboardType = KeyboardType.Email
 

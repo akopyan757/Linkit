@@ -28,13 +28,13 @@ class AuthSignInParamsData {
 
     fun getValidInputErrorMessages(delayCheck: Boolean): String {
         return getInputItems().flatMap { inputItem ->
-            inputItem.getErrorCheckOptions(delayCheck)
+            inputItem.getErrorCheckOptions(getInputItems(), delayCheck)
         }.joinToString("\n") { checkOption -> "* " + checkOption.error }
     }
 
     fun isValidEnabled(): Boolean {
         return getInputItems().flatMap { inputItem ->
-            inputItem.getErrorCheckOptions(delayCheck = true)
+            inputItem.getErrorCheckOptions(getInputItems(), delayCheck = true)
         }.isEmpty()
     }
 }

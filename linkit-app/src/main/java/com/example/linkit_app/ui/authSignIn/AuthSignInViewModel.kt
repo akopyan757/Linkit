@@ -2,7 +2,7 @@ package com.example.linkit_app.ui.authSignIn
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.linkit_app.ui.common.inputitem.BaseCheckOption
+import com.example.linkit_app.ui.common.inputitem.checkOptions.BaseCheckOption
 import com.example.linkit_app.ui.common.inputitem.EmailInputItem
 import com.example.linkit_app.ui.common.inputitem.PasswordInputItem
 
@@ -25,7 +25,7 @@ class AuthSignInViewModel : ViewModel() {
 
     private fun initInputData() {
         val data = AuthSignInParamsData()
-        data.email = EmailInputItem().apply {
+        data.email = EmailInputItem(INPUT_TYPE_EMAIL).apply {
             label = "Email"
             onTextChanged = {
                 updateButtonEnableState()
@@ -38,7 +38,7 @@ class AuthSignInViewModel : ViewModel() {
                 })
             }
         }
-        data.password = PasswordInputItem().apply {
+        data.password = PasswordInputItem(INPUT_TYPE_PASSWORD).apply {
             label = "Password"
             onTextChanged = {
                 updateButtonEnableState()
@@ -71,5 +71,10 @@ class AuthSignInViewModel : ViewModel() {
             errorMessage.postValue(message)
             params.value?.setErrorState(true)
         }
+    }
+
+    companion object {
+        private const val INPUT_TYPE_EMAIL = "INPUT_TYPE_EMAIL"
+        private const val INPUT_TYPE_PASSWORD = "INPUT_TYPE_PASSWORD"
     }
 }
