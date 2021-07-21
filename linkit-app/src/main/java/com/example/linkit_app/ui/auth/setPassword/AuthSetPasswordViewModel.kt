@@ -1,14 +1,14 @@
-package com.example.linkit_app.ui.authSignIn
+package com.example.linkit_app.ui.auth.setPassword
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.linkit_app.ui.common.inputitem.checkOptions.BaseCheckOption
-import com.example.linkit_app.ui.common.inputitem.EmailInputItem
 import com.example.linkit_app.ui.common.inputitem.PasswordInputItem
+import com.example.linkit_app.ui.common.inputitem.checkOptions.PasswordEqualsCheckOption
 
-class AuthSignInViewModel : ViewModel() {
+class AuthSetPasswordViewModel : ViewModel() {
 
-    val params = MutableLiveData<AuthSignInParamsData>()
+    val params = MutableLiveData<AuthSetPasswordParamsData>()
     val buttonEnabled = MutableLiveData(false)
     val progressVisibility = MutableLiveData(false)
     val errorMessage = MutableLiveData("")
@@ -17,29 +17,16 @@ class AuthSignInViewModel : ViewModel() {
         initInputData()
     }
 
-    fun onSignInClicked() {
+    fun onSendClicked() {
         val data = params.value ?: return
         updateErrorState(data, delayCheck = false)
         progressVisibility.value = progressVisibility.value?.not()
     }
 
     private fun initInputData() {
-        val data = AuthSignInParamsData()
-        data.email = EmailInputItem(INPUT_TYPE_EMAIL).apply {
-            label = "Email"
-            onTextChanged = {
-                updateButtonEnableState()
-                updateErrorState(data, delayCheck = true)
-            }
-            checkOptions.apply {
-                add(BaseCheckOption().apply {
-                    mandatory = true
-                    error = "Email is mandatory field"
-                })
-            }
-        }
-        data.password = PasswordInputItem(INPUT_TYPE_PASSWORD).apply {
-            label = "Password"
+        val data = AuthSetPasswordParamsData()
+        data.newPassword = PasswordInputItem(INPUT_TYPE_NEW_PASSWORD).apply {
+            label = "New password"
             onTextChanged = {
                 updateButtonEnableState()
                 updateErrorState(data, delayCheck = true)
@@ -55,6 +42,27 @@ class AuthSignInViewModel : ViewModel() {
                 })
             }
         }
+        data.passwordConfirm = PasswordInputItem(INPUT_TYPE_PASSWORD_CONFIRM).apply {
+            label = "Confirm password"
+            onTextChanged = {
+                updateButtonEnableState()
+                updateErrorState(data, delayCheck = true)
+            }
+            checkOptions.apply {
+                add(BaseCheckOption().apply {
+                    mandatory = true
+                    error = "Confirm password is mandatory field"
+                })
+                add(BaseCheckOption().apply {
+                    minLength = 8
+                    error = "Confirm password cannot be less than $minLength characters"
+                })
+                add(PasswordEqualsCheckOption().apply {
+                    equalsItemId = INPUT_TYPE_NEW_PASSWORD
+                    error = "New password mismatch"
+                })
+            }
+        }
         params.postValue(data)
     }
 
@@ -62,8 +70,8 @@ class AuthSignInViewModel : ViewModel() {
         buttonEnabled.value = params.value?.isValidEnabled()
     }
 
-    private fun updateErrorState(param: AuthSignInParamsData, delayCheck: Boolean) {
-        val message = param.getValidInputErrorMessages(delayCheck)
+    private fun updateErrorState(param: AuthSetPasswordParamsData, delayCheck: Boolean) {
+        val message = param.getValidInputErrorMessage(delayCheck)
         if (message.isEmpty()) {
             errorMessage.postValue("")
             params.value?.setErrorState(false)
@@ -74,7 +82,7 @@ class AuthSignInViewModel : ViewModel() {
     }
 
     companion object {
-        private const val INPUT_TYPE_EMAIL = "INPUT_TYPE_EMAIL"
-        private const val INPUT_TYPE_PASSWORD = "INPUT_TYPE_PASSWORD"
+        private const val INPUT_TYPE_NEW_PASSWORD = "INPUT_TYPE_NEW_PASSWORD"
+        private const val INPUT_TYPE_PASSWORD_CONFIRM = "INPUT_TYPE_PASSWORD_CONFIRM"
     }
 }

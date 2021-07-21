@@ -1,27 +1,31 @@
-package com.example.linkit_app.ui.authSignIn
+package com.example.linkit_app.ui.auth
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
-import androidx.compose.runtime.*
-import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.linkit_app.R
+import com.example.linkit_app.ui.common.BaseParamsData
 import com.example.linkit_app.ui.common.ButtonLayout
 import com.example.linkit_app.ui.theme.Error
-import com.example.linkit_app.ui.theme.LinkitTheme
-import com.example.linkit_app.ui.theme.White
-import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 @Composable
-fun AuthSignInLayout(viewModel: AuthSignInViewModel = AuthSignInViewModel()) {
+fun <ParamsData : BaseParamsData> AuthLayout(
+    params: ParamsData?,
+    titleH1: String,
+    progressVisible: Boolean,
+    errorMessage: String,
+    optionalLayout: @Composable () -> Unit = {},
+    buttonName: String,
+    buttonEnabled: Boolean,
+    onButtonClicked: () -> Unit = {}
+) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -29,11 +33,6 @@ fun AuthSignInLayout(viewModel: AuthSignInViewModel = AuthSignInViewModel()) {
             .padding(24.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        val params by viewModel.params.observeAsState()
-        val buttonEnabled by viewModel.buttonEnabled.observeAsState(false)
-        val progressVisible by viewModel.progressVisibility.observeAsState(false)
-        val errorMessage by viewModel.errorMessage.observeAsState("")
-
         Image(
             painter = painterResource(id = R.drawable.ic_arrow_back),
             contentDescription = "Home",
@@ -44,7 +43,7 @@ fun AuthSignInLayout(viewModel: AuthSignInViewModel = AuthSignInViewModel()) {
         )
 
         Text(
-            text = "Sign in with email",
+            text = titleH1,
             style = MaterialTheme.typography.h1,
             modifier = Modifier
                 .fillMaxWidth()
@@ -76,35 +75,15 @@ fun AuthSignInLayout(viewModel: AuthSignInViewModel = AuthSignInViewModel()) {
             Spacer(modifier = Modifier.weight(1f))
         }
 
-        Text(
-            text = "Forget password?",
-            style = MaterialTheme.typography.body1,
-            fontWeight = FontWeight.Medium,
-            modifier = Modifier
-                .padding(bottom = 24.dp)
-                .weight(1f)
-                .wrapContentWidth(Alignment.CenterHorizontally)
-                .wrapContentHeight(Alignment.CenterVertically)
-        )
+        optionalLayout.invoke()
 
         ButtonLayout(
-            text = "Sign in",
+            text = buttonName,
             enabled = buttonEnabled,
             modifier = Modifier
                 .fillMaxWidth()
-                .wrapContentHeight(Alignment.Bottom)
-        ) {
-            viewModel.onSignInClicked()
-        }
-    }
-}
-
-@Composable
-@Preview(showBackground = true)
-fun AuthSignInLayoutPreview() {
-    LinkitTheme(darkTheme = false) {
-        val systemUiController = rememberSystemUiController()
-        systemUiController.setStatusBarColor(White, true)
-        AuthSignInLayout()
+                .wrapContentHeight(Alignment.Bottom),
+            onClick = onButtonClicked
+        )
     }
 }

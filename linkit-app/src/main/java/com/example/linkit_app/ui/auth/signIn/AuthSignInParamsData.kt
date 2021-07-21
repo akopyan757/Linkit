@@ -1,15 +1,16 @@
-package com.example.linkit_app.ui.authSignIn
+package com.example.linkit_app.ui.auth.signIn
 
+import com.example.linkit_app.ui.common.BaseParamsData
 import com.example.linkit_app.ui.common.inputitem.EmailInputItem
 import com.example.linkit_app.ui.common.inputitem.IInputItem
 import com.example.linkit_app.ui.common.inputitem.PasswordInputItem
 
-class AuthSignInParamsData {
+class AuthSignInParamsData: BaseParamsData() {
 
     var email: EmailInputItem? = null
     var password: PasswordInputItem? = null
 
-    fun getInputItems(): List<IInputItem> {
+    override fun getInputItems(): List<IInputItem> {
         val inputItems = ArrayList<IInputItem>()
         email?.let(inputItems::add)
         password?.let(inputItems::add)
@@ -26,15 +27,9 @@ class AuthSignInParamsData {
         password = password?.getInputItemValue() ?: ""
     )
 
-    fun getValidInputErrorMessages(delayCheck: Boolean): String {
-        return getInputItems().flatMap { inputItem ->
-            inputItem.getErrorCheckOptions(getInputItems(), delayCheck)
-        }.joinToString("\n") { checkOption -> "* " + checkOption.error }
-    }
-
-    fun isValidEnabled(): Boolean {
-        return getInputItems().flatMap { inputItem ->
-            inputItem.getErrorCheckOptions(getInputItems(), delayCheck = true)
-        }.isEmpty()
+    fun getValidInputErrorMessage(delayCheck: Boolean): String {
+        return super.getValidInputErrorMessageList(delayCheck).joinToString("\n") {
+                checkOption -> "* " + checkOption.error
+        }
     }
 }

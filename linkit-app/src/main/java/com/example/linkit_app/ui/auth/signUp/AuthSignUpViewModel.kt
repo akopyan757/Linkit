@@ -1,4 +1,4 @@
-package com.example.linkit_app.ui.authSignUp
+package com.example.linkit_app.ui.auth.signUp
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -85,7 +85,7 @@ class AuthSignUpViewModel : ViewModel() {
     }
 
     private fun updateErrorState(param: AuthSignUpParamsData, delayCheck: Boolean) {
-        val message = param.getValidInputErrorMessages(delayCheck)
+        val message = param.getValidInputErrorMessage(delayCheck)
         if (message.isEmpty()) {
             errorMessage.postValue("")
             params.value?.setErrorState(false)

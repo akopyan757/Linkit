@@ -1,4 +1,4 @@
-package com.example.linkit_app.ui.authSignIn
+package com.example.linkit_app.ui.auth.signIn
 
 data class AuthSignInRequest(
     val email: String,
