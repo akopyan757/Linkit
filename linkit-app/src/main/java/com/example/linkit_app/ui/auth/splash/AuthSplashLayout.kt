@@ -11,15 +11,19 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.example.linkit_app.ui.auth.AuthLayout
 import com.example.linkit_app.ui.theme.LinkitTheme
 import com.example.linkit_app.ui.theme.White
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 @Composable
-fun AuthSplashLayout(viewModel: AuthSplashViewModel = AuthSplashViewModel()) {
+fun AuthSplashLayout(navController: NavHostController, viewModel: AuthSplashViewModel = AuthSplashViewModel()) {
     Column(
-        modifier = Modifier.fillMaxWidth().fillMaxHeight()
+        modifier = Modifier
+            .fillMaxWidth()
+            .fillMaxHeight()
     ) {
        Text(
            text = "Splash",
@@ -32,7 +36,7 @@ fun AuthSplashLayout(viewModel: AuthSplashViewModel = AuthSplashViewModel()) {
     }
 
     viewModel.onSplashFinished {
-
+        navController.navigate("start")
     }
 }
 
@@ -41,7 +45,8 @@ fun AuthSplashLayout(viewModel: AuthSplashViewModel = AuthSplashViewModel()) {
 fun AuthSplashLayoutPreview() {
     LinkitTheme(darkTheme = false) {
         val systemUiController = rememberSystemUiController()
+        val navController = rememberNavController()
         systemUiController.setStatusBarColor(White, true)
-        AuthSplashLayout()
+        AuthSplashLayout(navController)
     }
 }

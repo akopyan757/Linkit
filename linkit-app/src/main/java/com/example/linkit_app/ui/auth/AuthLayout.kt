@@ -1,6 +1,7 @@
 package com.example.linkit_app.ui.auth
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.MaterialTheme
@@ -24,6 +25,7 @@ fun <ParamsData : BaseParamsData> AuthLayout(
     optionalLayout: @Composable () -> Unit = {},
     buttonName: String,
     buttonEnabled: Boolean,
+    onHomeClicked: () -> Unit = {},
     onButtonClicked: () -> Unit = {}
 ) {
     Column(
@@ -40,6 +42,7 @@ fun <ParamsData : BaseParamsData> AuthLayout(
                 .width(24.dp)
                 .height(24.dp)
                 .align(Alignment.Start)
+                .clickable { onHomeClicked.invoke() },
         )
 
         Text(

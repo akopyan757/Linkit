@@ -4,26 +4,29 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.example.linkit_app.ui.auth.AuthLayout
 import com.example.linkit_app.ui.theme.LinkitTheme
 import com.example.linkit_app.ui.theme.White
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 @Composable
-fun AuthResetPasswordLayout(viewModel: AuthResetPasswordViewModel = AuthResetPasswordViewModel()) {
+fun AuthResetPasswordLayout(navController: NavHostController, viewModel: AuthResetPasswordViewModel = AuthResetPasswordViewModel()) {
 
     val params by viewModel.params.observeAsState()
     val buttonEnabled by viewModel.buttonEnabled.observeAsState(false)
     val progressVisible by viewModel.progressVisibility.observeAsState(false)
     val errorMessage by viewModel.errorMessage.observeAsState("")
 
-    AuthLayout(
+    AuthLayout<AuthResetPasswordParamsData>(
         params = params,
         titleH1 = "Password reset",
         progressVisible = progressVisible,
         errorMessage = errorMessage,
         buttonName = "Send",
         buttonEnabled = buttonEnabled,
+        onHomeClicked = { navController.popBackStack() },
         onButtonClicked = viewModel::onResetPasswordClicked
     )
 }
@@ -33,7 +36,8 @@ fun AuthResetPasswordLayout(viewModel: AuthResetPasswordViewModel = AuthResetPas
 fun AuthSignInLayoutPreview() {
     LinkitTheme(darkTheme = false) {
         val systemUiController = rememberSystemUiController()
+        val navController = rememberNavController()
         systemUiController.setStatusBarColor(White, true)
-        AuthResetPasswordLayout()
+        AuthResetPasswordLayout(navController)
     }
 }

@@ -4,19 +4,21 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.example.linkit_app.ui.auth.AuthLayout
 import com.example.linkit_app.ui.theme.LinkitTheme
 import com.example.linkit_app.ui.theme.White
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 @Composable
-fun AuthSetPasswordLayout(viewModel: AuthSetPasswordViewModel = AuthSetPasswordViewModel()) {
+fun AuthSetPasswordLayout(navController: NavHostController, viewModel: AuthSetPasswordViewModel = AuthSetPasswordViewModel()) {
     val params by viewModel.params.observeAsState()
     val buttonEnabled by viewModel.buttonEnabled.observeAsState(false)
     val progressVisible by viewModel.progressVisibility.observeAsState(false)
     val errorMessage by viewModel.errorMessage.observeAsState("")
 
-    AuthLayout(
+    AuthLayout<AuthSetPasswordParamsData>(
         params = params,
         titleH1 = "Password setup",
         progressVisible = progressVisible,
@@ -32,7 +34,8 @@ fun AuthSetPasswordLayout(viewModel: AuthSetPasswordViewModel = AuthSetPasswordV
 fun AuthUpdatePasswordLayoutPreview() {
     LinkitTheme(darkTheme = false) {
         val systemUiController = rememberSystemUiController()
+        val navController = rememberNavController()
         systemUiController.setStatusBarColor(White, true)
-        AuthSetPasswordLayout()
+        AuthSetPasswordLayout(navController)
     }
 }

@@ -1,6 +1,7 @@
 package com.example.linkit_app.ui.auth.start
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
@@ -9,16 +10,22 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.example.linkit_app.ui.common.ButtonLayout
 import com.example.linkit_app.ui.theme.LinkitTheme
+import com.example.linkit_app.ui.theme.PoppinsFamily
 import com.example.linkit_app.ui.theme.White
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 @Composable
-fun AuthStartLayout(viewModel: AuthStartViewModel = AuthStartViewModel()) {
+fun AuthStartLayout(navController: NavHostController, viewModel: AuthStartViewModel = AuthStartViewModel()) {
 
     val progressVisible by viewModel.progressVisibility.observeAsState(false)
 
@@ -44,7 +51,8 @@ fun AuthStartLayout(viewModel: AuthStartViewModel = AuthStartViewModel()) {
             modifier = Modifier
                 .fillMaxWidth()
                 .wrapContentHeight(Alignment.Bottom)
-                .padding(top = 20.dp)
+                .padding(top = 20.dp),
+            onClick = { navController.navigate("sign_up") }
         )
 
         ButtonLayout(
@@ -55,14 +63,21 @@ fun AuthStartLayout(viewModel: AuthStartViewModel = AuthStartViewModel()) {
                 .padding(top = 10.dp)
         )
 
-        Text(
-            text = "Already have an account?",
+        ClickableText(
+            text = buildAnnotatedString {
+                withStyle(
+                    style = SpanStyle(
+                        fontWeight = FontWeight.Medium,
+                        fontFamily = PoppinsFamily
+                    )
+                ) { append("Already have an account?") }
+            },
             style = MaterialTheme.typography.body1,
-            fontWeight = FontWeight.Medium,
             modifier = Modifier
                 .padding(top = 20.dp)
                 .wrapContentWidth(Alignment.CenterHorizontally)
-                .wrapContentHeight(Alignment.CenterVertically)
+                .wrapContentHeight(Alignment.CenterVertically),
+            onClick = { navController.navigate("sign_in") }
         )
 
         if (progressVisible) {
@@ -76,7 +91,6 @@ fun AuthStartLayout(viewModel: AuthStartViewModel = AuthStartViewModel()) {
         } else {
             Spacer(modifier = Modifier.weight(1f))
         }
-
 
         Text(
             text = "By signing up, you agree to UnboxMe’s",
@@ -98,7 +112,8 @@ fun AuthStartLayout(viewModel: AuthStartViewModel = AuthStartViewModel()) {
 fun AuthStartLayoutPreview() {
     LinkitTheme(darkTheme = false) {
         val systemUiController = rememberSystemUiController()
+        val navController = rememberNavController()
         systemUiController.setStatusBarColor(White, true)
-        AuthStartLayout()
+        AuthStartLayout(navController)
     }
 }

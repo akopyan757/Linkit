@@ -16,7 +16,7 @@ fun AuthUpdatePasswordLayout(viewModel: AuthUpdatePasswordViewModel = AuthUpdate
     val progressVisible by viewModel.progressVisibility.observeAsState(false)
     val errorMessage by viewModel.errorMessage.observeAsState("")
 
-    AuthLayout(
+    AuthLayout<AuthUpdatePasswordParamsData>(
         params = params,
         titleH1 = "Update password",
         progressVisible = progressVisible,
