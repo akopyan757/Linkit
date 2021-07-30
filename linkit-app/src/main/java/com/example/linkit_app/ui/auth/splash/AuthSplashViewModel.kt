@@ -1,32 +1,22 @@
 package com.example.linkit_app.ui.auth.splash
 
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import com.example.linkit_app.ui.common.inputitem.checkOptions.BaseCheckOption
-import com.example.linkit_app.ui.common.inputitem.EmailInputItem
-import com.example.linkit_app.ui.common.inputitem.PasswordInputItem
-import com.example.linkit_app.ui.common.inputitem.checkOptions.PasswordEqualsCheckOption
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import com.akopyan757.linkit_domain.usecase.auth.GetUserUseCase
+import com.example.linkit_app.compose.BaseViewModel
 
-class AuthSplashViewModel : ViewModel() {
+class AuthSplashViewModel : BaseViewModel() {
+
+    private val getUser: GetUserUseCase by injectUseCase()
 
     val buttonEnabled = MutableLiveData(false)
     val progressVisibility = MutableLiveData(false)
     val errorMessage = MutableLiveData("")
 
-    fun onSplashFinished(onFinished: () -> Unit) {
-        CoroutineScope(Dispatchers.Main).launch {
-            delay(1000)
-            onFinished.invoke()
-        }
-    }
-
-    companion object {
-        private const val INPUT_TYPE_EMAIL = "INPUT_TYPE_EMAIL"
-        private const val INPUT_TYPE_PASSWORD = "INPUT_TYPE_PASSWORD"
-        private const val INPUT_TYPE_PASSWORD_CONFIRM = "INPUT_TYPE_PASSWORD_CONFIRM"
+    fun onSplashFinished(onFinished: (userFound: Boolean) -> Unit) {
+        getUser.execute(onSuccess = {
+            onFinished.invoke(true)
+        }, onError = {
+            onFinished.invoke(false)
+        })
     }
 }

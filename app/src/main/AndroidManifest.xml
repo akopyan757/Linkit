@@ -52,8 +52,6 @@
             android:name="com.google.android.gms.ads.APPLICATION_ID"
             android:value="ca-app-pub-2231072573749446~2998532384"/>
 
-        <service android:name=".view.service.RemoteDataObserverService" />
-
     </application>
 
 </manifest>

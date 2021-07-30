@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.linkit_app.ui.auth.AuthLayout
@@ -12,7 +13,8 @@ import com.example.linkit_app.ui.theme.White
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 @Composable
-fun AuthResetPasswordLayout(navController: NavHostController, viewModel: AuthResetPasswordViewModel = AuthResetPasswordViewModel()) {
+fun AuthResetPasswordLayout(navController: NavHostController) {
+    val viewModel: AuthResetPasswordViewModel = viewModel()
 
     val params by viewModel.params.observeAsState()
     val buttonEnabled by viewModel.buttonEnabled.observeAsState(false)

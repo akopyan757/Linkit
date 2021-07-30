@@ -12,6 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.linkit_app.ui.auth.AuthLayout
@@ -20,7 +21,8 @@ import com.example.linkit_app.ui.theme.White
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 @Composable
-fun AuthSignInLayout(navController: NavHostController, viewModel: AuthSignInViewModel = AuthSignInViewModel()) {
+fun AuthSignInLayout(navController: NavHostController) {
+    val viewModel: AuthSignInViewModel = viewModel()
 
     val params by viewModel.params.observeAsState()
     val buttonEnabled by viewModel.buttonEnabled.observeAsState(false)

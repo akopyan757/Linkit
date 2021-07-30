@@ -1,12 +1,12 @@
 package com.example.linkit_app.ui.auth.signIn
 
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import com.example.linkit_app.ui.common.inputitem.checkOptions.BaseCheckOption
+import com.example.linkit_app.compose.BaseViewModel
 import com.example.linkit_app.ui.common.inputitem.EmailInputItem
 import com.example.linkit_app.ui.common.inputitem.PasswordInputItem
+import com.example.linkit_app.ui.common.inputitem.checkOptions.BaseCheckOption
 
-class AuthSignInViewModel : ViewModel() {
+class AuthSignInViewModel : BaseViewModel() {
 
     val params = MutableLiveData<AuthSignInParamsData>()
     val buttonEnabled = MutableLiveData(false)

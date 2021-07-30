@@ -16,6 +16,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.linkit_app.ui.common.ButtonLayout
@@ -25,8 +26,9 @@ import com.example.linkit_app.ui.theme.White
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 @Composable
-fun AuthStartLayout(navController: NavHostController, viewModel: AuthStartViewModel = AuthStartViewModel()) {
+fun AuthStartLayout(navController: NavHostController) {
 
+    val viewModel: AuthStartViewModel = viewModel()
     val progressVisible by viewModel.progressVisibility.observeAsState(false)
 
     Column(

@@ -11,6 +11,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.linkit_app.ui.auth.AuthLayout
@@ -19,7 +20,8 @@ import com.example.linkit_app.ui.theme.White
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 @Composable
-fun AuthSplashLayout(navController: NavHostController, viewModel: AuthSplashViewModel = AuthSplashViewModel()) {
+fun AuthSplashLayout(navController: NavHostController) {
+    val viewModel: AuthSplashViewModel = viewModel()
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -35,8 +37,10 @@ fun AuthSplashLayout(navController: NavHostController, viewModel: AuthSplashView
        )
     }
 
-    viewModel.onSplashFinished {
-        navController.navigate("start")
+    viewModel.onSplashFinished { userFound ->
+        if (!userFound) {
+            navController.navigate("start")
+        }
     }
 }
 

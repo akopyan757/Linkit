@@ -2,11 +2,12 @@ package com.example.linkit_app.ui.auth.setPassword
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.linkit_app.compose.BaseViewModel
 import com.example.linkit_app.ui.common.inputitem.checkOptions.BaseCheckOption
 import com.example.linkit_app.ui.common.inputitem.PasswordInputItem
 import com.example.linkit_app.ui.common.inputitem.checkOptions.PasswordEqualsCheckOption
 
-class AuthSetPasswordViewModel : ViewModel() {
+class AuthSetPasswordViewModel : BaseViewModel() {
 
     val params = MutableLiveData<AuthSetPasswordParamsData>()
     val buttonEnabled = MutableLiveData(false)
