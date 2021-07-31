@@ -45,9 +45,9 @@
     },
     {
       "client_info": {
-        "mobilesdk_app_id": "1:801812080541:android:5c62cefea1be1f26b4b174",
+        "mobilesdk_app_id": "1:801812080541:android:74c4a6776f0b2548b4b174",
         "android_client_info": {
-          "package_name": "com.example.linkit_app"
+          "package_name": "com.cheesecake.linkit"
         }
       },
       "oauth_client": [
