@@ -19,6 +19,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.cheesecake.linkit.SignInServiceButtonLayout
 import com.cheesecake.linkit.ui.common.ButtonLayout
 import com.cheesecake.linkit.ui.theme.LinkitTheme
 import com.cheesecake.linkit.ui.theme.PoppinsFamily
@@ -57,8 +58,7 @@ fun AuthStartLayout(navController: NavHostController) {
             onClick = { navController.navigate("sign_up") }
         )
 
-        ButtonLayout(
-            text = "Sign up with service",
+        SignInServiceButtonLayout(
             modifier = Modifier
                 .fillMaxWidth()
                 .wrapContentHeight(Alignment.Bottom)

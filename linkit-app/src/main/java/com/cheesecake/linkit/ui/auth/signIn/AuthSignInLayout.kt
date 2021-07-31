@@ -21,7 +21,7 @@ import com.cheesecake.linkit.ui.theme.White
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 @Composable
-fun AuthSignInLayout(navController: NavHostController) {
+fun AuthSignInLayout(navController: NavHostController, onMainStart: (uid: String) -> Unit = {}) {
     val viewModel: AuthSignInViewModel = viewModel()
 
     val params by viewModel.params.observeAsState()
@@ -51,7 +51,7 @@ fun AuthSignInLayout(navController: NavHostController) {
         buttonName = "Sign in",
         buttonEnabled = buttonEnabled,
         onHomeClicked = { navController.popBackStack() },
-        onButtonClicked = viewModel::onSignInClicked
+        onButtonClicked = { viewModel.onSignInClicked(onMainStart) }
     )
 }
 

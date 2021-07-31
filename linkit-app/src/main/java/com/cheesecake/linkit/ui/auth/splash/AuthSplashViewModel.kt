@@ -7,12 +7,12 @@ class AuthSplashViewModel : BaseViewModel() {
 
     private val getUser: GetUserUseCase by injectUseCase()
 
-    private var state = State.Loading
+    private var state: State = State.Loading
 
     fun requestUser(onFinished: (State) -> Unit) {
         if (state == State.Loading) {
-            getUser.execute(onSuccess = {
-                state = State.UserAuthorized
+            getUser.execute(onSuccess = { entity ->
+                state = State.UserAuthorized(entity.uid)
                 onFinished.invoke(state)
             }, onError = {
                 state = State.UserNotFound
@@ -21,5 +21,9 @@ class AuthSplashViewModel : BaseViewModel() {
         }
     }
 
-    enum class State { Loading, UserAuthorized, UserNotFound }
+    sealed class State {
+        object Loading: State()
+        object UserNotFound: State()
+        data class UserAuthorized(val uid: String): State()
+    }
 }

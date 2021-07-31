@@ -1,11 +1,14 @@
 package com.cheesecake.linkit.ui.auth.resetPassword
 
 import androidx.lifecycle.MutableLiveData
+import com.akopyan757.linkit_domain.usecase.auth.ResetPasswordUseCase
 import com.cheesecake.linkit.compose.BaseViewModel
-import com.cheesecake.linkit.ui.common.inputitem.checkOptions.BaseCheckOption
 import com.cheesecake.linkit.ui.common.inputitem.EmailInputItem
+import com.cheesecake.linkit.ui.common.inputitem.checkOptions.BaseCheckOption
 
 class AuthResetPasswordViewModel : BaseViewModel() {
+
+    private val resetPassword: ResetPasswordUseCase by injectUseCase()
 
     val params = MutableLiveData<AuthResetPasswordParamsData>()
     val buttonEnabled = MutableLiveData(false)
@@ -17,9 +20,26 @@ class AuthResetPasswordViewModel : BaseViewModel() {
     }
 
     fun onResetPasswordClicked() {
-        val data = params.value ?: return
-        updateErrorState(data, delayCheck = false)
-        progressVisibility.value = progressVisibility.value?.not()
+        val params = params.value ?: return
+        if (!params.isValidEnabled()) {
+            updateErrorState(params, delayCheck = false)
+        } else {
+            progressVisibility.value = true
+            val request = params.getParamsData().let { data ->
+                ResetPasswordUseCase.Params(data.email)
+            }
+            resetPassword.execute(
+                params = request,
+                onSuccess = {
+                    progressVisibility.value = false
+                    params.setErrorState(false)
+                }, onError = {
+                    errorMessage.value = "* ${it.localizedMessage}"
+                    progressVisibility.value = false
+                    params.setErrorState(true)
+                }
+            )
+        }
     }
 
     private fun initInputData() {

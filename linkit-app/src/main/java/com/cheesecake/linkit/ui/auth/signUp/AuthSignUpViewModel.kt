@@ -1,13 +1,17 @@
 package com.cheesecake.linkit.ui.auth.signUp
 
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import com.cheesecake.linkit.ui.common.inputitem.checkOptions.BaseCheckOption
+import com.akopyan757.linkit_domain.usecase.auth.CreateUserUseCase
+import com.cheesecake.linkit.compose.BaseViewModel
 import com.cheesecake.linkit.ui.common.inputitem.EmailInputItem
 import com.cheesecake.linkit.ui.common.inputitem.PasswordInputItem
+import com.cheesecake.linkit.ui.common.inputitem.checkOptions.BaseCheckOption
 import com.cheesecake.linkit.ui.common.inputitem.checkOptions.PasswordEqualsCheckOption
 
-class AuthSignUpViewModel : ViewModel() {
+class AuthSignUpViewModel : BaseViewModel() {
+
+    private val createUser: CreateUserUseCase by injectUseCase()
 
     val params = MutableLiveData<AuthSignUpParamsData>()
     val buttonEnabled = MutableLiveData(false)
@@ -18,10 +22,28 @@ class AuthSignUpViewModel : ViewModel() {
         initInputData()
     }
 
-    fun onSignUpClicked() {
-        val data = params.value ?: return
-        updateErrorState(data, delayCheck = false)
-        progressVisibility.value = progressVisibility.value?.not()
+    fun onSignUpClicked(onMainStart: (uid: String) -> Unit) {
+        val params = params.value ?: return
+        if (!params.isValidEnabled()) {
+            updateErrorState(params, delayCheck = false)
+        } else {
+            progressVisibility.value = true
+            val request = params.getParamsData().let { data ->
+                CreateUserUseCase.Params(data.email, data.password)
+            }
+            createUser.execute(
+                params = request,
+                onSuccess = { entity ->
+                    onMainStart.invoke(entity.uid)
+                    progressVisibility.value = false
+                    params.setErrorState(false)
+                }, onError = {
+                    errorMessage.value = "* ${it.localizedMessage}"
+                    progressVisibility.value = false
+                    params.setErrorState(true)
+                }
+            )
+        }
     }
 
     private fun initInputData() {

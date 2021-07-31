@@ -15,14 +15,14 @@ import com.cheesecake.linkit.ui.theme.White
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 @Composable
-fun AuthScreen() {
+fun AuthScreen(onMainStart: (uid: String) -> Unit = {}) {
     val navController = rememberNavController()
 
     NavHost(navController, startDestination = "splash") {
-        composable("splash") { AuthSplashLayout { navController.navigate("start") } }
+        composable("splash") { AuthSplashLayout(navController, onMainStart) }
         composable("start") { AuthStartLayout(navController) }
-        composable("sign_up") { AuthSignUpLayout(navController) }
-        composable("sign_in") { AuthSignInLayout(navController) }
+        composable("sign_up") { AuthSignUpLayout(navController, onMainStart) }
+        composable("sign_in") { AuthSignInLayout(navController, onMainStart) }
         composable("reset_password") { AuthResetPasswordLayout(navController) }
     }
 }

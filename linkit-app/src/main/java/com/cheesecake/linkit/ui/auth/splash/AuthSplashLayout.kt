@@ -9,12 +9,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.cheesecake.linkit.ui.theme.LinkitTheme
 import com.cheesecake.linkit.ui.theme.White
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 @Composable
-fun AuthSplashLayout(onSignIn: () -> Unit = {}) {
+fun AuthSplashLayout(navController: NavController, onMainStart: (uid: String) -> Unit = {}) {
     val viewModel: AuthSplashViewModel = viewModel()
 
     Column(
@@ -35,11 +37,12 @@ fun AuthSplashLayout(onSignIn: () -> Unit = {}) {
     viewModel.requestUser { state ->
         when (state) {
             AuthSplashViewModel.State.Loading -> {}
-            AuthSplashViewModel.State.UserAuthorized -> {
 
-            }
             AuthSplashViewModel.State.UserNotFound -> {
-                onSignIn.invoke()
+                navController.navigate("start")
+            }
+            is AuthSplashViewModel.State.UserAuthorized -> {
+                onMainStart.invoke(state.uid)
             }
         }
     }
@@ -50,7 +53,8 @@ fun AuthSplashLayout(onSignIn: () -> Unit = {}) {
 fun AuthSplashLayoutPreview() {
     LinkitTheme(darkTheme = false) {
         val systemUiController = rememberSystemUiController()
+        val navController = rememberNavController()
         systemUiController.setStatusBarColor(White, true)
-        AuthSplashLayout()
+        AuthSplashLayout(navController)
     }
 }

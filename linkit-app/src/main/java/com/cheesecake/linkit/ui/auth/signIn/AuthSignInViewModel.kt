@@ -1,12 +1,15 @@
 package com.cheesecake.linkit.ui.auth.signIn
 
 import androidx.lifecycle.MutableLiveData
+import com.akopyan757.linkit_domain.usecase.auth.SignInWithEmailUserUseCase
 import com.cheesecake.linkit.compose.BaseViewModel
 import com.cheesecake.linkit.ui.common.inputitem.EmailInputItem
 import com.cheesecake.linkit.ui.common.inputitem.PasswordInputItem
 import com.cheesecake.linkit.ui.common.inputitem.checkOptions.BaseCheckOption
 
 class AuthSignInViewModel : BaseViewModel() {
+
+    private val signInWithEmail: SignInWithEmailUserUseCase by injectUseCase()
 
     val params = MutableLiveData<AuthSignInParamsData>()
     val buttonEnabled = MutableLiveData(false)
@@ -17,10 +20,28 @@ class AuthSignInViewModel : BaseViewModel() {
         initInputData()
     }
 
-    fun onSignInClicked() {
-        val data = params.value ?: return
-        updateErrorState(data, delayCheck = false)
-        progressVisibility.value = progressVisibility.value?.not()
+    fun onSignInClicked(onMainStart: (uid: String) -> Unit) {
+        val params = params.value ?: return
+        if (!params.isValidEnabled()) {
+            updateErrorState(params, delayCheck = false)
+        } else {
+            progressVisibility.value = true
+            val request = params.getParamsData().let { data ->
+                SignInWithEmailUserUseCase.Params(data.email, data.password)
+            }
+            signInWithEmail.execute(
+                params = request,
+                onSuccess = { entity ->
+                    onMainStart.invoke(entity.uid)
+                    progressVisibility.value = false
+                    params.setErrorState(false)
+                }, onError = {
+                    errorMessage.value = "* ${it.localizedMessage}"
+                    progressVisibility.value = false
+                    params.setErrorState(true)
+                }
+            )
+        }
     }
 
     private fun initInputData() {
